@@ -33,3 +33,25 @@
   color: #7d8193;
 }
 
+.kt-portlet .kt-portlet__foot {
+  padding: 1em;
+}
+
+.details-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.2em;
+  color: #6c7293;
+}
+
+.details-subtext {
+  font-weight: 400;
+  color: #848690;
+}
+
+.details-item {
+  flex: 1;
+  overflow: hidden;
+  margin-bottom: 0.5em;
+}
+

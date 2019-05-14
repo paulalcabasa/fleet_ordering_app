@@ -38,3 +38,27 @@
 .dropdown-item {
 	color:#7d8193;
 }
+
+.kt-portlet .kt-portlet__foot {
+	padding: 1em;
+}
+
+.details-label {
+	font-weight:600;
+	display:block;
+	margin-bottom:.2em;
+	color:#6c7293;
+}
+
+.details-subtext {
+	font-weight:400;
+	color:rgb(132, 134, 144);
+}
+
+.details-item {
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+	overflow: hidden;
+	margin-bottom:.5em;
+}

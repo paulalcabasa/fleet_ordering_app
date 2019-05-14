@@ -53,7 +53,8 @@ mix.styles([
     'public/metronic/assets/demo/default/skins/header/base/light.css',
     'public/metronic/assets/demo/default/skins/header/menu/light.css',
     'public/metronic/assets/demo/default/skins/brand/dark.css',
-    'public/metronic/assets/demo/default/skins/aside/dark.css'
+    'public/metronic/assets/demo/default/skins/aside/dark.css',
+    'public/metronic/assets/css/demo1/pages/general/invoices/invoice-1.css'
 ], 'public/css/metronic.bundle.css');
 
 mix.scripts([

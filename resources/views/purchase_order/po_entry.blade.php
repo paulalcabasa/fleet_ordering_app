@@ -17,46 +17,38 @@
     <div class="kt-portlet__body">
         <div class="row">
             <div class="col-md-4">
-                <div class="form-group">
-                    <label>Price Confirmation Reference</label>
-                    <input type="text" class="form-control" value="FPC{{ $price_confirmation_id }}" disabled="disabled" />
+                <div class="details-item">
+                    <span class="details-label">Price Confirmation Reference</span>
+                    <span class="details-subtext">FPC{{ $price_confirmation_id }}</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Account Name</span>
+                    <span class="details-subtext">RCP SENIA TRADING/ RCP SENIA TRANSPORT</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Date Confirmed</span>
+                    <span class="details-subtext">May 20, 2019</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Confirmed By</span>
+                    <span class="details-subtext">John Doe</span>
                 </div>
             </div>
-            <div class="col-md-8">
-               <div class="form-group">
-                    <label>Account Name</label>
-                    <input type="text" class="form-control" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" disabled="disabled"/>
+
+            <div class="col-md-4">
+                <div class="details-item">
+                    <span class="details-label">Project Reference No.</span>
+                    <span class="details-subtext">PRJ001</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Date Submitted</span>
+                    <span class="details-subtext">May 19, 2019</span>
                 </div>
             </div>
+     
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Date Confirmed</label>
-                    <input type="text" class="form-control" value="May 20, 2019" disabled="disabled" />
-                </div>
-            </div>
-            <div class="col-md-6">
-               <div class="form-group">
-                    <label>Confirmed By</label>
-                    <input type="text" class="form-control" value="Paul Alcabasa" disabled="disabled"/>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Project Reference No.</label>
-                    <input type="text" class="form-control" value="PRJ001" disabled="disabled" />
-                </div>
-            </div>
-            <div class="col-md-6">
-               <div class="form-group">
-                    <label>Date Submitted</label>
-                    <input type="text" class="form-control" value="May 19, 2019" disabled="disabled"/>
-                </div>
-            </div>
-        </div>
+      
+     
         
     </div>
 </div>
@@ -94,6 +86,14 @@
                             <label>Name of Body Builder </label>
                             <span class="form-control">@{{ project.body_builder_name }}</span>
                         </div>
+                        <div class="form-group">
+                        <label>PO Document</label>
+                        <div></div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
+                        </div>
+                    </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -101,6 +101,7 @@
                             <span class="form-control">@{{ project.rear_body_type}}</span>
                         </div>
                     </div>
+
                 </div>
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -109,6 +110,7 @@
                             <th>Model</th>
                             <th>Color</th>
                             <th>Order Qty</th>
+                            <th>PO Qty</th>
                             <th>Particulars</th>
                             <th>Suggested Price</th>
                         </tr>
@@ -123,6 +125,7 @@
                             <td> @{{ order.model }} </td>
                             <td> @{{ order.color }} </td>
                             <td> @{{ order.ordered_quantity }} </td>
+                            <td> <input type="text" name="" class="form-control" size="4"/> </td>
                             <td> @{{ order.particulars }} </td>
                             <td> @{{ order.srp }} </td>
                         </tr>
@@ -150,10 +153,19 @@
 
         </div>
     </div>
+
+    <div class="kt-portlet__foot">
+        <div class="row">
+            <div class="col-lg-12 kt-align-right">
+                <button type="submit" class="btn btn-brand">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+
 <div class="modal fade" data-backdrop="static" data-keyboard="false" id="priceConfirmationModal" style="z-index:1131" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width: 90% !important;" role="document">
+    <div class="modal-dialog modal-lg" style="max-width: 80% !important;" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Price Confirmation</h5>
@@ -172,101 +184,103 @@
                     <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-home-tab">
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Order Control No.</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="001" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Account Name</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Dealer</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="PASIG" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Date</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="April 1, 2019" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Model</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="QKR77 (CAB-LESS 80A)" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Quantity</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="2" />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>One Price</label>
-                                    <input type="text" class="form-control form-control-sm"  value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Wholesale Price</label>
-                                    <input type="text" class="form-control form-control-sm" value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Dealer's Margin</label>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control form-control-sm" value="10000" />
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="details-item">
+                                            <span class="details-label">Order Control No.</span>
+                                            <span class="details-subtext">001</span>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control"  aria-describedby="basic-addon2">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon2">%</span>
-                                                </div>
-                                            </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Account Name</span>
+                                            <span class="details-subtext">RCP SENIA TRADING/ RCP SENIA TRANSPORT</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Dealer</span>
+                                            <span class="details-subtext">PASIG</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Date</span>
+                                            <span class="details-subtext">April 1, 2019</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Model</span>
+                                            <span class="details-subtext">QKR77 (CAB-LESS 80A)</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Quantity</span>
+                                            <span class="details-subtext">2</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>3 Yrs LTO Registration</label>
-                                    <input type="text" class="form-control form-control-sm"  value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Freebies</label>
-                                    <input type="text" class="form-control form-control-sm" value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Cost</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="" />
-                                </div>
+                               
+
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Promo Title</label>
-                                    <input type="text" class="form-control form-control-sm"  />
-                                </div>
-                                <div class="form-group">
-                                    <label>Promo</label>
-                                    <input type="text" class="form-control form-control-sm" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Net Cost</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Fleet Price</label>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">P</span>
-                                        </div>
-                                        <input type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" />
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <th>Amount</th>
+                                                </tr>  
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>One Price</td>
+                                                    <td>@{{ one_price | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Wholesale Price</td>
+                                                    <td>@{{ wholesale_price | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Dealer's Margin</td>
+                                                    <td>@{{ dealers_margin | formatPeso  }} (@{{  dealers_margin_percent }}%)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3 Yrs LTO Registration</td>
+                                                    <td>@{{ lto_registration | formatPeso }}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>Freebies</td>
+                                                    <td>@{{ freebies | formatPeso }}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>Cost</td>
+                                                    <td>@{{ cost | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Promo (RCP SENIA TRADING/ RCP SENIA TRANSPORT)</td>
+                                                    <td>@{{ promo | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Net Cost</td>
+                                                    <td>@{{ net_cost | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Fleet Price</td>
+                                                    <td>@{{ fleet_price | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Subsidy</td>
+                                                    <td>@{{ subsidy | formatPeso }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Total IPC Subsidy</td>
+                                                    <td>@{{ subsidy | formatPeso }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Subsidy</label>
-                                    <input type="text" class="form-control form-control-sm" readonly=""  />
-                                </div>
-                                <div class="form-group">
-                                    <label>Total IPC Subsidy</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" />
-                                </div>
+                                </div>          
                             </div>
+               
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-addtl" role="tabpanel" aria-labelledby="nav-profile-tab">
@@ -275,30 +289,29 @@
                                 <tr>
                                     <th style="width:60%;">Description</th>
                                     <th style="width:30%;">Amount</th>
-                                    <th style="width:10%;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(detail, index) in additional_details">
-                                    <td><input type="text" class="form-control" v-model="detail.description" /></td>
-                                    <td><input type="text" class="form-control" v-model="detail.amount" /></td>
-                                    <td><a href="#" @click.prevent="deleteRow(index)" class="btn btn-sm btn-danger"><i class="fas fa-minus"></i></a></td>
+                                    <td>@{{ detail.description }}</td>
+                                    <td>@{{ detail.amount | formatPeso }}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <button type="button" class="btn"></button>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success">Save changes</button>
                 <a href="#" @click.prevent="printPrintConfirmation(project_id)" class="btn btn-primary">Print</a>
-                <button type="button" v-if="active_tab == 1" class="btn btn-primary" @click="addRow()">Add row</button>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
 
 </div>
 @stop
@@ -310,17 +323,86 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-    
+            additional_details : [
+                {
+                    description : "Grille",
+                    amount : 5000
+                },
+                {
+                    description : "Grille 2",
+                    amount : 5000
+                }
+            ],
+            projects : [
+                {
+                    project_id : '001',
+                    dealer : 'PASIG',
+                    body_builder_name : 'Almazora',
+                    rear_body_type : 'Jeepney',
+                    orders : [
+                        {
+                            model : 'QKR77 (CAB-LESS 80A)',
+                            color : 'WHITE',
+                            ordered_quantity : 50,
+                            particulars : '',
+                            srp : '1200000'
+                        },
+                        {
+                            model : '185 D-MAX 3.0 4x4 LS MT',
+                            color : 'SPLASH WHITE',
+                            ordered_quantity : 20,
+                            particulars : '',
+                            srp : '1200000'
+                        }
+                    ],
+                    competitors: [
+                        {
+                            brand : 'MITSUBUSHI',
+                            model : 'FUSO',
+                            price : '1,100,000.00'
+                        }
+                    ]
+                }
+            ],
+            one_price : 1570000,
+            wholesale_price : 1475000,
+            dealers_margin_percent : 6,
+            lto_registration : 10500,
+            freebies : 0,
+            promo : 0,
+            fleet_price : 1540000
         },
         created: function () {
             // `this` points to the vm instance
-          
         },
         methods : {
-           
+            priceConfirmation(order){
+                $("#priceConfirmationModal").modal('show');
+            }
+        },
+        computed : {
+            dealers_margin(){
+                return this.one_price * (this.dealers_margin_percent/100) ;
+            },
+            cost(){
+                return this.wholesale_price + this.dealers_margin + this.lto_registration;
+            },
+            net_cost(){
+                return (this.wholesale_price + this.dealers_margin + this.lto_registration) - this.promo;
+            },
+            subsidy(){
+                return this.net_cost - this.fleet_price;
+            }
+
         },
         mounted : function () {
-           
+            
+          
+        },
+        filters: {
+            formatPeso: function (value) {
+                 return `${value.toLocaleString()}`
+            }
         }
     });
 
