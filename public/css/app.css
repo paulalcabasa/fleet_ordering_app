@@ -1,0 +1,35 @@
+/*@import '~admin-lte/dist/css/adminlte.css';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~@fortawesome/fontawesome-free/scss/brands.scss';
+@import '~datatables.net-bs4/css/dataTables.bootstrap4.min.css';*/
+
+/*.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.dataTables_scroll{
+    overflow:auto;
+}
+
+.dataTables_scrollHeadInner {width:"100%"};
+
+.table{width:"100%"};
+*/
+
+.kt-wizard-v1 .kt-wizard-v1__wrapper .kt-form {
+  width: 70%;
+  padding: 1rem 0 2rem;
+}
+
+.form-control,
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single {
+  border: 1px solid #bcc1ce;
+}
+
+.dropdown-item {
+  color: #7d8193;
+}
+

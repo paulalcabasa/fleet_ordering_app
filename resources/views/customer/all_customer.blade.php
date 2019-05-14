@@ -1,0 +1,208 @@
+@extends('_layouts.metronic')
+
+@section('page-title', 'Customers')
+
+@section('content')
+
+<div class="kt-portlet kt-portlet--mobile" id="app">
+    <div class="kt-portlet__head kt-portlet__head--lg">
+        <div class="kt-portlet__head-label">
+            <span class="kt-portlet__head-icon">
+                <i class="kt-font-brand flaticon2-line-chart"></i>
+            </span>
+            <h3 class="kt-portlet__head-title">
+                List of Customers
+            </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <div class="kt-portlet__head-wrapper">
+                <div class="kt-portlet__head-actions">
+                    <div class="dropdown dropdown-inline">
+                        <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="la la-download"></i> Export
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <ul class="kt-nav">
+                                <li class="kt-nav__section kt-nav__section--first">
+                                    <span class="kt-nav__section-text">Choose an option</span>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="#" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-print"></i>
+                                        <span class="kt-nav__link-text">Print</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="#" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-copy"></i>
+                                        <span class="kt-nav__link-text">Copy</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="#" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                        <span class="kt-nav__link-text">Excel</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="#" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                        <span class="kt-nav__link-text">CSV</span>
+                                    </a>
+                                </li>
+                                <li class="kt-nav__item">
+                                    <a href="#" class="kt-nav__link">
+                                        <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                        <span class="kt-nav__link-text">PDF</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <a href="new-customer" class="btn btn-brand btn-elevate btn-icon-sm">
+                        <i class="la la-plus"></i>
+                        New Customer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        <!--begin: Datatable -->
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
+            <thead>
+                <tr>
+                    <th>Account No</th>
+                    <th>Account Name</th>
+                    <th>Type</th>
+                    <th>TIN</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(row, index) in tableData">
+                    <td>@{{ row.id }}</td>
+                    <td>@{{ row.account_name }}</td>
+                    <td>@{{ row.organization_type }}</td>
+                    <td>@{{ row.tin }}</td>
+                    <td>@{{ row.status }}</td>
+                    <td nowrap>
+                        <span class="dropdown">
+                            <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
+                              <i class="la la-ellipsis-h"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
+                                <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
+                                <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>
+                            </div>
+                        </span>
+                        <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-edit"></i>
+                        </a>
+                    </td>
+                </tr>              
+            </tbody>
+        </table>
+        <!--end: Datatable -->
+    </div>       
+</div>
+
+@stop
+
+@push('scripts')
+<script>
+var KTDatatablesBasicScrollable = function() {
+
+    var initTable1 = function() {
+        var table = $('#kt_table_1');
+        // begin first table
+        table.DataTable({
+            columnDefs: [
+                {
+                    targets: 5,
+                    title: 'Actions',
+                    orderable: false
+                    
+                },
+                {
+                    targets: 4,
+                    render: function(data, type, full, meta) {
+                        var status = {
+                            1: {'title': 'Active', 'class': 'kt-badge--brand'},
+                            2: {'title': 'Delivered', 'class': ' kt-badge--danger'},
+                            3: {'title': 'Canceled', 'class': ' kt-badge--primary'},
+                            4: {'title': 'Success', 'class': ' kt-badge--success'},
+                            5: {'title': 'Info', 'class': ' kt-badge--info'},
+                            6: {'title': 'Danger', 'class': ' kt-badge--danger'},
+                            7: {'title': 'Warning', 'class': ' kt-badge--warning'},
+                        };
+                        if (typeof status[data] === 'undefined') {
+                            return data;
+                        }
+                        return '<span class="kt-badge ' + status[data].class + ' kt-badge--inline kt-badge--pill">' + status[data].title + '</span>';
+                    },
+                }
+               
+            ],
+        });
+    };
+
+    return {
+
+        //main function to initiate the module
+        init: function() {
+            initTable1();
+      
+        },
+
+    };
+
+}();
+
+jQuery(document).ready(function() {
+    KTDatatablesBasicScrollable.init();
+});
+</script>
+
+<script>
+    var vm =  new Vue({
+        el : "#app",
+        data: {
+          tableData : [
+                {
+                    "id" : "001",
+                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    "organization_type" : "PRIVATE",
+                    "tin" : "234567894",
+                    "status" : 1
+                },
+                {
+                    "id" : "002",
+                    "account_name" : "MUNICIPAL GOVERNMENT OF CALAUAG",
+                    "organization_type" : "GOVERNMENT",
+                    "tin" : "453896789",
+                    "status" : 2
+                },
+                {
+                    "id" : "003",
+                    "account_name" : "HOME OFFICE SPECIALIST",
+                    "organization_type" : "PRIVATE",
+                    "tin" : "235456752",
+                    "status" : 2
+                }
+            ]
+        },
+        created: function () {
+            // `this` points to the vm instance
+          
+        },
+        mounted : function () {
+          
+        }
+    });
+</script>
+
+@endpush
