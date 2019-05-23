@@ -8,7 +8,7 @@
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                List
+                FWPC
             </h3>
         </div>
     </div>
@@ -17,7 +17,8 @@
             <thead>
                 <tr>
                     <th>Actions</th>
-                    <th>FPC No.</th>
+                    <th>FWPC No.</th>
+                    <th>Dealer</th>
                     <th>Account Name</th>
                     <th>Status</th>
                 </tr>
@@ -30,16 +31,16 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/validate/10') }}">Validate</a>
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/10') }}">View</a>
-                            <a class="dropdown-item" href="#">Edit</a>
-                            <a class="dropdown-item" href="#">Close</a>
+                            <a class="dropdown-item" href="{{ url('manage-fwpc/view/10') }}">View</a>
+                            <a class="dropdown-item" href="{{ url('manage-fwpc/approve/10') }}">Approve</a>
+                            <a class="dropdown-item" href="{{ url('manage-fwpc/update/10') }}">Update delivery schedule</a>
                             <a class="dropdown-item" href="#">Cancel</a>
-                            <a class="dropdown-item" href="{{ url('/po-entry/001')}}">Submit PO</a>
+                            <a class="dropdown-item" href="{{ url('/po-entry/001')}}">Print FWPC</a>
                           </div>
                         </div>
                     </td>
                     <td>@{{ row.id }}</td>
+                    <td>@{{ row.dealer_name }}</td>
                     <td>@{{ row.account_name }}</td>
                     <td>@{{ row.status }}</td>
                   
@@ -61,7 +62,8 @@
                 {
                     "id" : "001",
                     "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "status" : "Open"
+                    "dealer_name" : "Isuzu Pasig",
+                    "status" : "For approval"
                 }
             ]
         },

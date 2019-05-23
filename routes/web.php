@@ -24,19 +24,26 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	/* Customers */
 	Route::get('all-customers', 'CustomerController@all_customers');
-	Route::get('new-customer', 'CustomerController@new_customer');
+	Route::get('manage-customer/{action}', 'CustomerController@manage_customer');
+	Route::get('manage-customer/{action}/{customer_id}', 'CustomerController@manage_customer');
+	Route::get('/ajax_get_scope/', 'CustomerController@ajax_get_scope');
+	/*Route::get('view-customer/{customer_id}', 'CustomerController@view_customer');*/
 
 	/* Projects */
-	Route::get('new-project', 'ProjectController@new_project');
+	Route::get('manage-project/{action}', 'ProjectController@manage_project');
+	Route::get('manage-project/{action}/{price_confirmation_id}', 'ProjectController@manage_project');
 	Route::get('all-projects', 'ProjectController@all_projects');
 
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
 	Route::get('all-price-confirmation', 'PriceConfirmationController@all_price_confirmation');
 	Route::get('price-confirmation-details/{price_confirmation_id}', 'PriceConfirmationController@price_confirmation_details');
+	Route::get('price-confirmation-details/{action}/{price_confirmation_id}', 'PriceConfirmationController@price_confirmation_details');
+	Route::get('manage-fwpc/{action}/{price_confirmation_id}', 'PriceConfirmationController@manage_fwpc');
+	Route::get('all-fwpc', 'PriceConfirmationController@all_fwpc');
 
 	/* Purchase Order */
-	Route::get('po-entry/{price_confirmation_id}', 'PurchaseOrderController@po_entry');
+	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
 	Route::get('all-po', 'PurchaseOrderController@all_po');
 
 });

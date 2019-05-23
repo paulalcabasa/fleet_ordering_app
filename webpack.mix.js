@@ -19,6 +19,7 @@ mix.setResourceRoot('../');
 
 mix.styles([
     'public/metronic/assets/app/custom/wizard/wizard-v1.default.css',
+    /*'public/metronic/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css',*/
     'public/metronic/assets/vendors/custom/datatables/datatables.bundle.css',
     'public/metronic/assets/vendors/general/perfect-scrollbar/css/perfect-scrollbar.css',
     'public/metronic/assets/vendors/general/tether/dist/css/tether.css',
@@ -54,7 +55,9 @@ mix.styles([
     'public/metronic/assets/demo/default/skins/header/menu/light.css',
     'public/metronic/assets/demo/default/skins/brand/dark.css',
     'public/metronic/assets/demo/default/skins/aside/dark.css',
-    'public/metronic/assets/css/demo1/pages/general/invoices/invoice-1.css'
+    'public/metronic/assets/css/demo1/pages/general/invoices/invoice-1.css',
+    'public/metronic/assets/vendors/global/vendors.bundle.css',
+    'public/metronic/assets/css/demo1/style.bundle.css'
 ], 'public/css/metronic.bundle.css');
 
 mix.scripts([
@@ -96,6 +99,13 @@ mix.scripts([
 	'public/metronic/assets/vendors/general/jquery-validation/dist/jquery.validate.js',
 	'public/metronic/assets/vendors/custom/components/vendors/jquery-validation/init.js',
 
+	'public/metronic/assets/vendors/general/morris.js/morris.js',
+	'public/metronic/assets/vendors/general/chart.js/dist/Chart.bundle.js',
+	'public/metronic/assets/vendors/global/vendors.bundle.js',
+	'public/metronic/assets/js/demo1/scripts.bundle.js',
+/*	'public/metronic/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js',
+	'public/metronic/assets/maps.js',
+	'public/metronic/assets/vendors/custom/gmaps/gmaps.js',*/
 	'public/metronic/assets/demo/default/base/scripts.bundle.js',
 	'public/metronic/assets/app/bundle/app.bundle.min.js'
 ], 'public/js/metronic.bundle.js');

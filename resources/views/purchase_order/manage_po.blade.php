@@ -87,13 +87,13 @@
                             <span class="form-control">@{{ project.body_builder_name }}</span>
                         </div>
                         <div class="form-group">
-                        <label>PO Document</label>
-                        <div></div>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile">
-                            <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
+                            <label>PO Document</label>
+                            <div></div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -157,7 +157,12 @@
     <div class="kt-portlet__foot">
         <div class="row">
             <div class="col-lg-12 kt-align-right">
-                <button type="submit" class="btn btn-brand">Submit</button>
+                @if($action == 'create')
+                <button type="submit" class="btn btn-brand" @click="submitPO()">Submit</button>
+                @elseif($action == 'validate')
+                <button type="submit" class="btn btn-success" @click="approvePO()">Approve</button>
+                <button type="submit" class="btn btn-danger">Reject</button>
+                @endif
             </div>
         </div>
     </div>
@@ -217,8 +222,6 @@
                                         </div>
                                     </div>
                                 </div>
-                               
-
                             </div>
                             <div class="col-md-8">
                                 <div class="card">
@@ -378,6 +381,18 @@
         methods : {
             priceConfirmation(order){
                 $("#priceConfirmationModal").modal('show');
+            },
+            submitPO(){
+
+                Swal.fire({
+                    type: 'success',
+                    title: 'The application has been successfully submitted!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-po') }} ";
+                    }
+                });
             }
         },
         computed : {

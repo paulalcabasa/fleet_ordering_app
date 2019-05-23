@@ -8,8 +8,15 @@ class ProjectController extends Controller
 {
     //
 
-    public function new_project(){
-    	return view('projects.new_project');
+    public function manage_project(Request $request){
+    	$price_confirmation_id = $request->price_confirmation_id;
+    	$action = $request->action;
+    	
+    	$page_data = array(
+    		'price_confirmation_id' => $price_confirmation_id,
+    		'action' => $action
+    	);
+    	return view('projects.manage_project', $page_data);
     }
 
     public function all_projects(){

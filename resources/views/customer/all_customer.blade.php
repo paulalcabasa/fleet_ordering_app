@@ -7,9 +7,7 @@
 <div class="kt-portlet kt-portlet--mobile" id="app">
     <div class="kt-portlet__head kt-portlet__head--lg">
         <div class="kt-portlet__head-label">
-            <span class="kt-portlet__head-icon">
-                <i class="kt-font-brand flaticon2-line-chart"></i>
-            </span>
+         
             <h3 class="kt-portlet__head-title">
                 List of Customers
             </h3>
@@ -18,13 +16,14 @@
             <div class="kt-portlet__head-wrapper">
                 <div class="kt-portlet__head-actions">
                     <div class="dropdown dropdown-inline">
-                        <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="la la-download"></i> Export
-                        </button>
+                   
                         <div class="dropdown-menu dropdown-menu-right">
                             <ul class="kt-nav">
                                 <li class="kt-nav__section kt-nav__section--first">
-                                    <span class="kt-nav__section-text">Choose an option</span>
+                                    <label class="kt-checkbox">
+                                <input type="checkbox"> Default
+                                <span></span>
+                            </label>
                                 </li>
                                 <li class="kt-nav__item">
                                     <a href="#" class="kt-nav__link">
@@ -59,11 +58,11 @@
                             </ul>
                         </div>
                     </div>
-                    &nbsp;
+                    <!-- &nbsp;
                     <a href="new-customer" class="btn btn-brand btn-elevate btn-icon-sm">
                         <i class="la la-plus"></i>
                         New Customer
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>
@@ -89,16 +88,19 @@
                     <td>@{{ row.tin }}</td>
                     <td>@{{ row.status }}</td>
                     <td nowrap>
-                        <span class="dropdown">
+                        <!-- <span class="dropdown">
                             <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
                               <i class="la la-ellipsis-h"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
-                                <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
-                                <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>
+                                
+                                <a class="dropdown-item" href="{{ url('/manage-customer/view/1') }}"><i class="flaticon flaticon-book"></i> View</a>
+                                 <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
                             </div>
-                        </span>
+                        </span> -->
+                        <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-eye"></i>
+                        </a>
                         <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-edit"></i>
                         </a>
@@ -131,13 +133,13 @@ var KTDatatablesBasicScrollable = function() {
                     targets: 4,
                     render: function(data, type, full, meta) {
                         var status = {
-                            1: {'title': 'Active', 'class': 'kt-badge--brand'},
-                            2: {'title': 'Delivered', 'class': ' kt-badge--danger'},
-                            3: {'title': 'Canceled', 'class': ' kt-badge--primary'},
-                            4: {'title': 'Success', 'class': ' kt-badge--success'},
+                            1: {'title': 'Active', 'class': 'kt-badge--success'},
+                            2: {'title': 'Inactive', 'class': ' kt-badge--danger'},
+                            3: {'title': 'For Approval', 'class': ' kt-badge--brand'}
+                         /*   4: {'title': 'Success', 'class': ' kt-badge--success'},
                             5: {'title': 'Info', 'class': ' kt-badge--info'},
                             6: {'title': 'Danger', 'class': ' kt-badge--danger'},
-                            7: {'title': 'Warning', 'class': ' kt-badge--warning'},
+                            7: {'title': 'Warning', 'class': ' kt-badge--warning'},*/
                         };
                         if (typeof status[data] === 'undefined') {
                             return data;

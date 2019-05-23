@@ -135,7 +135,6 @@
 var Select2 = function(customerOptions){
 
     var initSelCustomer = function(customerOptions){
-    
         $('#sel_customer').select2({
             placeholder: "Select a customer",
             data: customerOptions
@@ -254,7 +253,7 @@ var Select2 = function(customerOptions){
                     showConfirmButton: false,
                     timer: 1500,
                     onClose : function(){
-                        window.location.href = "price-confirmation-details/1";
+                        window.location.href = "price-confirmation-details/submit/1";
                     }
                 });
             }

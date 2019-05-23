@@ -11,7 +11,20 @@
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">Details</h3>
         </div>
-       
+        <div class="kt-portlet__head-toolbar">
+            @if($action == "validate"):
+            <a href="#"class="btn btn-success kt-margin-r-5">
+                <span class="kt-hidden-mobile">Approve</span>
+            </a>
+            <a href="#"class="btn btn-danger">
+                <span class="kt-hidden-mobile">Reject</span>
+            </a>
+            @elseif($action == "submit")
+            <a href="#"class="btn btn-brand">
+                <span class="kt-hidden-mobile">Submit</span>
+            </a>
+            @endif
+        </div>
     </div>
     <div class="kt-portlet__body">
         <div class="form-group">
@@ -144,7 +157,40 @@
                     <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-home-tab">
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="details-item">
+                                            <span class="details-label">Order Control No.</span>
+                                            <span class="details-subtext">001</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Account Name</span>
+                                            <span class="details-subtext">RCP SENIA TRADING/ RCP SENIA TRANSPORT</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Dealer</span>
+                                            <span class="details-subtext">PASIG</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Date</span>
+                                            <span class="details-subtext">April 1, 2019</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Model</span>
+                                            <span class="details-subtext">QKR77 (CAB-LESS 80A)</span>
+                                        </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Quantity</span>
+                                            <span class="details-subtext">2</span>
+                                        </div>
+                                    </div>
+                                </div>
+                             <!--    <div class="form-group">
                                     <label>Order Control No.</label>
                                     <input type="text" class="form-control form-control-sm" readonly="" value="001" />
                                 </div>
@@ -167,78 +213,83 @@
                                 <div class="form-group">
                                     <label>Quantity</label>
                                     <input type="text" class="form-control form-control-sm" readonly="" value="2" />
-                                </div>
+                                </div> -->
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>One Price</label>
-                                    <input type="text" class="form-control form-control-sm"  value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Wholesale Price</label>
-                                    <input type="text" class="form-control form-control-sm" value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Dealer's Margin</label>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <input type="text" class="form-control form-control-sm" value="10000" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control"  aria-describedby="basic-addon2">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                            <div class="col-md-8">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Descrition</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>One Price</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Wholesale Price</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dealer's Margin</td>
+                                            <td>
+                                                 <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="text" class="form-control"  aria-describedby="basic-addon2">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text" id="basic-addon2">%</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <input type="text" class="form-control form-control-sm" value="10000" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>3 Yrs LTO Registration</label>
-                                    <input type="text" class="form-control form-control-sm"  value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Freebies</label>
-                                    <input type="text" class="form-control form-control-sm" value="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Cost</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="" />
-                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3 Yrs LTO Registration</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Freebies</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cost</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Promo Title</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Promo</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Net Cost</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fleet Price</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Subsidy</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total IPC Subsidy</td>
+                                            <td><input type="text" class="form-control form-control-sm" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Promo Title</label>
-                                    <input type="text" class="form-control form-control-sm"  />
-                                </div>
-                                <div class="form-group">
-                                    <label>Promo</label>
-                                    <input type="text" class="form-control form-control-sm" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Net Cost</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Fleet Price</label>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">P</span>
-                                        </div>
-                                        <input type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Subsidy</label>
-                                    <input type="text" class="form-control form-control-sm" readonly=""  />
-                                </div>
-                                <div class="form-group">
-                                    <label>Total IPC Subsidy</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" />
-                                </div>
-                            </div>
+           
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-addtl" role="tabpanel" aria-labelledby="nav-profile-tab">

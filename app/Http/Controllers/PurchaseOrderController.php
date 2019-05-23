@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
 {
-    public function po_entry(Request $request){
+    public function manage_po(Request $request){
     	
     	$page_data = [
-    		'price_confirmation_id' => $request->price_confirmation_id
+    		'price_confirmation_id' => $request->price_confirmation_id,
+            'action' => $request->action
     	];
 
-    	return view('purchase_order.po_entry', $page_data);
+    	return view('purchase_order.manage_po', $page_data);
     }
 
     public function all_po(){

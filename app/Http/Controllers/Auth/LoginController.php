@@ -22,7 +22,7 @@ class LoginController extends Controller
         echo 'AUTHENTICATING...';
       //  die;
         // Redirect if authenticated already
-        if (Auth::check()) return redirect()->route('home');
+        if (Auth::check()) return redirect()->route('dashboard');
 
         // Query user data (Source: Oracle or IPC Portal)
         $user = $oracle_user->get($user_id)[0];

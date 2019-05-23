@@ -11,18 +11,19 @@
                 <h4 class="kt-menu__section-text">Customer</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
-            @if(in_array(session('user')['user_type_name'], array('Dealer')))
+            <!-- @if(in_array(session('user')['user_type_name'], array('Dealer')))
             <li class="kt-menu__item {{ request()->is('new-customer') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/new-customer') }}" class="kt-menu__link">
+                <a href="{{ url('/manage-customer/create') }}" class="kt-menu__link">
                     <i class="kt-menu__link-icon flaticon-user-add"></i>
                     <span class="kt-menu__link-text">New Customer</span>
                 </a>
             </li>
-            @endif
-            <li class="kt-menu__item {{ request()->is('all-customers') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+            @endif -->
+            <li class="kt-menu__item {{ request()->is('all-customers') || request()->is('view-customer') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-customers') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-users"></i>
                     <span class="kt-menu__link-text">All Customers</span>
+                   <!--  <span class="kt-menu__link-badge"><span class="kt-badge kt-badge--rounded kt-badge--brand">1</span></span> -->
                 </a>
             </li>
              <li class="kt-menu__section ">
@@ -31,7 +32,7 @@
             </li>
             @if(in_array(session('user')['user_type_name'], array('Dealer')))
             <li class="kt-menu__item {{ request()->is('new-project') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/new-project') }}" class="kt-menu__link ">
+                <a href="{{ url('/manage-project/create') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-folder-4"></i>
                     <span class="kt-menu__link-text">New Project</span>
                 </a>
@@ -62,18 +63,24 @@
                     <span class="kt-menu__link-text">All Price Confirmation</span>
                 </a>
             </li>
+            <li class="kt-menu__item {{ request()->is('all-fwpc') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/all-fwpc') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
+                    <span class="kt-menu__link-text">All FWPC</span>
+                </a>
+            </li>
 
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">Purchase Order</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
 
-            <li class="kt-menu__item {{ request()->is('po-entry') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+      <!--       <li class="kt-menu__item {{ request()->is('po-entry') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/po-entry') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-price-tag"></i>
                     <span class="kt-menu__link-text">Purchase Order Entry</span>
                 </a>
-            </li>
+            </li> -->
       
             <li class="kt-menu__item {{ request()->is('all-purchase-order') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-po') }}" class="kt-menu__link ">

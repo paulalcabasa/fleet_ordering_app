@@ -33,10 +33,14 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" v-on:click.prevent="viewDetails()">View</a>
-                            <a class="dropdown-item" href="#" v-on:click.prevent="edit()">Edit</a>
-                            <a class="dropdown-item" href="#" v-on:click.prevent="cancel()">Cancel</a>
-                            <a class="dropdown-item" href="#" v-on:click.prevent="viewPriceConfirmation()">View Price Confirmation</a>
+                            <a class="dropdown-item" href="{{ url('manage-project/validate/001') }}">Validate</a>
+                            <a class="dropdown-item" href="{{ url('manage-project/view/001') }}">View</a>
+                            <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
+                            <a class="dropdown-item" href="{{ url('manage-project/cancel/001') }}">Cancel</a>
+                            <div class="dropdown-divider"></div>
+                             <a class="dropdown-item" href="{{ url('price-confirmation-details/10') }}">Price Confirmation</a>
+                            <a class="dropdown-item" href="{{ url('/manage-po/create/001')}}">Submit PO</a>
+                            <a class="dropdown-item" href="{{ url('/manage-fwpc/create/001')}}">Prepare FWPC</a>
                            </div>
                         </div>
                     </td>
@@ -107,6 +111,11 @@
         created: function () {
             // `this` points to the vm instance
           
+        },
+        methods : {
+            viewPriceConfirmation(){
+                window.location.href = 'price-confirmation-details/10';
+            }
         },
         mounted : function () {
             var table = $("#projects_table").DataTable();
