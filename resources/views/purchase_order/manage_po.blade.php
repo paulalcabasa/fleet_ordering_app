@@ -100,6 +100,10 @@
                             <label>Rear Body Type</label>
                             <span class="form-control">@{{ project.rear_body_type}}</span>
                         </div>
+                        <div class="form-group">
+                            <label>PO Number</label>
+                            <input type="text" name="" class="form-control"/>
+                        </div>
                     </div>
 
                 </div>

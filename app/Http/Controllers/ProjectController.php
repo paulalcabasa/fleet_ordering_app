@@ -22,4 +22,14 @@ class ProjectController extends Controller
     public function all_projects(){
     	return view('projects.all_projects');
     }
+
+    public function project_overview(Request $request){
+
+        $po = [];
+        
+        $page_data = [
+            'project_id' => $request->project_id
+        ];
+        return view('projects.project_overview', $page_data);
+    }
 }

@@ -5,35 +5,6 @@
 @section('content')
 <div id="app">
 
-@if($action == "approve")
-<div class="kt-portlet kt-portlet--mobile" id="app">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Possible duplicates
-            </h3>
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <div class="form-group ">
-          
-            <div class="kt-input-icon kt-input-icon--left">
-                <input type="text" class="form-control" placeholder="Search..." id="generalSearch">
-                <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                    <span><i class="la la-search"></i></span>
-                </span>
-            </div>
-            <span class="form-text text-muted">Search for customers</span>
-        </div>
-        <ul>
-            <li>Company Name Phils. Inc</li>
-            <li>Company Name Phililippines Inc.</li>
-            <li>Company Name Phililippines Incorporation</li>
-            <li>Company Name Phililippines Incorporated</li>
-        </ul>
-    </div>
-</div>
-@endif
 <div class="kt-portlet">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">

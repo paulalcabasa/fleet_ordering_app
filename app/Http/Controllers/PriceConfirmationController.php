@@ -37,7 +37,14 @@ class PriceConfirmationController extends Controller
     }
 
     public function all_fwpc(Request $request){
-        
         return view('price_confirmation.all_fwpc'); 
+    }
+
+    public function view_fpc(Request $request){
+        $price_confirmation_id = $request->price_confirmation_id;
+        $page_data = array(
+            'price_confirmation_id' => $request->price_confirmation_id
+        );
+        return view('price_confirmation.view_fpc',$page_data); 
     }
 }
