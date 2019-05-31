@@ -65,6 +65,10 @@
                             <span class="col-md-8">Walk In</span>
                         </div>
                         <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Vehicle Type</span>
+                            <span class="col-md-8">Light Commercial Vehicle</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date Submitted</span>
                             <span class="col-md-8">May 21,2019</span>
                         </div>
@@ -74,7 +78,9 @@
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Status</span>
-                            <span class="col-md-8">Pending Approval</span>
+                            <span class="col-md-8">
+                                <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">Approved</span>
+                            </span>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -208,10 +214,9 @@
                             <th>Model</th>
                             <th>Color</th>
                             <th>Quantity</th>
+                            <th>PO Quantity</th>
                             <th>Suggested Price</th>
-                            <th>Body Builder</th>
-                            <th>Rear Body Type</th>
-                            <th>Additional Items</th>
+                            <th>Additional details</th>
                             <th>Delivery Schedule</th>
                         </tr>
                     </thead>
@@ -220,10 +225,13 @@
                             <td>@{{ row.model }}</td>
                             <td>@{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
+                            <td>@{{ row.po_quantity }}</td>
                             <td>@{{ row.suggested_price }}</td>
-                            <td>@{{ row.body_builder }}</td>
-                            <td>@{{ row.rear_body_type }}</td>
-                            <td>@{{ row.additional_items }}</td>
+                            <td>
+                                <button type="button" @click="showAdditionalDetails()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                    <i class="la la-info-circle"></i>
+                                </button>
+                            </td>
                             <td>
                                 <button type="button" @click="showDeliveryDetail()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-calendar"></i>
@@ -267,18 +275,56 @@
             </div>
         </div>
     </div>
+
+    @if($action == "validate")
+    <div class="kt-portlet__foot">
+        <div class="row  kt-pull-right">
+            <div class="col-lg-12">
+                <button type="submit" class="btn btn-success" @click="approveProject()">Approve</button>
+                <button type="submit" class="btn btn-danger"  @click="rejectProject()">Reject</button>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
+@if($action == "view")
 <div class="kt-portlet kt-portlet--mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                Fleet Price Confirmation
-            </h3>
+                Fleet Price Confirmation 
+            </h3> 
         </div>
     </div>
     <div class="kt-portlet__body">
-        
+        <table class="table table-sm table-head-bg-brand">
+            <thead>
+                <tr>
+                    <th>FPC No.</th>
+                    <th>Account Name</th>
+                    <th>Date Confirmed</th>
+                    <th>Confirmed By</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(row,index) in fpc"> 
+                    <td>@{{ row.fpc_no }}</td>
+                    <td>@{{ row.account_name }}</td>
+                    <td>@{{ row.date_confirmed }}</td>
+                    <td>@{{ row.confirmed_by }}</td>
+                    <td>
+                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <a href="{{ url('view-fpc/001')}}" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
+                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -291,7 +337,32 @@
         </div>
     </div>
     <div class="kt-portlet__body">
-        
+        <table class="table table-sm table-head-bg-brand">
+            <thead>
+                <tr>
+                    <th>PO Ref</th>
+                    <th>PO No.</th>
+                    <th>Submitted By</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(row,index) in po"> 
+                    <td>@{{ row.po_ref_no }}</td>
+                    <td>@{{ row.po_no }}</td>
+                    <td>@{{ row.submitted_by }}</td>
+                    <td>@{{ row.date_submitted }}</td>
+                    <td>
+                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -304,10 +375,42 @@
         </div>
     </div>
     <div class="kt-portlet__body">
+        <table class="table table-sm table-head-bg-brand">
+            <thead>
+                <tr>
+                    <th>Sales Order No.</th>
+                    <th>Ordered Date</th>
+                    <th>Customer Name</th>
+                    <th>Order Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(row,index) in fwpc"> 
+                    <td>@{{ row.oracle_so_num }}</td>
+                    <td>@{{ row.ordered_date }}</td>
+                    <td>@{{ row.customer_name }}</td>
+                    <td>@{{ row.order_type }}</td>
+                    <td>
+                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
+                    </td>
+                    <td nowrap="nowrap">
+                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
+                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         
+
+
+
+
     </div>
 </div>
 
+@endif;
 
 <!--begin::Modal-->
 <div class="modal fade" id="deliveryScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -348,8 +451,12 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input type="text" class="form-control form-control-sm" /></td>
-                                    <td><input type="text" class="form-control form-control-sm delivery_date" /></td>
+                                    <td>5</td>
+                                    <td>June 5, 2019</td>
+                                </tr>
+                                <tr>
+                                    <td>15</td>
+                                    <td>June 10, 2019</td>
                                 </tr>
                             </tbody>
                         </table>                    
@@ -357,13 +464,87 @@
                 </div>
     
             </div>
-            <div class="modal-footer">
+           <!--  <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Add row</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
+<!--begin::Modal-->
+<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">    
+                <div class="details-item">
+                    <span class="details-label">Name of Body Builder</span>
+                    <span class="details-subtext">Almazora</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Rear Body Type</span>
+                    <span class="details-subtext">Wingvan</span>
+                </div>
+                <div class="details-item">
+                    <span class="details-label">Additional Items</span>
+                    <span class="details-subtext">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Sed vehicula ornare nibh a pulvinar. 
+                        Maecenas hendrerit tincidunt porta.
+                    </span>
+                </div>      
+                <!-- <div class="form-group">
+                    <label>Name of Body Builder</label>
+                    <input type="text" class="form-control" placeholder="Body builder" />
+                </div>
+                <div class="form-group">
+                    <label>Rear Body Type</label>
+                    <input type="text" class="form-control" name="fname" placeholder="Rear Body Type" >
+                </div>  
+                <div class="form-group">
+                    <label>Additional Items</label>
+                    <textarea class="form-control"></textarea>
+                </div>  -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 <!--end::Modal-->
+
+
+
+<!--begin::Modal-->
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Reject Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">          
+                <div class="form-group">
+                    <label>Are you sure to cancel this project? Kindly state your reason.</label>
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" @click="confirmReject" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
 
 </div> <!-- end of app wrapper -->
 @stop
@@ -374,6 +555,7 @@
     var vm =  new Vue({
         el : "#app",
         data: {
+
             contactPersons : [
                 {
                     name : "Contact 1",
@@ -408,7 +590,8 @@
                 {
                     model : "D-MAX RZ4E 4x2 Cab/Chassis",
                     color : "SPLASH WHITE",
-                    quantity : "1",
+                    quantity : "15",
+                    po_quantity : "10",
                     suggested_price : "1,200,000.00",
                     body_builder : "Almazora",
                     rear_body : "N/A",
@@ -417,7 +600,8 @@
                 {
                     model : "D-MAX RZ4E 4x2 Cab/Chassis",
                     color : "SPLASH WHITE",
-                    quantity : "1",
+                    quantity : "20",
+                    po_quantity : "20",
                     suggested_price : "1,200,000.00",
                     body_builder : "Almazora",
                     rear_body : "Wingvan",
@@ -435,12 +619,68 @@
                     model : "CAB XXXX111",
                     price : "1,200,000.00"
                 }
+            ],
+            fpc : [
+                {
+                    fpc_no : "FPC001",
+                    account_name : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    date_confirmed : "May 22, 2019",
+                    confirmed_by : "Paul Alcabasa",
+                    status : "Approved"
+
+                }
+            ],
+            po : [
+                {
+                    po_ref_no : 'PO001',
+                    po_no : 'CUSTPO11',
+                    submitted_by : 'Mary Jan Watson',
+                    date_submitted : 'May 23, 2019',
+                    status : 'Approved'
+                }
+            ],
+            fwpc : [
+                {
+                    oracle_so_num : "3010000123",
+                    ordered_date : "May 30, 2019",
+                    customer_name : "ISUZU AUTOMOTIVE DEALERSHIP, INC.",
+                    order_type : "FLT.Sales Order (LCV A)",
+                    status : "Booked"
+                }
             ]
         },
         methods : {
             showDeliveryDetail(){
                 $("#deliveryScheduleModal").modal('show');
             },
+            showAdditionalDetails(){
+                $("#additionalDetailsModal").modal('show');
+            },
+            confirmReject(){
+                Swal.fire({
+                    type: 'error',
+                    title: 'Project has been rejected.',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-projects')}}";
+                    }
+                });
+            },
+            rejectProject(){
+                $("#rejectModal").modal('show');
+            },
+            approveProject(){
+                 Swal.fire({
+                    type: 'success',
+                    title: 'Project has been approved!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-projects')}}";
+                    }
+                })
+            }
         },
         created: function () {
             // `this` points to the vm instance

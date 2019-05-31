@@ -33,8 +33,8 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{ url('manage-project/validate/001') }}">Validate</a>
-                            <a class="dropdown-item" href="{{ url('project-overview/001') }}">View</a>
+                            <a class="dropdown-item" href="{{ url('project-overview/validate/001') }}">Validate</a>
+                            <a class="dropdown-item" href="{{ url('project-overview/view/001') }}">View</a>
                             <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
                             <a class="dropdown-item" href="{{ url('manage-project/cancel/001') }}">Cancel</a>
                             <div class="dropdown-divider"></div>
@@ -54,7 +54,6 @@
                     <td>@{{ row.date_requested }}</td>
                     <td>@{{ row.dealer }}</td>
                     <td>@{{ row.status }}</td>
-                   
                 </tr>
             </tbody>
         </table>

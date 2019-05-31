@@ -63,6 +63,17 @@
                     <span class="kt-menu__link-text">All Price Confirmation</span>
                 </a>
             </li>
+            @if(in_array(session('user')['user_type_name'], array('Administrator')))
+            <li class="kt-menu__item {{ request()->is('fpc-details/validate') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/fpc-approval') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-price-tag"></i>
+                    <span class="kt-menu__link-text">Approval</span>
+                    <span class="kt-menu__link-badge">
+                        <span class="kt-badge kt-badge--rounded kt-badge--primary">5</span>
+                    </span>
+                </a>
+            </li>
+            @endif
             <li class="kt-menu__item {{ request()->is('all-fwpc') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-fwpc') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-interface-9"></i>

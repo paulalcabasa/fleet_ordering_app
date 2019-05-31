@@ -20,31 +20,23 @@
                 <span class="kt-hidden-mobile">Reject</span>
             </a>
             @elseif($action == "submit")
-            <a href="#"class="btn btn-brand">
+            <a href="#"class="btn btn-brand" @click="submitFPC()">
                 <span class="kt-hidden-mobile">Submit</span>
             </a>
             @endif
         </div>
     </div>
     <div class="kt-portlet__body">
-        <div class="form-group">
-            <label>Account Name</label>
-            <input type="text" class="form-control"  disabled="disabled" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" aria-describedby="fname-error">
+         <div class="form-group row">
+            <div class="col-md-4">
+                <label>Account No</label>
+                <input type="text" name="" class="form-control" value="CUST001" readonly="" />
+            </div>
+            <div class="col-md-8">
+                <label>Account Name</label>
+                <input type="text" class="form-control"  readonly="" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" aria-describedby="fname-error">
+            </div>
         </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label>Date Created</label>
-                    <input type="text" class="form-control"  disabled="disabled" name="fname" placeholder="Date Created"  aria-describedby="fname-error">
-                </div> 
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label>Created By</label>
-                    <input type="text" class="form-control"  disabled="disabled" name="fname" placeholder="Created By"  aria-describedby="fname-error">
-                </div> 
-            </div>
-        </div> 
     </div>
 </div>
 
@@ -73,7 +65,7 @@
     <div class="kt-portlet__body">
         <div class="tab-content">
             <div class="tab-pane active" :id="'orders_tab_' + index">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Name of Body Builder </label>
@@ -86,7 +78,7 @@
                             <span class="form-control">@{{ project.rear_body_type}}</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -94,8 +86,8 @@
                             <th>Model</th>
                             <th>Color</th>
                             <th>Order Qty</th>
-                            <th>Particulars</th>
                             <th>Suggested Price</th>
+                            <th>More details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,8 +100,12 @@
                             <td> @{{ order.model }} </td>
                             <td> @{{ order.color }} </td>
                             <td> @{{ order.ordered_quantity }} </td>
-                            <td> @{{ order.particulars }} </td>
                             <td> @{{ order.srp }} </td>
+                            <td>
+                                <button type="button" @click="showAdditionalDetails()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                    <i class="la la-info-circle"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -323,6 +319,95 @@
     </div>
 </div>
 
+<!--begin::Modal-->
+<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">More Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">    
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#additional_details">Additional Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#delivery_schedule">Delivery Schedule</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="additional_details" role="tabpanel">
+                        <div class="details-item">
+                            <span class="details-label">Name of Body Builder</span>
+                            <span class="details-subtext">Almazora</span>
+                        </div>
+                        <div class="details-item">
+                            <span class="details-label">Rear Body Type</span>
+                            <span class="details-subtext">Wingvan</span>
+                        </div>
+                        <div class="details-item">
+                            <span class="details-label">Additional Items</span>
+                            <span class="details-subtext">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                                Sed vehicula ornare nibh a pulvinar. 
+                                Maecenas hendrerit tincidunt porta.
+                            </span>
+                        </div>  
+                    </div>
+                    <div class="tab-pane" id="delivery_schedule" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="details-item">
+                                            <span class="details-label">Model</span>
+                                            <span class="details-subtext">D-MAX RZ4E 4x2 Cab/Chassis</span>
+                                        </div>
+                                        <div class="details-item">
+                                            <span class="details-label">Color</span>
+                                            <span class="details-subtext">Red Spinel Mica</span>
+                                        </div>
+                                        <div class="details-item">
+                                            <span class="details-label">Quantity</span>
+                                            <span class="details-subtext">5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <td>Quantity</td>
+                                            <td>Date</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>June 5, 2019</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15</td>
+                                            <td>June 10, 2019</td>
+                                        </tr>
+                                    </tbody>
+                                </table>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Modal-->
+
 
 
 </div>
@@ -446,7 +531,21 @@ var Select2 = function(customerOptions){
             },
             printPrintConfirmation(id){
                 window.open(window.axios.defaults.baseURL + '/api/print-price-confirmation/' + id);
-            }
+            },
+            submitFPC(){
+                Swal.fire({
+                    type: 'success',
+                    title: 'Price confirmation has been submitted!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-price-confirmation') }}";
+                    }
+                });
+            },
+            showAdditionalDetails(){
+                $("#additionalDetailsModal").modal('show');
+            },
         },
         created: function () {
             // `this` points to the vm instance

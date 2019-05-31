@@ -47,4 +47,8 @@ class PriceConfirmationController extends Controller
         );
         return view('price_confirmation.view_fpc',$page_data); 
     }
+
+    public function fpc_approval(){
+        return view('price_confirmation.fpc_approval'); 
+    }
 }

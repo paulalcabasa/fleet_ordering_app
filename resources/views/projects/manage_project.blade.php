@@ -299,7 +299,22 @@
                         <div class="kt-heading kt-heading--md">Enter your requirement</div>
                         <div class="kt-form__section kt-form__section--first">
                             <div class="kt-wizard-v1__form">
-                               
+                                <div class="form-group row">
+                                    <label class="col-3 col-form-label">Vehicle Type</label>
+                                    <div class="col-9">
+                                        <div class="kt-radio-inline">
+                                            <label class="kt-radio kt-radio--brand">
+                                                <input type="radio" name="radio4"> Light Commercial Vehicle
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio kt-radio--brand">
+                                                <input type="radio" name="radio4"> Commercial Vehicle
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label>Model</label>

@@ -28,7 +28,8 @@ class ProjectController extends Controller
         $po = [];
         
         $page_data = [
-            'project_id' => $request->project_id
+            'project_id' => $request->project_id,
+            'action' => $request->action
         ];
         return view('projects.project_overview', $page_data);
     }
