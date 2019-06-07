@@ -44,6 +44,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('all-fwpc', 'PriceConfirmationController@all_fwpc');
 	Route::get('view-fpc/{price_confirmation_id}', 'PriceConfirmationController@view_fpc');
 	Route::get('fpc-approval', 'PriceConfirmationController@fpc_approval');
+	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
 
 
 	/* Purchase Order */

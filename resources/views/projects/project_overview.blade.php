@@ -276,16 +276,23 @@
         </div>
     </div>
 
-    @if($action == "validate")
+    
     <div class="kt-portlet__foot">
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
+                @if($action == "validate")
                 <button type="submit" class="btn btn-success" @click="approveProject()">Approve</button>
                 <button type="submit" class="btn btn-danger"  @click="rejectProject()">Reject</button>
+                @elseif($action == "cancel")
+                <a href="#"class="btn btn-danger">
+                    <span class="kt-hidden-mobile">Cancel</span>
+                </a>
+                @endif
             </div>
         </div>
     </div>
-    @endif
+    
+ 
 </div>
 
 @if($action == "view")
@@ -296,7 +303,9 @@
                 Fleet Price Confirmation 
             </h3> 
         </div>
+      
     </div>
+
     <div class="kt-portlet__body">
         <table class="table table-sm table-head-bg-brand">
             <thead>
@@ -334,6 +343,11 @@
             <h3 class="kt-portlet__head-title">
                 Purchase Order
             </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+            <a href="{{ url('/manage-po/create/001')}}" class="btn btn-primary btn-sm">
+                <span class="kt-hidden-mobile">Submit PO</span>
+            </a>
         </div>
     </div>
     <div class="kt-portlet__body">

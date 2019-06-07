@@ -51,4 +51,12 @@ class PriceConfirmationController extends Controller
     public function fpc_approval(){
         return view('price_confirmation.fpc_approval'); 
     }
+
+    public function fpc_details(Request $request){
+        $page_data = array(
+            'action' => $request->action,
+            'fpc_id' => $request->fpc_id
+        );
+        return view('price_confirmation.fpc_details', $page_data);
+    }
 }

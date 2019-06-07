@@ -7,15 +7,11 @@ use DB;
 
 class Customer extends Model
 {
+
+    protected $table = "IPC_DMS.FS_CUSTOMERS";
+    protected $connection = "oracle";
+
     public function get_scope_of_business($scope_of_business){
-    /*	$sql = "SELECT class_code,
-    				   class_code_description
-        		FROM hz_class_code_denorm
-            	WHERE 1 = 1
-            		AND enabled_flag = :enabled_flag
-            		AND class_code_description like :scope_of_business
-            		AND rownum <= 10";
-    	$query = DB::connection('oracle')->select($sql,['enabled_flag' => 'Y', 'scope_of_business' => $scope_of_business]);*/
     	$query = DB::connection('oracle')
     			->table('hz_class_code_denorm')
     			->selectRaw(DB::raw('distinct class_code_description, class_code'))
@@ -24,4 +20,15 @@ class Customer extends Model
                 ->get();
     	return $query;
     }
+
+    public function get_customer_options(){
+        $data = DB::select('SELECT customer_id id, customer_name text FROM ipc_dms.FS_CUSTOMERS WHERE status = 1');
+        return $data;
+    }
+
+    public function get_customer_names(){
+        $data = DB::select('SELECT customer_name FROM ipc_dms.FS_CUSTOMERS where status = 1');
+        return  ($data);
+    }
+
 }

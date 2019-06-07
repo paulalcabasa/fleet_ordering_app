@@ -80,57 +80,44 @@
     <div class="kt-portlet__body">
         <div class="tab-content">
             <div class="tab-pane active" :id="'orders_tab_' + index">
-                <div class="row">
+                <div class="form-group row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Name of Body Builder </label>
-                            <span class="form-control">@{{ project.body_builder_name }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label>PO Document</label>
-                            <div></div>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="customFile">
-                                <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
-                            </div>
-                        </div>
+                        <label>PO Number</label>
+                        <input type="text" name="" class="form-control"/>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Rear Body Type</label>
-                            <span class="form-control">@{{ project.rear_body_type}}</span>
-                        </div>
-                        <div class="form-group">
-                            <label>PO Number</label>
-                            <input type="text" name="" class="form-control"/>
+                        <label>PO Document</label>
+                        <div></div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
                         </div>
                     </div>
-
                 </div>
+                    
+            
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Price</th>
+                            <!-- th>Price</th> -->
                             <th>Model</th>
                             <th>Color</th>
                             <th>Order Qty</th>
                             <th>PO Qty</th>
-                            <th>Particulars</th>
                             <th>Suggested Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(order, index) in project.orders">
-                            <td>
+<!--                             <td>
                                 <a href="#" @click.prevent="priceConfirmation(project.order)" class="btn btn-sm btn-secondary">
                                     <i class="fas fa-money-bill-wave"></i>
                                 </a>
-                            </td>
+                            </td> -->
                             <td> @{{ order.model }} </td>
                             <td> @{{ order.color }} </td>
                             <td> @{{ order.ordered_quantity }} </td>
                             <td> <input type="text" name="" class="form-control" size="4"/> </td>
-                            <td> @{{ order.particulars }} </td>
                             <td> @{{ order.srp }} </td>
                         </tr>
                     </tbody>
@@ -390,7 +377,7 @@
 
                 Swal.fire({
                     type: 'success',
-                    title: 'The application has been successfully submitted!',
+                    title: 'The purchase order has been successfully submitted!',
                     showConfirmButton: false,
                     timer: 1500,
                     onClose : function(){

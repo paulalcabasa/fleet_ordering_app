@@ -33,27 +33,28 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            @if( strtolower(session('user')['user_type_name']) != "dealer")
                             <a class="dropdown-item" href="{{ url('project-overview/validate/001') }}">Validate</a>
-                            <a class="dropdown-item" href="{{ url('project-overview/view/001') }}">View</a>
+                            @endif
+                            <a class="dropdown-item" href="{{ url('project-overview/view/001') }}">Overview</a>
                             <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
-                            <a class="dropdown-item" href="{{ url('manage-project/cancel/001') }}">Cancel</a>
+                            <a class="dropdown-item" href="{{ url('project-overview/cancel/001') }}">Cancel</a>
                             <div class="dropdown-divider"></div>
-                            @if(session('user')['user_type_name'] == 'Dealer')
+                           <!--  @if(session('user')['user_type_name'] == 'Dealer')
                             <a class="dropdown-item" href="{{ url('view-fpc/10') }}">Price Confirmation</a>
                             @elseif(session('user')['user_type_name'] == 'Administrator')
                             <a class="dropdown-item" href="{{ url('price-confirmation-details/10') }}">Price Confirmation</a>
-                            @endif
+                            @endif -->
                             <a class="dropdown-item" href="{{ url('/manage-po/create/001')}}">Submit PO</a>
-                            <a class="dropdown-item" href="{{ url('/manage-fwpc/create/001')}}">Prepare FWPC</a>
                            </div>
                         </div>
                     </td>
                     <td>@{{ row.id }}</td>
-                    <td>@{{ row.account_name }}</td>
+                    <td nowrap>@{{ row.account_name }}</td>
                     <td>@{{ row.requestor }}</td>
                     <td>@{{ row.date_requested }}</td>
                     <td>@{{ row.dealer }}</td>
-                    <td>@{{ row.status }}</td>
+                    <td nowrap><span :class="status_colors['new']">@{{ row.status }}</span></td>
                 </tr>
             </tbody>
         </table>
@@ -75,7 +76,7 @@
                     "requestor" : "RYAN SENIA",
                     "date_requested" : "04/01/2019",
                     "dealer" : "PASIG",
-                    "status" : "Open"
+                    "status" : "New"
                 },
                 {
                     "id" : "002",
@@ -83,7 +84,7 @@
                     "requestor" : "JOHN CONSTANTINE",
                     "date_requested" : "04/01/2019",
                     "dealer" : "MAKATI",
-                    "status" : "Open"
+                    "status" : "For_Approval"
                 },
                 {
                     "id" : "003",
@@ -91,7 +92,7 @@
                     "requestor" : "JINKY ABELLA ",
                     "date_requested" : "04/01/2019",
                     "dealer" : "ALABANG",
-                    "status" : "Open"
+                    "status" : "Approved"
                 },
                 {
                     "id" : "003",
@@ -99,6 +100,22 @@
                     "requestor" : "JOJO CONDE",
                     "date_requested" : "04/01/2019",
                     "dealer" : "COMMONWEALTH",
+                    "status" : "Price_Confirmed"
+                },
+                {
+                    "id" : "003",
+                    "account_name" : "LIFE BASIC TRADING",
+                    "requestor" : "CHARLES SIA ",
+                    "date_requested" : "04/01/2019",
+                    "dealer" : "CAGAYAN",
+                    "status" : "Awaiting_FWPC"
+                },
+                {
+                    "id" : "003",
+                    "account_name" : "LIFE BASIC TRADING",
+                    "requestor" : "CHARLES SIA ",
+                    "date_requested" : "04/01/2019",
+                    "dealer" : "CAGAYAN",
                     "status" : "Closed"
                 },
                 {
@@ -109,7 +126,8 @@
                     "dealer" : "CAGAYAN",
                     "status" : "Cancelled"
                 },
-            ]
+            ],
+            status_colors : []
         },
         created: function () {
             // `this` points to the vm instance
@@ -122,6 +140,18 @@
         },
         mounted : function () {
             var table = $("#projects_table").DataTable();
+            this.status_colors['new'] = "kt-badge kt-badge--brand kt-badge--inline";
+            
+            /* "New"
+                    status : "New",
+                    class : "kt-badge kt-badge--brand kt-badge--inline"
+                }
+          /*      "For_Approval" : "kt-badge kt-badge--warning kt-badge--inline",
+                "Approved" : "kt-badge kt-badge--success kt-badge--inline",
+                "Price_Confirmed" : "kt-badge kt-badge--primary kt-badge--inline",
+                "Awaiting_FWPC" : "kt-badge kt-badge--warning kt-badge--inline",
+                "Cancelled" : "kt-badge kt-badge--danger kt-badge--inline",
+                "Closed" : "kt-badge kt-badge--secondary kt-badge--inline"*/ 
         }
     });
 </script>

@@ -13,6 +13,13 @@
                 Fleet Price Confirmation
             </h3>
         </div>
+          <div class="kt-portlet__head-toolbar">
+            <a href="#" class="btn btn-secondary btn-sm">
+                <span class="kt-hidden-mobile"><i class="fa fa-print"></i></span>
+            </a>
+         
+        </div>
+
     </div>
     <div class="kt-portlet__body">
         <div class="row">
@@ -48,10 +55,19 @@
                     <span class="details-label">Confirmed By</span>
                     <span class="details-subtext">John Doe</span>
                 </div>
+                <div class="details-item">
+                    <span class="details-label">Sales Person</span>
+                    <span class="details-subtext">
+                        <ul>
+                            <li>Mr. William Abril</li>
+                            <li>Richard Ofrin</li>
+                        </ul>
+                    </span>
+                </div>
             </div>            
 
             <div class="col-md-4">
-                <div class="details-item">
+             <!--    <div class="details-item">
                     <span class="details-label">Po No.</span>
                     <span class="details-subtext">
                         <span class="kt-badge kt-badge--primary  kt-badge--inline kt-badge--pill">Pending PO</span>
@@ -62,16 +78,8 @@
                     <span class="details-subtext">
                         <span class="kt-badge kt-badge--primary  kt-badge--inline kt-badge--pill">Pending PO</span>
                     </span>
-                </div>
-                <div class="details-item">
-                    <span class="details-label">Sales Person</span>
-                    <span class="details-subtext">
-                        <ul>
-                            <li>Mr. William Abril</li>
-                            <li>Richard Ofrin</li>
-                        </ul>
-                    </span>
-                </div>
+                </div> -->
+                
             </div> 
         </div>
     </div>

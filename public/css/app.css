@@ -86,3 +86,14 @@
   font-weight: bold;
 }
 
+.contact-list {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-list li {
+  background-color: #e9ebeb;
+  padding: 0.5em;
+  border-bottom: 1px solid #a7b2d5;
+}
+

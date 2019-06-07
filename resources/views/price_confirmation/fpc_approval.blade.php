@@ -16,33 +16,23 @@
         <table id="price_confirmation_table" class="table table-striped" width="100%">
             <thead>
                 <tr>
-                    <th>Actions</th>
-                    <th>FPC No.</th>
+                    <th>FPC No. </th>
                     <th>Account Name</th>
-                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Prepared By</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row,index) in tableData">
-                    <td>
-                        <div class="dropdown">
-                          <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-sliders-h"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/validate/10') }}">Validate</a>
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/10') }}">View</a>
-                            <a class="dropdown-item" href="#">Edit</a>
-                            <a class="dropdown-item" href="#">Close</a>
-                            <a class="dropdown-item" href="#">Cancel</a>
-                            <a class="dropdown-item" href="{{ url('/po-entry/001')}}">Submit PO</a>
-                          </div>
-                        </div>
-                    </td>
-                    <td>@{{ row.id }}</td>
+                    <td>@{{ row.fpc_no }}</td>
                     <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.status }}</td>
-                  
+                    <td>@{{ row.date_created }}</td>
+                    <td>@{{ row.prepared_by }}</td>
+                    <td nowrap>
+                        <a href="{{ url('fpc-details/validate/001') }}" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                        <a href="#" class="btn btn-success  btn-sm btn-icon btn-circle"><i class="la la-print"></i></a> 
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -59,9 +49,39 @@
         data: {
             tableData : [
                 {
-                    "id" : "001",
+                    "fpc_no" : "001",
                     "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "status" : "Open"
+                    "date_created" : "May 31, 2019",
+                    "prepared_by" : "John Doe"
+
+                },
+                {
+                    "fpc_no" : "001",
+                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    "date_created" : "May 31, 2019",
+                    "prepared_by" : "John Doe"
+
+                },
+                {
+                    "fpc_no" : "001",
+                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    "date_created" : "May 31, 2019",
+                    "prepared_by" : "John Doe"
+
+                },
+                {
+                    "fpc_no" : "001",
+                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    "date_created" : "May 31, 2019",
+                    "prepared_by" : "John Doe"
+
+                },
+                {
+                    "fpc_no" : "001",
+                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
+                    "date_created" : "May 31, 2019",
+                    "prepared_by" : "John Doe"
+
                 }
             ]
         },
