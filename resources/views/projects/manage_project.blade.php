@@ -103,57 +103,57 @@
                                         <label>Project Source</label>
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                <select class="form-control" id="sel_project_source" v-model="selected_project_source" v-select style="width:100%;"></select>
+                                                <select class="form-control" id="sel_project_source" v-model="accountDetails.selected_project_source" v-select style="width:100%;"></select>
                                             </div>
                                             <div class="col-lg-6">
-                                                <input type="text" class="form-control" value="" id="txt_others" placeholder="If others, please specify"/>                                        
+                                                <input type="text" class="form-control" value="" id="txt_others" v-model="accountDetails.others" placeholder="If others, please specify"/>                                        
                                             </div>
                                         </div>
                                      <!--    <span class="form-text text-muted">Select the project source</span> -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Organization Type</label>
-                                        <select class="form-control" id="sel_org_type" v-model="selected_org_type" v-select style="width:100%;"></select>
+                                        <select class="form-control" id="sel_org_type" v-model="accountDetails.selected_org_type" v-select style="width:100%;"></select>
                                         
                              <!--            <span class="form-text text-muted">Select organization type</span> -->
                                     </div>
                                 </div>
                                 
-                                <div class="form-group row" v-if="selected_org_type == 1">
+                                <div class="form-group row" v-if="accountDetails.selected_org_type == 1">
                                     <div class="col-lg-6">
                                         <label>Bidding Ref. No</label>
-                                        <input type="text" class="form-control" value="" name="bid_ref_no" placeholder="Bidding Reference No." />
+                                        <input type="text" class="form-control" value="" v-model="accountDetails.bid_ref_no" name="bid_ref_no" placeholder="Bidding Reference No." />
                                       <!--   <span class="form-text text-muted">Please enter bidding ref. no</span> -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Bid Docs Amount</label>
-                                        <input type="text" class="form-control" value="" name="bid_docs_amount" placeholder="Bidding Docs Amount" />
+                                        <input type="text" class="form-control" value="" v-model="accountDetails.bid_docs_amount" name="bid_docs_amount" placeholder="Bidding Docs Amount" />
                                       <!--   <span class="form-text text-muted">Please enter bidding docs amount</span> -->
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="selected_org_type == 1">
+                                <div class="form-group row" v-if="accountDetails.selected_org_type == 1">
                                     <div class="col-lg-6">
                                         <label>Pre-bid schedule</label>
-                                        <input type="text" class="form-control" value="" name="pre_bid_sched" id="txt_pre_bid_sched" placeholder="Bidding Reference No." />
+                                        <input type="date" class="form-control" value="" v-model="accountDetails.pre_bid_sched" name="pre_bid_sched" id="txt_pre_bid_sched" placeholder="Bidding Reference No." />
                                     <!--     <span class="form-text text-muted">Please enter pre bid schedule</span> -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Bid Date Schedule</label>
-                                        <input type="text" class="form-control" value="" name="bid_date_sched" id="txt_bid_date_sched" placeholder="Bidding Date Schedule" />
+                                        <input type="date" class="form-control" value="" v-model="accountDetails.bid_date_sched" name="bid_date_sched" placeholder="Bidding Date Schedule" />
                                <!--          <span class="form-text text-muted">Please enter bid date sched</span> -->
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="selected_org_type == 1">
+                                <div class="form-group row" v-if="accountDetails.selected_org_type == 1">
                                     <div class="col-lg-6">
                                         <label>Bidding Venue</label>
-                                        <input type="text" class="form-control" value="" name="bidding_venue" id="txt_bid_venue" placeholder="Bidding Venue" />
+                                        <input type="text" class="form-control" value="" v-model="accountDetails.bidding_venue" name="bidding_venue" placeholder="Bidding Venue" />
                                        <!--  <span class="form-text text-muted">Please enter bidding venue</span> -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Approved budget cost</label>
-                                        <input type="text" class="form-control" value="" name="approved_budget_cost" id="txt_approved_budget_cost" placeholder="Approved buget cost" />
+                                        <input type="text" class="form-control" value="" v-model="accountDetails.approved_budget_cost" name="approved_budget_cost" placeholder="Approved buget cost" />
                                 <!--         <span class="form-text text-muted">Please enter approved budget cost</span> -->
                                     </div>
                                 </div>
@@ -161,7 +161,7 @@
                                 <div class="form-group">
                                     <label>Account Name</label>
                                     <div class="typeahead">
-                                        <input type="text" class="form-control" id="txt_account_name" autocomplete="off" name="account_name" dir="ltr" placeholder="Account Name"  />
+                                        <input type="text" class="form-control" v-model="accountDetails.account_name" id="txt_account_name" autocomplete="off" name="account_name" dir="ltr" placeholder="Account Name"  />
                                     </div> 
                           <!--           <span class="form-text text-muted">Please enter name of account</span> -->
                                 </div>
@@ -169,7 +169,7 @@
                                 <div class="form-group row">
                                     <div class="col-lg-6">
                                         <label>TIN</label>
-                                        <input type="text" class="form-control" name="tin" value="" id="txt_tin" placeholder="TIN" aria-describedby="fname-error">
+                                        <input type="text" class="form-control" name="tin" id="txt_tin" placeholder="TIN" aria-describedby="fname-error">
                                        <!--  <span class="form-text text-muted">Please enter TIN number (XXX-XXX-XXXXX)</span> -->
                                     </div>
                                     <div class="col-lg-6">
@@ -183,7 +183,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Address</label>
-                                    <textarea class="form-control" name="address"></textarea>
+                                    <textarea class="form-control" name="address" v-model="accountDetails.address"></textarea>
                                   <!--   <span class="form-text text-muted">Please enter the address</span> -->
                                 </div>
 
@@ -191,16 +191,16 @@
 
                                     <div class="col-lg-6">
                                         <label>Business Style</label>
-                                        <select class="form-control" name="business_style" id="sel_scope_of_business" data-placeholder="Select scope of business" style="width:100%;">
-                                            <option value="" selected="selected">Choose business style</option>
+                                        <select class="form-control" name="business_style" v-model="accountDetails.business_style" v-select id="sel_scope_of_business" data-placeholder="Select scope of business" style="width:100%;">
+                                            <option value="-1" selected="selected">Choose business style</option>
                                         </select>
                                         <span class="form-text text-muted"></span> 
                                     </div>
 
                                     <div class="col-lg-6">
-                                        <label>Date of Establishment</label>
-                                        <input name="establishment_date" type="text" class="form-control" id="txt_date_of_establishment" placeholder="Date of establishment"  aria-describedby="fname-error">
-                                <!--         <span class="form-text text-muted">Please enter date of establishment</span> -->
+                                        <label>Date of Establishment</label>   
+                                        <input type="date" class="form-control" v-model="accountDetails.establishment_date" />
+                                        
                                     </div>
 
                                 </div> 
@@ -208,19 +208,19 @@
                                 <div class="form-group row">
                                     <div class="col-lg-6">
                                         <label>Products</label>
-                                        <textarea class="form-control" name="products"></textarea>
+                                        <textarea class="form-control" name="products" v-model="accountDetails.products"></textarea>
                          <!--                <span class="form-text text-muted">Please enter products</span> -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>History and Background</label>
-                                        <textarea class="form-control" name="company_overview"></textarea>
+                                        <textarea class="form-control" name="company_overview" v-model="accountDetails.company_overview"></textarea>
                                        <!--  <span class="form-text text-muted">Please enter your first name.</span> -->
                                     </div>
                                 </div>
                                
                                  <div class="form-group">
                                     <label>Affiliates</label>
-                                    <select class="js-example-basic-multiple" id="sel_affiliates" name="affiliates[]" multiple="multiple" style="width:100%;">
+                                    <select class="js-example-basic-multiple" id="sel_affiliates" v-model="accountDetails.affiliates" v-select name="affiliates[]" multiple="multiple" style="width:100%;">
                                      
                                     </select>                            
                                   <!--   <span class="form-text text-muted">Select affiliates</span> -->
@@ -246,7 +246,7 @@
                                             </div>
                                         </div>
                                         <ul class="contact-list">
-                                            <li class="kt-font-bold" v-for="(row,index) in custContacts">
+                                            <li class="kt-font-bold" v-for="(row,index) in contactDetails.custContacts">
                                                 <a href="#" @click.prevent="deleteContact(index)">
                                                     <i class="flaticon flaticon-delete kt-margin-r-10 kt-font-danger"></i>
                                                 </a>
@@ -256,7 +256,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Email</label>
-                                        <input type="text" class="form-control" name="email_address" id="txt_email" placeholder="Email"  aria-describedby="fname-error">
+                                        <input type="text" class="form-control" v-model="contactDetails.email_address" name="email_address"  placeholder="Email"  aria-describedby="fname-error">
                                         <!-- <span class="form-text text-muted">Please enter the email address</span> -->
                                     </div>
                                 </div>
@@ -264,12 +264,12 @@
                                 <div class="form-group row">
                                     <div class="col-lg-6">
                                        <label>Website</label>
-                                        <input type="text" class="form-control" name="website_url" placeholder="Website" aria-describedby="fname-error">
+                                        <input type="text" class="form-control" v-model="contactDetails.website_url" name="website_url" placeholder="Website" aria-describedby="fname-error">
                                         <!-- <span class="form-text text-muted">Please enter the website url</span>  -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Facebook</label>
-                                        <input type="text" class="form-control"  name="facebook_url" placeholder="Facebook"  aria-describedby="fname-error">
+                                        <input type="text" class="form-control" v-model="contactDetails.facebook_url" name="facebook_url" placeholder="Facebook"  aria-describedby="fname-error">
                                         <span class="form-text text-muted"></span>
                                     </div>
                                     
@@ -290,7 +290,7 @@
                                             </tr>
                                         </thead> 
                                         <tbody>
-                                            <tr v-for="(row, index) in contactPersons">
+                                            <tr v-for="(row, index) in contactDetails.contactPersons">
                                                 <td><input type="text" v-model="row.name" class="form-control form-control-sm"></td> 
                                                 <td><input type="text" v-model="row.position" class="form-control form-control-sm"></td>
                                                 <td><input type="text" v-model="row.department" class="form-control form-control-sm"></td>
@@ -302,27 +302,38 @@
                                 </div>
                             </div>
                             <hr/>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <h4 class="kt-pull-left">Dealer Sales Executive</h4>
+                            <div class="row" id="se_wrapper">
+                                <h4 class="kt-pull-left">Dealer Sales Executive</h4>
+                                <div class="col-lg-12">                        
+                                    <div class="form-group row">
+                                        <div class="col-md-9">
+                                            <select class="form-control" id="sel_sales_persons" v-model="selected_sales_person" v-select  style="width:100%;">
+                                                <option value="-1">Select a sales person</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button class="btn btn-primary" type="button" @click="addSalesPerson">Add</button>
+                                        </div>   
+                                    </div>
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Position</th> 
-                                                <th>Name</th> 
+                                                <th>Name</th>
+                                                <th>Position</th>  
+                                                <th>Mobile No.</th>  
+                                                <th>Email</th>  
+                                                <th></th>  
                                             </tr>
                                         </thead> 
                                         <tbody>
-                                            <tr v-for="(row, index) in salesPersons">
-                                                <td><input type="text" size="4" v-model="row.title" class="form-control form-control-sm"></td> 
-                                                <td><input type="text" v-model="row.first_name" class="form-control form-control-sm"></td>
-                                                <td><input type="text" v-model="row.middle_name" class="form-control form-control-sm"></td>
-                                                <td><input type="text" v-model="row.last_name" class="form-control form-control-sm"></td>
-                                                <td><input type="text" size="4" v-model="row.suffix" class="form-control form-control-sm"></td>
+                                            <tr v-for="(row, index) in contactDetails.salesPersons">
+                                                <td>@{{ row.name }}</td>
+                                                <td>@{{ row.position_title }}</td> 
+                                                <td>@{{ row.mobile_no }}</td> 
+                                                <td>@{{ row.email }}</td> 
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <button type="button" class="btn btn-success kt-pull-right" @click="addSalesPersonRow">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -333,78 +344,47 @@
                     <div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
                         <div class="kt-heading kt-heading--md">Enter your requirement</div>
                         <div class="kt-form__section kt-form__section--first">
-                            <div class="kt-wizard-v1__form">
+                            <div class="kt-wizard-v1__form" >
                                 <div class="form-group row">
                                     <label class="col-3 col-form-label">Vehicle Type</label>
                                     <div class="col-9">
                                         <div class="kt-radio-inline">
-                                            <label class="kt-radio kt-radio--brand">
-                                                <input type="radio" name="radio4"> Light Commercial Vehicle
-                                                <span></span>
-                                            </label>
-                                            <label class="kt-radio kt-radio--brand">
-                                                <input type="radio" name="radio4"> Commercial Vehicle
+                                            <label class="kt-radio kt-radio--brand" v-for="(row,index) in vehicleTypes">
+                                                <input type="radio" name="vehicle_types" :value="row.vehicle_type_id" @click="getVehicles(row.vehicle_type_abbrev)"> @{{ row.vehicle_type_name }}
                                                 <span></span>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-md-6">
+                                <div class="form-group row" v-show="vehicle_details_flag">
+                                    <div class="col-md-5">
                                         <label>Model</label>
-                                        <select class="form-control">
-                                            <option>Select a model</option>
-                                            <optgroup label="D-MAX">
-                                                <option>D-MAX RZ4E 4X2 LS MT</option>
-                                                <option>180 D-MAX 4x4 LS MT</option>
-                                            </optgroup>
-                                            <optgroup label="MU-X">
-                                                <option>mu-X 4x2 LS-A MT 2.5</option>
-                                                <option>mu-X 4x2 LS-A AT Luxe</option>
-                                            </optgroup>
-                                            <optgroup label="N-SERIES">
-                                                <option>NLR77 NON-TILT 80A</option>
-                                                <option>NLR77 LWB Non-Tilt JB</option>
-                                            </optgroup>
-                                            <optgroup label="F-SERIES">
-                                                <option>090FORWARD FV</option>
-                                                <option>120FVM34UL-TNE EXT CHAS</option>
-                                            </optgroup>
-                                            <optgroup label="Q-SERIES">
-                                                <option>QKR77-MB</option>
-                                                <option>QKR77 Non-Tilt 80A</option>
-                                            </optgroup>
-                                            <optgroup label="C AND E SERIES">
-                                                <option>CYZ52Q</option>
-                                                <option>EXR51E</option>
+                                        <select class="form-control" id="sel_vehicle_models" v-model="selected_model" v-select style="width:100%;">
+                                            <option value="-1">Select a model</option>
+                                            <optgroup v-for="(row,index) in  vehicleModels" :label="row.model">
+                                                <option v-for="(variant,index) in row.variants" :value="variant.id">@{{ variant.value}}</option>
                                             </optgroup>
                                         </select>   
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <label>Color</label>
-                                        <div class="input-group">
-                                            <select class="form-control">
-                                                <option>Select a color</option>
-                                                <option>TITANIUM SILVER</option>
-                                                <option>RED SPINEL MICA</option>
-                                                <option>ARC WHITE</option>
-                                                <option>SPLASH WHITE</option>
-                                                <option>OBSIDIAN GRAY MICA</option>
-                                                <option>BLACKISH DARK</option>
-                                            </select>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary" type="button">Add</button>
-                                            </div>
-                                        </div>
+                                        <select class="form-control" id="sel_vehicle_colors" v-model="selected_color" v-select style="width:100%;">
+                                            <option value="-1">Select a color</option>
+                                            <option v-for="(row,index) in vehicleColors" :value="row.id">@{{ row.text }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary kt-margin-t-25" type="button" @click="addVehicle">Add</button>
                                     </div>
                                 </div>
                                    
-                                <div class="row">
+                                <div class="row" v-show="vehicle_details_flag">
                                     <div class="col-md-12">
                                         <table class="table table-condensed">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Model</th>
                                                     <th>Color</th>
                                                     <th>Quantity</th>
@@ -415,17 +395,22 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(row,index) in vehicleRequirement">
+                                                    <td>
+                                                        <a href="#" @click.prevent="removeVehicle(index)">
+                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                        </a>
+                                                    </td>
                                                     <td>@{{ row.model }}</td>
                                                     <td>@{{ row.color }}</td>
-                                                    <td><input type="text" name="" class="form-control form-control-sm" size="4"/></td>
-                                                    <td><input type="text" name="" class="form-control form-control-sm"/></td>
+                                                    <td><input type="text" name="" class="form-control form-control-sm" size="4" v-model="row.quantity"/></td>
+                                                    <td><input type="text" name="" class="form-control form-control-sm" v-model="row.suggested_price"/></td>
                                                     <td>
-                                                        <button type="button" @click="showAdditionalDetails()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                                        <button type="button" @click="showAdditionalDetails(index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                                             <i class="la la-info-circle"></i>
                                                         </button>
                                                     </td>
                                                     <td>
-                                                        <button type="button" @click="showDeliveryDetail()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                                        <button type="button" @click="showDeliveryDetail(index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                                             <i class="la la-calendar"></i>
                                                         </button>
                                                     </td>
@@ -446,26 +431,48 @@
                         <div class="kt-form__section kt-form__section--first">
                             <div class="kt-wizafrd-v1__form">
                                 <div class="form-group row">
+                                    <label class="col-3 col-form-label">Has competitor?</label>
+                                    <div class="col-9">
+                                        <div class="kt-radio-inline">
+                                            <label class="kt-radio kt-radio--brand">
+                                                <input type="radio" value="yes"  v-model="competitor_flag">Yes
+                                                <span></span>
+                                            </label>
+                                            <label class="kt-radio kt-radio--brand">
+                                                <input type="radio" value="no" v-model="competitor_flag">No
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" v-if="competitor_flag == 'no'">
+                                    <label class="col-3 col-form-label">Reason</label>
+                                    <div class="col-9">
+                                        <input type="text" v-model="no_competitor_reason" class="form-control" placeholder="Kindly state your reason..." />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="competitor_flag == 'yes'">
                                     <div class="col-lg-6">
                                         <label>Brand</label>
                                         <div class="typeahead">
-                                            <input class="form-control" id="txt_competitor_brand" type="text" dir="ltr" placeholder="Competitor brand">
+                                            <input class="form-control" type="text" dir="ltr" placeholder="Competitor brand" v-model="cur_competitor_brand" />
                                         </div> 
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Model</label>
                                         <div class="input-group">
                                             <div class="typeahead">
-                                                <input class="form-control" id="txt_model_brand" type="text" dir="ltr" placeholder="Competitor brand">
+                                                <input class="form-control" type="text" dir="ltr" placeholder="Competitor Model" v-model="cur_competitor_model" />
                                             </div> 
                                             <div class="input-group-append">
-                                                <button class="btn btn-primary" type="button">Add</button>
+                                                <button class="btn btn-primary" type="button" @click="addCompetitor">Add</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                  
-                                <div class="row">
+                                <div class="row" v-if="competitor_flag == 'yes'">
                                     <div class="col-md-12">
                                         <table class="table">
                                             <thead>
@@ -476,47 +483,29 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td style="width:30%;">HINO</td>
-                                                    <td style="width:20%;">Hino Ranger</td>
-                                                    <td><input type="text" name="" class="form-control form-control-sm"/></td>
+                                                <tr v-for="(row,index) in competitors">
+                                                    <td style="width:10%;">
+                                                        <a href="#" @click.prevent="removeCompetitor(index)">
+                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td style="width:30%;">@{{ row.brand }}</td>
+                                                    <td style="width:20%;">@{{ row.model }}</td>
+                                                    <td><input type="text" v-model="row.price" class="form-control form-control-sm"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <!--end: Form Wizard Step 3-->
 
-                    <!--begin: Form Wizard Step 4-->
-                   <!--  <div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
-                        <div class="kt-heading kt-heading--md">Enter other customer details</div>
-                        <div class="kt-form__section kt-form__section--first">
-                            <div class="kt-wizard-v1__form">
-                                <div class="form-group">
-                                    <label>Price Validity</label>
-                                    <input type="text" class="form-control" id="txt_price_validity" placeholder="Price Validity"  aria-describedby="fname-error">
-                                    <span class="form-text text-muted">Please enter price validity</span>
-                                </div>
-                                <div class="form-group">
-                                    <label>Deadline of Submission</label>
-                                    <input type="text" class="form-control" id="deadline_of_submission" placeholder="Deadline of Submission" aria-describedby="fname-error">
-                                    <span class="form-text text-muted">Please enter deadline of submission</span>
-                                </div> 
-                                <div class="form-group">
-                                    <label>Payment Terms</label>
-                                    <select class="form-control" id="sel_payment_term" v-model="selected_payment_term" v-select style="width:100%;"></select>      
-                                    <span class="form-text text-muted">Please enter mode of payment</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!--end: Form Wizard Step 4-->
-
                     <!--begin: Form Actions -->
                     <div class="kt-form__actions">
+                        <button id="vue_submit" @click="callVueSubmitForm" v-show="false">Vue submit</button>
                         <div class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-prev">
                             Previous
                         </div>
@@ -537,7 +526,7 @@
 </div>
 
 <!--begin::Modal-->
-<div class="modal fade" id="deliveryScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="deliveryScheduleModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -552,15 +541,15 @@
                             <div class="card-body">
                                 <div class="details-item">
                                     <span class="details-label">Model</span>
-                                    <span class="details-subtext">D-MAX RZ4E 4x2 Cab/Chassis</span>
+                                    <span class="details-subtext">@{{ cur_model }}</span>
                                 </div>
                                 <div class="details-item">
                                     <span class="details-label">Color</span>
-                                    <span class="details-subtext">Red Spinel Mica</span>
+                                    <span class="details-subtext">@{{ cur_color }}</span>
                                 </div>
                                 <div class="details-item">
                                     <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">5</span>
+                                    <span class="details-subtext">@{{ cur_quantity }}</span>
                                 </div>
                             </div>
                         </div>
@@ -569,23 +558,32 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td>Quantity</td>
-                                    <td>Date</td>
+                                    <th></th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><input type="text" class="form-control form-control-sm" /></td>
-                                    <td><input type="text" class="form-control form-control-sm delivery_date" /></td>
+                                <tr v-for="(row,index) in cur_delivery_sched" :key="index">
+                                    <td>
+                                        <a href="#" @click.prevent="deleteDeliveryDate(index)">
+                                            <i class="flaticon flaticon-delete kt-margin-r-10 kt-font-danger"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" v-model="row.quantity" />
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control form-control-sm" v-model="row.delivery_date" name="">
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>                    
                     </div>
                 </div>
-    
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Add row</button>
+                <button type="button" class="btn btn-primary" @click="addDeliverySched">Add row</button>
             </div>
         </div>
     </div>
@@ -594,28 +592,29 @@
 
 
 <!--begin::Modal-->
-<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="additionalDetailsModal"  tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Additional Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">          
                 <div class="form-group">
                     <label>Name of Body Builder</label>
-                    <input type="text" class="form-control" placeholder="Body builder" />
+                    <input type="text" class="form-control" v-model="cur_body_builder" placeholder="Body builder" />
                     <span class="form-text text-muted">Please a body builder</span>
                 </div>
                 <div class="form-group">
                     <label>Rear Body Type</label>
-                    <input type="text" class="form-control" name="fname" placeholder="Rear Body Type" >
+                    <input type="text" class="form-control" v-model="cur_rear_body" name="fname" placeholder="Rear Body Type" >
                     <span class="form-text text-muted">Please enter rear body type</span>
                 </div>  
                 <div class="form-group">
                     <label>Additional Items</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea class="form-control" v-model="cur_addtl_items"></textarea>
                     <span class="form-text text-muted">Please enter additional items</span>
                 </div> 
             </div>
@@ -680,6 +679,9 @@ var KTWizard1 = function () {
             if (validator.form() !== true) {
                 wizardObj.stop();  // don't go to the next step
             }
+            /*else {
+                alert("next step clickED!");
+            }*/
         });
 
         // Change event
@@ -696,9 +698,9 @@ var KTWizard1 = function () {
             ignore: ":hidden",
 
             // Validation rules
-            rules: {    
+           /* rules: {    
                 //= Step 1
-                /*account_name: {
+                account_name: {
                     required: true 
                 },
                 tin: {
@@ -746,7 +748,7 @@ var KTWizard1 = function () {
                     required: function(element){
                         return $("#sel_org_type").val() == 1;   
                     }
-                }*/
+                },
 
                 // Step 2
                 email_address: {
@@ -758,7 +760,7 @@ var KTWizard1 = function () {
                 facebook_url: {
                     required: true 
                 }
-            },
+            },*/
             
             // Display error  
             invalidHandler: function(event, validator) {     
@@ -773,7 +775,7 @@ var KTWizard1 = function () {
 
             // Submit valid form
             submitHandler: function (form) {
-               
+            
             }
         });   
     }
@@ -792,7 +794,7 @@ var KTWizard1 = function () {
                 // See: http://malsup.com/jquery/form/#ajaxSubmit
                 formEl.ajaxSubmit({
                     success: function() {
-                
+                        $("#vue_submit").click();
                         KTApp.unprogress(btn);
                         //KTApp.unblock(formEl);
                        /* swal.fire({
@@ -831,10 +833,9 @@ var KTWizard1 = function () {
     };
 }();
 
-var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions){
+var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){
 
     var initSelProjectSource = function(projectSourceOptions){
-    
         $('#sel_project_source').select2({
             placeholder: "Select a project source",
             data: projectSourceOptions
@@ -888,84 +889,24 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
         });
     }
 
+    var initSalesPersons = function(salesPersonOptions){
+        $('#sel_sales_persons').select2({
+            placeholder: {
+                id: '-1', // the value of the option
+                text: 'Select a sales person'
+            },
+            data: salesPersonOptions
+        });
+    }
+
     return {
-        init : function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions){
+        init : function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){
             initSelProjectSource(projectSourceOptions);
             intSelOrg(organizationOptions);
             initPaymentTerm(paymentTermOptions);
             initSelScope();
             affiliates(afiliateOptions);
-        }
-    };
-}();
-
-var DatePicker = function(){
-
-    var priceValidity = function(){
-        $('#txt_price_validity').datetimepicker({
-            format: "yyyy/mm/dd",
-            todayHighlight: true,
-            autoclose: true,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    }
-
-    var deadlineOfSubmission = function(){
-        $('#deadline_of_submission').datetimepicker({
-            format: "yyyy/mm/dd",
-            todayHighlight: true,
-            autoclose: true,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    }
-
-    var deliverySchedule = function(){
-        $('.delivery_date').datetimepicker({
-            format: "yyyy/mm/dd",
-            todayHighlight: true,
-            autoclose: true,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    }
-
-    var startOfProduction = function(){
-        $('#txt_start_of_production').datetimepicker({
-            format: "yyyy/mm/dd",
-            todayHighlight: true,
-            autoclose: true,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    }
-
-    var dateOfEstablishment = function(){
-        $('#txt_date_of_establishment').datetimepicker({
-            format: "yyyy/mm/dd",
-            todayHighlight: true,
-            autoclose: true,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    }
-
-
-
-    return {
-        // public functions
-        init: function() {
-            priceValidity(); 
-            deadlineOfSubmission();
-            deliverySchedule();
-            startOfProduction(); 
-            dateOfEstablishment();
+            initSalesPersons(salesPersonOptions);
         }
     };
 }();
@@ -1145,8 +1086,7 @@ var KTInputmask = function () {
 
 jQuery(document).ready(function() { 
     KTWizard1.init();
-    DatePicker.init();
-    KTInputmask.init();
+    KTInputmask.init();  
 });
 </script>
 
@@ -1171,52 +1111,108 @@ jQuery(document).ready(function() {
         componentUpdated: updateFunction,
     });
 
+    //var Inputmask = require('inputmask');
+/*
+    Vue.directive('input-mask', {
+        bind: function(el) {
+            new Inputmask().mask(el);
+        },
+    });*/
+
     var vm =  new Vue({
         el : "#app",
         data: {
-            customerOptions : {!! json_encode($customer_options) !!},
-            accountsList : {!! json_encode($customer_names) !!},
-            projectSourceOptions : {!! json_encode($project_sources) !!},
-            organizationOptions  : {!! json_encode($organizations) !!},
-            custContacts : [],
-            contactNumber : null,
-            vehicleRequirement : [
-                {
-                    model : "D-MAX RZ4E 4x2 Cab/Chassis",
-                    color : "SPLASH WHITE",
-                    quantity : "",
-                    suggested_price : "",
-                    additional_items : "",
-                    body_builder : "",
-                    rear_body_type : ""
-                },
-                {
-                    model : "mu-X 4x2 LS-A AT Luxe",
-                    color : "RED SPINEL MICA",
-                    quantity : "",
-                    suggested_price : "",
-                    additional_items : "",
-                    body_builder : "",
-                    rear_body_type : ""
-                },
-                {
-                    model : "QKR77-MB",
-                    color : "ARC WHITE",
-                    quantity : "",
-                    suggested_price : "",
-                    additional_items : "",
-                    body_builder : "",
-                    rear_body_type : ""
-                }
-            ],
-            selected_org_type : 2,
-            selected_project_source : 4,
-            contactPersons : [],
-            salesPersons : []
+            // option data
+            projectSourceOptions:    {!! json_encode($project_sources) !!},
+            customerOptions:         {!! json_encode($customer_options) !!},
+            accountsList:            {!! json_encode($customer_names) !!},
+            organizationOptions:     {!! json_encode($organizations) !!},
+            salesPersonOptions:      {!! json_encode($sales_persons) !!},
+            // step 1 - account details
+            accountDetails : {
+                selected_org_type:       2,
+                selected_project_source: 4,
+                others:                  null,
+                bid_ref_no:              null,
+                bid_docs_amount:         null,
+                pre_bid_sched:           null,
+                bid_date_sched:          null,
+                bidding_venue:           null,
+                approved_budget_cost:    null,
+                account_name:            null,
+                tin:                     null,
+                address:                 null,
+                establishment_date:      null,
+                products:                null,
+                company_overview:        null,
+                business_style:          -1,
+                affiliates:              []
+            },
+            // step 2 - contact information
+            // temp variables
+            selected_sales_person:   -1,
+            contactNumber:           null,
+            contactDetails : {
+                custContacts:            [],
+                email_address:           null,
+                website_url:             null,
+                facebook_url:            null,
+                contactPersons:          [],
+                salesPersons:            []
+            },
+            // step 3 - requirement
+            // temp variables
+            vehicle_details_flag:    false,
+            vehicleTypes:            {!! json_encode($vehicle_types) !!},
+            vehicleModels:           [],
+            selected_row_index:      null,
+            selected_model:          -1,
+            vehicleColors:           [],
+            selected_color:          -1,
+            // needed to to submit in form
+            selected_vehicle_type:   null,
+            vehicleRequirement:      [],
+            // temporary variables 
+            cur_body_builder:        null,
+            cur_addtl_items:         null,
+            cur_rear_body:           null,
+            cur_delivery_sched:      [],
+            cur_model:               null,
+            cur_color:               null,
+            cur_quantity:            null,
+            cur_competitor_brand:    null,
+            cur_competitor_model:    null,
+            // step 4 - competitors
+            competitors:             [],
+            no_competitor_reason:    null,
+            competitor_flag:         null
         },
         methods : {
+            callVueSubmitForm(){
+                var self = this;
+                axios.post('/user', {
+                    data : {
+                        accountDetails : self.accountdetails,
+                        contactDetails : self.contactDetails,
+                        vehicleType : self.selected_vehicle_type,
+                        requirement : self.vehicleRequirement,
+                        competitors : self.competitors,
+                        no_competitor_reason : self.no_competitor_reason,
+                        competitor_flag : self.no_competitor_reason
+                    }
+                })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            updateDeliveryDate: function(date){
+               this.cur_delivery_sched[this.selected_delivery_sched_row].delivery_date = date;
+            },
             addContactRow(){
-                this.contactPersons.push(
+                this.contactDetails.contactPersons.push(
                     {
                         name : "",
                         position : "",
@@ -1225,21 +1221,19 @@ jQuery(document).ready(function() {
                     }
                 );
             },
-            addSalesPersonRow(){
-                this.salesPersons.push(
-                    {
-                        title : "",
-                        first_name : "",
-                        middle_name : "",
-                        last_name : "",
-                        suffix : ""
-                    }
-                );
-            },
-            showDeliveryDetail(){
+            showDeliveryDetail(index){
+                this.selected_row_index = index;
+                this.cur_model = this.vehicleRequirement[this.selected_row_index].model;
+                this.cur_color = this.vehicleRequirement[this.selected_row_index].color;
+                this.cur_quantity = this.vehicleRequirement[this.selected_row_index].quantity;
+                this.cur_delivery_sched = this.vehicleRequirement[this.selected_row_index].delivery_schedule;
                 $("#deliveryScheduleModal").modal('show');
             },
-            showAdditionalDetails(){
+            showAdditionalDetails(index){
+                this.selected_row_index = index;
+                this.cur_rear_body = this.vehicleRequirement[this.selected_row_index].rear_body_type;
+                this.cur_addtl_items = this.vehicleRequirement[this.selected_row_index].additional_details;
+                this.cur_body_builder = this.vehicleRequirement[this.selected_row_index].body_builder;
                 $("#additionalDetailsModal").modal('show');
             },
             confirmReject(){
@@ -1268,9 +1262,8 @@ jQuery(document).ready(function() {
                 });
             },
             addCustContact(){
-
                 if(this.contactNumber != "" && this.contactNumber != null){
-                    this.custContacts.push({
+                    this.contactDetails.custContacts.push({
                         contact_number : this.contactNumber
                     });
                     this.contactNumber = null;
@@ -1285,16 +1278,260 @@ jQuery(document).ready(function() {
                 }
             },
             deleteContact(index){
-                this.custContacts.splice(index,1);
+                this.contactDetails.custContacts.splice(index,1);
+            },
+            addSalesPerson(){
+                let self = this;
+                if(this.selected_sales_person == null || this.selected_sales_person == -1){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Please select a sales person.',
+                        showConfirmButton: true,
+                        timer: 1500
+                    }); 
+                }
+                else {
+                 
+                    var isExist = self.contactDetails.salesPersons.filter(function(elem){
+                        if(elem.sales_person_id === self.selected_sales_person) {
+                            return elem.sales_person_id;
+                        }
+                    });
+                    if(isExist == 0 ){
+                        $('#se_wrapper').block({ 
+                            message: '<h1>Processing</h1>'
+                        }); 
+                        axios.get('/get-sales-person-detail/' + this.selected_sales_person)
+                            .then(function (response) {
+                                var data = response.data.data;
+                                // handle success
+                                self.contactDetails.salesPersons.push({
+                                    sales_person_id : self.selected_sales_person,
+                                    position_title : data.description,
+                                    name : data.fname + " " + data.lname,
+                                    mobile_no : data.mobile_1,
+                                    email : data.email_1
+                                });
+                                $('#se_wrapper').unblock(); 
+                                self.selected_sales_person = -1;
+                            })
+                            .catch(function (error) {
+                                // handle error
+                            console.log(error);
+                            })
+                            .finally(function () {
+                                // always executed
+                            });
+
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Sales person has been added already.',
+                            showConfirmButton: true,
+                            timer: 1500
+                        }); 
+                    }
+                }
+            },
+            getVehicles(vehicleType){
+                let self = this;
+                self.selected_vehicle_type = vehicleType;
+                if(self.vehicleRequirement.length > 0){
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "All added vehicles will be deleted.",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                        }).then((result) => {
+                            if (result.value) {
+                                self.vehicleRequirement = [];
+                                self.initializeVehicleInput(vehicleType);   
+                            }
+                            else {
+
+                            }
+                        });
+                }
+                else {
+                    self.initializeVehicleInput(vehicleType);
+                }
+            },
+            addVehicle(){
+                let self = this;
+                let color = $("#sel_vehicle_colors option:selected").text();
+                if(self.selected_model != -1 && self.selected_color != -1){
+
+                    var isExist = self.vehicleRequirement.filter(function(elem){
+                        if(elem.inventory_item_id === self.selected_color) {
+                            return elem.inventory_item_id;
+                        }
+                    });
+
+                    if(isExist == 0){
+                        self.vehicleRequirement.push({
+                            inventory_item_id : self.selected_color,
+                            model : self.selected_model,
+                            color : color,
+                            quantity : 0,
+                            suggested_price : 0,
+                            body_builder : null,
+                            rear_body_type : null,
+                            additional_details : null,
+                            delivery_schedule : []
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Model already exists.',
+                            showConfirmButton: true,
+                            timer: 1500
+                        });
+                    }
+                }
+                else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'You must select a model and a color.',
+                        showConfirmButton: true,
+                        timer: 1500
+                    });
+                }
+            },
+            initializeVehicleInput(vehicleType){
+                if($("#sel_vehicle_models").hasClass('select2-hidden-accessible')){
+                    $("#sel_vehicle_models").select2('destroy');
+                }
+                let self = this;
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                axios.get('/get-vehicle-models/' + vehicleType)
+                    .then(function (response) {
+                        self.vehicleModels = response.data.data;
+                        $('#sel_vehicle_models').select2({
+                            placeholder : "Select a variant"
+                        });
+                        self.selected_model = -1;
+                        self.vehicle_details_flag = true;
+                        KTApp.unblockPage();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            removeVehicle(index){
+                this.vehicleRequirement.splice(index,1);
+            },
+            addDeliverySched(){
+                this.cur_delivery_sched.push({
+                    quantity : null,
+                    delivery_date : null
+                });
+            },
+            deleteDeliveryDate(index){
+                this.cur_delivery_sched.splice(index,1);
+            },
+            saveDeliverySched(){
+                this.vehicleRequirement[this.selected_row_index].delivery_schedule = this.cur_delivery_sched;
+                $("#deliveryScheduleModal").modal('hide');
+            },
+            addCompetitor(){
+                var self = this;
+                if(
+                    self.cur_competitor_brand != "" && 
+                    self.cur_competitor_brand != null && 
+                    self.cur_competitor_model != "" &&
+                    self.cur_competitor_model != null
+                ){
+                    self.competitors.push({
+                        brand : self.cur_competitor_brand, 
+                        model : self.cur_competitor_model,
+                        price : 0 
+                    });
+
+                    self.cur_competitor_brand = null;
+                    self.cur_competitor_model = null;
+                }
+                else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'You must enter the brand and model.',
+                        showConfirmButton: true,
+                        timer: 1500
+                    });
+                }
+            },
+            removeCompetitor(index){
+                this.competitors.splice(index,1);
             }
-           
         },
         created: function () {
       
         },
         mounted : function () {
-            Select2.init(this.customerOptions, this.projectSourceOptions, this.organizationOptions,this.paymentTermsOptions);
+            var self = this;
+            Select2.init(
+                this.customerOptions, 
+                this.projectSourceOptions, 
+                this.organizationOptions,
+                this.paymentTermsOptions,
+                this.salesPersonOptions
+            );
             KTTypeahead.init(this.accountsList);
+            $("#sel_vehicle_colors,#sel_vehicle_models").select2();
+            $("#txt_tin").on("change",function(){
+                self.accountDetails.tin = $(this).val();
+            });
+            $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
+        },
+        watch: {
+            selected_model : function(val){
+                let self = this;
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                axios.get('/get-vehicle-colors/' + val)
+                    .then(function (response) {
+                        self.vehicleColors = response.data;
+                        $("#sel_vehicle_colors").select2();
+                        self.selected_color = -1;
+                        KTApp.unblockPage();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
+            },
+            cur_body_builder : function(val){
+                let self = this;
+                self.vehicleRequirement[self.selected_row_index].body_builder = val;
+            },
+            cur_rear_body : function(val){
+                let self = this;
+                self.vehicleRequirement[self.selected_row_index].rear_body_type = val;
+            },
+            cur_addtl_items : function(val){
+                let self = this;
+                self.vehicleRequirement[self.selected_row_index].additional_details = val;
+            }
         }
     });
 
