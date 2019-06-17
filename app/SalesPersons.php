@@ -88,4 +88,5 @@ class SalesPersons extends Model
 		$query = DB::connection('crms')->select($sql,$params);
 		return $query;
     }
+
 }

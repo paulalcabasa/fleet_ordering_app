@@ -31,4 +31,9 @@ class Customer extends Model
         return  ($data);
     }
 
+    public function insert_customer($params){
+        $id = $this->insertGetId($params,'customer_id');
+        return $id;
+    }
+
 }

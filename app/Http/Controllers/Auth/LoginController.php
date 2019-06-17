@@ -49,7 +49,8 @@ class LoginController extends Controller
                 'department'     => $user->department,
                 'division'       => $user->division,
                 'user_type_name' => $user->user_type_name,
-                'customer_id'    => $user->customer_id
+                'customer_id'    => $user->customer_id,
+                'source_id'      => $user->source_id
             ];
 
             // Save user instance on session

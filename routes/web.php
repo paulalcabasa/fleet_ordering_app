@@ -35,6 +35,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('all-projects', 'ProjectController@all_projects');
 	Route::get('project-overview/{action}/{project_id}', 'ProjectController@project_overview');
 	Route::get('get-sales-person-detail/{sales_person_id}', 'SalesPersonController@get_sales_person_detail');
+	Route::post('save-project', 'ProjectController@save_project');
 
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
@@ -46,7 +47,6 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('view-fpc/{price_confirmation_id}', 'PriceConfirmationController@view_fpc');
 	Route::get('fpc-approval', 'PriceConfirmationController@fpc_approval');
 	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
-
 
 	/* Purchase Order */
 	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');

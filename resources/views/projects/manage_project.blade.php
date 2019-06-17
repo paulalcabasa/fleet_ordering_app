@@ -102,7 +102,7 @@
                                     <div class="col-lg-6">
                                         <label>Project Source</label>
                                         <div class="row">
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-6"> 
                                                 <select class="form-control" id="sel_project_source" v-model="accountDetails.selected_project_source" v-select style="width:100%;"></select>
                                             </div>
                                             <div class="col-lg-6">
@@ -435,24 +435,24 @@
                                     <div class="col-9">
                                         <div class="kt-radio-inline">
                                             <label class="kt-radio kt-radio--brand">
-                                                <input type="radio" value="yes"  v-model="competitor_flag">Yes
+                                                <input type="radio" value="Y"  v-model="competitor_flag">Yes
                                                 <span></span>
                                             </label>
                                             <label class="kt-radio kt-radio--brand">
-                                                <input type="radio" value="no" v-model="competitor_flag">No
+                                                <input type="radio" value="N" v-model="competitor_flag">No
                                                 <span></span>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row" v-if="competitor_flag == 'no'">
+                                <div class="form-group row" v-if="competitor_flag == 'N'">
                                     <label class="col-3 col-form-label">Reason</label>
                                     <div class="col-9">
                                         <input type="text" v-model="no_competitor_reason" class="form-control" placeholder="Kindly state your reason..." />
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="competitor_flag == 'yes'">
+                                <div class="form-group row" v-if="competitor_flag == 'Y'">
                                     <div class="col-lg-6">
                                         <label>Brand</label>
                                         <div class="typeahead">
@@ -472,7 +472,7 @@
                                     </div>
                                 </div>
                  
-                                <div class="row" v-if="competitor_flag == 'yes'">
+                                <div class="row" v-if="competitor_flag == 'Y'">
                                     <div class="col-md-12">
                                         <table class="table">
                                             <thead>
@@ -790,19 +790,29 @@ var KTWizard1 = function () {
                 // See: src\js\framework\base\app.js
                 KTApp.progress(btn);
                 //KTApp.block(formEl);
-
+                $("#vue_submit").click();
+                Swal.fire({
+                    type: 'success',
+                    title: 'The application has been successfully submitted!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                   //     window.location.href = "all-projects";
+                       KTApp.unprogress(btn);
+                    }
+                });
                 // See: http://malsup.com/jquery/form/#ajaxSubmit
-                formEl.ajaxSubmit({
+               /* formEl.ajaxSubmit({
                     success: function() {
                         $("#vue_submit").click();
                         KTApp.unprogress(btn);
                         //KTApp.unblock(formEl);
-                       /* swal.fire({
+                        swal.fire({
                             "title": "", 
                             "text": "The application has been successfully submitted!", 
                             "type": "success",
                             "confirmButtonClass": "btn btn-secondary"
-                        });*/
+                        });
 
 
                           Swal.fire({
@@ -811,11 +821,11 @@ var KTWizard1 = function () {
                             showConfirmButton: false,
                             timer: 1500,
                             onClose : function(){
-                                window.location.href = "all-projects";
+                           //     window.location.href = "all-projects";
                             }
                         });
                     }
-                });
+                });*/
             }
         });
     }
@@ -1190,15 +1200,16 @@ jQuery(document).ready(function() {
         methods : {
             callVueSubmitForm(){
                 var self = this;
-                axios.post('/user', {
+
+                axios.post('/save-project', {
                     data : {
-                        accountDetails : self.accountdetails,
+                        accountDetails : self.accountDetails,
                         contactDetails : self.contactDetails,
                         vehicleType : self.selected_vehicle_type,
                         requirement : self.vehicleRequirement,
                         competitors : self.competitors,
                         no_competitor_reason : self.no_competitor_reason,
-                        competitor_flag : self.no_competitor_reason
+                        competitor_flag : self.competitor_flag
                     }
                 })
                 .then(function (response) {

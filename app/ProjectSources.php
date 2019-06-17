@@ -14,4 +14,9 @@ class ProjectSources extends Model
     	$data = DB::select('SELECT project_source_id id, source_name text FROM ipc_dms.FS_PROJECT_SOURCES');
     	return $data;
     }
+
+    public function insert_project_source($params){
+    	$id = $this->insertGetId($params,'project_source_id');
+    	return $id;
+    }
 }
