@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\OracleUser;
+use App\Models\OracleUser;
 use App\Helpers\UserTypeIdentification;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;

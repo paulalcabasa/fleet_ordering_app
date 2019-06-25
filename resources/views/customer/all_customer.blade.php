@@ -81,12 +81,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, index) in tableData">
-                    <td>@{{ row.id }}</td>
-                    <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.organization_type }}</td>
+                <tr v-for="(row, index) in allCustomers">
+                    <td>@{{ row.customer_id }}</td>
+                    <td>@{{ row.customer_name }}</td>
+                    <td>@{{ row.org_type }}</td>
                     <td>@{{ row.tin }}</td>
-                    <td>@{{ row.status }}</td>
+                    <td>@{{ row.status_id }}</td>
                     <td nowrap>
                         <!-- <span class="dropdown">
                             <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
@@ -136,10 +136,6 @@ var KTDatatablesBasicScrollable = function() {
                             1: {'title': 'Active', 'class': 'kt-badge--success'},
                             2: {'title': 'Inactive', 'class': ' kt-badge--danger'},
                             3: {'title': 'For Approval', 'class': ' kt-badge--brand'}
-                         /*   4: {'title': 'Success', 'class': ' kt-badge--success'},
-                            5: {'title': 'Info', 'class': ' kt-badge--info'},
-                            6: {'title': 'Danger', 'class': ' kt-badge--danger'},
-                            7: {'title': 'Warning', 'class': ' kt-badge--warning'},*/
                         };
                         if (typeof status[data] === 'undefined') {
                             return data;
@@ -147,7 +143,6 @@ var KTDatatablesBasicScrollable = function() {
                         return '<span class="kt-badge ' + status[data].class + ' kt-badge--inline kt-badge--pill">' + status[data].title + '</span>';
                     },
                 }
-               
             ],
         });
     };
@@ -157,7 +152,6 @@ var KTDatatablesBasicScrollable = function() {
         //main function to initiate the module
         init: function() {
             initTable1();
-      
         },
 
     };
@@ -173,36 +167,15 @@ jQuery(document).ready(function() {
     var vm =  new Vue({
         el : "#app",
         data: {
-          tableData : [
-                {
-                    "id" : "001",
-                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "organization_type" : "PRIVATE",
-                    "tin" : "234567894",
-                    "status" : 1
-                },
-                {
-                    "id" : "002",
-                    "account_name" : "MUNICIPAL GOVERNMENT OF CALAUAG",
-                    "organization_type" : "GOVERNMENT",
-                    "tin" : "453896789",
-                    "status" : 2
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "HOME OFFICE SPECIALIST",
-                    "organization_type" : "PRIVATE",
-                    "tin" : "235456752",
-                    "status" : 2
-                }
-            ]
+         
+            allCustomers : {!! json_encode($all_customers) !!}
         },
         created: function () {
             // `this` points to the vm instance
           
         },
         mounted : function () {
-          
+         
         }
     });
 </script>

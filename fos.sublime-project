@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "app\\Models"
+		},
+		{
+			"path": "resources\\views"
+		},
+		{
+			"path": "app\\Http\\Controllers"
+		},
+		{
+			"path": "config"
+		},
+		{
+			"path": "storage"
+		},
+		{
+			"path": "routes"
+		}
+	]
+}

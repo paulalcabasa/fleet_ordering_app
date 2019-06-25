@@ -91,7 +91,7 @@
             <div class="kt-grid__item kt-grid__item--fluid kt-wizard-v1__wrapper">
 
                 <!--begin: Form Wizard Form-->
-                <form class="kt-form" id="kt_form" novalidate="novalidate">
+                <form class="kt-form" id="kt_form" novalidate="novalidate" method="post"  enctype="multipart/form-data" >
                     <!--begin: Form Wizard Step 1-->
                     <div class="kt-wizard-v1__content kt-wizard-sm" data-ktwizard-type="step-content" data-ktwizard-state="current">
                         <div class="kt-heading kt-heading--md">Select account</div>
@@ -159,6 +159,7 @@
                                 </div>
 
                                 <div class="form-group">
+
                                     <label>Account Name</label>
                                     <div class="typeahead">
                                         <input type="text" class="form-control" v-model="accountDetails.account_name" id="txt_account_name" autocomplete="off" name="account_name" dir="ltr" placeholder="Account Name"  />
@@ -176,9 +177,16 @@
                                         <label>Attachment</label>
                                         <div></div>
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="attachment[]" id="customFile" multiple>
-                                            <label class="custom-file-label" for="customFile">Choose file</label>
+                                            <input type="file" @change="validateFileSize" class="custom-file-input" ref="customFile" name="attachment[]" id="attachment" multiple="true">
+                                            <label class="custom-file-label" for="attachment">@{{ file_label }}</label>
+                                            <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
+                                                <li v-for="(row,index) in attachments">
+                                                    <a target="_blank" :href="baseUrl + '/' + row.directory + '/' + row.filename" download v-if="row.directory != null">@{{ row.orig_filename }}</a>
+                                                    <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
+                                                </li>
+                                            </ul>
                                         </div>
+                                      
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -190,17 +198,24 @@
                                 <div class="form-group row">
 
                                     <div class="col-lg-6">
-                                        <label>Business Style</label>
-                                        <select class="form-control" name="business_style" v-model="accountDetails.business_style" v-select id="sel_scope_of_business" data-placeholder="Select scope of business" style="width:100%;">
+                                      
+
+
+                                            <label>Business Style</label>
+                                            <div class="typeahead">
+                                                <input type="text" class="form-control" v-model="accountDetails.business_style" id="txt_business_style" autocomplete="off" name="business_style" dir="ltr" placeholder="Business style"  />
+                                            </div> 
+                            
+                                       
+                                        <!-- <select class="form-control" name="business_style" id="sel_scope_of_business" data-placeholder="Select business style" style="width:100%;">
                                             <option value="-1" selected="selected">Choose business style</option>
                                         </select>
-                                        <span class="form-text text-muted"></span> 
+                                        <span class="form-text text-muted"></span>  -->
                                     </div>
 
                                     <div class="col-lg-6">
                                         <label>Date of Establishment</label>   
                                         <input type="date" class="form-control" v-model="accountDetails.establishment_date" />
-                                        
                                     </div>
 
                                 </div> 
@@ -212,7 +227,7 @@
                          <!--                <span class="form-text text-muted">Please enter products</span> -->
                                     </div>
                                     <div class="col-lg-6">
-                                        <label>History and Background</label>
+                                        <label>Company Overview</label>
                                         <textarea class="form-control" name="company_overview" v-model="accountDetails.company_overview"></textarea>
                                        <!--  <span class="form-text text-muted">Please enter your first name.</span> -->
                                     </div>
@@ -220,7 +235,7 @@
                                
                                  <div class="form-group">
                                     <label>Affiliates</label>
-                                    <select class="js-example-basic-multiple" id="sel_affiliates" v-model="accountDetails.affiliates" v-select name="affiliates[]" multiple="multiple" style="width:100%;">
+                                    <select class="form-control" id="sel_affiliates" v-model="accountDetails.affiliates" v-select  multiple="multiple" style="width:100%;">
                                      
                                     </select>                            
                                   <!--   <span class="form-text text-muted">Select affiliates</span> -->
@@ -283,6 +298,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
+                                                <th></th> 
                                                 <th>Name</th> 
                                                 <th>Position</th> 
                                                 <th>Department</th> 
@@ -291,6 +307,11 @@
                                         </thead> 
                                         <tbody>
                                             <tr v-for="(row, index) in contactDetails.contactPersons">
+                                                <td>
+                                                    <a href="#" @click.prevent="removeContactPerson(index)">
+                                                        <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                    </a>
+                                                </td>
                                                 <td><input type="text" v-model="row.name" class="form-control form-control-sm"></td> 
                                                 <td><input type="text" v-model="row.position" class="form-control form-control-sm"></td>
                                                 <td><input type="text" v-model="row.department" class="form-control form-control-sm"></td>
@@ -318,6 +339,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Name</th>
                                                 <th>Position</th>  
                                                 <th>Mobile No.</th>  
@@ -327,6 +349,11 @@
                                         </thead> 
                                         <tbody>
                                             <tr v-for="(row, index) in contactDetails.salesPersons">
+                                                <td>
+                                                    <a href="#" @click.prevent="removeSalesPersons(index)">
+                                                        <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                    </a>
+                                                </td>
                                                 <td>@{{ row.name }}</td>
                                                 <td>@{{ row.position_title }}</td> 
                                                 <td>@{{ row.mobile_no }}</td> 
@@ -698,7 +725,7 @@ var KTWizard1 = function () {
             ignore: ":hidden",
 
             // Validation rules
-           /* rules: {    
+            rules: {    
                 //= Step 1
                 account_name: {
                     required: true 
@@ -760,7 +787,7 @@ var KTWizard1 = function () {
                 facebook_url: {
                     required: true 
                 }
-            },*/
+            },
             
             // Display error  
             invalidHandler: function(event, validator) {     
@@ -769,7 +796,7 @@ var KTWizard1 = function () {
                     "title": "", 
                     "text": "There are some errors in your submission. Please correct them.", 
                     "type": "error",
-                    "confirmButtonClass": "btn btn-secondary"
+                    "confirmButtonClass": "btn btn-primary"
                 });
             },
 
@@ -788,19 +815,10 @@ var KTWizard1 = function () {
 
             if (validator.form()) {
                 // See: src\js\framework\base\app.js
-                KTApp.progress(btn);
+                //KTApp.progress(btn);
+               // KTApp.unprogress(btn);
                 //KTApp.block(formEl);
                 $("#vue_submit").click();
-                Swal.fire({
-                    type: 'success',
-                    title: 'The application has been successfully submitted!',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    onClose : function(){
-                   //     window.location.href = "all-projects";
-                       KTApp.unprogress(btn);
-                    }
-                });
                 // See: http://malsup.com/jquery/form/#ajaxSubmit
                /* formEl.ajaxSubmit({
                     success: function() {
@@ -860,10 +878,10 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
         });
     }
 
-    var initSelScope = function(){
+/*    var initSelScope = function(){
         $("#sel_scope_of_business").select2({
             ajax: {
-                placeholder : "Choose scope of business",
+                placeholder : "Choose business style",
                 url: "{{ url('/ajax_get_scope') }}",
                 dataType: 'json',
                 type: 'GET',
@@ -883,7 +901,7 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
             minimumInputLength: 3,
             allowClear : true
         });
-    }
+    }*/
 
     var initPaymentTerm = function(paymentTermOptions){
         $('#sel_payment_term').select2({
@@ -895,7 +913,13 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
     var affiliates = function(afiliateOptions){
         $('#sel_affiliates').select2({
             placeholder: "Select affiliates",
-            data : afiliateOptions
+            data : afiliateOptions,
+            allowClear: true
+        });
+
+
+        $('#sel_affiliates').on('select2:unselecting', function (e) {
+                $("#sel_affiliates").trigger('change');//    alert('You clicked on X');
         });
     }
 
@@ -914,7 +938,7 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
             initSelProjectSource(projectSourceOptions);
             intSelOrg(organizationOptions);
             initPaymentTerm(paymentTermOptions);
-            initSelScope();
+          //  initSelScope();
             affiliates(afiliateOptions);
             initSalesPersons(salesPersonOptions);
         }
@@ -1013,7 +1037,7 @@ var KTTypeahead = function() {
            
             inputCompetitorBrand();
             inputCompetitorModel();
-            inputAccountName(accountsList);
+          //  inputAccountName(accountsList);
         }
     };
 }();
@@ -1134,12 +1158,13 @@ jQuery(document).ready(function() {
         data: {
             // option data
             projectSourceOptions:    {!! json_encode($project_sources) !!},
-            customerOptions:         {!! json_encode($customer_options) !!},
-            accountsList:            {!! json_encode($customer_names) !!},
             organizationOptions:     {!! json_encode($organizations) !!},
+            customerOptions:     {!! json_encode($customer_options) !!},
             salesPersonOptions:      {!! json_encode($sales_persons) !!},
+            baseUrl: {!! json_encode($base_url) !!},
             // step 1 - account details
             accountDetails : {
+                customer_id:             null,
                 selected_org_type:       2,
                 selected_project_source: 4,
                 others:                  null,
@@ -1155,7 +1180,7 @@ jQuery(document).ready(function() {
                 establishment_date:      null,
                 products:                null,
                 company_overview:        null,
-                business_style:          -1,
+                business_style:          null,
                 affiliates:              []
             },
             // step 2 - contact information
@@ -1195,29 +1220,110 @@ jQuery(document).ready(function() {
             // step 4 - competitors
             competitors:             [],
             no_competitor_reason:    null,
-            competitor_flag:         null
+            competitor_flag:         null,
+            attachments:             [],
+            file_label               : 'Choose file',
+            is_exist                 : false
         },
         methods : {
             callVueSubmitForm(){
                 var self = this;
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                
+                // update values of affiliates select2 since remove event is not firing
+                self.accountDetails.affiliates = $('#sel_affiliates').val();
 
                 axios.post('/save-project', {
-                    data : {
-                        accountDetails : self.accountDetails,
-                        contactDetails : self.contactDetails,
-                        vehicleType : self.selected_vehicle_type,
-                        requirement : self.vehicleRequirement,
-                        competitors : self.competitors,
-                        no_competitor_reason : self.no_competitor_reason,
-                        competitor_flag : self.competitor_flag
-                    }
+                    accountDetails : self.accountDetails,
+                    contactDetails : self.contactDetails,
+                    vehicleType : self.selected_vehicle_type,
+                    requirement : self.vehicleRequirement,
+                    competitors : self.competitors,
+                    no_competitor_reason : self.no_competitor_reason,
+                    competitor_flag : self.competitor_flag
                 })
                 .then(function (response) {
-                    console.log(response);
+                    self.processFileUpload(response.data.customer_id);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            processFileUpload(customer_id){
+                let data = new FormData();
+                data.append('customer_id',customer_id);
+                $.each($("input[type='file']")[0].files, function(i, file) {
+                    data.append('attachment[]', file);
+                });
+                axios.post('/upload-project-attachment',data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(function (response) {
+                    KTApp.unblockPage();
+                    if(response.data.status == "success"){
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Project has been created!',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            onClose : function(){
+                                window.location.href = "{{ url('manage-project/create')}}";
+                            }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unexpected error encountered during the transaction, please contact the system administrator.',
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            },
+            validateFileSize(){
+                var self = this;
+                var total_size = 0;
+                var total_files = 0;
+                self.attachments = [];
+                $.each($("input[type='file']")[0].files, function(i, file) {
+                    total_size += file.size;  
+                    self.attachments.push({
+                        directory : null,
+                        filename : file.name,
+                        orig_filename : file.name
+                    });
+                    total_files++;
+                });
+
+                var total_size_mb = total_size / 1024 / 1024;
+                if(total_size_mb >= 10){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Attachment must be less than 10mb.',
+                        showConfirmButton: true
+                    });
+                    $("#attachment").val("");
+                    self.attachments = [];
+                }
+                else {
+                    //self.form.budget_file_path = e.target.files[0];
+                  //  self.$refs.customFile.files[0].name = "test";
+                 //   self.file_label = 'testt';
+                //    this.budget_file_path = e.target.files[0];
+                   // self.file_label = self.$refs.customFile.files[0].name;
+                   // console.log(self.$refs.customeFile);
+                   // $hackedvalue = $("#attachment").val().replace('fakepath','');
+                  //  $('#attachment').val($hackedvalue);
+                   // alert($("#attachment").val());
+                    ///document.getElementById("attachment").files[0].name = total_files + " selected.";
+                }
+
             },
             updateDeliveryDate: function(date){
                this.cur_delivery_sched[this.selected_delivery_sched_row].delivery_date = date;
@@ -1291,6 +1397,12 @@ jQuery(document).ready(function() {
             deleteContact(index){
                 this.contactDetails.custContacts.splice(index,1);
             },
+            removeContactPerson(index){
+                this.contactDetails.contactPersons.splice(index,1);
+            },
+            removeSalesPersons(index){
+                this.contactDetails.salesPersons.splice(index,1);
+            },
             addSalesPerson(){
                 let self = this;
                 if(this.selected_sales_person == null || this.selected_sales_person == -1){
@@ -1333,7 +1445,6 @@ jQuery(document).ready(function() {
                             .finally(function () {
                                 // always executed
                             });
-
                     }
                     else {
                         Swal.fire({
@@ -1493,6 +1604,7 @@ jQuery(document).ready(function() {
         },
         mounted : function () {
             var self = this;
+            console.log(self.baseUrl);
             Select2.init(
                 this.customerOptions, 
                 this.projectSourceOptions, 
@@ -1506,6 +1618,127 @@ jQuery(document).ready(function() {
                 self.accountDetails.tin = $(this).val();
             });
             $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
+
+            /*$("#sel_scope_of_business").select2({
+                ajax: {
+                    placeholder : "Choose business style",
+                    url: "{{ url('/ajax_get_scope') }}",
+                    dataType: 'json',
+                    type: 'GET',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: $.trim(params.term) // search term
+                        };
+                    },
+                    processResults: function (data, page) {
+                        return {
+                            results: data  
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                allowClear : true
+            }).on("change",function(){
+                self.accountDetails.business_style = $("#sel_scope_of_business option:selected").text();
+            });*/
+
+            // Business Style typeahead
+            $('#txt_business_style').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            },
+            {
+                limit: 12,
+                async: true,
+                source: function (query, processSync, processAsync) {
+                    //processSync(['Searching...']);
+                    return $.ajax({
+                        url: "{{ url('/ajax_get_scope') }}", 
+                        type: 'GET',
+                        data: {query: $.trim(query)},
+                        dataType: 'json',
+                        success: function (json) {
+                            // in this example, json is simply an array of strings
+                            return processAsync(json);
+                        }
+                    });
+                }
+            }).on('typeahead:selected', function(evt, item) {
+                self.accountDetails.business_style = item;
+            });
+
+            // Customer name typeahead
+            $('#txt_account_name').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 3
+            },
+            {
+                limit: 5,
+                async: true,
+                source: function (query, processSync, processAsync) {
+                   // processSync(['Searching...']);
+                    return $.ajax({
+                        url: "{{ url('/ajax-get-customers') }}", 
+                        type: 'GET',
+                        data: {query: $.trim(query)},
+                        dataType: 'json',
+                        success: function (json) {
+                            // in this example, json is simply an array of strings
+                            return processAsync(json);
+                        }
+                    });
+                }
+            }).on('typeahead:selected', function(evt, item) {
+                // do what you want with the item here
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+             
+                axios.get('/ajax-get-customer-data/' + item)
+                    .then(function (response) {
+                     
+                        var data = response.data.details;
+                        self.attachments = response.data.attachments;
+                       /* for (var row in response.data.attachments) {
+                            console.log(row);
+                            self.attachments.push({
+                                name : row.filename
+                            });  
+                        }*/
+
+                        self.accountDetails.affiliates = response.data.affiliates;
+                        self.accountDetails.customer_id = data.customer_id;
+                        self.accountDetails.selected_org_type = data.organization_type_id;
+
+                        self.accountDetails.account_name = data.customer_name;
+                        self.accountDetails.tin = data.tin;
+                        $("#txt_tin").val(self.accountDetails.tin);
+                        self.accountDetails.address = data.address;
+                        self.accountDetails.business_style = data.business_style;
+                        self.accountDetails.company_overview = data.company_overview;
+            
+                        self.accountDetails.products = data.products;
+                        self.accountDetails.establishment_date = data.establishment_date;
+                        
+
+
+                        KTApp.unblockPage();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });                        
+            });  
         },
         watch: {
             selected_model : function(val){

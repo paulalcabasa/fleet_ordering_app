@@ -13,29 +13,27 @@
         </div>
     </div>
     <div class="kt-portlet__body">
+ 
         <table class="table table-bordered table-striped" width="100%" id="projects_table">
             <thead>
                 <tr>
-                    <th>Account No.</th>
+                    <th></th>
                     <th>Project No.</th>
                     <th>Account Name</th>
+                    <th>Dealer</th>
                     <th>Requested By</th>
                     <th>Date Requested</th>
-                    <th>Dealer</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, index) in tableData">
+                <tr v-for="(row, index) in projects">
                     <td>
                         <div class="dropdown">
                           <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @if( strtolower(session('user')['user_type_name']) != "dealer")
-                            <a class="dropdown-item" href="{{ url('project-overview/validate/001') }}">Validate</a>
-                            @endif
                             <a class="dropdown-item" href="{{ url('project-overview/view/001') }}">Overview</a>
                             <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
                             <a class="dropdown-item" href="{{ url('project-overview/cancel/001') }}">Cancel</a>
@@ -49,12 +47,12 @@
                            </div>
                         </div>
                     </td>
-                    <td>@{{ row.id }}</td>
-                    <td nowrap>@{{ row.account_name }}</td>
-                    <td>@{{ row.requestor }}</td>
-                    <td>@{{ row.date_requested }}</td>
-                    <td>@{{ row.dealer }}</td>
-                    <td nowrap><span :class="status_colors['new']">@{{ row.status }}</span></td>
+                    <td>@{{ row.project_id }}</td>
+                    <td nowrap>@{{ row.customer_name }}</td>
+                    <td>@{{ row.account_name }}</td>
+                    <td>@{{ row.created_by }}</td>
+                    <td>@{{ row.date_created }}</td>
+                    <td nowrap><span :class="status_colors['new']">@{{ row.status_name }}</span></td>
                 </tr>
             </tbody>
         </table>
@@ -69,64 +67,7 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            tableData : [
-                {
-                    "id" : "001",
-                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "requestor" : "RYAN SENIA",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "PASIG",
-                    "status" : "New"
-                },
-                {
-                    "id" : "002",
-                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "requestor" : "JOHN CONSTANTINE",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "MAKATI",
-                    "status" : "For_Approval"
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "DULCEGARII INC.",
-                    "requestor" : "JINKY ABELLA ",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "ALABANG",
-                    "status" : "Approved"
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "POWER EQUIPMENT & SUPPLIES INC.",
-                    "requestor" : "JOJO CONDE",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "COMMONWEALTH",
-                    "status" : "Price_Confirmed"
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "LIFE BASIC TRADING",
-                    "requestor" : "CHARLES SIA ",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "CAGAYAN",
-                    "status" : "Awaiting_FWPC"
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "LIFE BASIC TRADING",
-                    "requestor" : "CHARLES SIA ",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "CAGAYAN",
-                    "status" : "Closed"
-                },
-                {
-                    "id" : "003",
-                    "account_name" : "LIFE BASIC TRADING",
-                    "requestor" : "CHARLES SIA ",
-                    "date_requested" : "04/01/2019",
-                    "dealer" : "CAGAYAN",
-                    "status" : "Cancelled"
-                },
-            ],
+            projects:    {!! json_encode($projects) !!},
             status_colors : []
         },
         created: function () {
@@ -141,7 +82,7 @@
         mounted : function () {
             var table = $("#projects_table").DataTable();
             this.status_colors['new'] = "kt-badge kt-badge--brand kt-badge--inline";
-            
+        
             /* "New"
                     status : "New",
                     class : "kt-badge kt-badge--brand kt-badge--inline"

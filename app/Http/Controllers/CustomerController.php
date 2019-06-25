@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Customer;
+use App\Models\Customer;
+use App\Models\Attachment;
+use App\Models\CustomerAffiliates;
 
 class CustomerController extends Controller
 {
     //
 
-    public function all_customers(){
-    	return view('customer.all_customer');
+    public function all_customers(Customer $m_customer){
+        $all_customers = $m_customer->get_all_customers();
+        $page_data = [
+            'all_customers' => $all_customers
+        ];
+    	return view('customer.all_customer', $page_data);
     }
 
     public function manage_customer(Request $request, Customer $customer){
@@ -28,21 +34,68 @@ class CustomerController extends Controller
     }
 
     public function ajax_get_scope(Request $request, Customer $customer){
-        $scope_of_business_name = $request->q;
-        $arr = array();
-        $scope_of_business = $customer->get_scope_of_business($scope_of_business_name);
-        foreach($scope_of_business as $s){
+        $query = $request->all();
+        $scope_of_business = $customer->get_scope_of_business($query['query']);
+       /* foreach($scope_of_business as $s){
             $row_array = array(
-                'id'=>$s->class_code,
+                'id'=>$s->class_code_description,
                 'text' => $s->class_code_description
+            );
+            array_push($arr,$row_array);
+        }*/
+        $scope_of_business = json_decode(json_encode($scope_of_business), true);
+        $scope_of_business = array_column($scope_of_business,'class_code_description');
+        return json_encode($scope_of_business);
+    }
+
+    public function ajax_get_affiliates(Request $request, Customer $m_customer){
+        $query = $request->term;
+        return json_encode($query);
+        $customers = $m_customer->get_affiliate_options($query);
+        $arr = [];
+        foreach($customers as $s){
+            $row_array = array(
+                'id'=>$s->customer_id,
+                'text' => $s->customer_name
             );
             array_push($arr,$row_array);
         }
         //$scope_of_business = json_decode(json_encode($scope_of_business), true);
-        //$scope_of_business = array_column($scope_of_business,'class_code_description');
+        // $scope_of_business = array_column($scope_of_business,'class_code_description');
         return json_encode($arr);
     }
 
-    
+    public function ajax_get_customer_data(
+        Request $request, 
+        Customer $m_customer, 
+        CustomerAffiliates $m_affiliate,
+        Attachment $m_attachment
+    ){
+        $customer_name = $request->customer_name;
+        $details = $m_customer->get_customer_data($customer_name);
+        $affiliates = $m_affiliate->get_affiliate($details->customer_id);
+        $attachments = $m_attachment->get_attachments($details->customer_id);
+        return [
+            'details' => $details,
+            'affiliates' => $affiliates,
+            'attachments' => $attachments
+        ];
+    }
+
+    public function ajax_get_customers(Request $request, Customer $m_customer){
+        $query = $request->all();
+      
+        $customers = $m_customer->get_customers($query['query']);
+       /* foreach($scope_of_business as $s){
+            $row_array = array(
+                'id'=>$s->class_code_description,
+                'text' => $s->class_code_description
+            );
+            array_push($arr,$row_array);
+        }*/
+        $customers = json_decode(json_encode($customers), true);
+        $customers = array_column($customers,'customer_name');
+        return json_encode($customers);
+    }
 
 }

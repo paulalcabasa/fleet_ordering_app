@@ -63,7 +63,7 @@
                     "id" : "001",
                     "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
                     "dealer_name" : "Isuzu Pasig",
-                    "status" : "For approval"
+                    "status" : "Approved"
                 }
             ]
         },

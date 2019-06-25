@@ -16,7 +16,7 @@
         <table id="price_confirmation_table" class="table table-striped" width="100%">
             <thead>
                 <tr>
-                    <th>FPC No. </th>
+                    <th>PO No. </th>
                     <th>Account Name</th>
                     <th>Date Created</th>
                     <th>Prepared By</th>
@@ -30,7 +30,7 @@
                     <td>@{{ row.date_created }}</td>
                     <td>@{{ row.prepared_by }}</td>
                     <td nowrap>
-                        <a href="{{ url('fpc-details/validate/001') }}" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                        <a href="{{ url('manage-po/validate/001') }}" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                         <a href="#" class="btn btn-success  btn-sm btn-icon btn-circle"><i class="la la-print"></i></a> 
                     </td>
                 </tr>

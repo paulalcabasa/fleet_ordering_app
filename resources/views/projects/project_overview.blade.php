@@ -136,7 +136,6 @@
                             <span class="details-label">History and Background</span>
                             <span class="details-subtext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus enim risus, pretium a metus id, varius facilisis neque. Sed auctor tellus eget ultrices posuere</span>
                         </div>
-                     
                     </div>
                 </div>
 
@@ -281,12 +280,14 @@
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
                 @if($action == "validate")
-                <button type="submit" class="btn btn-success" @click="approveProject()">Approve</button>
-                <button type="submit" class="btn btn-danger"  @click="rejectProject()">Reject</button>
+                <button type="submit" class="btn btn-success" @click="validateProject('approve')">Approve</button>
+                <button type="submit" class="btn btn-danger"  @click="validateProject('reject')">Reject</button>
                 @elseif($action == "cancel")
                 <a href="#"class="btn btn-danger">
                     <span class="kt-hidden-mobile">Cancel</span>
                 </a>
+                @elseif($action == "view")
+                <button type="button" class="btn btn-success" @click="closeProject()">Close</button>
                 @endif
             </div>
         </div>
@@ -547,7 +548,7 @@
             <div class="modal-body">          
                 <div class="form-group">
                     <label>Are you sure to cancel this project? Kindly state your reason.</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea class="form-control" v-model="remarks"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -569,7 +570,9 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-
+            approvalId : {!! json_encode($approval_id) !!},
+            projectId : {!! json_encode($project_id) !!},
+            remarks : null,
             contactPersons : [
                 {
                     name : "Contact 1",
@@ -671,29 +674,52 @@
                 $("#additionalDetailsModal").modal('show');
             },
             confirmReject(){
+                this.submitApproval('reject', 'error', 'Project has been rejected.')
+            },
+            validateProject(status){
+                var self = this;
+                if(status == 'approve'){
+                    this.submitApproval(status, 'success', 'Project has been approved!');
+                }
+                else {
+                    $("#rejectModal").modal('show');
+                }
+            },
+            submitApproval(status, swal_type, swal_title){
+                var self = this;
+                axios.post('/save-approval', {
+                    approvalId : self.approvalId,
+                    projectId : self.projectId,
+                    remarks : self.remarks,
+                    status : status
+                })
+                .then(function (response) {
+                    console.log(response);
+                    Swal.fire({
+                        type: swal_type,
+                        title: swal_title,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        onClose : function(){
+                            window.location.href = "{{ url('all-projects')}}";
+                        }
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            closeProject(){
                 Swal.fire({
-                    type: 'error',
-                    title: 'Project has been rejected.',
+                    type: "success",
+                    title: "Successfully closed the project!",
                     showConfirmButton: false,
                     timer: 1500,
                     onClose : function(){
                         window.location.href = "{{ url('all-projects')}}";
                     }
                 });
-            },
-            rejectProject(){
-                $("#rejectModal").modal('show');
-            },
-            approveProject(){
-                 Swal.fire({
-                    type: 'success',
-                    title: 'Project has been approved!',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    onClose : function(){
-                        window.location.href = "{{ url('all-projects')}}";
-                    }
-                })
             }
         },
         created: function () {
@@ -701,7 +727,7 @@
           
         },
         mounted : function () {
-          
+            
         }
     });
 </script>

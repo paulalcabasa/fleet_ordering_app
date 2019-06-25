@@ -20,4 +20,7 @@ class PurchaseOrderController extends Controller
     	return view('purchase_order.all_po');
     }
 
+    public function po_approval(){
+        return view('purchase_order.po_approval');
+    }
 }

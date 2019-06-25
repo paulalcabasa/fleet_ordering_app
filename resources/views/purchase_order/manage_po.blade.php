@@ -151,8 +151,8 @@
                 @if($action == 'create')
                 <button type="submit" class="btn btn-brand" @click="submitPO()">Submit</button>
                 @elseif($action == 'validate')
-                <button type="submit" class="btn btn-success" @click="approvePO()">Approve</button>
-                <button type="submit" class="btn btn-danger">Reject</button>
+                <button type="button" class="btn btn-success" @click="approvePO()">Approve</button>
+                <button type="button" class="btn btn-danger" @click="rejectPO()">Reject</button>
                 @endif
             </div>
         </div>
@@ -378,6 +378,28 @@
                 Swal.fire({
                     type: 'success',
                     title: 'The purchase order has been successfully submitted!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-po') }} ";
+                    }
+                });
+            },
+            approvePO(){
+                Swal.fire({
+                    type: 'success',
+                    title: 'The purchase order has been successfully approved!',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onClose : function(){
+                        window.location.href = "{{ url('all-po') }} ";
+                    }
+                });
+            },
+            rejectPO(){
+                Swal.fire({
+                    type: 'error',
+                    title: 'The purchase order has been rejected.',
                     showConfirmButton: false,
                     timer: 1500,
                     onClose : function(){
