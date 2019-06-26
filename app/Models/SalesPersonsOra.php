@@ -13,4 +13,11 @@ class SalesPersonsOra extends Model
     public function insert_sales_person($params){
     	$this->insert($params);
     }
+
+    public function get_sales_persons($project_id){
+		$query = $this
+			->where('project_id', $project_id)
+			->get();
+		return $query;
+	}
 }

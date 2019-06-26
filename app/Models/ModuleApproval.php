@@ -28,7 +28,7 @@ class ModuleApproval extends Model
     	}
     	else if($user_type == "Fleet Sales Staff"){
     		$status = "Pending";
-    		$status_filter = "AND fp.status = 8";
+    		$status_filter = "AND fp.status = 11";
     	}
     	
     	$sql = "SELECT ma.approval_id,

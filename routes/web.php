@@ -43,6 +43,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-project-attachment', 'ProjectController@upload_project_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::post('save-approval', 'ProjectController@save_approval');
+	Route::get('/ajax-get-delivery-detail/{requirement_id}', 'ProjectController@ajax_get_delivery_detail');
 	
 	
 

@@ -34,7 +34,7 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{ url('project-overview/view/001') }}">Overview</a>
+                            <a class="dropdown-item" :href="base_url + '/project-overview/view/' + row.project_id">Overview</a>
                             <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
                             <a class="dropdown-item" href="{{ url('project-overview/cancel/001') }}">Cancel</a>
                             <div class="dropdown-divider"></div>
@@ -68,6 +68,7 @@
         el : "#app",
         data: {
             projects:    {!! json_encode($projects) !!},
+            base_url:    {!! json_encode($base_url) !!},
             status_colors : []
         },
         created: function () {

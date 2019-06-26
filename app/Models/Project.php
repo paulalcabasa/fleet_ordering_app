@@ -60,4 +60,53 @@ class Project extends Model
             	'update_user_source_id' => $update_user_source
             ]);
     }
+
+    public function get_details($project_id){
+        $sql = "SELECT fs.project_id,
+                        fs.customer_id,
+                        fc.customer_name fleet_account_name,
+                        dlr.customer_name dealer_name,
+                        dlr.account_name dealer_account,
+                        st.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fs.creation_date,'mm/dd/yyyy') date_created,
+                        fs.dealer_id,
+                        fs.vehicle_type,
+                        fvt.vehicle_type_name,
+                        fps.source_name project_source,
+                        fs.email,
+                        fs.facebook_url,
+                        fs.website_url,
+                        fs.bid_ref_no,
+                        fs.bid_docs_amount,
+                        to_char(fs.pre_bid_sched,'mm/dd/yyyy') pre_bid_sched,
+                        to_char(fs.bid_date_sched,'mm/dd/yyyy') bid_date_sched,
+                        fs.bidding_venue,
+                        fs.approved_budget_cost,
+                        fs.competitor_remarks,
+                        fs.competitor_flag
+                FROM ipc_dms.fs_projects fs
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fs.customer_id = fc.customer_id 
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fs.dealer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fs.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fs.created_by 
+                        AND usr.user_source_id = fs.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_vehicle_types fvt
+                        ON fvt.vehicle_type_abbrev = fs.vehicle_type
+                    LEFT JOIN ipc_dms.fs_project_sources fps
+                        ON fps.project_source_id = fs.project_source_id
+                WHERE 1 = 1
+                    AND fs.project_id = :project_id";
+
+        $params = [
+            'project_id' => $project_id
+        ];
+
+        $query = DB::select($sql,$params);
+        return !empty($query) ? $query[0] : $query;
+    }
 }

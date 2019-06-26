@@ -13,4 +13,11 @@ class ContactPersons extends Model
     public function insert_contact_persons($params){
     	$this->insert($params);
     }
+
+    public function get_contact_persons($project_id){
+		$query = $this
+			->where('project_id', $project_id)
+			->get();
+		return $query;
+	}
 }

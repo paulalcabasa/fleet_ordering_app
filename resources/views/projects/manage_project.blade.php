@@ -198,15 +198,10 @@
                                 <div class="form-group row">
 
                                     <div class="col-lg-6">
-                                      
-
-
-                                            <label>Business Style</label>
-                                            <div class="typeahead">
-                                                <input type="text" class="form-control" v-model="accountDetails.business_style" id="txt_business_style" autocomplete="off" name="business_style" dir="ltr" placeholder="Business style"  />
-                                            </div> 
-                            
-                                       
+                                        <label>Business Style</label>
+                                        <div class="typeahead">
+                                            <input type="text" class="form-control" v-model="accountDetails.business_style" id="txt_business_style" autocomplete="off" name="business_style" dir="ltr" placeholder="Business style"  />
+                                        </div>                
                                         <!-- <select class="form-control" name="business_style" id="sel_scope_of_business" data-placeholder="Select business style" style="width:100%;">
                                             <option value="-1" selected="selected">Choose business style</option>
                                         </select>
@@ -303,6 +298,7 @@
                                                 <th>Position</th> 
                                                 <th>Department</th> 
                                                 <th>Contact Number</th>
+                                                <th>Email</th>
                                             </tr>
                                         </thead> 
                                         <tbody>
@@ -316,6 +312,7 @@
                                                 <td><input type="text" v-model="row.position" class="form-control form-control-sm"></td>
                                                 <td><input type="text" v-model="row.department" class="form-control form-control-sm"></td>
                                                 <td><input type="text" v-model="row.contact_number" class="form-control form-control-sm"></td>
+                                                <td><input type="text" v-model="row.email" class="form-control form-control-sm"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1334,7 +1331,8 @@ jQuery(document).ready(function() {
                         name : "",
                         position : "",
                         department : "",
-                        contact_number : ""
+                        contact_number : "",
+                        email : ""
                     }
                 );
             },

@@ -89,4 +89,6 @@ class SalesPersons extends Model
 		return $query;
     }
 
+  
+
 }

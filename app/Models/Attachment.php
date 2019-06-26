@@ -21,6 +21,17 @@ class Attachment extends Model
 		return $query;
 	}
 
+	public function get_customer_attachments($customer_id) {
+		$query = $this
+					->where([
+						[ 'reference_id', '=', $customer_id ],
+						[ 'reference_table', '=', 'fs_customers' ],
+						[ 'reference_column', '=', 'customer_id' ]
+					])
+					->get();
+		return $query;
+	}
+
 	public function delete_attachment($customer_id){
 		$this->where([
 			[ 'reference_id', '=', $customer_id ],

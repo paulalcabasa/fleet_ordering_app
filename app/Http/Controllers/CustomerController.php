@@ -12,7 +12,9 @@ class CustomerController extends Controller
     //
 
     public function all_customers(Customer $m_customer){
-        $all_customers = $m_customer->get_all_customers();
+        $dealer_id = session('user')['customer_id'];
+        $user_type = session('user')['user_type_name'];
+        $all_customers = $m_customer->get_all_customers($user_type,$dealer_id);
         $page_data = [
             'all_customers' => $all_customers
         ];

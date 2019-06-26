@@ -106,7 +106,17 @@ class Customer extends Model
         return $query;
     }
 
-    public function get_all_customers(){
+    public function get_all_customers($user_type,$dealer_id){
+
+        $dealer_filter = "";
+        if(in_array($user_type,array('Dealer Staff','Dealer Manager'))){
+            $dealer_filter = "AND fc.customer_id IN (
+                                SELECT customer_id
+                                FROM ipc_dms.fs_projects fp
+                                WHERE dealer_id = $dealer_id
+                            )";  
+        }
+
         $sql = "SELECT 
                     fc.customer_id,
                     fc.customer_name,
@@ -119,13 +129,39 @@ class Customer extends Model
                         ON fc.organization_type_id = org.organization_type_id
                     LEFT JOIN ipc_dms.fs_status fst
                         ON fst.status_id = fc.status
-                WHERE fc.status = :status";
-        
-        $params = [
-            'status'  => 1
-        ];
-        $query = DB::select($sql,$params);
+                WHERE fc.status = 1
+                    $dealer_filter";
+    
+        $query = DB::select($sql);
         return $query;
+    }
+
+    public function get_customer_details_by_id($customer_id){
+
+        $sql = "SELECT 
+                    fc.customer_id,
+                    fc.customer_name,
+                    fc.tin,
+                    fc.address,
+                    fc.business_style,
+                    to_char(fc.establishment_date,'MM/DD/YYYY') establishment_date,
+                    fc.products,
+                    fc.company_overview,
+                    fc.organization_type_id,
+                    fot.name org_type_name
+                FROM ipc_dms.fs_customers fc 
+                    LEFT JOIN ipc_dms.fs_organization_types fot
+                        ON fc.organization_type_id = fot.organization_type_id
+                WHERE 1 = 1
+                    AND fc.customer_id = :customer_id";
+
+        $params = [
+            'customer_id' => $customer_id
+        ];
+
+        $query = DB::select($sql,$params);
+        return !empty($query) ? $query[0] : $query;
+
     }
 
 

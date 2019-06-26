@@ -13,4 +13,11 @@ class CustomerContact extends Model
 	public function insert_contact($params){
 		$this->insert($params);
 	}
+
+	public function get_contacts($project_id){
+		$query = $this
+			->where('project_id', $project_id)
+			->get();
+		return $query;
+	}
 }

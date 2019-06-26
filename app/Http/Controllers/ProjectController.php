@@ -69,20 +69,46 @@ class ProjectController extends Controller
 
       //  return $projects;
         $page_data = array(
-            'projects' => $projects
+            'projects' => $projects,
+            'base_url' => url('/')
         );
 
     	return view('projects.all_projects',$page_data);
     }
 
-    public function project_overview(Request $request){
-
-        $po = [];
-        
+    public function project_overview(
+        Request $request,
+        Customer $m_customer,
+        Project $m_project,
+        Attachment $m_attachment,
+        CustomerAffiliates $m_affiliates,
+        CustomerContact $m_contact,
+        ContactPersons $m_contact_person,
+        SalesPersonsOra $m_sales_person,
+        ProjectRequirement $m_requirement
+    ){
+        $project_details = $m_project->get_details($request->project_id);
+        $customer_details = $m_customer->get_customer_details_by_id($project_details->customer_id);
+        $attachments = $m_attachment->get_customer_attachments($project_details->customer_id);
+        $affiliates = $m_affiliates->get_customer_affiliates($project_details->customer_id);
+        $contacts = $m_contact->get_contacts($project_details->project_id);
+        $contact_persons = $m_contact_person->get_contact_persons($project_details->project_id);
+        $sales_persons = $m_sales_person->get_sales_persons($project_details->project_id);
+        $requirement = $m_requirement->get_requirement($project_details->project_id);
+   
         $page_data = [
-            'project_id' => $request->project_id,
-            'action' => $request->action,
-            'approval_id' => $request->approval_id
+            'project_id'       => $request->project_id,
+            'action'           => $request->action,
+            'approval_id'      => $request->approval_id,
+            'project_details'  => $project_details,
+            'customer_details' => $customer_details,
+            'attachments'      => $attachments,
+            'affiliates'       => $affiliates,
+            'requirement'       => $requirement,
+            'contacts'         => $contacts,
+            'sales_persons'    => $sales_persons,
+            'contact_persons'  => $contact_persons,
+            'base_url'         => url('/')
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -174,7 +200,7 @@ class ProjectController extends Controller
         $project_params = [
             'customer_id'           => $customer_id,
             'dealer_id'             => session('user')['customer_id'],
-            'project_source_id'     => $account_details['selected_project_source'],
+            'project_source_id'     => $project_source_id,
             'vehicle_type'          => $request['vehicleType'],
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
@@ -215,11 +241,12 @@ class ProjectController extends Controller
         $contact_person_params = [];
         foreach($contact_persons as $row){
             $temp = [
-                'project_id' => $project_id,
-                'name' => $row['name'],
-                'position_title' => $row['position'],
-                'department' => $row['department'],
-                'contact_number' => $row['contact_number'],
+                'project_id'            => $project_id,
+                'name'                  => $row['name'],
+                'position_title'        => $row['position'],
+                'department'            => $row['department'],
+                'contact_number'        => $row['contact_number'],
+                'email_address'         => $row['email'],
                 'created_by'            => session('user')['user_id'],
                 'creation_date'         => Carbon::now(),
                 'create_user_source_id' => session('user')['source_id']
@@ -460,7 +487,7 @@ class ProjectController extends Controller
           
             $m_project->update_status(
                 $project_id,
-                8, // update status to FOR IPC Review
+                11, // update status to Submitted
                 session('user')['user_id'],
                 session('user')['source_id']
             );
@@ -473,10 +500,17 @@ class ProjectController extends Controller
           
             $m_project->update_status(
                 $project_id,
-                4, // update status to FOR IPC Review
+                10, // update status Acknowledged
                 session('user')['user_id'],
                 session('user')['source_id']
             );
         }
+    }
+
+    public function ajax_get_delivery_detail(Request $request, ProjectDeliverySchedule $m_delivery_sched){
+        $requirement_id = $request->requirement_id;
+        $delivery_sched = $m_delivery_sched->get_delivery_schedule($requirement_id);
+        return $delivery_sched;
+        //return ["data" => 'test'];
     }
 }

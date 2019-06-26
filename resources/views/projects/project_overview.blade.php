@@ -50,94 +50,105 @@
                     <div class="col-md-6">
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Project No.</span>
-                            <span class="col-md-8 kt-font-boldest kt-font-primary">001</span>
+                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ projectDetails.project_id }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Dealer</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">Isuzu Automotive Dealership Inc. - Pasig</span>
+                            <span class="col-md-8 kt-font-bold kt-font-primary">
+                            @{{ projectDetails.dealer_name }} - @{{ projectDetails.dealer_account}}</span>
                         </div>
                         <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Account Name</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">RCP SENIA TRADING/ RCP SENIA TRANSPORT</span>
+                            <span class="col-md-4 kt-font-bold">Fleet Account Name</span>
+                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Project Source</span>
-                            <span class="col-md-8">Walk In</span>
+                            <span class="col-md-8">@{{ projectDetails.project_source }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Vehicle Type</span>
-                            <span class="col-md-8">Light Commercial Vehicle</span>
+                            <span class="col-md-8">@{{ projectDetails.vehicle_type_name}}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date Submitted</span>
-                            <span class="col-md-8">May 21,2019</span>
+                            <span class="col-md-8">@{{ projectDetails.date_created }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Submitted By</span>
-                            <span class="col-md-8">John Doe</span>
+                            <span class="col-md-8">@{{ projectDetails.created_by }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Status</span>
                             <span class="col-md-8">
-                                <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">Approved</span>
+                                <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ projectDetails.status_name }}</span>
                             </span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Organization Type</span>
-                            <span class="col-md-8">Private</span>
+                            <span class="col-md-8">@{{ customerDetails.org_type_name }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">TIN</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">459-543-12345</span>
+                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customerDetails.tin }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Address</span>
-                            <span class="col-md-8">114 Technology Avenue, Phase II Laguna Technopark 4024</span>
+                            <span class="col-md-8">@{{ customerDetails.address }}</span>
                         </div>
-                        <div class="row kt-margin-b-5">
+                        <div class="row kt-margin-b-5" v-if="attachments.length > 0">
                             <span class="col-md-4 kt-font-bold">Attachment</span>
-                            <span class="col-md-8"><a href="#">File.pdf</a></span>
+                            <span class="col-md-8">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in attachments">
+                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                    </li>
+                                </ul>
+                            </span>
                         </div>
 
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Business Style</span>
-                            <span class="col-md-8">Manufacture of household linen and furnishing textile articles</span>
+                            <span class="col-md-8">@{{ customerDetails.business_style }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date of Establishment</span>
-                            <span class="col-md-8">May 20, 2011</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Plant Location</span>
-                            <span class="col-md-8">Binan, Laguna</span>
+                            <span class="col-md-8">@{{ customerDetails.establishment_date }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Affiliates</span>
                             <span class="col-md-8">
                                 <ul style="list-style:none;padding:0;">
-                                    <li><a href="#">RCP SENIA TRADING/ TRANSPORT 1</a></li>
-                                    <li><a href="#">RCP SENIA TRADING/ TRANSPORT 2</a></li>
+                                    <li v-for="(row,index) in affiliates">
+                                        <a href="#">@{{ row.customer_name }}</a>
+                                    </li>
                                 </ul>
                             </span>
                         </div>
-                      
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Products</span>
+                            <span class="col-md-8">@{{ customerDetails.products }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Company Overview</span>
+                            <span class="col-md-8">@{{ customerDetails.company_overview }}</span>
+                        </div>
                     </div>
                 </div>
-                <hr/>
+              <!--   <hr/>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="details-item kt-margin-b-10">
                             <span class="details-label">Products</span>
-                            <span class="details-subtext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus enim risus, pretium a metus id, varius facilisis neque. Sed auctor tellus eget ultrices posuere</span>
+                            <span class="details-subtext">@{{ customerDetails.products }}</span>
                         </div>
                         <div class="details-item kt-margin-b-10">
                             <span class="details-label">History and Background</span>
-                            <span class="details-subtext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus enim risus, pretium a metus id, varius facilisis neque. Sed auctor tellus eget ultrices posuere</span>
+                            <span class="details-subtext">@{{ customerDetails.company_overview }}</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </div>
             <div class="tab-pane" id="contact">
@@ -145,21 +156,25 @@
                     <div class="col-md-6">
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Contact No.</span>
-                            <span class="col-md-8">XXX-XXXX-XXXX</span>
+                            <span class="col-md-8">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in contacts">@{{ row.contact_number }}</li>
+                                </ul>
+                            </span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Email</span>
-                            <span class="col-md-8"><a href="mailto:xxx@xxx.mail">xxx@xxx.mail</a></span>
+                            <span class="col-md-8"><a href="mailto:xxx@xxx.mail">@{{ projectDetails.email}}</a></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Website</span>
-                            <span class="col-md-8"><a href="http://www.website.com">www.website.com</a></span>
+                            <span class="col-md-8"><a href="http://www.website.com">@{{ projectDetails.website_url }}</a></span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Facebook</span>
-                            <span class="col-md-8"><a href="http://www.facebook.com">www.facebook.com</a></span>
+                            <span class="col-md-8"><a href="http://www.facebook.com">@{{ projectDetails.facebook_url }}</a></span>
                         </div>
                     </div>
                 </div>
@@ -171,37 +186,39 @@
                             <th>Name</th>
                             <th>Position</th>
                             <th>Department</th>
-                            <th>Contact Number</th>
+                            <th>Contact No</th>
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(row,index) in contactPersons">
                             <td>@{{ row.name }}</td>
-                            <td>@{{ row.position }}</td>
+                            <td>@{{ row.position_title }}</td>
                             <td>@{{ row.department }}</td>
-                            <td>@{{ row.contact_no }}</td>
+                            <td>@{{ row.contact_number }}</td>
+                            <td>@{{ row.email_address }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <hr />
                 <h5>Dealer Sales Executives</h5>
-                <table class="table table-condensed">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>First Name</th>
-                            <th>Middle Name</th>
-                            <th>Last Name</th>
-                            <th>Suffix</th>
+                            <th>Name</th>
+                            <th>Position</th>  
+                            <th>Mobile No.</th>  
+                            <th>Email</th>  
+                            <th></th>  
                         </tr>
-                    </thead>
+                    </thead> 
                     <tbody>
-                        <tr v-for="(row,index) in dealerSalesExecutive">
-                            <td>@{{ row.title }}</td>
-                            <td>@{{ row.first_name }}</td>
-                            <td>@{{ row.middle_name }}</td>
-                            <td>@{{ row.last_name }}</td>
-                            <td>@{{ row.suffix }}</td>
+                        <tr v-for="(row, index) in salesPersons">
+                       
+                            <td>@{{ row.name }}</td>
+                            <td>@{{ row.position }}</td> 
+                            <td>@{{ row.mobile_no }}</td> 
+                            <td>@{{ row.email_address }}</td> 
                         </tr>
                     </tbody>
                 </table>
@@ -221,18 +238,18 @@
                     </thead>
                     <tbody>
                         <tr v-for="(row,index) in requirement">
-                            <td>@{{ row.model }}</td>
+                            <td>@{{ row.sales_model }}</td>
                             <td>@{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
                             <td>@{{ row.po_quantity }}</td>
                             <td>@{{ row.suggested_price }}</td>
                             <td>
-                                <button type="button" @click="showAdditionalDetails()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                <button type="button" @click="showAdditionalDetails(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-info-circle"></i>
                                 </button>
                             </td>
                             <td>
-                                <button type="button" @click="showDeliveryDetail()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                <button type="button" @click="showDeliveryDetail(row.requirement_id)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-calendar"></i>
                                 </button>
                             </td>
@@ -499,19 +516,15 @@
             <div class="modal-body">    
                 <div class="details-item">
                     <span class="details-label">Name of Body Builder</span>
-                    <span class="details-subtext">Almazora</span>
+                    <span class="details-subtext">@{{ curBodyBuilder }}</span>
                 </div>
                 <div class="details-item">
                     <span class="details-label">Rear Body Type</span>
-                    <span class="details-subtext">Wingvan</span>
+                    <span class="details-subtext">@{{ curRearBody }}</span>
                 </div>
                 <div class="details-item">
                     <span class="details-label">Additional Items</span>
-                    <span class="details-subtext">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Sed vehicula ornare nibh a pulvinar. 
-                        Maecenas hendrerit tincidunt porta.
-                    </span>
+                    <span class="details-subtext">@{{ curAdditionalItems }}</span>
                 </div>      
                 <!-- <div class="form-group">
                     <label>Name of Body Builder</label>
@@ -572,59 +585,19 @@
         data: {
             approvalId : {!! json_encode($approval_id) !!},
             projectId : {!! json_encode($project_id) !!},
+            projectDetails : {!! json_encode($project_details) !!},
+            customerDetails : {!! json_encode($customer_details) !!},
+            attachments : {!! json_encode($attachments) !!},
+            affiliates : {!! json_encode($affiliates) !!},
+            contacts : {!! json_encode($contacts) !!},
+            contactPersons : {!! json_encode($contact_persons) !!},
+            salesPersons : {!! json_encode($sales_persons) !!},
+            requirement : {!! json_encode($requirement) !!},
+            base_url : {!! json_encode($base_url) !!},
             remarks : null,
-            contactPersons : [
-                {
-                    name : "Contact 1",
-                    position : "Manager",
-                    department : "Sales",
-                    contact_no : "09466055244"
-                },
-                {
-                    name : "Contact 2",
-                    position : "Manager 2",
-                    department : "Sales",
-                    contact_no : "09466055244"
-                }
-            ],
-            dealerSalesExecutive : [
-                {
-                    title : "Mr.",
-                    first_name : "Paul",
-                    middle_name : "Matuts",
-                    last_name : "Alcabasa",
-                    suffix : "Jr."
-                },
-                {
-                    title : "Mr.",
-                    first_name : "Paul",
-                    middle_name : "Matuts",
-                    last_name : "Alcabasa",
-                    suffix : "Jr."
-                }
-            ],
-            requirement : [
-                {
-                    model : "D-MAX RZ4E 4x2 Cab/Chassis",
-                    color : "SPLASH WHITE",
-                    quantity : "15",
-                    po_quantity : "10",
-                    suggested_price : "1,200,000.00",
-                    body_builder : "Almazora",
-                    rear_body : "N/A",
-                    additional_items : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                },
-                {
-                    model : "D-MAX RZ4E 4x2 Cab/Chassis",
-                    color : "SPLASH WHITE",
-                    quantity : "20",
-                    po_quantity : "20",
-                    suggested_price : "1,200,000.00",
-                    body_builder : "Almazora",
-                    rear_body : "Wingvan",
-                    additional_items : "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                }
-            ],
+            curBodyBuilder : null,
+            curRearBody : null,
+            curAdditionalItems : null,
             competitors : [
                 {
                     brand : "Hino",
@@ -667,10 +640,24 @@
             ]
         },
         methods : {
-            showDeliveryDetail(){
+            showDeliveryDetail(requirement_id){
+                 axios.get('/ajax-get-delivery-detail/' + requirement_id)
+                    .then(function (response) {
+                            console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                    });
                 $("#deliveryScheduleModal").modal('show');
             },
-            showAdditionalDetails(){
+            showAdditionalDetails(row){
+                this.curBodyBuilder = row.body_builder_name;
+                this.curRearBody = row.rear_body_type;
+                this.curAdditionalItems = row.additional_items;
                 $("#additionalDetailsModal").modal('show');
             },
             confirmReject(){
@@ -724,10 +711,9 @@
         },
         created: function () {
             // `this` points to the vm instance
-          
         },
         mounted : function () {
-            
+            console.log(this.contacts);
         }
     });
 </script>
