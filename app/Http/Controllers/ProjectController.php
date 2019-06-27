@@ -24,8 +24,7 @@ use App\Models\Attachment;
 
 class ProjectController extends Controller
 {
-    //
-
+    
     public function manage_project(
         Request $request, 
         OrganizationTypes $org_types, 
@@ -63,7 +62,7 @@ class ProjectController extends Controller
 
     public function all_projects(Project $m_project){
         $projects = $m_project->get_projects(
-            session('user')['user_type_name'],
+            session('user')['user_type_id'],
             session('user')['customer_id']
         );
 
@@ -85,17 +84,19 @@ class ProjectController extends Controller
         CustomerContact $m_contact,
         ContactPersons $m_contact_person,
         SalesPersonsOra $m_sales_person,
-        ProjectRequirement $m_requirement
+        ProjectRequirement $m_requirement,
+        Competitor $m_competitor
     ){
-        $project_details = $m_project->get_details($request->project_id);
+        $project_details  = $m_project->get_details($request->project_id);
         $customer_details = $m_customer->get_customer_details_by_id($project_details->customer_id);
-        $attachments = $m_attachment->get_customer_attachments($project_details->customer_id);
-        $affiliates = $m_affiliates->get_customer_affiliates($project_details->customer_id);
-        $contacts = $m_contact->get_contacts($project_details->project_id);
-        $contact_persons = $m_contact_person->get_contact_persons($project_details->project_id);
-        $sales_persons = $m_sales_person->get_sales_persons($project_details->project_id);
-        $requirement = $m_requirement->get_requirement($project_details->project_id);
-   
+        $attachments      = $m_attachment->get_customer_attachments($project_details->customer_id);
+        $affiliates       = $m_affiliates->get_customer_affiliates($project_details->customer_id);
+        $contacts         = $m_contact->get_contacts($project_details->project_id);
+        $contact_persons  = $m_contact_person->get_contact_persons($project_details->project_id);
+        $sales_persons    = $m_sales_person->get_sales_persons($project_details->project_id);
+        $requirement      = $m_requirement->get_requirement($project_details->project_id);
+        $competitors      = $m_competitor->get_competitors($project_details->project_id);
+
         $page_data = [
             'project_id'       => $request->project_id,
             'action'           => $request->action,
@@ -103,8 +104,9 @@ class ProjectController extends Controller
             'project_details'  => $project_details,
             'customer_details' => $customer_details,
             'attachments'      => $attachments,
+            'competitors'      => $competitors,
             'affiliates'       => $affiliates,
-            'requirement'       => $requirement,
+            'requirement'      => $requirement,
             'contacts'         => $contacts,
             'sales_persons'    => $sales_persons,
             'contact_persons'  => $contact_persons,
@@ -130,7 +132,7 @@ class ProjectController extends Controller
         ActivityLogs $m_activity_logs
     ){
         ini_set('memory_limit', '256M');
-   
+        
         $account_details = $request['accountDetails'];
         $contact_details = $request['contactDetails'];
         $project_source_id = 8;
@@ -444,8 +446,10 @@ class ProjectController extends Controller
             session('user')['customer_id'],
             session('user')['user_id'],
             session('user')['source_id'],
-            session('user')['user_type_name']
+            session('user')['user_type_id']
         );
+
+
         $page_data = [
             'approval_list' => $approval_list,
             'base_url'         =>  url('/')
@@ -513,4 +517,6 @@ class ProjectController extends Controller
         return $delivery_sched;
         //return ["data" => 'test'];
     }
+
+
 }

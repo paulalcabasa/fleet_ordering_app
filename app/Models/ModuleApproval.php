@@ -20,17 +20,26 @@ class ModuleApproval extends Model
 
     public function get_projects_approval($dealer_id,$approver_id,$approver_source_id,$user_type){
     	$status = "";
-    	$status_filter = "";
     	$dealer_filter = "";
-    	if($user_type == "Dealer Manager"){
+        $vehicle_type_filter = "";
+        $project_status = "";
+    	if($user_type == 31){ // dealer manager
     		$dealer_filter = "AND fp.dealer_id = " . $dealer_id;
-    		$status = "Pending";
+    		$status = 7;
+            $project_status = 3;
     	}
-    	else if($user_type == "Fleet Sales Staff"){
-    		$status = "Pending";
-    		$status_filter = "AND fp.status = 11";
+    	else if($user_type == 32){ // Fleet LCV User	
+            $status = 7;
+            $project_status = 11;
+
+            $vehicle_type_filter = "AND fp.vehicle_type = 'LCV'";
     	}
-    	
+        else if($user_type == 33){ // Fleet CV User
+           $status = 7;
+           $project_status = 11;
+           $vehicle_type_filter = "AND fp.vehicle_type = 'CV'";
+        }
+
     	$sql = "SELECT ma.approval_id,
 		            fp.project_id,
 		            fc.customer_name account_name,
@@ -62,16 +71,12 @@ class ModuleApproval extends Model
 					$dealer_filter
 					AND fa.approver_user_id = :approver_id
 					AND fa.approver_source_id = :approver_source_id
-			        AND fs.status_name = :status
-			        $status_filter";
-    /*	print_r(session('user'));
-    	echo $status;
-    	echo "<pre>";
-    	echo $sql;
-    	die;*/
+			        AND fs.status_id = :status      
+                    AND fp.status = :project_status      
+                    $vehicle_type_filter";
 		$params = [
-		
-			'status'             => $status,
+            'project_status' => $project_status,
+            'status'         => $status,
 			'approver_id'        => $approver_id,
 			'approver_source_id' => $approver_source_id
 		];

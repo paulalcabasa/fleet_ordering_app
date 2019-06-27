@@ -113,7 +113,8 @@ class OracleUser extends Authenticatable
                     tab.customer_id,
                     tab.source_id,
                     tab.email,
-                    ut.user_type_name
+                    ut.user_type_name,
+                    ut.user_type_id
                 FROM 
                     (SELECT
                         usr.user_id,

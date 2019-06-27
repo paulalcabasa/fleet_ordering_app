@@ -249,7 +249,7 @@
                                 </button>
                             </td>
                             <td>
-                                <button type="button" @click="showDeliveryDetail(row.requirement_id)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                <button type="button" @click="showDeliveryDetail(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-calendar"></i>
                                 </button>
                             </td>
@@ -264,6 +264,7 @@
                             <th>Brand</th>
                             <th>Model</th>
                             <th>Price</th> 
+                            <th>Attachment</th> 
                         </tr>
                     </thead>
                     <tbody>
@@ -271,6 +272,7 @@
                             <td>@{{ row.brand }}</td>
                             <td>@{{ row.model }}</td>
                             <td>@{{ row.price }}</td>
+                            <td><a :href="base_url + '/'+ row.directory +'/' +row.filename" download>@{{ row.orig_filename }}</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -482,14 +484,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>5</td>
-                                    <td>June 5, 2019</td>
+                                <tr v-for="(row,index) in curDeliveryDetails">
+                                    <td>@{{ row.quantity }}</td>
+                                    <td>@{{ row.delivery_date }}</td>
                                 </tr>
-                                <tr>
-                                    <td>15</td>
-                                    <td>June 10, 2019</td>
-                                </tr>
+                            
                             </tbody>
                         </table>                    
                     </div>
@@ -583,34 +582,27 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            approvalId : {!! json_encode($approval_id) !!},
-            projectId : {!! json_encode($project_id) !!},
-            projectDetails : {!! json_encode($project_details) !!},
-            customerDetails : {!! json_encode($customer_details) !!},
-            attachments : {!! json_encode($attachments) !!},
-            affiliates : {!! json_encode($affiliates) !!},
-            contacts : {!! json_encode($contacts) !!},
-            contactPersons : {!! json_encode($contact_persons) !!},
-            salesPersons : {!! json_encode($sales_persons) !!},
-            requirement : {!! json_encode($requirement) !!},
-            base_url : {!! json_encode($base_url) !!},
-            remarks : null,
-            curBodyBuilder : null,
-            curRearBody : null,
-            curAdditionalItems : null,
-            competitors : [
-                {
-                    brand : "Hino",
-                    model : "CAB XXXX111",
-                    price : "1,200,000.00"
-                },
-                {
-                    brand : "Hino",
-                    model : "CAB XXXX111",
-                    price : "1,200,000.00"
-                }
-            ],
-            fpc : [
+            approvalId:         {!! json_encode($approval_id) !!},
+            projectId:          {!! json_encode($project_id) !!},
+            projectDetails:     {!! json_encode($project_details) !!},
+            customerDetails:    {!! json_encode($customer_details) !!},
+            attachments:        {!! json_encode($attachments) !!},
+            affiliates:         {!! json_encode($affiliates) !!},
+            contacts:           {!! json_encode($contacts) !!},
+            contactPersons:     {!! json_encode($contact_persons) !!},
+            salesPersons:       {!! json_encode($sales_persons) !!},
+            requirement:        {!! json_encode($requirement) !!},
+            competitors:        {!! json_encode($competitors) !!},
+            base_url:           {!! json_encode($base_url) !!},
+            remarks:            null,
+            curBodyBuilder:     null,
+            curRearBody:        null,
+            curAdditionalItems: null,
+            curModel:           "",
+            curColor:           "",
+            curQuantity:        "",
+            curDeliveryDetails: [],
+            fpc:                [
                 {
                     fpc_no : "FPC001",
                     account_name : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
@@ -640,10 +632,14 @@
             ]
         },
         methods : {
-            showDeliveryDetail(requirement_id){
-                 axios.get('/ajax-get-delivery-detail/' + requirement_id)
+            showDeliveryDetail(data){
+                var self = this;
+                self.curModel= data.sales_model;
+                self.curColor = data.color;
+                self.curQuantity = data.quantity;
+                axios.get('/ajax-get-delivery-detail/' + data.requirement_id)
                     .then(function (response) {
-                            console.log(response.data);
+                        self.curDeliveryDetails = response.data;
                     })
                     .catch(function (error) {
                         // handle error
@@ -666,7 +662,19 @@
             validateProject(status){
                 var self = this;
                 if(status == 'approve'){
-                    this.submitApproval(status, 'success', 'Project has been approved!');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This operation will approve the project.",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.value) {
+                            this.submitApproval(status, 'success', 'Project has been approved!');                            
+                        }
+                    });
                 }
                 else {
                     $("#rejectModal").modal('show');

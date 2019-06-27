@@ -501,9 +501,11 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Brand</th>
                                                     <th>Model</th>
                                                     <th>Price</th>
+                                                    <th>Attachment</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -516,6 +518,12 @@
                                                     <td style="width:30%;">@{{ row.brand }}</td>
                                                     <td style="width:20%;">@{{ row.model }}</td>
                                                     <td><input type="text" v-model="row.price" class="form-control form-control-sm"/></td>
+                                                    <td>
+                                                        <div class="custom-file" style="font-size:0.875rem;">
+                                                            <input type="file" @change="validateFileSize" class="custom-file-input" ref="customFile" name="competitor_attachment">
+                                                            <label class="custom-file-label" for="competitor_attachment">Choose file</label>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1225,31 +1233,46 @@ jQuery(document).ready(function() {
         methods : {
             callVueSubmitForm(){
                 var self = this;
-                KTApp.blockPage({
-                    overlayColor: '#000000',
-                    type: 'v2',
-                    state: 'success',
-                    message: 'Please wait...'
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                            
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        // update values of affiliates select2 since remove event is not firing
+                        self.accountDetails.affiliates = $('#sel_affiliates').val();
+
+                        axios.post('/save-project', {
+                            accountDetails : self.accountDetails,
+                            contactDetails : self.contactDetails,
+                            vehicleType : self.selected_vehicle_type,
+                            requirement : self.vehicleRequirement,
+                            competitors : self.competitors,
+                            no_competitor_reason : self.no_competitor_reason,
+                            competitor_flag : self.competitor_flag
+                        })
+                        .then(function (response) {
+                            self.processFileUpload(response.data.customer_id);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
                 });
                 
-                // update values of affiliates select2 since remove event is not firing
-                self.accountDetails.affiliates = $('#sel_affiliates').val();
-
-                axios.post('/save-project', {
-                    accountDetails : self.accountDetails,
-                    contactDetails : self.contactDetails,
-                    vehicleType : self.selected_vehicle_type,
-                    requirement : self.vehicleRequirement,
-                    competitors : self.competitors,
-                    no_competitor_reason : self.no_competitor_reason,
-                    competitor_flag : self.competitor_flag
-                })
-                .then(function (response) {
-                    self.processFileUpload(response.data.customer_id);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
             },
             processFileUpload(customer_id){
                 let data = new FormData();

@@ -6,36 +6,71 @@
 
 <div id="app">
 
-<div class="kt-portlet kt-portlet--last kt-portlet--head-lg kt-portlet--responsive-mobile" id="kt_page_portlet">
-    <div class="kt-portlet__head kt-portlet__head--lg" style="">
+<div class="kt-portlet kt-portlet--responsive-mobile" id="kt_page_portlet">
+    <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">Details</h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            @if($action == "validate"):
-            <a href="#"class="btn btn-success kt-margin-r-5">
+            <a href="#" class="btn btn-success kt-margin-r-5">
                 <span class="kt-hidden-mobile">Approve</span>
             </a>
-            <a href="#"class="btn btn-danger">
-                <span class="kt-hidden-mobile">Reject</span>
+            <a href="#" class="btn btn-danger kt-margin-r-5">
+                <span class="kt-hidden-mobile">Cancel</span>
             </a>
-            @elseif($action == "submit")
-            <a href="#"class="btn btn-brand" @click="submitFPC()">
-                <span class="kt-hidden-mobile">Submit</span>
+            <a href="#" class="btn btn-brand">
+                <span class="kt-hidden-mobile">Print</span>
             </a>
-          
-            @endif
         </div>
     </div>
     <div class="kt-portlet__body">
-         <div class="form-group row">
-            <div class="col-md-4">
-                <label>Account No</label>
-                <input type="text" name="" class="form-control" value="CUST001" readonly="" />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Price Confirmation No.</span>
+                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ fpc_details.fpc_id }}</span>
+                </div>
+                
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Status</span>
+                    <span class="col-md-8">
+                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ fpc_details.status_name }}</span>
+                    </span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Vehicle Type</span>
+                    <span class="col-md-8">@{{ fpc_details.vehicle_type }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Date Created</span>
+                    <span class="col-md-8">@{{ fpc_details.date_created }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Created by</span>
+                    <span class="col-md-8">@{{ fpc_details.created_by }}</span>
+                </div>
             </div>
-            <div class="col-md-8">
-                <label>Account Name</label>
-                <input type="text" class="form-control"  readonly="" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" aria-describedby="fname-error">
+            <div class="col-md-6">
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Customer ID</span>
+                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_id }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Customer Name</span>
+                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_name }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Organization Type</span>
+                    <span class="col-md-8">@{{ customer_details.org_type_name }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">TIN</span>
+                    <span class="col-md-8">@{{ customer_details.tin }}</span>
+                </div>
+                <div class="row kt-margin-b-5">
+                    <span class="col-md-4 kt-font-bold">Address</span>
+                    <span class="col-md-8">@{{ customer_details.address }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -45,7 +80,7 @@
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                @{{ project.dealer }}
+                @{{ project.dealer_account }}
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
@@ -66,20 +101,7 @@
     <div class="kt-portlet__body">
         <div class="tab-content">
             <div class="tab-pane active" :id="'orders_tab_' + index">
-                <!-- <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Name of Body Builder </label>
-                            <span class="form-control">@{{ project.body_builder_name }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Rear Body Type</label>
-                            <span class="form-control">@{{ project.rear_body_type}}</span>
-                        </div>
-                    </div>
-                </div> -->
+
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -92,16 +114,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(order, index) in project.orders">
+                        <tr v-for="(order, index) in project.requirements">
                             <td>
-                                <a href="#" @click.prevent="priceConfirmation(project.order)" class="btn btn-sm btn-secondary">
+                                <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-secondary">
                                     <i class="fas fa-money-bill-wave"></i>
                                 </a>
                             </td>
-                            <td> @{{ order.model }} </td>
+                            <td> @{{ order.sales_model }} </td>
                             <td> @{{ order.color }} </td>
-                            <td> @{{ order.ordered_quantity }} </td>
-                            <td> @{{ order.srp }} </td>
+                            <td> @{{ order.quantity }} </td>
+                            <td> @{{ order.suggested_price }} </td>
                             <td>
                                 <button type="button" @click="showAdditionalDetails()" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-info-circle"></i>
@@ -152,142 +174,134 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-home-tab">
+
+                        
+                      
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="details-item">
-                                            <span class="details-label">Order Control No.</span>
-                                            <span class="details-subtext">001</span>
-                                        </div>
-
-                                        <div class="details-item">
                                             <span class="details-label">Account Name</span>
-                                            <span class="details-subtext">RCP SENIA TRADING/ RCP SENIA TRANSPORT</span>
+                                            <span class="details-subtext">@{{ customer_details.customer_name}}</span>
                                         </div>
-
                                         <div class="details-item">
                                             <span class="details-label">Dealer</span>
-                                            <span class="details-subtext">PASIG</span>
+                                            <span class="details-subtext">@{{ curDealerAccount }}</span>
                                         </div>
 
-                                        <div class="details-item">
-                                            <span class="details-label">Date</span>
-                                            <span class="details-subtext">April 1, 2019</span>
-                                        </div>
-
-                                        <div class="details-item">
+                                         <div class="details-item">
                                             <span class="details-label">Model</span>
-                                            <span class="details-subtext">QKR77 (CAB-LESS 80A)</span>
+                                            <span class="details-subtext">@{{ curModel.sales_model }}</span>
                                         </div>
-
                                         <div class="details-item">
                                             <span class="details-label">Quantity</span>
-                                            <span class="details-subtext">2</span>
+                                            <span class="details-subtext">@{{ curModel.quantity }}</span>
                                         </div>
+
+                                        <div class="details-item">
+                                            <span class="details-label">Project No.</span>
+                                            <span class="details-subtext">@{{ curModel.project_id }}</span>
+                                        </div>
+                                        <div class="details-item">
+                                            <span class="details-label">Suggested Price</span>
+                                            <span class="details-subtext">@{{ curModel.suggested_price }}</span>
+                                        </div> 
                                     </div>
-                                </div>
-                             <!--    <div class="form-group">
-                                    <label>Order Control No.</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="001" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Account Name</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="RCP SENIA TRADING/ RCP SENIA TRANSPORT" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Dealer</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="PASIG" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Date</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="April 1, 2019" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Model</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="QKR77 (CAB-LESS 80A)" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Quantity</label>
-                                    <input type="text" class="form-control form-control-sm" readonly="" value="2" />
-                                </div> -->
+                                </div>          
                             </div>
                             <div class="col-md-8">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Descrition</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>One Price</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Wholesale Price</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dealer's Margin</td>
-                                            <td>
-                                                 <div class="row">
-                                                    <div class="col-md-5">
-                                                        <div class="input-group input-group-sm">
-                                                            <input type="text" class="form-control"  aria-describedby="basic-addon2">
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text" id="basic-addon2">%</span>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form class="form-horizontal">
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">One Price</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control form-control-sm" v-model="curModel.one_price" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Wholesale Price</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control form-control-sm" v-model="curModel.wholesale_price" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Dealer's Margin</label>
+                                                <div class="col-lg-9">
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="input-group input-group-sm">
+                                                                <input type="text" class="form-control" v-model="curModel.dealers_margin" aria-describedby="basic-addon2">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-7">
-                                                        <input type="text" class="form-control form-control-sm" value="10000" />
+                                                        <div class="col-md-7">
+                                                            <input type="text" disabled="" class="form-control form-control-sm" :value="formatPrice(calculateMargin)" />
+                                                        </div> 
                                                     </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3 Yrs LTO Registration</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Freebies</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Cost</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Promo Title</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Promo</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Net Cost</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Fleet Price</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Subsidy</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Total IPC Subsidy</td>
-                                            <td><input type="text" class="form-control form-control-sm" /></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">LTO Registration</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control form-control-sm" v-model="curModel.lto_registration" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Freebies</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" :value="formatPrice(sumFreebies)" class="form-control form-control-sm" disabled="" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Cost</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" :value="formatPrice(calculateCost)" class="form-control form-control-sm" disabled="" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Net Cost</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" :value="formatPrice(calculateNetCost)" class="form-control form-control-sm" disabled="" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Fleet Price</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" v-model="curModel.fleet_price" class="form-control form-control-sm" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Subsidy</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" :value="formatPrice(calculateSubsidy)" class="form-control form-control-sm" disabled="" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" style="margin-bottom:.5em !important;">
+                                                <label class="col-lg-3 col-form-label">Total IPC Subsidy</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" :value="formatPrice(calculateTotalSubsidy)" class="form-control form-control-sm" disabled="" />
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                       
+                                    </div>
+                                </div>
+                                
                             </div>
-           
+
                         </div>
+
+
                     </div>
                     <div class="tab-pane fade" id="nav-addtl" role="tabpanel" aria-labelledby="nav-profile-tab">
                         <table class="table table-condensed">
@@ -416,52 +430,21 @@
 @stop
 
 @push('scripts')
-<script>
-var Select2 = function(customerOptions){
 
-    var initSelCustomer = function(customerOptions){
-    
-        $('#sel_customer').select2({
-            placeholder: "Select a customer",
-            data: customerOptions
-        });
-    }
-
-    return {
-        init : function(customerOptions){
-            initSelCustomer(customerOptions);
-        }
-    };
-}();
-
-
-</script>
 <script>
 
     var vm =  new Vue({
         el : "#app",
         data: {
-            customerOptions : [
-                {
-                    id : 0,
-                    text : "RCP SENIA TRADING/ RCP SENIA TRANSPORT"
-                },
-                {
-                    id : 1,
-                    text : "MUNICIPAL GOVERNMENT OF CALAUAG"
-                },
-                {
-                    id : 2,
-                    text : "HOME OFFICE SPECIALIST"
-                }
-            ],
-            selected_customer : 0,
-            projects : [
+            fpc_details : {!! json_encode($fpc_details) !!},
+            customer_details : {!! json_encode($customer_details) !!},
+            projects : {!! json_encode($projects) !!},
+            curModel : [],
+            curDealerAccount : '',
+          /*  projects : [
                 {
                     project_id : '001',
                     dealer : 'PASIG',
-                    body_builder_name : 'Almazora',
-                    rear_body_type : 'Jeepney',
                     orders : [
                         {
                             model : 'QKR77 (CAB-LESS 80A)',
@@ -508,12 +491,14 @@ var Select2 = function(customerOptions){
                         }
                     ]
                 }
-            ],
+            ],*/
             additional_details : [],
             active_tab : 0
         },
         methods : {
-            priceConfirmation(order){
+            priceConfirmation(order,dealerAccount){
+                this.curModel = order;
+                this.curDealerAccount = dealerAccount;
                 $("#priceConfirmationModal").modal('show');
             },
             addRow(){
@@ -547,14 +532,39 @@ var Select2 = function(customerOptions){
             showAdditionalDetails(){
                 $("#additionalDetailsModal").modal('show');
             },
+            formatPrice(value) {
+                return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            }
         },
         created: function () {
             // `this` points to the vm instance
             
         },
         mounted : function () {
-          
+
+        },
+        computed: {
+            sumFreebies(){
+                return this.additional_details.reduce((acc,item) => parseFloat(acc) + parseFloat(item.amount),0);
+            },
+            calculateCost(){
+                return (parseFloat(this.curModel.one_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies));
+            },
+            calculateMargin(){
+                return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
+            },
+            calculateNetCost(){
+                return (parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.curModel.lto_registration));
+            },
+            calculateSubsidy(){
+                return (parseFloat(this.calculateNetCost) - parseFloat(this.curModel.fleet_price));
+            },
+            calculateTotalSubsidy(){
+                return (parseFloat(this.calculateSubsidy) * parseFloat(this.curModel.quantity));
+            }
         }
+
+        
     });
 </script>
 @endpush
