@@ -41,6 +41,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('get-sales-person-detail/{sales_person_id}', 'SalesPersonController@get_sales_person_detail');
 	Route::post('save-project', 'ProjectController@save_project');
 	Route::post('upload-project-attachment', 'ProjectController@upload_project_attachment');
+	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::post('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_id}', 'ProjectController@ajax_get_delivery_detail');
@@ -65,7 +66,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');
-	Route::get('get-vehicle-colors/{sales_model}', 'VehicleController@get_vehicle_colors');
+	Route::get('get-vehicle-colors/{sales_model?}', 'VehicleController@get_vehicle_colors')->where('sales_model', '(.*)');;
 
 });
 

@@ -18,6 +18,7 @@ class PriceConfirmationController extends Controller
     public function all_price_confirmation(FPC $m_fpc){
         $fpc_list = $m_fpc->get_fpc(
             session('user')['user_type_id']
+         //   session('user')['customer_id']
         );
 
         $page_data = [

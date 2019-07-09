@@ -39,4 +39,6 @@ class Attachment extends Model
 			[ 'reference_column', '=', 'customer_id' ]
 		])->delete();
 	}
+
+	
 }

@@ -76,8 +76,7 @@ class Project extends Model
                         usr.first_name || ' ' || usr.last_name created_by,
                         to_char(fs.creation_date,'mm/dd/yyyy') date_created,
                         fs.dealer_id,
-                        fs.vehicle_type,
-                        fvt.vehicle_type_name,
+                    
                         fps.source_name project_source,
                         fs.email,
                         fs.facebook_url,
@@ -100,8 +99,7 @@ class Project extends Model
                     LEFT JOIN ipc_dms.ipc_portal_users_v usr
                         ON usr.user_id = fs.created_by 
                         AND usr.user_source_id = fs.create_user_source_id
-                    LEFT JOIN ipc_dms.fs_vehicle_types fvt
-                        ON fvt.vehicle_type_abbrev = fs.vehicle_type
+                   
                     LEFT JOIN ipc_dms.fs_project_sources fps
                         ON fps.project_source_id = fs.project_source_id
                 WHERE 1 = 1

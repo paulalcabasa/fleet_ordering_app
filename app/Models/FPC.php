@@ -37,6 +37,7 @@ class FPC extends Model
 				    LEFT JOIN ipc_dms.ipc_portal_users_v usr
 				        ON usr.user_id = fpc.created_by 
 				        AND usr.user_source_id = fpc.create_user_source_id
+
 				WHERE 1 = 1
 					AND fpc.vehicle_type = :vehicle_type";
 		$params = [
