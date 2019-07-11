@@ -19,19 +19,21 @@
                     <th>Actions</th>
                     <th>FPC No.</th>
                     <th>Account Name</th>
+                    <th>Date</th>
+                    <th>Created by</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row,index) in tableData">
+                <tr v-for="(row,index) in fpcList">
                     <td>
                         <div class="dropdown">
                           <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/validate/10') }}">Validate</a>
-                            <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/10') }}">View</a>
+                           <!--  <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/validate/10') }}">Validate</a> -->
+                            <a class="dropdown-item" :href="base_url + '/price-confirmation-details/' + row.fpc_id">View</a>
                             <a class="dropdown-item" href="#">Edit</a>
                             <a class="dropdown-item" href="#">Close</a>
                             <a class="dropdown-item" href="#">Cancel</a>
@@ -39,9 +41,11 @@
                           </div>
                         </div>
                     </td>
-                    <td>@{{ row.id }}</td>
-                    <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.status }}</td>
+                    <td>@{{ row.fpc_id }}</td>
+                    <td>@{{ row.customer_name }}</td>
+                    <td>@{{ row.date_created }}</td>
+                    <td>@{{ row.created_by }}</td>
+                    <td>@{{ row.status_name }}</td>
                   
                 </tr>
             </tbody>
@@ -57,13 +61,8 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            tableData : [
-                {
-                    "id" : "001",
-                    "account_name" : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    "status" : "Open"
-                }
-            ]
+            fpcList : {!! json_encode($fpc_list) !!},
+            base_url : {!! json_encode($base_url) !!}
         },
         created: function () {
             // `this` points to the vm instance

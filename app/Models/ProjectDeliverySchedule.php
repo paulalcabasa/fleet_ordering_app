@@ -14,17 +14,17 @@ class ProjectDeliverySchedule extends Model
 		$this->insert($params);
     }
 
-    public function get_delivery_schedule($requirement_id){
+    public function get_delivery_schedule($requirement_line_id){
 
         $sql = "delivery_schedule_id,
-                requirement_id,
+                requirement_line_id,
                 quantity,
-              	to_char(delivery_date,'MM/DD/YYYY') delivery_date";
+                to_char(delivery_date,'MM/DD/YYYY') delivery_date";
 
         $params = [
-            ['requirement_id' ,'=', $requirement_id]
+            ['requirement_line_id' ,'=', $requirement_line_id]
         ];
-
+        
         $data = $this
                     ->selectRaw($sql)
                     ->where($params)
@@ -32,4 +32,5 @@ class ProjectDeliverySchedule extends Model
         return $data;
 
     }
+
 }

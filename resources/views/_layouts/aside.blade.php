@@ -44,7 +44,7 @@
                     <span class="kt-menu__link-text">All Projects</span>
                 </a>
             </li>
-            @if(in_array(session('user')['user_type_name'], array('Fleet Sales Staff','Dealer Manager')))
+            @if(in_array(session('user')['user_type_id'], array(31,32,33))) 
             <li class="kt-menu__item {{ request()->is('project-approval') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/project-approval') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-price-tag"></i>
@@ -60,7 +60,7 @@
                 <h4 class="kt-menu__section-text">Pricing</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
-            @if(in_array(session('user')['user_type_name'], array('Administrator','Fleet Sales Staff')))
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__item {{ request()->is('price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/price-confirmation') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-price-tag"></i>

@@ -12,7 +12,9 @@
             </h3>
         </div>
     </div>
+
     <div class="kt-portlet__body">
+     
         <table id="price_confirmation_table" class="table table-striped" width="100%">
             <thead>
                 <tr>

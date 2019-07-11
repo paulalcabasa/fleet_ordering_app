@@ -148,7 +148,7 @@ class Customer extends Model
                     fc.products,
                     fc.company_overview,
                     fc.organization_type_id,
-                    fot.name org_type_name
+                    initcap(fot.name) org_type_name
                 FROM ipc_dms.fs_customers fc 
                     LEFT JOIN ipc_dms.fs_organization_types fot
                         ON fc.organization_type_id = fot.organization_type_id
@@ -162,6 +162,29 @@ class Customer extends Model
         $query = DB::select($sql,$params);
         return !empty($query) ? $query[0] : $query;
 
+    }
+
+    public function get_project_customers($vehicle_type){
+        $sql = "SELECT fc.customer_id,
+                        fc.customer_name,
+                        fc.tin,
+                        fc.address,
+                        fot.name org_type_name
+                FROM ipc_dms.fs_customers fc
+                    LEFT JOIN ipc_dms.fs_organization_types fot
+                        ON fot.organization_type_id = fc.organization_type_id
+                WHERE fc.customer_id IN (
+                    SELECT customer_id
+                    FROM ipc_dms.fs_projects 
+                    WHERE status = :status
+                        AND vehicle_type = :vehicle_type
+                )";
+        $params = [
+            'status'       => 10,
+            'vehicle_type' => $vehicle_type
+        ];
+        $query = DB::select($sql,$params);
+        return $query;
     }
 
 
