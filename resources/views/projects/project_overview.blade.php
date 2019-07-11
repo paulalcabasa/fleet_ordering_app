@@ -46,187 +46,229 @@
     <div class="kt-portlet__body">
         <div class="tab-content">
             <div class="tab-pane active" id="account">
+
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Project No.</span>
-                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ projectDetails.project_id }}</span>
+                        <div class="card kt-margin-b-10">
+                            <div class="card-header">
+                                Project Details
+                            </div>
+                            <div class="card-body">
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Project No.</span>
+                                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ projectDetails.project_id }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Dealer</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">
+                                    @{{ projectDetails.dealer_name }} - @{{ projectDetails.dealer_account}}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Fleet Account Name</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Project Source</span>
+                                    <span class="col-md-8">@{{ projectDetails.project_source }}</span>
+                                </div>
+                               
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Date Submitted</span>
+                                    <span class="col-md-8">@{{ projectDetails.date_created }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
+                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Status</span>
+                                    <span class="col-md-8">
+                                        <span :class="status_colors[projectDetails.status_name]">@{{ projectDetails.status_name }}</span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Dealer</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">
-                            @{{ projectDetails.dealer_name }} - @{{ projectDetails.dealer_account}}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Fleet Account Name</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Project Source</span>
-                            <span class="col-md-8">@{{ projectDetails.project_source }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Vehicle Type</span>
-                            <span class="col-md-8">@{{ projectDetails.vehicle_type_name}}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Date Submitted</span>
-                            <span class="col-md-8">@{{ projectDetails.date_created }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Submitted By</span>
-                            <span class="col-md-8">@{{ projectDetails.created_by }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Status</span>
-                            <span class="col-md-8">
-                                <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ projectDetails.status_name }}</span>
-                            </span>
+                        <div class="card" v-if="projectDetails.bid_ref_no">
+                            <div class="card-header">
+                                Bidding Details
+                            </div>
+                            <div class="card-body">
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
+                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
+                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
+                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
+                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                </div> 
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Organization Type</span>
-                            <span class="col-md-8">@{{ customerDetails.org_type_name }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">TIN</span>
-                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customerDetails.tin }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Address</span>
-                            <span class="col-md-8">@{{ customerDetails.address }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5" v-if="attachments.length > 0">
-                            <span class="col-md-4 kt-font-bold">Attachment</span>
-                            <span class="col-md-8">
-                                <ul style="list-style:none;padding:0;">
-                                    <li v-for="(row,index) in attachments">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
-                                    </li>
-                                </ul>
-                            </span>
-                        </div>
-
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Business Style</span>
-                            <span class="col-md-8">@{{ customerDetails.business_style }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Date of Establishment</span>
-                            <span class="col-md-8">@{{ customerDetails.establishment_date }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Affiliates</span>
-                            <span class="col-md-8">
-                                <ul style="list-style:none;padding:0;">
-                                    <li v-for="(row,index) in affiliates">
-                                        <a href="#">@{{ row.customer_name }}</a>
-                                    </li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Products</span>
-                            <span class="col-md-8">@{{ customerDetails.products }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Company Overview</span>
-                            <span class="col-md-8">@{{ customerDetails.company_overview }}</span>
-                        </div>
-                    </div>
-                </div>
-              <!--   <hr/>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="details-item kt-margin-b-10">
-                            <span class="details-label">Products</span>
-                            <span class="details-subtext">@{{ customerDetails.products }}</span>
-                        </div>
-                        <div class="details-item kt-margin-b-10">
-                            <span class="details-label">History and Background</span>
-                            <span class="details-subtext">@{{ customerDetails.company_overview }}</span>
+                         <div class="card">
+                            <div class="card-header">
+                                Customer Details
+                            </div>
+                            <div class="card-body">
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Organization Type</span>
+                                    <span class="col-md-8">@{{ customerDetails.org_type_name }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">TIN</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customerDetails.tin }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Address</span>
+                                    <span class="col-md-8">@{{ customerDetails.address }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5" v-if="attachments.length > 0">
+                                    <span class="col-md-4 kt-font-bold">Attachment</span>
+                                    <span class="col-md-8">
+                                        <ul style="list-style:none;padding:0;">
+                                            <li v-for="(row,index) in attachments">
+                                                <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Business Style</span>
+                                    <span class="col-md-8">@{{ customerDetails.business_style }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Date of Establishment</span>
+                                    <span class="col-md-8">@{{ customerDetails.establishment_date }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Affiliates</span>
+                                    <span class="col-md-8">
+                                        <ul style="list-style:none;padding:0;">
+                                            <li v-for="(row,index) in affiliates">
+                                                <a href="#">@{{ row.customer_name }}</a>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Products</span>
+                                    <span class="col-md-8">@{{ customerDetails.products }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Company Overview</span>
+                                    <span class="col-md-8">@{{ customerDetails.company_overview }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div> -->
-
+                </div> 
+                
             </div>
             <div class="tab-pane" id="contact">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Contact No.</span>
-                            <span class="col-md-8">
-                                <ul style="list-style:none;padding:0;">
-                                    <li v-for="(row,index) in contacts">@{{ row.contact_number }}</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Email</span>
-                            <span class="col-md-8"><a href="mailto:xxx@xxx.mail">@{{ projectDetails.email}}</a></span>
-                        </div>
+
+                <div class="card kt-margin-b-10">
+                    <div class="card-header">
+                        Customer Contact Details
                     </div>
-                    <div class="col-md-6">
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Website</span>
-                            <span class="col-md-8"><a href="http://www.website.com">@{{ projectDetails.website_url }}</a></span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Facebook</span>
-                            <span class="col-md-8"><a href="http://www.facebook.com">@{{ projectDetails.facebook_url }}</a></span>
-                        </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Contact No.</span>
+                                    <span class="col-md-8">
+                                        <ul style="list-style:none;padding:0;">
+                                            <li v-for="(row,index) in contacts">@{{ row.contact_number }}</li>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Email</span>
+                                    <span class="col-md-8"><a href="mailto:xxx@xxx.mail">@{{ projectDetails.email}}</a></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Website</span>
+                                    <span class="col-md-8"><a href="http://www.website.com">@{{ projectDetails.website_url }}</a></span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Facebook</span>
+                                    <span class="col-md-8"><a href="http://www.facebook.com">@{{ projectDetails.facebook_url }}</a></span>
+                                </div>
+                            </div>
+                        </div>  
                     </div>
                 </div>
-                <hr />
-                <h5>Contact Persons</h5>
-                <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Department</th>
-                            <th>Contact No</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(row,index) in contactPersons">
-                            <td>@{{ row.name }}</td>
-                            <td>@{{ row.position_title }}</td>
-                            <td>@{{ row.department }}</td>
-                            <td>@{{ row.contact_number }}</td>
-                            <td>@{{ row.email_address }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr />
-                <h5>Dealer Sales Executives</h5>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Position</th>  
-                            <th>Mobile No.</th>  
-                            <th>Email</th>  
-                            <th></th>  
-                        </tr>
-                    </thead> 
-                    <tbody>
-                        <tr v-for="(row, index) in salesPersons">
-                       
-                            <td>@{{ row.name }}</td>
-                            <td>@{{ row.position }}</td> 
-                            <td>@{{ row.mobile_no }}</td> 
-                            <td>@{{ row.email_address }}</td> 
-                        </tr>
-                    </tbody>
-                </table>
+                
+             
+                <div class="card kt-margin-b-10">
+                    <div class="card-header">
+                        Contact Persons
+                    </div>
+                    <div class="card-body">
+                         <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Department</th>
+                                    <th>Contact No</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row,index) in contactPersons">
+                                    <td>@{{ row.name }}</td>
+                                    <td>@{{ row.position_title }}</td>
+                                    <td>@{{ row.department }}</td>
+                                    <td>@{{ row.contact_number }}</td>
+                                    <td>@{{ row.email_address }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             
+                <div class="card">
+                    <div class="card-header">Dealer Sales Executives</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>  
+                                    <th>Mobile No.</th>  
+                                    <th>Email</th>  
+                                    <th></th>  
+                                </tr>
+                            </thead> 
+                            <tbody>
+                                <tr v-for="(row, index) in salesPersons">
+                               
+                                    <td>@{{ row.name }}</td>
+                                    <td>@{{ row.position }}</td> 
+                                    <td>@{{ row.mobile_no }}</td> 
+                                    <td>@{{ row.email_address }}</td> 
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+              
             </div>
             <div class="tab-pane" id="requirement">
-                <table class="table table-condensed" style="font-size:90%;">
+                <table class="table table-condensed"  style="font-size:90%;">
                     <thead>
-                        <tr>
+                        <tr class="kt-font-bold bg-light-gray-1">
                             <th>Model</th>
                             <th>Color</th>
                             <th>Quantity</th>
@@ -236,13 +278,14 @@
                             <th>Delivery Schedule</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr v-for="(row,index) in requirement">
+
+                    <tbody v-for="(vehicles,vehicle_type) in requirement">
+                        <tr v-for="(row,index) in vehicles">
                             <td>@{{ row.sales_model }}</td>
                             <td>@{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
-                            <td>@{{ row.po_quantity }}</td>
-                            <td>@{{ row.suggested_price }}</td>
+                            <td>@{{ row.po_qty }}</td>
+                            <td>@{{ formatPrice(row.suggested_price) }}</td>
                             <td>
                                 <button type="button" @click="showAdditionalDetails(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-info-circle"></i>
@@ -254,28 +297,66 @@
                                 </button>
                             </td>
                         </tr>
+
+                        <tr class="kt-font-bold bg-light-gray-1">
+                           <th colspan="2">@{{ vehicle_type }}</th>
+                           <th>@{{ sumOrderQty(vehicle_type) }}</th> 
+                           <th>@{{ sumPOQty(vehicle_type) }}</th> 
+                           <th colspan="3">@{{ formatPrice(sumSuggestedPrice(vehicle_type)) }}</th> 
+                        </tr>
+                   
                     </tbody>
+
+                    <tfoot>
+                        <tr class="bg-light-gray-2">
+                            <th colspan="2">Grand Total</th>
+                            <th>@{{ totalQty }}</th>
+                            <th>@{{ totalPOQty }}</th>
+                            <th colspan="3">@{{ formatPrice(totalSuggestedPrice) }}</th>
+                        </tr>
+                    </tfoot>
                 </table>
+               
             </div>
             <div class="tab-pane" id="competitors">
-                <table class="table table-condensed" style="font-size:90%;">
-                    <thead>
-                        <tr>
-                            <th>Brand</th>
-                            <th>Model</th>
-                            <th>Price</th> 
-                            <th>Attachment</th> 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(row,index) in competitors">
-                            <td>@{{ row.brand }}</td>
-                            <td>@{{ row.model }}</td>
-                            <td>@{{ row.price }}</td>
-                            <td><a :href="base_url + '/'+ row.directory +'/' +row.filename" download>@{{ row.orig_filename }}</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row" v-if="projectDetails.competitor_flag == 'Y'">
+                    <div class="col-md-8" v-if="competitors.length > 0">
+                        <div class="card">
+                            <div class="card-header">Vehicles</div>
+                            <div class="card-body">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Brand</th>
+                                            <th>Model</th>
+                                            <th>Price</th> 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in competitors">
+                                            <td>@{{ row.brand }}</td>
+                                            <td>@{{ row.model }}</td>
+                                            <td>@{{ formatPrice(row.price) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" v-if="competitor_attachments.length > 0">
+                        <div class="card">
+                            <div class="card-header">Attachment</div>
+                            <div class="card-body">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in competitor_attachments">
+                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>  
+                    </div>
+                </div>  
+                <p v-if="projectDetails.competitor_flag == 'N'">@{{ projectDetails.competitor_remarks }}</p>
             </div>
             <div class="tab-pane" id="terms">
                 <div class="row kt-margin-b-5">
@@ -306,13 +387,14 @@
                     <span class="kt-hidden-mobile">Cancel</span>
                 </a>
                 @elseif($action == "view")
+                <button type="button" class="btn btn-danger" @click="closeProject()">Cancel</button>
                 <button type="button" class="btn btn-success" @click="closeProject()">Close</button>
+                <button type="button" class="btn btn-primary" @click="closeProject()">Print</button>
                 @endif
             </div>
         </div>
     </div>
     
- 
 </div>
 
 @if($action == "view")
@@ -462,15 +544,15 @@
                             <div class="card-body">
                                 <div class="details-item">
                                     <span class="details-label">Model</span>
-                                    <span class="details-subtext">D-MAX RZ4E 4x2 Cab/Chassis</span>
+                                    <span class="details-subtext">@{{ curModel }}</span>
                                 </div>
                                 <div class="details-item">
                                     <span class="details-label">Color</span>
-                                    <span class="details-subtext">Red Spinel Mica</span>
+                                    <span class="details-subtext">@{{ curColor }}</span>
                                 </div>
                                 <div class="details-item">
                                     <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">5</span>
+                                    <span class="details-subtext">@{{ curQuantity}}</span>
                                 </div>
                             </div>
                         </div>
@@ -515,28 +597,16 @@
             <div class="modal-body">    
                 <div class="details-item">
                     <span class="details-label">Name of Body Builder</span>
-                    <span class="details-subtext">@{{ curBodyBuilder }}</span>
+                    <span class="details-subtext">@{{ curBodyBuilder == null ? '-' : curBodyBuilder }}</span>
                 </div>
                 <div class="details-item">
                     <span class="details-label">Rear Body Type</span>
-                    <span class="details-subtext">@{{ curRearBody }}</span>
+                    <span class="details-subtext">@{{ curRearBody == null ? '-' : curRearBody  }}</span>
                 </div>
                 <div class="details-item">
                     <span class="details-label">Additional Items</span>
-                    <span class="details-subtext">@{{ curAdditionalItems }}</span>
+                    <span class="details-subtext">@{{ curAdditionalItems == null ? '-' : curAdditionalItems  }}</span>
                 </div>      
-                <!-- <div class="form-group">
-                    <label>Name of Body Builder</label>
-                    <input type="text" class="form-control" placeholder="Body builder" />
-                </div>
-                <div class="form-group">
-                    <label>Rear Body Type</label>
-                    <input type="text" class="form-control" name="fname" placeholder="Rear Body Type" >
-                </div>  
-                <div class="form-group">
-                    <label>Additional Items</label>
-                    <textarea class="form-control"></textarea>
-                </div>  -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -582,27 +652,34 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            approvalId:         {!! json_encode($approval_id) !!},
-            projectId:          {!! json_encode($project_id) !!},
-            projectDetails:     {!! json_encode($project_details) !!},
-            customerDetails:    {!! json_encode($customer_details) !!},
-            attachments:        {!! json_encode($attachments) !!},
-            affiliates:         {!! json_encode($affiliates) !!},
-            contacts:           {!! json_encode($contacts) !!},
-            contactPersons:     {!! json_encode($contact_persons) !!},
-            salesPersons:       {!! json_encode($sales_persons) !!},
-            requirement:        {!! json_encode($requirement) !!},
-            competitors:        {!! json_encode($competitors) !!},
-            base_url:           {!! json_encode($base_url) !!},
-            remarks:            null,
-            curBodyBuilder:     null,
-            curRearBody:        null,
-            curAdditionalItems: null,
-            curModel:           "",
-            curColor:           "",
-            curQuantity:        "",
-            curDeliveryDetails: [],
-            fpc:                [
+            approvalId:             {!! json_encode($approval_id) !!},
+            projectId:              {!! json_encode($project_id) !!},
+            projectDetails:         {!! json_encode($project_details) !!},
+            customerDetails:        {!! json_encode($customer_details) !!},
+            attachments:            {!! json_encode($attachments) !!},
+            affiliates:             {!! json_encode($affiliates) !!},
+            contacts:               {!! json_encode($contacts) !!},
+            contactPersons:         {!! json_encode($contact_persons) !!},
+            salesPersons:           {!! json_encode($sales_persons) !!},
+            requirement:            {!! json_encode($requirement) !!},
+            competitors:            {!! json_encode($competitors) !!},
+            base_url:               {!! json_encode($base_url) !!},
+            competitor_attachments: {!! json_encode($competitor_attachments) !!},
+            remarks:                null,
+            curBodyBuilder:         null,
+            curRearBody:            null,
+            curAdditionalItems:     null,
+            curModel:               "",
+            curColor:               "",
+            curQuantity:            "",
+            curDeliveryDetails:     [],
+            status_colors : {
+                'New' : "kt-badge kt-badge--brand kt-badge--inline",
+                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
+                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
+                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
+            },
+            fpc:                    [
                 {
                     fpc_no : "FPC001",
                     account_name : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
@@ -634,10 +711,11 @@
         methods : {
             showDeliveryDetail(data){
                 var self = this;
-                self.curModel= data.sales_model;
+
+                self.curModel = data.sales_model;
                 self.curColor = data.color;
                 self.curQuantity = data.quantity;
-                axios.get('/ajax-get-delivery-detail/' + data.requirement_id)
+                axios.get('/ajax-get-delivery-detail/' + data.requirement_line_id)
                     .then(function (response) {
                         self.curDeliveryDetails = response.data;
                     })
@@ -715,14 +793,51 @@
                         window.location.href = "{{ url('all-projects')}}";
                     }
                 });
+            },
+            sumOrderQty(vehicle_type){
+                return this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
+            },
+            sumPOQty(vehicle_type){
+                return this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.po_qty),0);
+            },
+            sumSuggestedPrice(vehicle_type){
+                return this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
+            },
+            formatPrice(value) {
+                return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
             }
         },
         created: function () {
             // `this` points to the vm instance
+
         },
         mounted : function () {
-            console.log(this.contacts);
+
+        },
+        computed : {
+            totalQty : function(){
+                var total = 0;
+                for(vehicle_type in this.requirement){
+                    total += this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
+                }
+                return total;
+            },
+            totalPOQty : function(){
+                var total = 0;
+                for(vehicle_type in this.requirement){
+                    total += this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.po_qty),0);
+                }
+                return total;
+            },
+            totalSuggestedPrice : function(){
+                var total = 0;
+                for(vehicle_type in this.requirement){
+                    total += this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
+                }
+                return total;
+            }
         }
+        
     });
 </script>
 @endpush

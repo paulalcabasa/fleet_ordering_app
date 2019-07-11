@@ -87,7 +87,7 @@ class ProjectController extends Controller
             session('user')['customer_id']
         );
 
-      //  return $projects;
+    
         $page_data = array(
             'projects' => $projects,
             'base_url' => url('/')
@@ -105,34 +105,40 @@ class ProjectController extends Controller
         CustomerContact $m_contact,
         ContactPersons $m_contact_person,
         SalesPersonsOra $m_sales_person,
-        ProjectRequirement $m_requirement,
+        RequirementHeader $m_requirement,
         Competitor $m_competitor
     ){
-        $project_details  = $m_project->get_details($request->project_id);
-        $customer_details = $m_customer->get_customer_details_by_id($project_details->customer_id);
-        $attachments      = $m_attachment->get_customer_attachments($project_details->customer_id);
-        $affiliates       = $m_affiliates->get_customer_affiliates($project_details->customer_id);
-        $contacts         = $m_contact->get_contacts($project_details->project_id);
-        $contact_persons  = $m_contact_person->get_contact_persons($project_details->project_id);
-        $sales_persons    = $m_sales_person->get_sales_persons($project_details->project_id);
-      //  $requirement      = $m_requirement->get_requirement($project_details->project_id);
-        $requirement = [];
-        $competitors      = $m_competitor->get_competitors($project_details->project_id);
+        $project_details        = $m_project->get_details($request->project_id);
+        $customer_details       = $m_customer->get_customer_details_by_id($project_details->customer_id);
+        $attachments            = $m_attachment->get_customer_attachments($project_details->customer_id);
+        $affiliates             = $m_affiliates->get_customer_affiliates($project_details->customer_id);
+        $contacts               = $m_contact->get_contacts($project_details->project_id);
+        $contact_persons        = $m_contact_person->get_contact_persons($project_details->project_id);
+        $sales_persons          = $m_sales_person->get_sales_persons($project_details->project_id);
+        $requirement            = $m_requirement->get_requirements($project_details->project_id);
+        $requirement            = collect($requirement)->groupBy('vehicle_type');
+        $competitors            = $m_competitor->get_competitors($project_details->project_id);
+        $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
+  
+
+        
+
 
         $page_data = [
-            'project_id'       => $request->project_id,
-            'action'           => $request->action,
-            'approval_id'      => $request->approval_id,
-            'project_details'  => $project_details,
-            'customer_details' => $customer_details,
-            'attachments'      => $attachments,
-            'competitors'      => $competitors,
-            'affiliates'       => $affiliates,
-            'requirement'      => $requirement,
-            'contacts'         => $contacts,
-            'sales_persons'    => $sales_persons,
-            'contact_persons'  => $contact_persons,
-            'base_url'         => url('/')
+            'project_id'             => $request->project_id,
+            'action'                 => $request->action,
+            'approval_id'            => $request->approval_id,
+            'project_details'        => $project_details,
+            'customer_details'       => $customer_details,
+            'attachments'            => $attachments,
+            'competitors'            => $competitors,
+            'affiliates'             => $affiliates,
+            'requirement'            => $requirement,
+            'contacts'               => $contacts,
+            'sales_persons'          => $sales_persons,
+            'contact_persons'        => $contact_persons,
+            'competitor_attachments' => $competitor_attachments,
+            'base_url'               => url('/')
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -573,7 +579,8 @@ class ProjectController extends Controller
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
-                        'orig_filename'         => $orig_filename
+                        'orig_filename'         => $orig_filename,
+                        'owner_id'              => 2 // customer as owner
                     ];         
                     array_push($attachment_params,$temp);
                     $file->move($destinationPath,$filename);
@@ -596,7 +603,8 @@ class ProjectController extends Controller
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
-                        'orig_filename'         => $orig_filename
+                        'orig_filename'         => $orig_filename,
+                        'owner_id'              => 1 // competitor as owner of the file
                     ];         
                     array_push($attachment_params,$temp);
                     $file->move($destinationPath,$filename);
@@ -624,7 +632,7 @@ class ProjectController extends Controller
             session('user')['user_type_id']
         );
 
-
+      
         $page_data = [
             'approval_list' => $approval_list,
             'base_url'         =>  url('/')
@@ -686,12 +694,5 @@ class ProjectController extends Controller
         }
     }
 
-    public function ajax_get_delivery_detail(Request $request, ProjectDeliverySchedule $m_delivery_sched){
-        $requirement_id = $request->requirement_id;
-        $delivery_sched = $m_delivery_sched->get_delivery_schedule($requirement_id);
-        return $delivery_sched;
-        //return ["data" => 'test'];
-    }
-
-
+ 
 }

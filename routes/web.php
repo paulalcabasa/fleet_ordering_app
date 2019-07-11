@@ -44,7 +44,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::post('save-approval', 'ProjectController@save_approval');
-	Route::get('/ajax-get-delivery-detail/{requirement_id}', 'ProjectController@ajax_get_delivery_detail');
+	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}/{vehicle_type}', 'PriceConfirmationController@ajax_get_projects');
 	
 	/* Price Confirmation */
@@ -66,7 +66,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');
-	Route::get('get-vehicle-colors/{sales_model?}', 'VehicleController@get_vehicle_colors')->where('sales_model', '(.*)');;
+	Route::get('get-vehicle-colors/{sales_model?}', 'VehicleController@get_vehicle_colors')->where('sales_model', '(.*)');
+	
+	// Approval
+	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
 
 });
 

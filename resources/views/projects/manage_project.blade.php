@@ -433,7 +433,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <table class="table table-condensed table-bordered">
-                                            <thead>
+                                            <thead  class="bg-light-gray-2">
                                                 <tr>
                                                     <th></th>
                                                     <th>Model</th>
@@ -1166,6 +1166,7 @@ jQuery(document).ready(function() {
             },
             processFileUpload(customer_id,project_id){
                 let data = new FormData();
+                var self = this;
                 data.append('customer_id',customer_id);
                 data.append('project_id',project_id);
 
@@ -1190,7 +1191,8 @@ jQuery(document).ready(function() {
                             showConfirmButton: false,
                             timer: 1500,
                             onClose : function(){
-                            //    window.location.href = "{{ url('manage-project/create')}}";
+                                var link = self.baseUrl + '/project-overview/view/' + project_id;
+                                window.location.href = link;
                             }
                         });
                     }

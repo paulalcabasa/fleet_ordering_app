@@ -33,7 +33,7 @@
                     <td>@{{ row.account_name }}</td>
                     <td>@{{ row.created_by }}</td>
                     <td>@{{ row.date_submitted }}</td>
-                    <td>@{{ row.status_name }}</td>
+                    <td nowrap><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                     <td nowrap>
                         <a :href="base_url + '/project-overview/validate/' + row.project_id + '/' + row.approval_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                         <a href="#" class="btn btn-success  btn-sm btn-icon btn-circle"><i class="la la-print"></i></a> 
@@ -53,7 +53,13 @@
         el : "#app",
         data: {
             approval_list : {!! json_encode($approval_list) !!},
-            base_url : {!! json_encode($base_url) !!}
+            base_url : {!! json_encode($base_url) !!},
+            status_colors : {
+                'New' : "kt-badge kt-badge--brand kt-badge--inline",
+                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
+                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
+                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
+            }
         },
         created: function () {
             // `this` points to the vm instance

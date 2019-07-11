@@ -35,14 +35,10 @@
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" :href="base_url + '/project-overview/view/' + row.project_id">Overview</a>
+                            <a class="dropdown-item" href="#" @click.prevent="showApproval(row)">View Approval</a>
                             <a class="dropdown-item" href="{{ url('manage-project/edit/001') }}">Edit</a>
                             <a class="dropdown-item" href="{{ url('project-overview/cancel/001') }}">Cancel</a>
                             <div class="dropdown-divider"></div>
-                           <!--  @if(session('user')['user_type_name'] == 'Dealer')
-                            <a class="dropdown-item" href="{{ url('view-fpc/10') }}">Price Confirmation</a>
-                            @elseif(session('user')['user_type_name'] == 'Administrator')
-                            <a class="dropdown-item" href="{{ url('price-confirmation-details/10') }}">Price Confirmation</a>
-                            @endif -->
                             <a class="dropdown-item" href="{{ url('/manage-po/create/001')}}">Submit PO</a>
                            </div>
                         </div>
@@ -52,11 +48,45 @@
                     <td>@{{ row.account_name }}</td>
                     <td>@{{ row.created_by }}</td>
                     <td>@{{ row.date_created }}</td>
-                    <td nowrap><span :class="status_colors['new']">@{{ row.status_name }}</span></td>
+                    <td nowrap><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <div class="modal fade" id="modal_approver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Approval Workflow</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Approver</th>
+                                <th>Status</th>
+                                <th>Date Approved</th>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row,index) in cur_approval">
+                                <td>@{{ row.approver_name }}</td>
+                                <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
+                                <td>@{{ row.date_approved }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @stop
@@ -69,7 +99,14 @@
         data: {
             projects:    {!! json_encode($projects) !!},
             base_url:    {!! json_encode($base_url) !!},
-            status_colors : []
+            status_colors : {
+                'New' : "kt-badge kt-badge--brand kt-badge--inline",
+                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
+                'Approved' : "kt-badge kt-badge--success kt-badge--inline",
+                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
+                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
+            },
+            cur_approval : []
         },
         created: function () {
             // `this` points to the vm instance
@@ -78,22 +115,24 @@
         methods : {
             viewPriceConfirmation(){
                 window.location.href = 'price-confirmation-details/10';
+            },
+            showApproval(row){
+                var self = this;
+                axios.get('/ajax-get-approval-workflow/' + row.project_id)
+                .then(function(response){
+                    self.cur_approval = response.data;
+                })
+                .catch(function(error){
+                    console.log(error);
+                })
+                .finally(function(){
+
+                });
+                $("#modal_approver").modal('show');
             }
         },
         mounted : function () {
             var table = $("#projects_table").DataTable();
-            this.status_colors['new'] = "kt-badge kt-badge--brand kt-badge--inline";
-        
-            /* "New"
-                    status : "New",
-                    class : "kt-badge kt-badge--brand kt-badge--inline"
-                }
-          /*      "For_Approval" : "kt-badge kt-badge--warning kt-badge--inline",
-                "Approved" : "kt-badge kt-badge--success kt-badge--inline",
-                "Price_Confirmed" : "kt-badge kt-badge--primary kt-badge--inline",
-                "Awaiting_FWPC" : "kt-badge kt-badge--warning kt-badge--inline",
-                "Cancelled" : "kt-badge kt-badge--danger kt-badge--inline",
-                "Closed" : "kt-badge kt-badge--secondary kt-badge--inline"*/ 
         }
     });
 </script>

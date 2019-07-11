@@ -17,41 +17,70 @@ class Project extends Model
     }
     
     public function get_projects($user_type,$dealer_id){
-    	$sql = "SELECT fs.project_id,
-			            fs.customer_id,
-			            fc.customer_name,
-			            dlr.account_name,
-			            st.status_name,
-			            usr.first_name || ' ' || usr.last_name created_by,
-			            to_char(fs.creation_date,'mm/dd/yyyy') date_created,
-			            fs.dealer_id 
-				FROM ipc_dms.fs_projects fs
-			        LEFT JOIN ipc_dms.fs_customers fc
-			            ON fs.customer_id = fc.customer_id 
-			        LEFT JOIN ipc_dms.dealers_v dlr
-			            ON dlr.cust_account_id = fs.dealer_id
-			        LEFT JOIN ipc_dms.fs_status st
-			            ON st.status_id = fs.status
-			        LEFT JOIN ipc_dms.ipc_portal_users_v usr
-			            ON usr.user_id = fs.created_by 
-			            AND usr.user_source_id = fs.create_user_source_id
-				WHERE 1 = 1";
+    	
     	if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
-    		$sql .= " AND fs.dealer_id = :dealer_id";
+            $sql = "SELECT  fp.project_id,
+                            fp.customer_id,
+                            fc.customer_name,
+                            dlr.account_name,
+                            st.status_name,
+                            usr.first_name || ' ' || usr.last_name created_by,
+                            to_char(fp.creation_date,'mm/dd/yyyy') date_created,
+                            fp.dealer_id 
+                    FROM ipc_dms.fs_projects fp
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fp.customer_id = fc.customer_id 
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fp.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fp.created_by 
+                        AND usr.user_source_id = fp.create_user_source_id
+                    WHERE 1 = 1
+                        AND fp.dealer_id = :dealer_id";
     		$params = [
     			'dealer_id' => $dealer_id
     		];
     		$query = DB::select($sql,$params);
+            return $query;
     	}
-    	else if($user_type == 32 ) { //  Fleet LCV User
-            $sql .= " AND fs.vehicle_type = 'LCV'";
-    		$query = DB::select($sql);
+    	else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            $sql = "SELECT fp.project_id,
+                            fp.customer_id,
+                            fc.customer_name,
+                            dlr.account_name,
+                            st.status_name,
+                            usr.first_name || ' ' || usr.last_name created_by,
+                            to_char(fp.creation_date,'mm/dd/yyyy') date_created,
+                            fp.dealer_id 
+                    FROM ipc_dms.fs_projects fp
+                        LEFT JOIN ipc_dms.fs_customers fc
+                            ON fp.customer_id = fc.customer_id 
+                        LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                            ON rh.project_id = fp.project_id
+                        LEFT JOIN ipc_dms.dealers_v dlr
+                            ON dlr.cust_account_id = fp.dealer_id
+                        LEFT JOIN ipc_dms.fs_status st
+                            ON st.status_id = fp.status
+                        LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                            ON usr.user_id = fp.created_by 
+                            AND usr.user_source_id = fp.create_user_source_id
+                    WHERE 1 = 1
+                        AND rh.vehicle_type = :vehicle_type";
+
+            if($user_type == 32) {
+                $vehicle_type  = 'LCV';
+            }
+            else if($user_type == 33){
+                $vehicle_type = 'CV';
+            }
+            $params = [
+                'vehicle_type' => $vehicle_type
+            ];
+    		$query = DB::select($sql,$params);
+            return $query;
     	}
-        else if($user_type == 33 ) { //  Fleet CV User
-            $sql .= " AND fs.vehicle_type = 'CV'";
-            $query = DB::select($sql);
-        }
-    	return $query;
     }
 
     public function update_status($project_id,$status_id,$update_user,$update_user_source){
