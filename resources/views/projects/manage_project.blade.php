@@ -97,7 +97,25 @@
                         <div class="kt-heading kt-heading--md">Select account</div>
                         <div class="kt-form__section kt-form__section--first kt-wizard-sm">
                             <div class="kt-wizard-v1__form">
-                           
+                                
+                                <div class="form-group">
+
+                                    <label>Account Name</label>
+                                    <div class="typeahead">
+                                        <input 
+                                            type="text" 
+                                            class="form-control" 
+                                            v-model.lazy="accountDetails.account_name"   
+                                            id="txt_account_name" 
+                                            autocomplete="off" 
+                                            name="account_name" 
+                                            dir="ltr" 
+                                            placeholder="Account Name"  
+                                        />
+                                    </div> 
+                          <!--             <span class="form-text text-muted">Please enter name of account</span> -->
+                                </div>
+
                                 <div class="form-group row">
                                     <div class="col-lg-6">
                                         <label>Project Source</label>
@@ -167,23 +185,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-
-                                    <label>Account Name</label>
-                                    <div class="typeahead">
-                                        <input 
-                                            type="text" 
-                                            class="form-control" 
-                                            v-model.lazy="accountDetails.account_name"   
-                                            id="txt_account_name" 
-                                            autocomplete="off" 
-                                            name="account_name" 
-                                            dir="ltr" 
-                                            placeholder="Account Name"  
-                                        />
-                                    </div> 
-                          <!--             <span class="form-text text-muted">Please enter name of account</span> -->
-                                </div>
+                                
                                      
                                 <div class="form-group row">
                                     <div class="col-lg-6">
@@ -546,22 +548,53 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="competitor_flag == 'Y'">
-                                    <div class="col-lg-6">
+                                <div class="form-group row" v-show="competitor_flag == 'Y'">
+                                    <div class="col-lg-4">
                                         <label>Brand</label>
                                         <div class="typeahead">
-                                            <input class="form-control" type="text" dir="ltr" placeholder="Competitor brand" v-model="cur_competitor_brand" />
+                                            <input 
+                                                class="form-control" 
+                                                type="text" dir="ltr" 
+                                                placeholder="Competitor brand" 
+                                                id="txt_comp_brand" 
+                                                v-model="cur_competitor_brand" 
+                                            />
                                         </div> 
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <label>Model</label>
-                                        <div class="input-group">
+                                      <!--   <div class="input-group"> -->
                                             <div class="typeahead">
-                                                <input class="form-control" type="text" dir="ltr" placeholder="Competitor Model" v-model="cur_competitor_model" />
+                                                <input 
+                                                    class="form-control" 
+                                                    type="text" 
+                                                    dir="ltr" 
+                                                    placeholder="Competitor Model" 
+                                                    id="txt_comp_model" 
+                                                    v-model="cur_competitor_model" 
+                                                />
                                             </div> 
+                                          <!--   <div class="input-group-append">
+                                                <button class="btn btn-primary" type="button" @click="addCompetitor">Add</button>
+                                            </div> -->
+                                       <!--  </div> -->
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Isuzu Model</label>
+                                        <div class="input-group">
+                                            <select class="form-control" v-model="competitor_model" id="sel_competitor_model">
+                                                <optgroup v-for="(vehicleGroup,index) in Object.keys(vehicleRequirement)" :label="vehicleGroup" v-if="vehicleRequirement[vehicleGroup].length > 0">
+                                                    <option 
+                                                        v-for="(model,index) in vehicleRequirement[vehicleGroup]" 
+                                                        :value="model.inventory_item_id" 
+                                                        :data-model="model.model"
+                                                        :data-color="model.color"
+                                                    >@{{ model.model }} - @{{ model.color}}</option>
+                                                </optgroup>
+                                            </select>
+
                                             <div class="input-group-append">
                                                 <button class="btn btn-primary" type="button" @click="addCompetitor">Add</button>
-                                    
                                             </div>
                                         </div>
                                     </div>
@@ -578,6 +611,7 @@
                                                     <th>Brand</th>
                                                     <th>Model</th>
                                                     <th>Price</th>
+                                                    <th>Isuzu Model</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -590,12 +624,10 @@
                                                     <td style="width:30%;">@{{ row.brand }}</td>
                                                     <td style="width:20%;">@{{ row.model }}</td>
                                                     <td><input type="text" v-model.lazy="row.price" class="form-control form-control-sm"/></td>
-                                                    <!-- <td>
-                                                        <div class="custom-file" style="font-size:0.875rem;">
-                                                            <input type="file" @change="validateFileSize" class="custom-file-input competitor_attachment" ref="customFile" :name="'competitors_attachment_' + index">
-                                                            <label class="custom-file-label" for="competitor_attachment">Choose file</label>
-                                                        </div>
-                                                    </td> -->
+                                                    <td>
+                                                        @{{ row.ipc_model }}
+                                                        <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.ipc_color}}</span>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -828,103 +860,6 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
     };
 }();
 
-var KTTypeahead = function() {
-
-
-    var inputCompetitorBrand = function() {
-    
-        var arr = [
-            'Hino',
-            'JAC',
-            'Toyota',
-            'Mitsubishi',
-            'Honda',
-            'MAN'
-        ];
-        // constructs the suggestion engine
-        var bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            // `states` is an array of state names defined in "The Basics"
-            local: arr
-        });
-
-        $('#txt_competitor_brand').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },
-        {
-            name: 'brand',
-            source: bloodhound
-        }); 
-    }
-
-     var inputAccountName = function(accountsList) {
-
-        // constructs the suggestion engine
-        var bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            // `states` is an array of state names defined in "The Basics"
-            local: accountsList
-        });
-
-        $('#txt_account_name').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },
-        {
-            name: 'brand',
-            source: bloodhound
-        }); 
-    }
-
-    
-
-    var inputCompetitorModel = function() {
-    
-        var arr = [
-            'Refine M3',
-            'Refine S7 ',
-            'CAB-OVER 195h 19,500 GVW',
-            'CAB-OVER 195h DC 19,500 GVW Double Cab',
-            'CONVENTIONAL 238 23,000 GVW',
-            'Hi-Ace'
-        ];
-        // constructs the suggestion engine
-        var bloodhound = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            // `states` is an array of state names defined in "The Basics"
-            local: arr
-        });
-
-        $('#txt_model_brand').typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },
-        {
-            name: 'model',
-            source: bloodhound
-        }); 
-      
-    }
-    
-
-    return {
-        // public functions
-        init: function(accountsList) {
-           
-            inputCompetitorBrand();
-            inputCompetitorModel();
-          //  inputAccountName(accountsList);
-        }
-    };
-}();
-
 // Class definition
 
 var KTInputmask = function () {
@@ -1002,7 +937,6 @@ var KTInputmask = function () {
 }();
 
 jQuery(document).ready(function() { 
-    
     KTInputmask.init();  
 });
 </script>
@@ -1050,6 +984,7 @@ jQuery(document).ready(function() {
             customerOptions:     {!! json_encode($customer_options) !!},
             salesPersonOptions:      {!! json_encode($sales_persons) !!},
             baseUrl: {!! json_encode($base_url) !!},
+            competitor_model : '',
             // step 1 - account details
             accountDetails : {
                 customer_id:             null,
@@ -1504,10 +1439,17 @@ jQuery(document).ready(function() {
                     self.cur_competitor_model != "" &&
                     self.cur_competitor_model != null
                 ){
+
+                    var ipc_model = $("#sel_competitor_model option:selected").data('model'); 
+                    var ipc_color = $("#sel_competitor_model option:selected").data('color');
+
                     self.competitors.push({
                         brand : self.cur_competitor_brand, 
                         model : self.cur_competitor_model,
-                        price : 0 
+                        price : 0,
+                        ipc_model : ipc_model,
+                        ipc_color : ipc_color,
+                        ipc_item_id : self.competitor_model
                     });
 
                     self.cur_competitor_brand = null;
@@ -1542,7 +1484,7 @@ jQuery(document).ready(function() {
                 this.paymentTermsOptions,
                 this.salesPersonOptions
             );
-            KTTypeahead.init(this.accountsList);
+            
             $("#sel_vehicle_colors,#sel_vehicle_models").select2();
             $("#txt_tin").on("change",function(){
                 self.accountDetails.tin = $(this).val();
@@ -1638,6 +1580,55 @@ jQuery(document).ready(function() {
                         KTApp.unblockPage();
                     });                        
             }); 
+
+            $('#txt_comp_brand').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 3
+            },
+            {
+                limit: 10,
+                async: true,
+                source: function (query, processSync, processAsync) {
+                   // processSync(['Searching...']);
+                    return $.ajax({
+                        url: "{{ url('/ajax-get-competitor-brands') }}", 
+                        type: 'GET',
+                        data: {query: $.trim(query)},
+                        dataType: 'json',
+                        success: function (json) {
+                            // in this example, json is simply an array of strings
+                            return processAsync(json);
+                        }
+                    });
+                }
+            });
+
+            $('#txt_comp_model').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 3
+            },
+            {
+                limit: 10,
+                async: true,
+                source: function (query, processSync, processAsync) {
+                   // processSync(['Searching...']);
+                    return $.ajax({
+                        url: "{{ url('/ajax-get-competitor-models') }}", 
+                        type: 'GET',
+                        data: {
+                            query: $.trim(query),
+                            brand : $("#txt_comp_brand").val()
+                        },
+                        dataType: 'json',
+                        success: function (json) {
+                            // in this example, json is simply an array of strings
+                            return processAsync(json);
+                        }
+                    });
+                }
+            });
 
 
             // Class definition
@@ -1742,7 +1733,7 @@ jQuery(document).ready(function() {
                         ignore: ":hidden",
 
                         // Validation rules
-                        rules: {    
+                       rules: {    
                             //= Step 1
                             account_name: {
                                 required: true 
@@ -1805,7 +1796,7 @@ jQuery(document).ready(function() {
                                 required: true 
                             }
                         },
-                        
+                       
                         // Display error  
                         invalidHandler: function(event, validator) {     
                             KTUtil.scrollTop();

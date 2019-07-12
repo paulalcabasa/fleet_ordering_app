@@ -94,20 +94,28 @@
                             </div>
                             <div class="card-body">
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bidding Ref No.</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_ref_no }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bid Docs Amount</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_docs_amount }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Pre-bid Schedule</span>
+                                    <span class="col-md-8">@{{ projectDetails.pre_bid_sched }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bid Date Sched</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_date_sched }}</span>
+                                </div> 
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Bidding Venue</span>
+                                    <span class="col-md-8">@{{ projectDetails.bidding_venue }}</span>
+                                </div> 
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Approved Budget Cost</span>
+                                    <span class="col-md-8">@{{ projectDetails.approved_budget_cost }}</span>
                                 </div> 
                             </div>
                         </div>
@@ -330,6 +338,8 @@
                                             <th>Brand</th>
                                             <th>Model</th>
                                             <th>Price</th> 
+                                            <th>Isuzu Model</th> 
+                                            <th>Suggested Price</th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -337,6 +347,10 @@
                                             <td>@{{ row.brand }}</td>
                                             <td>@{{ row.model }}</td>
                                             <td>@{{ formatPrice(row.price) }}</td>
+                                            <td>
+                                                @{{ row.sales_model }} 
+                                                <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.color}}</span>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -387,8 +401,8 @@
                     <span class="kt-hidden-mobile">Cancel</span>
                 </a>
                 @elseif($action == "view")
-                <button type="button" class="btn btn-danger" @click="closeProject()">Cancel</button>
-                <button type="button" class="btn btn-success" @click="closeProject()">Close</button>
+                <button type="button" class="btn btn-danger" @click="cancelProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Cancel</button>
+                <button type="button" class="btn btn-success" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
                 <button type="button" class="btn btn-primary" @click="closeProject()">Print</button>
                 @endif
             </div>
@@ -678,6 +692,7 @@
                 'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
                 'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
                 'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
+                'Closed' : "kt-badge kt-badge--info kt-badge--inline"
             },
             fpc:                    [
                 {
@@ -784,15 +799,84 @@
                 });
             },
             closeProject(){
+                var self = this;
                 Swal.fire({
-                    type: "success",
-                    title: "Successfully closed the project!",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    onClose : function(){
-                        window.location.href = "{{ url('all-projects')}}";
+                    title: 'Are you sure you want to close the project?',
+                    text: "Once the project is closed, it cannot be reopened.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/ajax-close-project', {
+                            project_id : self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            var data = response.data;
+                            self.projectDetails.status_name = data.status;
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Project has been closed!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                     }
-                });
+                });  
+            },
+            cancelProject(){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure to cancel the project?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/ajax-cancel-project', {
+                            project_id : self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            var data = response.data;
+                            self.projectDetails.status_name = data.status;
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Project has been cancelled!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });  
             },
             sumOrderQty(vehicle_type){
                 return this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);

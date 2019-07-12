@@ -46,7 +46,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}/{vehicle_type}', 'PriceConfirmationController@ajax_get_projects');
-	
+	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
+	Route::post('ajax-close-project', 'ProjectController@ajax_close_project');
+
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
 	Route::get('all-price-confirmation', 'PriceConfirmationController@all_price_confirmation');
@@ -58,6 +60,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('fpc-approval', 'PriceConfirmationController@fpc_approval');
 	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
 	Route::post('save-fpc', 'PriceConfirmationController@save_fpc');
+	
 
 	/* Purchase Order */
 	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
@@ -71,6 +74,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	// Approval
 	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
 
+
+	//Competitors
+	Route::get('/ajax-get-competitor-brands/', 'CompetitorController@ajax_get_competitor_brands');
+	Route::get('/ajax-get-competitor-models/', 'CompetitorController@ajax_get_competitor_models');
 });
 
 // ----------------- Authentication ----------------- //

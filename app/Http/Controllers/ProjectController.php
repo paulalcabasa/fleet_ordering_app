@@ -369,10 +369,21 @@ class ProjectController extends Controller
                 'brand'                 => $row['brand'],
                 'model'                 => $row['model'],
                 'price'                 => $row['price'],
+                'ipc_item_id'           => $row['ipc_item_id'],
                 'created_by'            => session('user')['user_id'],
                 'creation_date'         => Carbon::now(),
                 'create_user_source_id' => session('user')['source_id'],
             ];
+
+            // create or update competitor master file
+            $m_competitor->create_competitor(
+                $row['brand'],
+                $row['model'],
+                session('user')['user_id'], 
+                session('user')['source_id'],
+                Carbon::now()
+            );
+            
             array_push($competitor_params,$temp);
         }
         $m_competitor->insert_competitor($competitor_params);
@@ -694,5 +705,36 @@ class ProjectController extends Controller
         }
     }
 
+    public function ajax_cancel_project(Request $request, Project $m_project){
+        $project_id = $request->project_id;
+        $status_id = 6; // cancelled
+
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        return [
+            'status' => 'Cancelled'
+        ];
+    }
+
+    public function ajax_close_project(Request $request, Project $m_project){
+        $project_id = $request->project_id;
+        $status_id = 13; // closed
+
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        return [
+            'status' => 'Closed'
+        ];
+    }
  
 }
