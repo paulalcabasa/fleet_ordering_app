@@ -13,16 +13,7 @@ class FPC extends Model
     	return $this->insertGetId($params,'fpc_id');
     }
 
-    public function get_fpc($user_type){
-
-    	$vehicle_type = "";
-    	if($user_type == 32){ // lcg_value()
-    		$vehicle_type = "LCV";
-    	}
-    	else if($user_type == 33) { // CV
-    		$vehicle_type = "CV";
-    	}
-
+    public function get_fpc($vehicle_type){
     	$sql = "SELECT fpc.fpc_id,
 			            fc.customer_name,
 			            fpc.vehicle_type,

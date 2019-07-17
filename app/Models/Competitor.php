@@ -23,17 +23,19 @@ class Competitor extends Model
                         fpc.model,
                         fpc.price,
                         vehicle.sales_model,
-                        vehicle.color
-				FROM ipc_dms.fs_project_competitors fpc
+                        vehicle.color,
+                        rl.suggested_price
+                FROM ipc_dms.fs_project_competitors fpc
                     LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
                         ON vehicle.inventory_item_id = fpc.ipc_item_id
                     LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
-                        ON rh.project_id = fpc.project_id 
+                        ON rh.project_id = fpc.project_id
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
-                        ON rl.inventory_item_id = fpc.ipc_item_id
-                        AND rl.
-				WHERE 1 = 1
-					AND fpc.project_id = :project_id";
+                        ON rl.requirement_header_id = rh.requirement_header_id        
+                        AND rl.inventory_item_id = fpc.ipc_item_id    
+                WHERE 1 = 1
+                    AND fpc.project_id = :project_id
+                    AND rl.requirement_line_id IS NOT NULL";
 		$params = [
 			'project_id' => $project_id
 		];

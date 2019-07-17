@@ -32,7 +32,6 @@
                             <i class="fas fa-sliders-h"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                           <!--  <a class="dropdown-item btn-test" href="{{ url('price-confirmation-details/validate/10') }}">Validate</a> -->
                             <a class="dropdown-item" :href="base_url + '/price-confirmation-details/' + row.fpc_id">View</a>
                             <a class="dropdown-item" href="#">Edit</a>
                             <a class="dropdown-item" href="#">Close</a>
@@ -45,8 +44,7 @@
                     <td>@{{ row.customer_name }}</td>
                     <td>@{{ row.date_created }}</td>
                     <td>@{{ row.created_by }}</td>
-                    <td>@{{ row.status_name }}</td>
-                  
+                    <td nowrap><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>  
                 </tr>
             </tbody>
         </table>
@@ -62,7 +60,15 @@
         el : "#app",
         data: {
             fpcList : {!! json_encode($fpc_list) !!},
-            base_url : {!! json_encode($base_url) !!}
+            base_url : {!! json_encode($base_url) !!},
+            status_colors : {
+                'New' : "kt-badge kt-badge--brand kt-badge--inline",
+                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
+                'Approved' : "kt-badge kt-badge--success kt-badge--inline",
+                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
+                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
+                'In progress' : "kt-badge kt-badge--warning kt-badge--inline",
+            },
         },
         created: function () {
             // `this` points to the vm instance

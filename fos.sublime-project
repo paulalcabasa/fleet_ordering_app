@@ -18,6 +18,9 @@
 		},
 		{
 			"path": "routes"
+		},
+		{
+			"path": "app\\Helpers"
 		}
 	]
 }

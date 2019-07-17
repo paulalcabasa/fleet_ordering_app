@@ -12,13 +12,22 @@ use App\Models\FPC;
 use App\Models\FPC_Project;
 use App\Models\FPC_Item;
 use App\Models\Competitor;
+use App\Helpers\VehicleTypeIdentification;
+use App\Models\PaymentTerms;
+use App\Models\FPCItemFreebies;
 
 class PriceConfirmationController extends Controller
-{
+{   
+
+    protected $vehicle_type;
+
+    public function __construct(VehicleTypeIdentification $vehicle_type){
+        $this->vehicle_type = $vehicle_type;
+    }
+
     public function all_price_confirmation(FPC $m_fpc){
         $fpc_list = $m_fpc->get_fpc(
-            session('user')['user_type_id']
-         //   session('user')['customer_id']
+            $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
         );
 
         $page_data = [
@@ -28,20 +37,12 @@ class PriceConfirmationController extends Controller
     	return view('price_confirmation.all_price_confirmation', $page_data);
     }
 
-    public function price_confirmation_entry(Customer $m_customer){
-
-        $vehicle_type = "";
-        if(session('user')['user_type_id'] == 32) { // LCV
-            $vehicle_type = "LCV";
-        }
-        else if(session('user')['user_type_id'] == 33) { // CV
-            $vehicle_type = "CV";
-        }
-        $customers = $m_customer->get_project_customers($vehicle_type);
-
+    public function price_confirmation_entry(Customer $m_customer){   
+        $customers = $m_customer->get_project_customers(
+            $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
+        );
         $page_data = [
             'customers'    => $customers,
-            'vehicle_type' => $vehicle_type,
             'base_url'     => url('/')
         ];
     	return view('price_confirmation.price_confirmation_entry', $page_data);
@@ -53,15 +54,20 @@ class PriceConfirmationController extends Controller
         Customer $m_customer,
         FPC_Project $m_fpc_project,
         FPC_Item $m_fpc_item,
-        Competitor $m_competitor
+        Competitor $m_competitor,
+        PaymentTerms $m_payment_terms
     ){
 
     	$price_confirmation_id = $request->price_confirmation_id;
+
     	$action = $request->action;
 
         $fpc_details = $m_fpc->get_details($price_confirmation_id);
+
         $customer_details = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
+ 
         $project_headers = $m_fpc_project->get_projects($price_confirmation_id);
+        
 
         $projects = [];
 
@@ -71,6 +77,10 @@ class PriceConfirmationController extends Controller
             $competitors = $m_competitor->get_competitors($project->project_id);
             $temp_arr = [
                 'project_id' => $project->project_id,
+                'payment_terms' => $project->payment_terms,
+                'validity' => $project->validity,
+                'availability' => $project->availability,
+                'note' => $project->note,
                 'dealer_name' => $project->dealer_name,
                 'dealer_account' => $project->dealer_account,
                 'project_status' => $project->project_status,
@@ -80,12 +90,15 @@ class PriceConfirmationController extends Controller
             array_push($projects,$temp_arr);
         }
 
+        $payment_terms = $m_payment_terms->get_payment_terms();
+    
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
             'action'                => $action,
             'fpc_details'           => $fpc_details,
             'customer_details'      => $customer_details,
-            'projects'              => $projects
+            'projects'              => $projects,
+            'payment_terms'         => $payment_terms
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -126,8 +139,7 @@ class PriceConfirmationController extends Controller
 
     public function ajax_get_projects(Request $request, Project $m_project){
         $customer_id = $request->customer_id;
-        $vehicle_type = $request->vehicle_type;
-
+        $vehicle_type = $this->vehicle_type->get_vehicle_type(session('user')['user_type_id']);
         $projects = $m_project->get_projects_for_fpc($customer_id,$vehicle_type);
         return $projects;
     }
@@ -139,8 +151,10 @@ class PriceConfirmationController extends Controller
         FPC_Item $m_fpc_item
     ){
         $customer_id = $request['customerDetails']['customerId'];
-        $vehicle_type = $request->vehicle_type;
+        
         $projects = $request['projects'];
+        
+        $vehicle_type = $this->vehicle_type->get_vehicle_type(session('user')['user_type_id']);
 
         // insert FPC Header
         $fpc_params = [
@@ -161,6 +175,7 @@ class PriceConfirmationController extends Controller
             $temp_arr = [
                 'fpc_id'                => $fpc_id,
                 'project_id'            => $project['project_id'],
+                'requirement_header_id' => $project['requirement_header_id'],
                 'status'                => 12, // in progress
                 'created_by'            => session('user')['user_id'],
                 'create_user_source_id' => session('user')['source_id'],
@@ -176,16 +191,16 @@ class PriceConfirmationController extends Controller
         $item_params = [];
         foreach($requirements as $item){
             $arr = [
-                'fpc_project_id'        => $item->fpc_project_id,
-                'requirement_id'        => $item->requirement_id,
-                'one_price'             => $item->price,
-                'wholesale_price'       => $item->price,
-                'fleet_price'           => $item->price,
-                'dealers_margin'        => 6, // default to 6 but should be from lookup,
-                'lto_registration'      => 10500, // default to 10500 but should be from lookup
-                'created_by'            => session('user')['user_id'],
-                'create_user_source_id' => session('user')['source_id'],
-                'creation_date'         => Carbon::now()
+                'fpc_project_id'         => $item->fpc_project_id,
+                'requirement_line_id'    => $item->requirement_line_id,
+                'suggested_retail_price' => $item->price,
+                'wholesale_price'        => $item->price,
+                'fleet_price'            => $item->price,
+                'dealers_margin'         => 6, // default to 6 but should be from lookup,
+                'lto_registration'       => 10500, // default to 10500 but should be from lookup
+                'created_by'             => session('user')['user_id'],
+                'create_user_source_id'  => session('user')['source_id'],
+                'creation_date'          => Carbon::now()
             ];
             array_push($item_params,$arr);
         }
@@ -194,8 +209,14 @@ class PriceConfirmationController extends Controller
         // end of fpc project items
         return [
             'customer_id' => $customer_id,
-            'projects' => $projects
+            'projects'    => $projects,
+            'fpc_id'      => $fpc_id 
         ];
     }
 
+    public function ajax_get_freebies(Request $request, FPCItemFreebies $m_freebies){
+        $fpc_item_id = $request->fpc_item_id;
+        $freebies = $m_freebies->get_item_freebies($fpc_item_id);
+        return $freebies;
+    }
 }

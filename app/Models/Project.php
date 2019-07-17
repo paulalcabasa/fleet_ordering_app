@@ -152,8 +152,11 @@ class Project extends Model
                         usr.first_name || ' ' || usr.last_name created_by,
                         to_char(fs.creation_date,'mm/dd/yyyy') date_created,
                         fs.dealer_id,
-                        fs.vehicle_type
+                        rh.vehicle_type,
+                        rh.requirement_header_id
                 FROM ipc_dms.fs_projects fs
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON fs.project_id = rh.project_id
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fs.customer_id = fc.customer_id 
                     LEFT JOIN ipc_dms.dealers_v dlr
@@ -164,12 +167,12 @@ class Project extends Model
                         ON usr.user_id = fs.created_by 
                         AND usr.user_source_id = fs.create_user_source_id
                 WHERE 1 = 1
-                AND st.status_name IN ('Acknowledged')
-                AND fs.customer_id = :customer_id
-                AND fs.vehicle_type = :vehicle_type";
+                        AND st.status_name IN ('Acknowledged')
+                        AND fs.customer_id = :customer_id
+                        AND rh.vehicle_type = :vehicle_type";
        
         $params = [
-            'customer_id' => $customer_id,
+            'customer_id'  => $customer_id,
             'vehicle_type' => $vehicle_type
         ];
 

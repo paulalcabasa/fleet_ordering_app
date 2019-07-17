@@ -21,7 +21,11 @@ class FPC_Project extends Model
 			            fp.project_id,
 			            TO_CHAR(fp.creation_date,'MM/DD/YYYY') project_creation_date,
 			            st.status_name project_status,
-			            fpc_prj.fpc_id
+			            fpc_prj.fpc_id,
+			            fpc_prj.payment_terms,
+			            fpc_prj.validity,
+			            fpc_prj.availability,
+			            fpc_prj.note
 				FROM ipc_dms.fs_fpc_projects fpc_prj
 				    LEFT JOIN ipc_dms.fs_projects fp
 				        ON fpc_prj.project_id = fp.project_id

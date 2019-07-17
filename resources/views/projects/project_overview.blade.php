@@ -324,7 +324,6 @@
                         </tr>
                     </tfoot>
                 </table>
-               
             </div>
             <div class="tab-pane" id="competitors">
                 <div class="row" v-if="projectDetails.competitor_flag == 'Y'">
@@ -351,6 +350,7 @@
                                                 @{{ row.sales_model }} 
                                                 <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.color}}</span>
                                             </td>
+                                            <td>@{{ formatPrice(row.suggested_price) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
