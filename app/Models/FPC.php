@@ -8,7 +8,9 @@ class FPC extends Model
 {
     protected $table = "IPC_DMS.FS_FPC";
 	protected $connection = "oracle";
-
+	const CREATED_AT = 'CREATION_DATE';
+	const UPDATED_AT = 'UPDATE_DATE';
+    
 	public function insert_fpc($params){
     	return $this->insertGetId($params,'fpc_id');
     }
@@ -28,7 +30,6 @@ class FPC extends Model
 				    LEFT JOIN ipc_dms.ipc_portal_users_v usr
 				        ON usr.user_id = fpc.created_by 
 				        AND usr.user_source_id = fpc.create_user_source_id
-
 				WHERE 1 = 1
 					AND fpc.vehicle_type = :vehicle_type";
 		$params = [
@@ -48,7 +49,8 @@ class FPC extends Model
 			            fs.status_name,
 			            usr.first_name || ' ' || usr.last_name created_by,
 			            to_char(fpc.creation_date,'mm/dd/yyyy') date_created,
-			            fpc.customer_id
+			            fpc.customer_id,
+                        fpc.remarks
 				FROM ipc_dms.fs_fpc fpc
 				    LEFT JOIN ipc_dms.fs_customers fc
 				        ON fc.customer_id = fpc.customer_id
@@ -66,5 +68,18 @@ class FPC extends Model
 		$query = DB::select($sql,$params);
 
 		return !empty($query) ? $query[0] : $query;
+    }
+
+
+    public function update_status($fpc_id, $remarks, $user_id, $user_source_id, $status){
+       $this
+            ->where([
+                [ 'fpc_id', '=' , $fpc_id ]
+            ])
+            ->update([
+                'updated_by'            => $user_id,
+                'update_user_source_id' => $user_source_id,
+                'status'                => $status
+            ]);
     }
 }

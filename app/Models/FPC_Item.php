@@ -8,6 +8,8 @@ class FPC_Item extends Model
 {
 	protected $table = "IPC_DMS.FS_FPC_ITEMS";
 	protected $connection = "oracle";
+    const CREATED_AT = 'CREATION_DATE';
+    const UPDATED_AT = 'UPDATE_DATE';
 
 	public function insert_fpc_item($params){
 		$this->insert($params);
@@ -77,4 +79,19 @@ class FPC_Item extends Model
 		$query = DB::select($sql,$params);
     	return $query;
 	}
+
+    public function updateFPCItem($dealers_margin, $lto_registration, $fleet_price, $updated_by, $user_source_id, $fpc_item_id){
+        $this
+            ->where([
+                [ 'fpc_item_id', '=' , $fpc_item_id ]
+            ])
+            ->update([
+                'dealers_margin'   => $dealers_margin,
+                'lto_registration' => $lto_registration,
+                'fleet_price'      => $fleet_price,
+                'updated_by'       => $updated_by,
+                'update_user_source_id'   => $user_source_id,
+                'fpc_item_id'      => $fpc_item_id
+            ]);
+    }
 }

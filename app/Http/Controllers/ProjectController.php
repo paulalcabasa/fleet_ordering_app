@@ -120,10 +120,6 @@ class ProjectController extends Controller
         $competitors            = $m_competitor->get_competitors($project_details->project_id);
         $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
   
-
-        
-
-
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,

@@ -48,6 +48,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
 	Route::post('ajax-close-project', 'ProjectController@ajax_close_project');
+	
 
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
@@ -61,7 +62,11 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
 	Route::post('save-fpc', 'PriceConfirmationController@save_fpc');
 	Route::get('/ajax-get-freebies/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
-	
+	Route::get('/ajax-delete-freebie/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
+	Route::post('ajax-save-fpc-item', 'PriceConfirmationController@ajax_save_fpc_item');
+	Route::post('ajax-save-terms', 'PriceConfirmationController@ajax_save_terms');
+	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
+	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
 
 	/* Purchase Order */
 	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
