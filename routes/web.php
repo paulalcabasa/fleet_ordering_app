@@ -67,11 +67,18 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('ajax-save-terms', 'PriceConfirmationController@ajax_save_terms');
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
+	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
+
+	/* FPC */
+	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
+	Route::get('ajax-get-fpc-details/{fpc_item_id}/{requirement_line_id}', 'PriceConfirmationController@ajax_get_fpc_details');
+	Route::get('print-fpc-dealer/{project_id}', 'PriceConfirmationController@print_fpc_dealer');
 
 	/* Purchase Order */
 	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
 	Route::get('all-po', 'PurchaseOrderController@all_po');
 	Route::get('po-approval', 'PurchaseOrderController@po_approval');
+	
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');
@@ -79,7 +86,6 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	
 	// Approval
 	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
-
 
 	//Competitors
 	Route::get('/ajax-get-competitor-brands/', 'CompetitorController@ajax_get_competitor_brands');

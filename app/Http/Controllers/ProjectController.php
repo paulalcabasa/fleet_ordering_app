@@ -24,6 +24,7 @@ use App\Models\Attachment;
 use App\Models\Vehicle;
 use App\Models\RequirementHeader;
 use App\Models\RequirementLine;
+use App\Models\FleetCategories;
 
 class ProjectController extends Controller
 {
@@ -43,9 +44,10 @@ class ProjectController extends Controller
         $sales_persons    = $sales_person->get_sales_person_options(session('user')['customer_id']);
         $vehicle_models   = $m_vehicle->get_vehicles();
         $vehicle_types    = VehicleType::all();
+        $fleet_categories = FleetCategories::all();
+        $grouped          = collect($vehicle_models)->groupBy('model_variant'); 
+        $vehicle_options  = array();
 
-        $grouped = collect($vehicle_models)->groupBy('model_variant'); 
-        $vehicle_options = array();
         foreach($grouped as $model => $variant){
 
             $children = array();
@@ -76,7 +78,8 @@ class ProjectController extends Controller
             'sales_persons'    => $sales_persons,
             'vehicle_models'   => $vehicle_options,
             'vehicle_types'    => $vehicle_types,
-            'base_url'         => url('/')
+            'base_url'         => url('/'),
+            'fleet_categories' => $fleet_categories
     	);
     	return view('projects.manage_project', $page_data);
     }
@@ -249,6 +252,7 @@ class ProjectController extends Controller
             'bid_date_sched'        => $account_details['bid_date_sched'],
             'bidding_venue'         => $account_details['bidding_venue'],
             'approved_budget_cost'  => $account_details['approved_budget_cost'],
+            'fleet_category'        => $account_details['fleet_category'],
             'competitor_flag'       => $competitor_flag, 
             'competitor_remarks'    => $competitor_reason, 
             'status'                => 3 // default status (NEW)

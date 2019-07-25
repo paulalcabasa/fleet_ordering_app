@@ -98,22 +98,34 @@
                         <div class="kt-form__section kt-form__section--first kt-wizard-sm">
                             <div class="kt-wizard-v1__form">
                                 
-                                <div class="form-group">
-
-                                    <label>Account Name</label>
-                                    <div class="typeahead">
-                                        <input 
-                                            type="text" 
+                                <div class="form-group row">
+                                    <div class="col-lg-8">
+                                        <label>Account Name</label>
+                                        <div class="typeahead">
+                                            <input 
+                                                type="text" 
+                                                class="form-control" 
+                                                v-model.lazy="accountDetails.account_name"   
+                                                id="txt_account_name" 
+                                                autocomplete="off" 
+                                                name="account_name" 
+                                                dir="ltr" 
+                                                placeholder="Account Name"  
+                                            />
+                                        </div> 
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Fleet Category</label>
+                                        <select 
                                             class="form-control" 
-                                            v-model.lazy="accountDetails.account_name"   
-                                            id="txt_account_name" 
-                                            autocomplete="off" 
-                                            name="account_name" 
-                                            dir="ltr" 
-                                            placeholder="Account Name"  
-                                        />
-                                    </div> 
-                          <!--             <span class="form-text text-muted">Please enter name of account</span> -->
+                                            id="sel_fleet_category" 
+                                            v-model.lazy="accountDetails.fleet_category" 
+                                            v-select 
+                                            style="width:100%;">
+                                            <option value="-1">Choose fleet category</option>
+                                            <option v-for="category in fleetCategories" :value="category.fleet_category_id">@{{ category.fleet_category_name}}</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="form-group row">
@@ -979,12 +991,13 @@ jQuery(document).ready(function() {
         el : "#app",
         data: {
             // option data
-            projectSourceOptions:    {!! json_encode($project_sources) !!},
-            organizationOptions:     {!! json_encode($organizations) !!},
-            customerOptions:     {!! json_encode($customer_options) !!},
-            salesPersonOptions:      {!! json_encode($sales_persons) !!},
-            baseUrl: {!! json_encode($base_url) !!},
-            competitor_model : '',
+            projectSourceOptions: {!! json_encode($project_sources) !!},
+            organizationOptions:  {!! json_encode($organizations) !!},
+            customerOptions:      {!! json_encode($customer_options) !!},
+            salesPersonOptions:   {!! json_encode($sales_persons) !!},
+            fleetCategories:      {!! json_encode($fleet_categories) !!},
+            baseUrl:              {!! json_encode($base_url) !!},
+            competitor_model:     '',
             // step 1 - account details
             accountDetails : {
                 customer_id:             null,
@@ -1004,7 +1017,8 @@ jQuery(document).ready(function() {
                 products:                null,
                 company_overview:        null,
                 business_style:          null,
-                affiliates:              []
+                affiliates:              [],
+                fleet_category : -1
             },
             // step 2 - contact information
             // temp variables

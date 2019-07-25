@@ -46,6 +46,20 @@
                     <span class="col-md-4 kt-font-bold">Created by</span>
                     <span class="col-md-8">@{{ fpc_details.created_by }}</span>
                 </div>
+                <div class="row kt-margin-b-5" v-if="!editable">
+                    <span class="col-md-4 kt-font-bold">Remarks</span>
+                    <span class="col-md-8">@{{ fpc_details.remarks }}</span>
+                </div>
+                <div class="row kt-margin-b-5" v-if="fpc_attachments.length > 0">
+                    <span class="col-md-4 kt-font-bold">Attachment</span>
+                    <span class="col-md-8">
+                        <ul style="list-style:none;padding:0;">
+                            <li v-for="(row,index) in fpc_attachments">
+                                <a :href="baseURL + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                            </li>
+                        </ul>    
+                    </span>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="row kt-margin-b-5">
@@ -68,6 +82,8 @@
                     <span class="col-md-4 kt-font-bold">Address</span>
                     <span class="col-md-8">@{{ customer_details.address }}</span>
                 </div>
+                
+                
             </div>
         </div>
     </div>
@@ -166,7 +182,7 @@
                             <div class="card-body">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in project.competitor_attachments">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                        <a :href="baseURL + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -635,6 +651,7 @@
             payment_terms:        {!! json_encode($payment_terms) !!},
             baseURL:              {!! json_encode($base_url) !!} ,
             editable:              {!! json_encode($editable) !!} ,
+            fpc_attachments:              {!! json_encode($fpc_attachments) !!} ,
             curModel:             [],
             curDealerAccount:     '',
             curFreebies:          [],
@@ -806,7 +823,7 @@
                 this.active_tab = tab_id;
             },
             printPrintConfirmation(id){
-                window.open(window.axios.defaults.baseURL + '/api/print-price-confirmation/' + id);
+                window.open(baseURL + '/print-fpc');
             },
             showAdditionalDetails(order){
                 this.curModel = order;
@@ -861,6 +878,10 @@
                         self.fpc_attachment_label = total_files + " file" + (total_files > 1 ? "s" : "") + " selected" ;
                    }
                 }
+            },
+            printFPC(index){
+                //console.log(this.projects[index].fpc_project_id);
+                window.open(this.baseURL + '/print-fpc/' + this.projects[index].fpc_project_id);    
             }
         },
         created: function () {

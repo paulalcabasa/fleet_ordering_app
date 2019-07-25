@@ -17,7 +17,11 @@ use App\Helpers\FPCHelper;
 use App\Models\PaymentTerms;
 use App\Models\FPCItemFreebies;
 use App\Models\Attachment;
-
+use App\Models\SalesPersonsOra;
+use App\Models\FleetCategories;
+use PDF;
+use App\Models\Approver;
+use App\Models\ProjectDeliverySchedule;
 
 class PriceConfirmationController extends Controller
 {   
@@ -29,15 +33,27 @@ class PriceConfirmationController extends Controller
     }
 
     public function all_price_confirmation(FPC $m_fpc){
-        $fpc_list = $m_fpc->get_fpc(
-            $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
-        );
+        $user_type_id = session('user')['user_type_id'];
 
-        $page_data = [
-            'fpc_list' => $fpc_list,
-            'base_url' => url('/')
-        ];
-    	return view('price_confirmation.all_price_confirmation', $page_data);
+        if(in_array($user_type_id, array(32,33))){
+            $fpc_list = $m_fpc->get_fpc(
+                $this->vehicle_type->get_vehicle_type($user_type_id)
+            );
+
+            $page_data = [
+                'fpc_list' => $fpc_list,
+                'base_url' => url('/')
+            ];
+        	return view('price_confirmation.all_price_confirmation', $page_data);
+        }
+        else if(in_array($user_type_id, array(27))){
+            $fpc_list = $m_fpc->get_fpc_dealer(session('user')['customer_id']);
+            $page_data = [
+                'fpc_list' => $fpc_list,
+                'base_url' => url('/')
+            ];
+            return view('price_confirmation.dealer_fpc_list', $page_data);
+        }
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
@@ -69,6 +85,7 @@ class PriceConfirmationController extends Controller
         $editable         = $fpc_helper->editable($fpc_details->status_name);
         $customer_details = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
         $project_headers  = $m_fpc_project->get_projects($price_confirmation_id);
+        $fpc_attachments  = $m_attachment->get_fpc_attachments($price_confirmation_id);
         $projects         = [];
 
         foreach($project_headers as $project){
@@ -107,7 +124,8 @@ class PriceConfirmationController extends Controller
             'projects'         => $projects,
             'payment_terms'    => $payment_terms,
             'base_url'         => url('/'),
-            'editable'         => $editable
+            'editable'         => $editable,
+            'fpc_attachments'  => $fpc_attachments
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -360,6 +378,117 @@ class PriceConfirmationController extends Controller
             'status' => "Cancelled",
             'editable' => $editable
         ];
+
+    }
+
+    public function print_fpc(
+        Request $request,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        FPC_Item $m_fpc_item,
+        Approver $m_approver
+
+    ){
+        $fpc_project_id = $request->fpc_project_id;
+        $header_data = $m_fpc_project->get_fpc_project_details($fpc_project_id);
+        $sales_persons = $m_sales_persons->get_sales_persons($header_data->project_id);
+        $items = $m_fpc_item->get_item_requirements($fpc_project_id);
+        $signatories = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories = collect($signatories)->groupBy('user_type');
+
+        $data = [
+            'header_data'   => $header_data,
+            'sales_persons' => $sales_persons,
+            'items'         => $items,
+            'signatories'   => $signatories
+        ];
+
+        $pdf = PDF::loadView('pdf.print_fpc', $data);
+        return $pdf->setPaper('a4','portrait')->stream();
+    }
+
+    public function fpc_overview(
+        Request $request,
+        Project $m_project,
+        FPC $m_fpc,
+        FPC_Item $m_fpc_item,
+        Attachment $m_attachment
+    ){
+        $project_id      = $request->project_id;
+        $project_details = $m_project->get_details($project_id);
+
+        $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
         
+        $fpc_data = [];
+
+
+        foreach($fpc_headers as $fpc){
+            $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
+            $attachments  = $m_attachment->get_fpc_attachments($fpc->fpc_id);
+            $temp_array = [
+                'fpc_header' => $fpc,
+                'fpc_lines'  => $items,
+                'attachments' => $attachments
+            ];
+            array_push($fpc_data,$temp_array);
+        }
+
+
+        $page_data = [
+            'project_details' => $project_details,
+            'fpc_data'        => $fpc_data,
+            'base_url'        => url('/')
+        ];
+
+        return view('price_confirmation.fpc_overview', $page_data); 
+    }
+
+    public function ajax_get_fpc_details(
+        Request $request,
+        FPCItemFreebies $m_freebies,
+        ProjectDeliverySchedule $m_delivery_sched
+    ){
+
+        $fpc_item_id = $request->fpc_item_id;
+        $freebies = $m_freebies->get_item_freebies($fpc_item_id);
+
+        $requirement_line_id = $request->requirement_line_id;
+        $delivery_sched = $m_delivery_sched->get_delivery_schedule($requirement_line_id);
+
+        return [
+            'freebies' => $freebies,
+            'delivery_sched' => $delivery_sched
+        ];
+    }
+
+    public function print_fpc_dealer(
+        Request $request,
+        Project $m_project,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        FPC_Item $m_fpc_item,
+        Approver $m_approver,
+        FPC $m_fpc
+
+    ){
+        $project_id = $request->project_id;
+        $project_details = $m_project->get_details($project_id);
+        $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
+        $fpc_data = [];
+        foreach($fpc_headers as $fpc){
+            $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
+            $temp_array = [
+                'fpc_header' => $fpc,
+                'fpc_lines'  => $items
+            ];
+            array_push($fpc_data,$temp_array);
+        }
+        $data = [
+            'project_details' => $project_details,
+            'fpc_data'        => $fpc_data,
+        ];
+
+        $pdf = PDF::loadView('pdf.print_fpc_dealer', $data);
+        return $pdf->setPaper('a4','portrait')->stream();
     }
 }
