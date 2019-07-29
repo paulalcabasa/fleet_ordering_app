@@ -105,3 +105,108 @@
   background-color: #d5d5d5;
 }
 
+.kt-badge.kt-badge--splash-white {
+  background-color: #D8D8CC;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--red-spinel-mica {
+  background-color: #761426;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--arc-white {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--silky-pearl-white {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--galena-gray {
+  background-color: #6F7075;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--marine-blue {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--obsidian-gray-mica {
+  background-color: #909090;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--hunter-green {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--garnet-red {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--titanium-silver {
+  background-color: #ADADAD;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--cosmic-black-mica {
+  background-color: #000000;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--cream-white {
+  background-color: #F5F5F5;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--dark-silver {
+  background-color: #666666;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--outback-brown {
+  background-color: #5A3F2C;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--sapphire-blue {
+  background-color: #3853AE;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--silver {
+  background-color: #ADADAD;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--ash-beige {
+  background-color: #ADADAD;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--aqua-blue {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--venetian-red {
+  background-color: #761426;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--havana-brown {
+  background-color: #5A3F2C;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+
+.kt-badge.kt-badge--no-color {
+  background-color: #f2f2f0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+}
+

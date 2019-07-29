@@ -42,6 +42,5 @@ class RequirementHeader extends Model
         $query = DB::select($sql,$params);
         return $query;
     }
-
-
+    
 }

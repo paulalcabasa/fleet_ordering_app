@@ -78,7 +78,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
 	Route::get('all-po', 'PurchaseOrderController@all_po');
 	Route::get('po-approval', 'PurchaseOrderController@po_approval');
-	
+	Route::get('submit-po/{project_id}', 'PurchaseOrderController@submit_po');
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');

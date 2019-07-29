@@ -14,6 +14,9 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
+            <a :href="base_url + '/submit-po/' + projectDetails.project_id" class="btn btn-primary kt-margin-r-5" >
+                <span class="kt-hidden-mobile">Add PO</span>
+            </a>
             <a target="_blank" :href="base_url + '/print-fpc-dealer/' + projectDetails.project_id" class="btn btn-primary" >
                 <span class="kt-hidden-mobile">Print</span>
             </a>

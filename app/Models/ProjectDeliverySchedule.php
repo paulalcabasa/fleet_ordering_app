@@ -22,7 +22,8 @@ class ProjectDeliverySchedule extends Model
                 to_char(delivery_date,'MM/DD/YYYY') delivery_date";
 
         $params = [
-            ['requirement_line_id' ,'=', $requirement_line_id]
+            ['requirement_line_id' ,'=', $requirement_line_id],
+            ['module_id' ,'=', 1]
         ];
         
         $data = $this
@@ -30,7 +31,25 @@ class ProjectDeliverySchedule extends Model
                     ->where($params)
                     ->get();
         return $data;
+    }
 
+    public function get_project_delivery_schedule($requirement_line_id){
+
+        $sql = "delivery_schedule_id,
+                requirement_line_id,
+                quantity,
+                to_char(delivery_date,'YYYY-MM-DD') delivery_date";
+
+        $params = [
+            ['requirement_line_id' ,'=', $requirement_line_id],
+            ['module_id' ,'=', 1]
+        ];
+        
+        $data = $this
+                    ->selectRaw($sql)
+                    ->where($params)
+                    ->get();
+        return $data;
     }
 
 }
