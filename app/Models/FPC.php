@@ -161,5 +161,49 @@ class FPC extends Model
         return $query;
     }
 
+    public function get_fpc_by_id($fpc_id){
+        $sql = "SELECT  fpc_prj.fpc_id,
+                        fpc_prj.fpc_project_id,
+                        st.status_name,
+                        rh.vehicle_type,
+                        fpc.remarks,
+                        trim(to_char(fpc.creation_date,'Month')) || ' ' || trim(to_char(fpc.creation_date,' DD, YYYY')) date_created,
+                        usr.first_name || ' ' || usr.last_name prepared_by,
+                        pt.term_name,
+                        fpc_prj.validity,
+                        trim(to_char(fpc_prj.validity,'Month')) || ' ' || trim(to_char(fpc_prj.validity,' DD, YYYY')) validity,
+                        fpc_prj.availability,
+                        fpc_prj.note,
+                        flt_c.fleet_category_name
+                FROM ipc_dms.fs_fpc_projects fpc_prj
+                    INNER JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON rh.requirement_header_id = fpc_prj.requirement_header_id
+                    INNER JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                    INNER JOIN ipc_dms.fs_status st
+                        ON st.status_id = fpc.status
+                    INNER JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fpc.created_by
+                        AND usr.user_source_id = fpc.create_user_Source_id
+                    INNER JOIN ipc_dms.fs_payment_terms pt
+                        ON pt.term_id = fpc_prj.payment_terms
+                    INNER JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fpc_prj.project_id
+                    INNER JOIN ipc_dms.fs_fleet_categories flt_c
+                        ON flt_c.fleet_category_id = fp.fleet_category
+                WHERE 1 = 1
+                    AND  fpc_prj.fpc_id = :fpc_id";
+
+        $params = [
+            'fpc_id' => $fpc_id
+        ];
+
+        $query = DB::select($sql,$params);
+
+        return $query;
+    }
+
+
+
 
 }

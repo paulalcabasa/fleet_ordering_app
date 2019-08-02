@@ -22,7 +22,7 @@
             <li class="kt-menu__item {{ request()->is('all-customers') || request()->is('view-customer') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-customers') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-users"></i>
-                    <span class="kt-menu__link-text">All Customers</span>
+                    <span class="kt-menu__link-text">Customers</span>
                    <!--  <span class="kt-menu__link-badge"><span class="kt-badge kt-badge--rounded kt-badge--brand">1</span></span> -->
                 </a>
             </li>
@@ -41,12 +41,18 @@
             <li class="kt-menu__item {{ request()->is('all-projects') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-projects') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-folder-1"></i>
-                    <span class="kt-menu__link-text">All Projects</span>
+                    <span class="kt-menu__link-text">Projects</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('all-purchase-order') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/all-po') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
+                    <span class="kt-menu__link-text">Purchase Orders</span>
                 </a>
             </li>
             @if(in_array(session('user')['user_type_id'], array(31,32,33))) 
             <li class="kt-menu__item {{ request()->is('project-approval') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/project-approval') }}" class="kt-menu__link ">
+                <a href="{{ url('/approval-list') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-price-tag"></i>
                     <span class="kt-menu__link-text">Approval</span>
                  <!--    <span class="kt-menu__link-badge">
@@ -68,54 +74,22 @@
                 </a>
             </li>
             @endif
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__item {{ request()->is('all-price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-price-confirmation') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-interface-9"></i>
-                    <span class="kt-menu__link-text">All FPC</span>
-                </a>
-            </li>
-            @if(in_array(session('user')['user_type_name'], array('Fleet Sales Manager')))
-            <li class="kt-menu__item {{ request()->is('fpc-details/validate') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/fpc-approval') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-price-tag"></i>
-                    <span class="kt-menu__link-text">Approval</span>
-                    <span class="kt-menu__link-badge">
-                        <span class="kt-badge kt-badge--rounded kt-badge--primary">5</span>
-                    </span>
+                    <span class="kt-menu__link-text">FPC</span>
                 </a>
             </li>
             @endif
             <li class="kt-menu__item {{ request()->is('all-fwpc') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-fwpc') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-interface-9"></i>
-                    <span class="kt-menu__link-text">All FWPC</span>
+                    <span class="kt-menu__link-text">FWPC</span>
                 </a>
             </li>
 
-            <li class="kt-menu__section ">
-                <h4 class="kt-menu__section-text">Purchase Order</h4>
-                <i class="kt-menu__section-icon flaticon-more-v2"></i>
-            </li>
-  
-            <li class="kt-menu__item {{ request()->is('all-purchase-order') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/all-po') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
-                    <span class="kt-menu__link-text">All Purchase Order</span>
-                </a>
-            </li>
-
-            @if(in_array(session('user')['user_type_name'], array('Fleet Sales Staff')))
-            <li class="kt-menu__item {{ request()->is('fpc-details/validate') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/po-approval') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-price-tag"></i>
-                    <span class="kt-menu__link-text">Approval</span>
-             <!--        <span class="kt-menu__link-badge">
-                        <span class="kt-badge kt-badge--rounded kt-badge--primary">5</span>
-                    </span> -->
-                </a>
-            </li>
-            @endif
-            
+        
         </ul>
     </div>
 </div>

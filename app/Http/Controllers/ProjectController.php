@@ -25,6 +25,10 @@ use App\Models\Vehicle;
 use App\Models\RequirementHeader;
 use App\Models\RequirementLine;
 use App\Models\FleetCategories;
+use App\Models\FPC;
+use App\Models\FPC_Item;
+use App\Models\POHeaders;
+
 
 class ProjectController extends Controller
 {
@@ -109,9 +113,13 @@ class ProjectController extends Controller
         ContactPersons $m_contact_person,
         SalesPersonsOra $m_sales_person,
         RequirementHeader $m_requirement,
-        Competitor $m_competitor
+        Competitor $m_competitor,
+        FPC $m_fpc,
+        FPC_Item $m_fpc_item,
+        POHeaders $m_poh
     ){
-        $project_details        = $m_project->get_details($request->project_id);
+        $project_id             = $request->project_id;
+        $project_details        = $m_project->get_details($project_id);
         $customer_details       = $m_customer->get_customer_details_by_id($project_details->customer_id);
         $attachments            = $m_attachment->get_customer_attachments($project_details->customer_id);
         $affiliates             = $m_affiliates->get_customer_affiliates($project_details->customer_id);
@@ -122,7 +130,30 @@ class ProjectController extends Controller
         $requirement            = collect($requirement)->groupBy('vehicle_type');
         $competitors            = $m_competitor->get_competitors($project_details->project_id);
         $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
-  
+        $vehicle_colors         = config('app.vehicle_badge_colors');
+        $status_colors          = config('app.status_colors');
+
+        // fleet price confirmation
+      //  $fpc_list = $m_fpc->get_fpc_by_project($project_id);
+
+        $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
+        
+        $fpc_data = [];
+
+        foreach($fpc_headers as $fpc){
+            $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
+            $attachments  = $m_attachment->get_fpc_attachments($fpc->fpc_id);
+            $temp_array = [
+                'fpc_header' => $fpc,
+                'fpc_lines'  => $items,
+                'attachments' => $attachments
+            ];
+            array_push($fpc_data,$temp_array);
+        }
+
+        // purchase orders
+        $po_list = $m_poh->get_po_by_project($project_id);
+    
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,
@@ -137,7 +168,11 @@ class ProjectController extends Controller
             'sales_persons'          => $sales_persons,
             'contact_persons'        => $contact_persons,
             'competitor_attachments' => $competitor_attachments,
-            'base_url'               => url('/')
+            'base_url'               => url('/'),
+            'vehicle_colors'         => $vehicle_colors,
+            'status_colors'          => $status_colors,
+            'fpc'                    => $fpc_data,
+            'po_list'                => $po_list
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -564,15 +599,15 @@ class ProjectController extends Controller
         $competitor_params      = [];
         $file_index             = 0;
         $destinationPath        = 'storage/app/attachments';
-     /*   return [
-            'data' => base_url('/') . $destinationPath
-        ];*/
+        $competitorPath         = 'storage/app/public/competitor';
+        $customerPath           = 'storage/app/public/customer';
+     
         if(!empty($_FILES)){
 
             if(!empty($attachment)){
                 $customer_attachments = $m_attachment->get_customer_attachments($customer_id);
                 foreach($customer_attachments as $row){
-                    $file_path = storage_path('app/attachments/'.$row['filename']); 
+                    $file_path = storage_path('app/public/customer/'.$row['filename']); 
                     unlink($file_path);
                 }
                 // if new attachment has been placed, delete the old data.
@@ -583,7 +618,7 @@ class ProjectController extends Controller
                     $orig_filename = $file->getClientOriginalName();
                     $temp = [
                         'filename'              => $filename,
-                        'directory'             => $destinationPath,
+                        'directory'             => $customerPath,
                         'module_id'             => 1, // Fleet project
                         'reference_id'          => $customer_id,
                         'reference_table'       => 'fs_customers',
@@ -607,7 +642,7 @@ class ProjectController extends Controller
                     $orig_filename = $file->getClientOriginalName();
                     $temp = [
                         'filename'              => $filename,
-                        'directory'             => $destinationPath,
+                        'directory'             => $competitorPath,
                         'module_id'             => 1, // Fleet project
                         'reference_id'          => $project_id,
                         'reference_table'       => 'fs_projects',
@@ -644,7 +679,6 @@ class ProjectController extends Controller
             session('user')['user_type_id']
         );
 
-      
         $page_data = [
             'approval_list' => $approval_list,
             'base_url'         =>  url('/')

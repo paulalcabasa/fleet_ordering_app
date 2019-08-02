@@ -19,29 +19,23 @@
                     <th>Action</th>
                     <th>PO Number</th>
                     <th>Project No</th>
-                    <th>Project Name</th>
+                    <th>Customer</th>
                     <th>Date Submitted</th>
-                    <th>Dealer</th>
+                    <th>Submitted by</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, index) in po_list">
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-sliders-h"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="{{ url('/manage-po/view/001') }}">View Details</a>       
-                                <a class="dropdown-item" href="{{ url('/manage-po/validate/001') }}">Validate</a>                            
-                            </div>
-                        </div>
+                    <td nowrap>
+                        <a :href="base_url + '/po-overview/view/' + row.po_header_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                     </td>
                     <td>@{{ row.po_number }}</td>
-                    <td>@{{ row.project_number }}</td>
-                    <td>@{{ row.project_name }}</td>
-                    <td>@{{ row.date_submitted }}</td>
-                    <td>@{{ row.submitted_by }}</td>
+                    <td>@{{ row.project_id }}</td>
+                    <td>@{{ row.account_name }}</td>
+                    <td>@{{ row.date_created }}</td>
+                    <td>@{{ row.created_by }}</td>
+                    <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                 </tr>
             </tbody>
         </table>      
@@ -56,15 +50,9 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            po_list : [
-                {
-                    po_number : 'PO001',
-                    project_number : 'PRJ001',
-                    project_name : 'RCP SENIA TRADING/ RCP SENIA TRANSPORT',
-                    date_submitted : 'May 01, 2019',
-                    submitted_by : 'PASIG'
-                }
-            ]
+            po_list:       {!! json_encode($po_list) !!},
+            status_colors: {!! json_encode($status_colors) !!},
+            base_url:      {!! json_encode($base_url) !!},
         },
         created: function () {
             // `this` points to the vm instance

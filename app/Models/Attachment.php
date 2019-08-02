@@ -64,5 +64,17 @@ class Attachment extends Model
 		return $query;
 	}
 
+	public function get_po_attachments($po_header_id){
+		$query = $this
+					->where([
+						[ 'reference_id', '=', $po_header_id ],
+						[ 'reference_table', '=', 'fs_po_headers' ],
+						[ 'reference_column', '=', 'po_header_id' ],
+						[ 'owner_id' , '=' , 4]
+					])
+					->get();
+		return $query;
+	}
+
 	
 }

@@ -114,7 +114,7 @@
             </div>
         </div>
         
-        <table class="table table-bordered table-condensed text-center kt-margin-t-10">
+        <table class="table table-bordered table-condensed kt-margin-t-10">
             <thead>
                 <tr>
                     <td rowspan="2"></td>
@@ -140,7 +140,7 @@
                         </td>
                     </td>
                     <td>@{{ item.sales_model }}</td>
-                    <td>@{{ item.color }}</td>
+                    <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
                     <td>@{{ item.quantity }}</td>
                     <td>@{{ item.rear_body_type }}</td>
                     <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
@@ -271,16 +271,10 @@ jQuery(document).ready(function() {
             projectDetails  : {!! json_encode($project_details) !!},
             fpcData : {!! json_encode($fpc_data) !!},
             base_url : {!! json_encode($base_url) !!},
+            vehicle_colors : {!! json_encode($vehicle_colors) !!},
+            status_colors : {!! json_encode($status_colors) !!},
             curFreebies : [],
             curDeliverySched : [],
-            status_colors : {
-                'New' : "kt-badge kt-badge--brand kt-badge--inline",
-                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
-                'Approved' : "kt-badge kt-badge--success kt-badge--inline",
-                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
-                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
-                'In progress' : "kt-badge kt-badge--warning kt-badge--inline",
-            },
             
         },
         created: function () {

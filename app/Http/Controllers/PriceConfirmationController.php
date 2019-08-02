@@ -46,14 +46,14 @@ class PriceConfirmationController extends Controller
             ];
         	return view('price_confirmation.all_price_confirmation', $page_data);
         }
-        else if(in_array($user_type_id, array(27))){
+  /*      else if(in_array($user_type_id, array(27))){
             $fpc_list = $m_fpc->get_fpc_dealer(session('user')['customer_id']);
             $page_data = [
                 'fpc_list' => $fpc_list,
                 'base_url' => url('/')
             ];
             return view('price_confirmation.dealer_fpc_list', $page_data);
-        }
+        }*/
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
@@ -421,6 +421,8 @@ class PriceConfirmationController extends Controller
         
         $fpc_data = [];
 
+        $vehicle_colors = config('app.vehicle_badge_colors');
+        $status_colors = config('app.status_colors');
 
         foreach($fpc_headers as $fpc){
             $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
@@ -437,7 +439,9 @@ class PriceConfirmationController extends Controller
         $page_data = [
             'project_details' => $project_details,
             'fpc_data'        => $fpc_data,
-            'base_url'        => url('/')
+            'base_url'        => url('/'),
+            'vehicle_colors'  => $vehicle_colors,
+            'status_colors'   => $status_colors
         ];
 
         return view('price_confirmation.fpc_overview', $page_data); 
@@ -472,8 +476,15 @@ class PriceConfirmationController extends Controller
 
     ){
         $project_id = $request->project_id;
+        $print_type = $request->print_type;
         $project_details = $m_project->get_details($project_id);
-        $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
+
+        if($print_type == "single"){
+            $fpc_headers = $m_fpc->get_fpc_by_id($request->fpc_id);
+        }
+        else if($print_type == "multiple"){
+            $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
+        }
         $fpc_data = [];
         foreach($fpc_headers as $fpc){
             $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);

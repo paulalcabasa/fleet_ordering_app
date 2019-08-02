@@ -14,22 +14,29 @@
     </div>
     <div class="kt-portlet__body">
  
-        <table class="table table-bordered table-striped" width="100%" id="projects_table">
+        <table class="table table-bordered table-striped" style="font-size:90%;" width="100%" id="projects_table">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Actions</th>
                     <th>Project No.</th>
                     <th>Account Name</th>
                     <th>Dealer</th>
-                    <th>Requested By</th>
-                    <th>Date Requested</th>
                     <th>Status</th>
+                    <th>FPC</th>
+                    <th>PO</th>
+                    <th>FWPC</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, index) in projects">
-                    <td>
-                        <div class="dropdown">
+                    <td nowrap>
+                        <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-eye"></i>
+                        </a>
+                       <!--  <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-edit"></i>
+                        </a> -->
+                        <!-- <div class="dropdown">
                           <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-sliders-h"></i>
                           </button>
@@ -41,14 +48,17 @@
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url('/manage-po/create/001')}}">Submit PO</a>
                            </div>
-                        </div>
+                        </div> -->
                     </td>
                     <td>@{{ row.project_id }}</td>
                     <td nowrap>@{{ row.customer_name }}</td>
                     <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.created_by }}</td>
-                    <td>@{{ row.date_created }}</td>
-                    <td nowrap><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
+                    <td nowrap @click.prevent="showApproval(row)" style="cursor:pointer;">
+                        <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
+                    </td>
+                    <td><i class="fa fa-check kt-font-success" v-if="row.fpc_status == 'good'"></i></td>
+                    <td><i class="fa fa-check kt-font-success" v-if="row.po_status == 'good'"></i></td>
+                    <td><i class="fa fa-check kt-font-success"></i></td>
                 </tr>
             </tbody>
         </table>

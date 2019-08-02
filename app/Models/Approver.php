@@ -18,6 +18,7 @@ class Approver extends Model
 					['requestor_user_id', '=', $requestor_user_id],
 					['user_type', '=', $user_type],
 					['status_id', '=', 1],
+                    ['module_code', '=', 'PRJ'] 
 				])->get();
 		}
 		else if($user_type == "IPC_STAFF") {
@@ -27,6 +28,7 @@ class Approver extends Model
 					['user_type', '=', $user_type],
 					['vehicle_type', '=', $vehicle_type],
 					['status_id', '=', 1],
+                    ['module_code', '=', 'PRJ']
 				])->get();
 		}
 		return $approvers;
@@ -57,5 +59,17 @@ class Approver extends Model
         return $query;
     }
 
+    public function get_po_approvers($vehicle_type){
+        $query = $this
+            ->select('approver_id','hierarchy')
+            ->where([
+                ['user_type', '=', 'IPC_STAFF'],
+                ['vehicle_type', '=', $vehicle_type],
+                ['status_id', '=', 1],
+                ['module_code', '=', 'PO']
+            ])->get();
+      
+        return $query;
+    }
 
 }

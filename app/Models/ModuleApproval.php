@@ -26,15 +26,17 @@ class ModuleApproval extends Model
             $project_status = 3; // project status new
 
             $sql = "SELECT ma.approval_id,
-                    fp.project_id,
-                    fc.customer_name account_name,
-                    to_char(ma.creation_date,'mm/dd/yyyy HH:MI:SS AM') date_submitted,
-                    fs.status_name,
-                    usr.first_name || ' ' || usr.last_name created_by,
-                    ma.approver_id,
-                    fa.approver_user_id,
-                    fa.approver_source_id,
-                    usr_app.first_name || ' ' || usr_app.last_name approver_name
+                            ma.module_reference_id,
+                            'Project' type,
+                            fp.project_id,
+                            fc.customer_name account_name,
+                            to_char(ma.creation_date,'mm/dd/yyyy HH:MI:SS AM') date_submitted,
+                            fs.status_name,
+                            usr.first_name || ' ' || usr.last_name created_by,
+                            ma.approver_id,
+                            fa.approver_user_id,
+                            fa.approver_source_id,
+                            usr_app.first_name || ' ' || usr_app.last_name approver_name
                 FROM ipc_dms.fs_module_approval ma
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON ma.module_reference_id = fp.project_id
@@ -72,6 +74,8 @@ class ModuleApproval extends Model
             $approval_status = 7;
             $project_status = 11;
             $sql = "SELECT  ma.approval_id,
+                            ma.module_reference_id,
+                            'Project' type,
                             fp.project_id,
                             fc.customer_name account_name,
                             to_char(ma.creation_date,'mm/dd/yyyy HH:MI:SS AM') date_submitted,
@@ -219,6 +223,74 @@ class ModuleApproval extends Model
 
         $query = DB::select($sql,$params);
         return $query;
+    }
+
+    public function get_po_approval($approver_id,$approver_source_id){
+        $sql = "SELECT ma.approval_id,
+                        ma.module_reference_id,
+                        'PO' type,
+                        ph.project_id,
+                        fc.customer_name account_name,
+                        to_char(ma.creation_date,'mm/dd/yyyy HH:MI:SS AM') date_submitted,
+                        fs.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        ma.approver_id,
+                        fa.approver_user_id,
+                        fa.approver_source_id,
+                        usr_app.first_name || ' ' || usr_app.last_name approver_name
+                FROM ipc_dms.fs_module_approval ma
+                    INNER JOIN ipc_dms.fs_po_headers ph
+                        ON ma.module_reference_id = ph.po_header_id
+                        AND ma.column_reference = 'po_header_id'
+                        AND ma.table_reference = 'fs_po_headers'
+                    INNER JOIN ipc_dms.fs_projects fp   
+                        ON fp.project_id = ph.project_id
+                    INNER JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fp.customer_id
+                    INNER JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = ma.status
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v usr_app
+                        ON usr_app.user_id = fa.approver_user_id
+                        AND usr_app.user_source_id = fa.approver_source_id  
+                    INNER JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fp.created_by 
+                        AND usr.user_source_id = fp.create_user_source_id
+                WHERE 1 = 1
+                    AND fa.approver_user_id = :approver_id
+                    AND fa.approver_source_id = :approver_source_id
+                    AND ma.status = :approval_status";
+        
+        $params = [
+            'approver_id'        => $approver_id,
+            'approver_source_id' => $approver_source_id,
+            'approval_status'    => 7 // pending
+        ];
+
+        $query = DB::select($sql,$params);
+    
+        return $query;
+    }
+
+   public function get_pending_per_po($po_header_id){
+        $sql = "SELECT count(ma.approval_id) ctr
+                FROM ipc_dms.fs_module_approval ma   
+                WHERE 1 = 1
+                    AND ma.column_reference = :column_reference
+                    AND ma.table_reference = :table_reference
+                    AND ma.status = :status
+                    AND ma.module_reference_id = :po_header_id";
+        $params = [
+            'column_reference' => 'po_header_id',
+            'table_reference'  => 'fs_po_headers',
+            'status'           => 7,
+            'po_header_id'     => $po_header_id
+        ];
+
+        $query = DB::select($sql,$params);
+    
+        return $query[0]->ctr;
     }
 
 

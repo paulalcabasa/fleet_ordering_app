@@ -35,11 +35,7 @@
                         Competitors
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#terms" role="tab" aria-selected="false">
-                        Terms and Conditions
-                    </a>
-                </li>
+                
             </ul>
         </div>
     </div>
@@ -67,6 +63,12 @@
                                     <span class="col-md-4 kt-font-bold">Fleet Account Name</span>
                                     <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
                                 </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Fleet Category</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_category_name }}</span>
+                                </div>
+
+                                
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Project Source</span>
                                     <span class="col-md-8">@{{ projectDetails.project_source }}</span>
@@ -215,8 +217,7 @@
                         </div>  
                     </div>
                 </div>
-                
-             
+            
                 <div class="card kt-margin-b-10">
                     <div class="card-header">
                         Contact Persons
@@ -290,7 +291,7 @@
                     <tbody v-for="(vehicles,vehicle_type) in requirement">
                         <tr v-for="(row,index) in vehicles">
                             <td>@{{ row.sales_model }}</td>
-                            <td>@{{ row.color }}</td>
+                            <td><span :class="vehicle_colors[row.color]">&nbsp</span> @{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
                             <td>@{{ row.po_qty }}</td>
                             <td>@{{ formatPrice(row.suggested_price) }}</td>
@@ -372,20 +373,6 @@
                 </div>  
                 <p v-if="projectDetails.competitor_flag == 'N'">@{{ projectDetails.competitor_remarks }}</p>
             </div>
-            <div class="tab-pane" id="terms">
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Price Validity</span>
-                    <span class="col-md-8">May 31, 2019</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Deadline of Submission</span>
-                    <span class="col-md-8">May 31, 2019</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Payment Terms</span>
-                    <span class="col-md-8">Strictly C.O.D only</span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -394,16 +381,12 @@
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
                 @if($action == "validate")
-                <button type="submit" class="btn btn-success" @click="validateProject('approve')">Approve</button>
-                <button type="submit" class="btn btn-danger"  @click="validateProject('reject')">Reject</button>
-                @elseif($action == "cancel")
-                <a href="#"class="btn btn-danger">
-                    <span class="kt-hidden-mobile">Cancel</span>
-                </a>
+                <button type="submit" class="btn btn-success btn-sm" @click="validateProject('approve')">Approve</button>
+                <button type="submit" class="btn btn-danger btn-sm"  @click="validateProject('reject')">Reject</button>
                 @elseif($action == "view")
-                <button type="button" class="btn btn-danger" @click="cancelProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Cancel</button>
-                <button type="button" class="btn btn-success" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
-                <button type="button" class="btn btn-primary" @click="closeProject()">Print</button>
+                <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="cancel_flag">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
+                <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button>
                 @endif
             </div>
         </div>
@@ -412,44 +395,117 @@
 </div>
 
 @if($action == "view")
-<div class="kt-portlet kt-portlet--mobile">
+
+<div class="kt-portlet kt-portlet--height-fluid" v-for="(row,index) in fpc">
+   
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                Fleet Price Confirmation 
-            </h3> 
+                Fleet Price Confirmation <small>@{{ row['fpc_header'].vehicle_type }}</small>
+            </h3>
         </div>
-      
     </div>
 
     <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Details</div>
+                    <div class="card-body">
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Ref No.</span>
+                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_id }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Date Created</span>
+                            <span class="col-md-8">@{{ row['fpc_header'].date_created }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Prepared By</span>
+                            <span class="col-md-8">@{{ row['fpc_header'].prepared_by }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Status</span>
+                            <span class="col-md-8">
+                                <span :class="status_colors[row['fpc_header'].status_name]">@{{ row['fpc_header'].status_name }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Attachment</div>
+                    <div class="card-body">
+                        <div class="row kt-margin-b-5" v-if="row['attachments'].length > 0">
+                            <span class="col-md-4 kt-font-bold">Signed documents</span>
+                            <span class="col-md-8">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in row['attachments']">
+                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                    </li>
+                                </ul>    
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <table class="table table-bordered table-condensed kt-margin-t-10">
             <thead>
                 <tr>
-                    <th>FPC No.</th>
-                    <th>Account Name</th>
-                    <th>Date Confirmed</th>
-                    <th>Confirmed By</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <td rowspan="2"></td>
+                    <td rowspan="2">Model</td>
+                    <td rowspan="2">Color</td>
+                    <td rowspan="2">Qty</td>
+                    <td rowspan="2">Body Type</td>
+                    <td rowspan="2">Unit Price</td>
+                    <td rowspan="2">Freebies</td>
+                    <td colspan="2">Inclusion</td>
+                </tr>
+                <tr>
+                    <td>STD</td>
+                    <td>ADD'L</td>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row,index) in fpc"> 
-                    <td>@{{ row.fpc_no }}</td>
-                    <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.date_confirmed }}</td>
-                    <td>@{{ row.confirmed_by }}</td>
+                <tr v-for="(item, item_index) in row['fpc_lines']">
                     <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
+                        <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
+                            <i class="la la-info"></i>
+                        </a>
+                        </td>
                     </td>
-                    <td nowrap="nowrap">
-                        <a href="{{ url('view-fpc/001')}}" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
-                    </td>
+                    <td>@{{ item.sales_model }}</td>
+                    <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
+                    <td>@{{ item.quantity }}</td>
+                    <td>@{{ item.rear_body_type }}</td>
+                    <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
+                    <td align="right">@{{ item.freebies | formatPeso }}</td>
+                    <td>N/A</td>
+                    <td>@{{ item.additional_items }}</td>
                 </tr>
             </tbody>
+            <tfoot class="kt-font-boldest">
+                <tr>
+                    <td colspan="3" align="right">Total</td>
+                    <td> @{{ sumQty(index) }}</td>
+                    <td></td>
+                    <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
+                </tr>
+            </tfoot>
         </table>
+    </div>
+
+    <div class="kt-portlet__foot">
+        <div class="row  kt-pull-right">
+        <div class="col-lg-12">
+              <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
+                <span class="kt-hidden-mobile">Print</span>
+            </a>
+        </div>
+        </div>
     </div>
 </div>
 
@@ -460,39 +516,47 @@
                 Purchase Order
             </h3>
         </div>
-        <div class="kt-portlet__head-toolbar">
-            <a href="{{ url('/manage-po/create/001')}}" class="btn btn-primary btn-sm">
-                <span class="kt-hidden-mobile">Submit PO</span>
-            </a>
-        </div>
     </div>
     <div class="kt-portlet__body">
         <table class="table table-sm table-head-bg-brand">
             <thead>
                 <tr>
+                    <th>Action</th>
                     <th>PO Ref</th>
                     <th>PO No.</th>
                     <th>Submitted By</th>
                     <th>Date Submitted</th>
                     <th>Status</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row,index) in po"> 
-                    <td>@{{ row.po_ref_no }}</td>
-                    <td>@{{ row.po_no }}</td>
-                    <td>@{{ row.submitted_by }}</td>
-                    <td>@{{ row.date_submitted }}</td>
-                    <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
-                    </td>
+                <tr v-for="(row,index) in po_list"> 
                     <td nowrap="nowrap">
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
+                        <a :href="base_url + '/po-overview/view/' + row.po_header_id" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
                     </td>
+                    <td>@{{ row.po_header_id }}</td>
+                    <td>@{{ row.po_number }}</td>
+                    <td>@{{ row.created_by }}</td>
+                    <td>@{{ row.date_created }}</td>
+                    <td>
+                        <span class="col-md-8">
+                            <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
+                        </span>
+                    </td>
+                    
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="kt-portlet__foot">
+        <div class="row  kt-pull-right">
+        <div class="col-lg-12">
+             <a :href="base_url + '/submit-po/' + projectDetails.project_id" class="btn btn-primary kt-margin-r-5 btn-sm" >
+                <span class="kt-hidden-mobile">Add PO</span>
+            </a>
+           
+        </div>
+        </div>
     </div>
 </div>
 
@@ -540,7 +604,7 @@
     </div>
 </div>
 
-@endif;
+@endif
 
 <!--begin::Modal-->
 <div class="modal fade" id="deliveryScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -657,6 +721,77 @@
 <!--end::Modal-->
 
 
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="fpc_details_modal" style="z-index:1131" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Price Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">Delivery Schedule</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in curDeliverySched">
+                                            <td>@{{ row.delivery_date}}</td> 
+                                            <td>@{{ row.quantity }}</td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card" v-show="curFreebies.length > 0">
+                            <div class="card-header">Freebies</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in curFreebies">
+                                            <td>@{{ row.description}}</td> 
+                                            <td>@{{ row.amount | formatPeso }}</td> 
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Total</th>
+                                            <th align="right">P @{{ sumFreebies | formatPeso }}</th>
+                                        </tr> 
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </div> <!-- end of app wrapper -->
 @stop
 
@@ -679,6 +814,9 @@
             competitors:            {!! json_encode($competitors) !!},
             base_url:               {!! json_encode($base_url) !!},
             competitor_attachments: {!! json_encode($competitor_attachments) !!},
+            status_colors:          {!! json_encode($status_colors) !!},
+            vehicle_colors:         {!! json_encode($vehicle_colors) !!},
+            cancel_flag:            false,
             remarks:                null,
             curBodyBuilder:         null,
             curRearBody:            null,
@@ -687,33 +825,11 @@
             curColor:               "",
             curQuantity:            "",
             curDeliveryDetails:     [],
-            status_colors : {
-                'New' : "kt-badge kt-badge--brand kt-badge--inline",
-                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
-                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
-                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
-                'Closed' : "kt-badge kt-badge--info kt-badge--inline"
-            },
-            fpc:                    [
-                {
-                    fpc_no : "FPC001",
-                    account_name : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    date_confirmed : "May 22, 2019",
-                    confirmed_by : "Paul Alcabasa",
-                    status : "Approved"
-
-                }
-            ],
-            po : [
-                {
-                    po_ref_no : 'PO001',
-                    po_no : 'CUSTPO11',
-                    submitted_by : 'Mary Jan Watson',
-                    date_submitted : 'May 23, 2019',
-                    status : 'Approved'
-                }
-            ],
-            fwpc : [
+            curFreebies:            [],
+            curDeliverySched:       [],
+            fpc:                    {!! json_encode($fpc) !!},
+            po_list:                {!! json_encode($po_list) !!},
+            fwpc:                   [
                 {
                     oracle_so_num : "3010000123",
                     ordered_date : "May 30, 2019",
@@ -749,6 +865,17 @@
                 this.curAdditionalItems = row.additional_items;
                 $("#additionalDetailsModal").modal('show');
             },
+            showDetails(header_index,line_index){
+                var self                = this;
+                var fpc_item_id         = self.fpc[header_index]['fpc_lines'][line_index].fpc_item_id;
+                var requirement_line_id = self.fpc[header_index]['fpc_lines'][line_index].requirement_line_id;
+                axios.get('ajax-get-fpc-details/' + fpc_item_id + '/' + requirement_line_id)
+                    .then( (response) => {
+                        self.curFreebies = response.data.freebies;
+                        self.curDeliverySched = response.data.delivery_sched;   
+                        $("#fpc_details_modal").modal('show');
+                    });
+            },
             confirmReject(){
                 this.submitApproval('reject', 'error', 'Project has been rejected.')
             },
@@ -782,7 +909,6 @@
                     status : status
                 })
                 .then(function (response) {
-                    console.log(response);
                     Swal.fire({
                         type: swal_type,
                         title: swal_title,
@@ -792,7 +918,6 @@
                             window.location.href = "{{ url('all-projects')}}";
                         }
                     });
-
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -850,7 +975,7 @@
                     confirmButtonText: 'Confirm'
                 }).then((result) => {
                     if (result.value) {
-                          
+                        
                         KTApp.blockPage({
                             overlayColor: '#000000',
                             type: 'v2',
@@ -862,6 +987,7 @@
                             project_id : self.projectDetails.project_id
                         })
                         .then(function (response) {
+                            self.cancel_flag = false;
                             var data = response.data;
                             self.projectDetails.status_name = data.status;
                             KTApp.unblockPage();
@@ -889,14 +1015,28 @@
             },
             formatPrice(value) {
                 return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            },
+            sumQty(header_index){
+                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
+            },
+            sumPrice(header_index){
+                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * (parseFloat(item.fleet_price) + parseFloat(item.freebies)) ),0);
             }
         },
         created: function () {
             // `this` points to the vm instance
-
+            var self = this;
+            if(self.projectDetails.status_name == 'New'){
+                self.cancel_flag = true;
+            }
         },
         mounted : function () {
-
+            
+        },
+        filters: {
+            formatPeso: function (value) {
+                 return `${parseFloat(value).toLocaleString()}`
+            }
         },
         computed : {
             totalQty : function(){
@@ -919,6 +1059,9 @@
                     total += this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
                 }
                 return total;
+            },
+            sumFreebies(){
+                return this.curFreebies.reduce((acc,item) => parseFloat(acc) + parseFloat(item.amount),0);
             }
         }
         

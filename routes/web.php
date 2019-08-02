@@ -43,6 +43,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-project-attachment', 'ProjectController@upload_project_attachment');
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
+	Route::get('approval-list', 'ApprovalController@approval_list');
 	Route::post('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
@@ -68,17 +69,21 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
 	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
-
+	
 	/* FPC */
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
 	Route::get('ajax-get-fpc-details/{fpc_item_id}/{requirement_line_id}', 'PriceConfirmationController@ajax_get_fpc_details');
-	Route::get('print-fpc-dealer/{project_id}', 'PriceConfirmationController@print_fpc_dealer');
+	Route::get('print-fpc-dealer/{print_type}/{project_id}/{fpc_id}/', 'PriceConfirmationController@print_fpc_dealer');
 
 	/* Purchase Order */
-	Route::get('manage-po/{action}/{price_confirmation_id}', 'PurchaseOrderController@manage_po');
+	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');
+	Route::get('po-overview/{action}/{po_header_id}/{approval_id}', 'PurchaseOrderController@po_overview');
 	Route::get('all-po', 'PurchaseOrderController@all_po');
 	Route::get('po-approval', 'PurchaseOrderController@po_approval');
 	Route::get('submit-po/{project_id}', 'PurchaseOrderController@submit_po');
+	Route::post('save-po', 'PurchaseOrderController@save_po');
+	Route::post('upload-po-attachment', 'PurchaseOrderController@upload_po_attachment');
+	Route::post('save-po-validation', 'PurchaseOrderController@save_po_validation');
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');

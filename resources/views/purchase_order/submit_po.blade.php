@@ -63,14 +63,19 @@
         <div class="form-group row">
             <div class="col-md-6">
                 <label>PO Number</label>
-                <input type="text" name="" class="form-control"/>
+                <input type="text" v-model.lazy="poNumber" class="form-control"/>
             </div>
             <div class="col-md-6">
                 <label>PO Document</label>
                 <div></div>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file for purchase order</label>
+                    <input type="file" @change="validateFileSize()" class="custom-file-input" ref="customFile" name="attachments[]" id="attachments" multiple="true">
+                    <label class="custom-file-label" for="attachment">@{{ file_label }}</label>
+                    <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
+                        <li v-for="(row,index) in attachments">
+                            <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -214,16 +219,21 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            projectDetails:    {!! json_encode($project_details) !!},
-            requirement_lines: {!! json_encode($requirement_lines) !!},
-            vehicle_colors:    {!! json_encode($vehicle_colors) !!},
-            status_colors:     {!! json_encode($status_colors) !!},
-            curDeliverySched:  [],
-            curVehicleType:    '',
-            curLineIndex:      '',
-            curModel: '',
-            curColor: '',
-            curQuantity : '' 
+            projectDetails:       {!! json_encode($project_details) !!},
+            requirement_lines:    {!! json_encode($requirement_lines) !!},
+            vehicle_colors:       {!! json_encode($vehicle_colors) !!},
+            status_colors:        {!! json_encode($status_colors) !!},
+            base_url:             {!! json_encode($base_url) !!},
+            poNumber:             '',
+            curDeliverySched:     [],
+            curVehicleType:       '',
+            curLineIndex:         '',
+            curModel:             '',
+            curColor:             '',
+            curQuantity:          '',
+            attachments:          [],
+            curRequirementLineId: '',
+            file_label:           'Choose file'
         },
         created: function () {
             this.requirement_lines = _.groupBy(this.requirement_lines, 'vehicle_type');
@@ -245,7 +255,6 @@
                 this.curQuantity = this.requirement_lines[vehicle_type][line_index].quantity;
                 this.curVehicleType = vehicle_type;
                 this.curLineIndex = line_index;
-
                 $("#deliverySchedModal").modal('show');
             },
             saveDeliverySched(){
@@ -254,13 +263,74 @@
                 $("#deliverySchedModal").modal('hide');
             },
             submitPO(){
+                var self = this;
+                
                 Swal.fire({
-                    type: 'success',
-                    title: 'The purchase order has been successfully submitted!',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    onClose : function(){
-                        window.location.href = "{{ url('all-po') }} ";
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                      
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/save-po', {
+                            requirement_lines: self.requirement_lines,
+                            po_number:         self.poNumber,
+                            project_id:        self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            self.processFileUpload(
+                                response.data.po_header_id
+                            );
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });
+            },
+            processFileUpload(po_header_id){
+                let data = new FormData();
+                var self = this;
+                data.append('po_header_id',po_header_id);
+
+                $.each($("#attachments")[0].files, function(i, file) {
+                    data.append('attachments[]', file);
+                });
+                
+                let settings = { headers: { 'content-type': 'multipart/form-data' } };
+
+                axios.post('/upload-po-attachment', data ,settings).then(function (response) {
+                    KTApp.unblockPage();
+
+                    if(response.data.status == "success"){
+                        Swal.fire({
+                            type: 'success',
+                            title: 'PO has been submitted!',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            onClose : function(){
+                                var link = self.base_url + '/project-overview/view/' + self.projectDetails.project_id;
+                                window.location.href = link;
+                            }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unexpected error encountered during the transaction, please contact the system administrator.',
+                            showConfirmButton: true
+                        });
                     }
                 });
             },
@@ -272,7 +342,40 @@
             },
             calculateSubtotal(vehicle_type){
                 return this.requirement_lines[vehicle_type].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * parseFloat(item.fleet_price)),0);
-            }
+            },
+            validateFileSize(){
+                var self = this;
+                var total_size = 0;
+                var total_files = 0;
+                
+                self.attachments = [];
+
+                $.each($("#attachments")[0].files, function(i, file) {
+                    total_size += file.size;  
+                    self.attachments.push({
+                        directory : null,
+                        filename : file.name,
+                        orig_filename : file.name
+                    });
+                    total_files++;
+                });
+
+                var total_size_mb = total_size / 1024 / 1024;
+                if(total_size_mb >= 10){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Attachment must be less than 10mb.',
+                        showConfirmButton: true
+                    });
+
+                    $("#attachment").val("");
+                    self.attachments = [];
+ 
+                }
+                else {
+                    self.file_label = total_files + " file" + (total_files > 1 ? "s" : "") + " selected" ;
+                }
+            },
         },
         computed : {
             totalQty(){
