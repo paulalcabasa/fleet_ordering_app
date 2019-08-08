@@ -31,7 +31,7 @@ class Project extends Model
             else if($user_type == 33){
                 $vehicle_type = 'CV';
             }
-            $where = "AND rh.vehicle_type = '" . $vehicle_type . "'";
+            $where = "AND rh.vehicle_type = '" . $vehicle_type . "' AND fp.status IN (10,11)";
             $addtl_table = "LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                                 ON rh.project_id = fp.project_id";
     	}
@@ -45,30 +45,38 @@ class Project extends Model
                         usr.first_name || ' ' || usr.last_name created_by,
                         to_char(fp.creation_date,'mm/dd/yyyy') date_created,
                         fp.dealer_id,
-                       CASE 
-                            WHEN fp.status = 11 THEN 
+                        CASE 
+                            WHEN fp.status = 10 AND count(fpc.status) > 0 THEN 
                                 CASE WHEN 
                                     SUM(
-                                    CASE 
-                                        WHEN fpc.status = 12 THEN 1 ELSE 0
-                                    END
-                                ) >= 1 THEN 'in_progess'
-                                ELSE 'good'
+                                        CASE 
+                                            WHEN fpc.status = 12 THEN 1 ELSE 0
+                                        END
+                                    ) >= 1 THEN 'in_progess'
+                                    ELSE 'good'
                                 END
                             ELSE null
-                       END fpc_status,
-                       CASE 
-                            WHEN fp.status = 11 THEN 
+                        END fpc_status,
+                        CASE 
+                            WHEN fp.status = 10 AND count(ph.status) > 0 THEN 
                               CASE WHEN 
                                     SUM(
                                     CASE 
-                                        WHEN ph.status = 7 THEN 1 ELSE 0
+                                        WHEN ph.status = 11 THEN 1 ELSE 0
                                     END
                                      ) >= 1 THEN 'in_progress'
                                      ELSE 'good'
                                 END
                             ELSE null
-                       END  po_status
+                        END  po_status,
+                        CASE 
+                            WHEN fp.status = 10 THEN 
+                              CASE WHEN 
+                                     COUNT(fwpc.fwpc_id) > 0 THEN 'good' ELSE 'in_progress'
+                                
+                                END
+                            ELSE null
+                       END  fwpc_status
                 FROM ipc_dms.fs_projects fp
                     INNER JOIN ipc_dms.fs_customers fc
                         ON fp.customer_id = fc.customer_id 
@@ -85,7 +93,9 @@ class Project extends Model
                     LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_prj.fpc_id
                     LEFT JOIN ipc_dms.fs_po_headers ph
-                        ON ph.project_id = fp.project_id    
+                        ON ph.project_id = fp.project_id
+                    LEFT JOIN ipc_dms.fs_fwpc fwpc
+                        ON fwpc.project_id = fp.project_id    
                 WHERE 1 = 1
                     {$where}
                 GROUP BY fp.project_id,

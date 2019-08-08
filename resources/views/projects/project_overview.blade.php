@@ -145,7 +145,7 @@
                                     <span class="col-md-8">
                                         <ul style="list-style:none;padding:0;">
                                             <li v-for="(row,index) in attachments">
-                                                <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                                <a :href="base_url + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
                                             </li>
                                         </ul>
                                     </span>
@@ -201,17 +201,17 @@
                                 </div>
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Email</span>
-                                    <span class="col-md-8"><a href="mailto:xxx@xxx.mail">@{{ projectDetails.email}}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.email}}</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Website</span>
-                                    <span class="col-md-8"><a href="http://www.website.com">@{{ projectDetails.website_url }}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.website_url }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Facebook</span>
-                                    <span class="col-md-8"><a href="http://www.facebook.com">@{{ projectDetails.facebook_url }}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.facebook_url }}</span>
                                 </div>
                             </div>
                         </div>  
@@ -278,24 +278,29 @@
                 <table class="table table-condensed"  style="font-size:90%;">
                     <thead>
                         <tr class="kt-font-bold bg-light-gray-1">
+                            <th>Actions</th>
                             <th>Model</th>
                             <th>Color</th>
                             <th>Quantity</th>
                             <th>PO Quantity</th>
                             <th>Suggested Price</th>
-                            <th>Additional details</th>
-                            <th>Delivery Schedule</th>
+                      <!--       <th>Additional details</th>
+                            <th>Delivery Schedule</th> -->
                         </tr>
                     </thead>
 
                     <tbody v-for="(vehicles,vehicle_type) in requirement">
                         <tr v-for="(row,index) in vehicles">
+                            <td nowrap="nowrap">
+                                <a href="#"  title="Additional details" @click="showAdditionalDetails(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
+                                <a href="#"  title="Delivery schedule" @click="showDeliveryDetail(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-calendar"></i></a>
+                            </td>
                             <td>@{{ row.sales_model }}</td>
                             <td><span :class="vehicle_colors[row.color]">&nbsp</span> @{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
                             <td>@{{ row.po_qty }}</td>
                             <td>@{{ formatPrice(row.suggested_price) }}</td>
-                            <td>
+                          <!--   <td>
                                 <button type="button" @click="showAdditionalDetails(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-info-circle"></i>
                                 </button>
@@ -304,7 +309,7 @@
                                 <button type="button" @click="showDeliveryDetail(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-calendar"></i>
                                 </button>
-                            </td>
+                            </td> -->
                         </tr>
 
                         <tr class="kt-font-bold bg-light-gray-1">
@@ -364,7 +369,7 @@
                             <div class="card-body">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in competitor_attachments">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                        <a :href="base_url + '/' + row.symlink_dir + row.filename " download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -386,7 +391,7 @@
                 @elseif($action == "view")
                 <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="cancel_flag">Cancel</button>
                 <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
-                <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button>
+                <!-- <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button> -->
                 @endif
             </div>
         </div>
@@ -395,404 +400,25 @@
 </div>
 
 @if($action == "view")
-
-<div class="kt-portlet kt-portlet--height-fluid" v-for="(row,index) in fpc">
-   
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Fleet Price Confirmation <small>@{{ row['fpc_header'].vehicle_type }}</small>
-            </h3>
-        </div>
-    </div>
-
-    <div class="kt-portlet__body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Details</div>
-                    <div class="card-body">
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Ref No.</span>
-                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_id }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Date Created</span>
-                            <span class="col-md-8">@{{ row['fpc_header'].date_created }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Prepared By</span>
-                            <span class="col-md-8">@{{ row['fpc_header'].prepared_by }}</span>
-                        </div>
-                        <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Status</span>
-                            <span class="col-md-8">
-                                <span :class="status_colors[row['fpc_header'].status_name]">@{{ row['fpc_header'].status_name }}</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Attachment</div>
-                    <div class="card-body">
-                        <div class="row kt-margin-b-5" v-if="row['attachments'].length > 0">
-                            <span class="col-md-4 kt-font-bold">Signed documents</span>
-                            <span class="col-md-8">
-                                <ul style="list-style:none;padding:0;">
-                                    <li v-for="(row,index) in row['attachments']">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
-                                    </li>
-                                </ul>    
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <table class="table table-bordered table-condensed kt-margin-t-10">
-            <thead>
-                <tr>
-                    <td rowspan="2"></td>
-                    <td rowspan="2">Model</td>
-                    <td rowspan="2">Color</td>
-                    <td rowspan="2">Qty</td>
-                    <td rowspan="2">Body Type</td>
-                    <td rowspan="2">Unit Price</td>
-                    <td rowspan="2">Freebies</td>
-                    <td colspan="2">Inclusion</td>
-                </tr>
-                <tr>
-                    <td>STD</td>
-                    <td>ADD'L</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, item_index) in row['fpc_lines']">
-                    <td>
-                        <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
-                            <i class="la la-info"></i>
-                        </a>
-                        </td>
-                    </td>
-                    <td>@{{ item.sales_model }}</td>
-                    <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
-                    <td>@{{ item.quantity }}</td>
-                    <td>@{{ item.rear_body_type }}</td>
-                    <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
-                    <td align="right">@{{ item.freebies | formatPeso }}</td>
-                    <td>N/A</td>
-                    <td>@{{ item.additional_items }}</td>
-                </tr>
-            </tbody>
-            <tfoot class="kt-font-boldest">
-                <tr>
-                    <td colspan="3" align="right">Total</td>
-                    <td> @{{ sumQty(index) }}</td>
-                    <td></td>
-                    <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <div class="kt-portlet__foot">
-        <div class="row  kt-pull-right">
-        <div class="col-lg-12">
-              <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
-                <span class="kt-hidden-mobile">Print</span>
-            </a>
-        </div>
-        </div>
-    </div>
-</div>
-
-<div class="kt-portlet kt-portlet--mobile">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Purchase Order
-            </h3>
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
-            <thead>
-                <tr>
-                    <th>Action</th>
-                    <th>PO Ref</th>
-                    <th>PO No.</th>
-                    <th>Submitted By</th>
-                    <th>Date Submitted</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in po_list"> 
-                    <td nowrap="nowrap">
-                        <a :href="base_url + '/po-overview/view/' + row.po_header_id" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                    </td>
-                    <td>@{{ row.po_header_id }}</td>
-                    <td>@{{ row.po_number }}</td>
-                    <td>@{{ row.created_by }}</td>
-                    <td>@{{ row.date_created }}</td>
-                    <td>
-                        <span class="col-md-8">
-                            <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
-                        </span>
-                    </td>
-                    
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="kt-portlet__foot">
-        <div class="row  kt-pull-right">
-        <div class="col-lg-12">
-             <a :href="base_url + '/submit-po/' + projectDetails.project_id" class="btn btn-primary kt-margin-r-5 btn-sm" >
-                <span class="kt-hidden-mobile">Add PO</span>
-            </a>
-           
-        </div>
-        </div>
-    </div>
-</div>
-
-<div class="kt-portlet kt-portlet--mobile">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Fleet Wholesale Price Confirmation
-            </h3>
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
-            <thead>
-                <tr>
-                    <th>Sales Order No.</th>
-                    <th>Ordered Date</th>
-                    <th>Customer Name</th>
-                    <th>Order Type</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in fwpc"> 
-                    <td>@{{ row.oracle_so_num }}</td>
-                    <td>@{{ row.ordered_date }}</td>
-                    <td>@{{ row.customer_name }}</td>
-                    <td>@{{ row.order_type }}</td>
-                    <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
-                    </td>
-                    <td nowrap="nowrap">
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
-
-
-
-
-    </div>
-</div>
-
+    @include('projects.subform.fpc')
+    @include('projects.subform.po')
+    @include('projects.subform.fwpc')
 @endif
 
-<!--begin::Modal-->
-<div class="modal fade" id="deliveryScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Model</span>
-                                    <span class="details-subtext">@{{ curModel }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Color</span>
-                                    <span class="details-subtext">@{{ curColor }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">@{{ curQuantity}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <td>Quantity</td>
-                                    <td>Date</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(row,index) in curDeliveryDetails">
-                                    <td>@{{ row.quantity }}</td>
-                                    <td>@{{ row.delivery_date }}</td>
-                                </tr>
-                            
-                            </tbody>
-                        </table>                    
-                    </div>
-                </div>
-    
-            </div>
-           <!--  <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Add row</button>
-            </div> -->
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-<!--begin::Modal-->
-<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">    
-                <div class="details-item">
-                    <span class="details-label">Name of Body Builder</span>
-                    <span class="details-subtext">@{{ curBodyBuilder == null ? '-' : curBodyBuilder }}</span>
-                </div>
-                <div class="details-item">
-                    <span class="details-label">Rear Body Type</span>
-                    <span class="details-subtext">@{{ curRearBody == null ? '-' : curRearBody  }}</span>
-                </div>
-                <div class="details-item">
-                    <span class="details-label">Additional Items</span>
-                    <span class="details-subtext">@{{ curAdditionalItems == null ? '-' : curAdditionalItems  }}</span>
-                </div>      
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-
-
-<!--begin::Modal-->
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Reject Project</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">          
-                <div class="form-group">
-                    <label>Are you sure to cancel this project? Kindly state your reason.</label>
-                    <textarea class="form-control" v-model="remarks"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" @click="confirmReject" class="btn btn-primary">Confirm</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="fpc_details_modal" style="z-index:1131" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Price Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Delivery Schedule</div>
-                            <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.delivery_date}}</td> 
-                                            <td>@{{ row.quantity }}</td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card" v-show="curFreebies.length > 0">
-                            <div class="card-header">Freebies</div>
-                            <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row,index) in curFreebies">
-                                            <td>@{{ row.description}}</td> 
-                                            <td>@{{ row.amount | formatPeso }}</td> 
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Total</th>
-                                            <th align="right">P @{{ sumFreebies | formatPeso }}</th>
-                                        </tr> 
-                                    </tfoot>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-</div> <!-- end of app wrapper -->
+<!-- delivery schedule modal -->
+@include('projects.modal.delivery_schedule')
+<!-- additional details modal -->
+@include('projects.modal.additional_details')
+<!-- price confirmation modal -->
+@include('projects.modal.price_confirmation')
+<!-- add fwpc modal -->
+@include('projects.modal.add_fwpc')
+<!-- view fwpc modal -->
+@include('projects.modal.view_fwpc')
+<!-- validate modal -->
+@include('projects.modal.validate')
+</div> 
+<!-- end of app wrapper -->
 @stop
 
 
@@ -829,15 +455,12 @@
             curDeliverySched:       [],
             fpc:                    {!! json_encode($fpc) !!},
             po_list:                {!! json_encode($po_list) !!},
-            fwpc:                   [
-                {
-                    oracle_so_num : "3010000123",
-                    ordered_date : "May 30, 2019",
-                    customer_name : "ISUZU AUTOMOTIVE DEALERSHIP, INC.",
-                    order_type : "FLT.Sales Order (LCV A)",
-                    status : "Booked"
-                }
-            ]
+            cur_sales_order_number: '',
+            cur_so_details:         [],
+            cur_so_header:          [],
+            cur_so_lines:           [],
+            fwpc:                   {!! json_encode($fwpc) !!},
+            user_type:              {!! json_encode($user_type) !!}
         },
         methods : {
             showDeliveryDetail(data){
@@ -902,7 +525,7 @@
             },
             submitApproval(status, swal_type, swal_title){
                 var self = this;
-                axios.post('/save-approval', {
+                axios.patch('/save-approval', {
                     approvalId : self.approvalId,
                     projectId : self.projectId,
                     remarks : self.remarks,
@@ -915,7 +538,7 @@
                         showConfirmButton: false,
                         timer: 1500,
                         onClose : function(){
-                            window.location.href = "{{ url('all-projects')}}";
+                           window.location.href = "{{ url('all-projects')}}";
                         }
                     });
                 })
@@ -1021,6 +644,83 @@
             },
             sumPrice(header_index){
                 return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * (parseFloat(item.fleet_price) + parseFloat(item.freebies)) ),0);
+            },
+            searchSalesOrder(){
+                var self = this;
+                KTApp.block("#addFWPC .modal-content",{});
+
+                axios.get('/sales-order/' + self.cur_sales_order_number)
+                    .then( (response) => {
+                        self.cur_so_details = response.data.header_data;
+                        KTApp.unblock("#addFWPC .modal-content",{});
+                    });
+            },
+            addSalesOrder(){
+                var self = this;
+                KTApp.block("#addFWPC .modal-content",{});
+                axios.post('/sales-order', {
+                    project_id : self.projectDetails.project_id,
+                    sales_order_id : self.cur_so_details.header_id,
+                    so_number : self.cur_so_details.order_number
+                }).then( (response) => {
+                    KTApp.unblock("#addFWPC .modal-content",{});
+                    $("#addFWPC").modal('hide');
+                    self.fwpc.push(response.data);
+                    self.cur_so_details = [];
+                    self.cur_sales_order_number = '';
+                });
+            },
+            deleteFwpc(index){
+                var self = this;
+
+              Swal.fire({
+                    title: 'Are you sure to delete this FWPC?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                        
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                        
+                        axios.delete('/fwpc/' + self.fwpc[index].fwpc_id)
+                        .then(function (response) {
+                            self.fwpc.splice(index,1);
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'error',
+                                title: 'FWPC has been deleted!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });  
+            },
+            viewFwpc(index){
+                var self = this;
+                self.cur_so_header = [];
+                self.cur_so_lines = [];
+                $("#viewFWPC").modal('show');
+                KTApp.block("#viewFWPC .modal-content",{});
+                axios.get('/sales-order-data/' + this.fwpc[index].fwpc_id)
+                    .then( (response) => {
+                        self.cur_so_header = response.data.so_header;
+                        self.cur_so_lines = response.data.so_lines;
+                        KTApp.unblock("#viewFWPC .modal-content",{});
+                    });
+
             }
         },
         created: function () {

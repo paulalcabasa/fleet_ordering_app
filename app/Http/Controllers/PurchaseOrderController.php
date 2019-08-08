@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -216,7 +216,7 @@ class PurchaseOrderController extends Controller
                     //Move Uploaded File
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $actual_directory = Storage::putFileAs(
-                        'public/storage/po', $file, $filename
+                        'public/po', $file, $filename
                     );
                     $orig_filename = $file->getClientOriginalName();
                     $temp = [
@@ -230,7 +230,8 @@ class PurchaseOrderController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 4 // purchase order as owner of the file
+                        'owner_id'              => 4, // purchase order as owner of the file
+                        'symlink_dir'           => 'public/storage/po/'
                     ];         
                     array_push($attachment_params,$temp);
                     $file_index++;

@@ -44,7 +44,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::get('approval-list', 'ApprovalController@approval_list');
-	Route::post('save-approval', 'ProjectController@save_approval');
+	Route::patch('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
@@ -95,6 +95,14 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	//Competitors
 	Route::get('/ajax-get-competitor-brands/', 'CompetitorController@ajax_get_competitor_brands');
 	Route::get('/ajax-get-competitor-models/', 'CompetitorController@ajax_get_competitor_models');
+	
+	// FWPC
+	Route::get('sales-order/{sales_order_number}', 'SalesOrderController@get_so_details');
+	Route::post('sales-order', 'FWPCController@add_fwpc');
+	Route::get('fwpc/{project_id}', 'FWPCController@get_fwpc_list');
+	Route::delete('fwpc/{fwpc_id}', 'FWPCController@destroy');
+	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
+
 });
 
 // ----------------- Authentication ----------------- //

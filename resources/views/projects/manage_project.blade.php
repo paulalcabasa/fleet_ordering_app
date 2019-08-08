@@ -132,20 +132,20 @@
                                     <div class="col-lg-6">
                                         <label>Project Source</label>
                                         <div class="row">
-                                            <div class="col-lg-6"> 
+                                            <div :class="accountDetails.selected_project_source != 8 ? 'col-md-12' : 'col-md-6'"> 
                                                 <select class="form-control" id="sel_project_source" v-model="accountDetails.selected_project_source" v-select style="width:100%;"></select>
                                             </div>
-                                            <div class="col-lg-6">
+                                            <div :class="accountDetails.selected_project_source == 8 ? 'col-md-6' : ''" v-show="accountDetails.selected_project_source == 8">
                                                 <input 
                                                     type="text" 
                                                     class="form-control" 
                                                     value="" 
                                                     id="txt_others" 
+                                                    
                                                     v-model.lazy="accountDetails.others" 
-                                                    placeholder="If others, please specify"
+                                                    placeholder="Enter project source"
                                                            
                                                 /> 
-
                                             </div>
                                         </div>
                                      <!--    <span class="form-text text-muted">Select the project source</span> -->
@@ -197,8 +197,6 @@
                                     </div>
                                 </div>
 
-                                
-                                     
                                 <div class="form-group row">
                                     <div class="col-lg-6">
                                         <label>TIN</label>

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
@@ -314,7 +314,7 @@ class PriceConfirmationController extends Controller
         $remarks           = $request->remarks;
         $attachment_params = [];
         $file_index        = 0;
-        $destinationPath   = 'storage/app/attachments';
+//$destinationPath   = 'storage/app/attachments';
         
         // approve fpc
         $m_fpc->update_status(
@@ -331,9 +331,14 @@ class PriceConfirmationController extends Controller
                     //Move Uploaded File
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
+
+                    $fpcPath = Storage::putFileAs(
+                        'public/fpc', $file, $filename
+                    );  
+
                     $temp = [
                         'filename'              => $filename,
-                        'directory'             => $destinationPath,
+                        'directory'             => $fpcPath,
                         'module_id'             => 3, // Fleet Price Confirmation
                         'reference_id'          => $fpc_id,
                         'reference_table'       => 'fs_fpc',
@@ -342,10 +347,11 @@ class PriceConfirmationController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 3 // customer as owner
+                        'owner_id'              => 3, // customer as owner
+                        'symlink_dir'           => 'public/storage/fpc/'
                     ];         
                     array_push($attachment_params,$temp);
-                    $file->move($destinationPath,$filename);
+                   // $file->move($destinationPath,$filename);
                     $file_index++;
                 }
 

@@ -17,6 +17,7 @@
             <thead>
                 <tr>
                     <th>Actions</th>
+                    <th>Project No.</th>
                     <th>FPC No.</th>
                     <th>Account Name</th>
                     <th>Date</th>
@@ -26,8 +27,8 @@
             </thead>
             <tbody>
                 <tr v-for="(row,index) in fpcList">
-                    <td>
-                        <div class="dropdown">
+                    <!--<td>
+                         <div class="dropdown">
                           <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-sliders-h"></i>
                           </button>
@@ -38,8 +39,12 @@
                             <a class="dropdown-item" href="#">Cancel</a>
                             <a class="dropdown-item" href="{{ url('/po-entry/001')}}">Submit PO</a>
                           </div>
-                        </div>
+                        </div> 
+                    </td>-->
+                   <td nowrap="nowrap">
+                        <a :href="base_url + '/price-confirmation-details/' + row.fpc_id"  title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
                     </td>
+                    <td>@{{ row.project_id }}</td>
                     <td>@{{ row.fpc_id }}</td>
                     <td>@{{ row.customer_name }}</td>
                     <td>@{{ row.date_created }}</td>

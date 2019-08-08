@@ -22,12 +22,15 @@ class ApprovalController extends Controller
             session('user')['user_type_id']
         );
 
+
         $po_approval_list = $m_approval->get_po_approval(
             session('user')['user_id'],
             session('user')['source_id']
         );
 
         $approval_list = array_merge($project_approval_list, $po_approval_list);
+
+
 
         $page_data = [
             'approval_list' => $approval_list,

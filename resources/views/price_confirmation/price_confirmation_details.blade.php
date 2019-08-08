@@ -27,7 +27,6 @@
                     <span class="col-md-4 kt-font-bold">Price Confirmation No.</span>
                     <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ fpc_details.fpc_id }}</span>
                 </div>
-                
                 <div class="row kt-margin-b-5">
                     <span class="col-md-4 kt-font-bold">Status</span>
                     <span class="col-md-8">
@@ -55,7 +54,7 @@
                     <span class="col-md-8">
                         <ul style="list-style:none;padding:0;">
                             <li v-for="(row,index) in fpc_attachments">
-                                <a :href="baseURL + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                <a :href="baseURL + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
                             </li>
                         </ul>    
                     </span>
@@ -132,10 +131,16 @@
                     </thead>
                     <tbody>
                         <tr v-for="(order, index) in project.requirements">
-                            <td nowrap>
+                            <td nowrap="nowrap">
+                                <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
+                                <a href="#"  title="View"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
+
+                              
+                            </td>
+                        <!--     <td nowrap>
                                 <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-primary btn-sm btn-icon btn-circle"><i class="fas fa-money-bill-wave"></i></a>
                                 <a href="#" @click="showAdditionalDetails(order)" class="btn btn-success btn-sm btn-icon btn-circle"><i class="la la-info-circle"></i></a> 
-                            </td>
+                            </td> -->
                             <td> @{{ order.sales_model }} </td>
                             <td> @{{ order.color }} </td>
                             <td> @{{ order.quantity }} </td>

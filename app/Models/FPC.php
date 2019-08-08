@@ -17,21 +17,24 @@ class FPC extends Model
 
     public function get_fpc($vehicle_type){
     	$sql = "SELECT fpc.fpc_id,
-			            fc.customer_name,
-			            fpc.vehicle_type,
-			            fs.status_name,
-			            usr.first_name || ' ' || usr.last_name created_by,
-			            to_char(fpc.creation_date,'mm/dd/yyyy') date_created
-				FROM ipc_dms.fs_fpc fpc
-				    LEFT JOIN ipc_dms.fs_customers fc
-				        ON fc.customer_id = fpc.customer_id
-				    LEFT JOIN ipc_dms.fs_status fs  
-				        ON fs.status_id = fpc.status
-				    LEFT JOIN ipc_dms.ipc_portal_users_v usr
-				        ON usr.user_id = fpc.created_by 
-				        AND usr.user_source_id = fpc.create_user_source_id
-				WHERE 1 = 1
-					AND fpc.vehicle_type = :vehicle_type";
+                        fpc_prj.project_id,
+                        fc.customer_name,
+                        fpc.vehicle_type,
+                        fs.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fpc.creation_date,'mm/dd/yyyy') date_created
+                FROM ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.fs_status fs  
+                        ON fs.status_id = fpc.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fpc.created_by 
+                        AND usr.user_source_id = fpc.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_id = fpc.fpc_id
+                WHERE 1 = 1
+                    AND fpc.vehicle_type = :vehicle_type";
 		$params = [
 			"vehicle_type" => $vehicle_type
 		];

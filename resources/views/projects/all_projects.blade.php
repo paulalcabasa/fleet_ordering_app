@@ -33,6 +33,12 @@
                         <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-eye"></i>
                         </a>
+                        <a v-if="row.fpc_status == 'good'" :href="base_url + '/submit-po/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-file-text"></i>
+                        </a>
+
+
+
                        <!--  <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-edit"></i>
                         </a> -->
@@ -58,7 +64,8 @@
                     </td>
                     <td><i class="fa fa-check kt-font-success" v-if="row.fpc_status == 'good'"></i></td>
                     <td><i class="fa fa-check kt-font-success" v-if="row.po_status == 'good'"></i></td>
-                    <td><i class="fa fa-check kt-font-success"></i></td>
+                    <td><i class="fa fa-check kt-font-success" v-if="row.fwpc_status == 'good'"></i></td>
+                 
                 </tr>
             </tbody>
         </table>
@@ -109,13 +116,7 @@
         data: {
             projects:    {!! json_encode($projects) !!},
             base_url:    {!! json_encode($base_url) !!},
-            status_colors : {
-                'New' : "kt-badge kt-badge--brand kt-badge--inline",
-                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
-                'Approved' : "kt-badge kt-badge--success kt-badge--inline",
-                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
-                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
-            },
+            status_colors : {!! json_encode($status_colors) !!},
             cur_approval : []
         },
         created: function () {

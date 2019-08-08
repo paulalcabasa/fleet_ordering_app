@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\OrganizationTypes;
@@ -28,6 +28,7 @@ use App\Models\FleetCategories;
 use App\Models\FPC;
 use App\Models\FPC_Item;
 use App\Models\POHeaders;
+use App\Models\FWPC;
 
 
 class ProjectController extends Controller
@@ -97,26 +98,28 @@ class ProjectController extends Controller
     
         $page_data = array(
             'projects' => $projects,
-            'base_url' => url('/')
+            'base_url' => url('/'),
+            'status_colors' => config('app.status_colors')
         );
 
     	return view('projects.all_projects',$page_data);
     }
 
     public function project_overview(
-        Request $request,
-        Customer $m_customer,
-        Project $m_project,
-        Attachment $m_attachment,
+        Request            $request,
+        Customer           $m_customer,
+        Project            $m_project,
+        Attachment         $m_attachment,
         CustomerAffiliates $m_affiliates,
-        CustomerContact $m_contact,
-        ContactPersons $m_contact_person,
-        SalesPersonsOra $m_sales_person,
-        RequirementHeader $m_requirement,
-        Competitor $m_competitor,
-        FPC $m_fpc,
-        FPC_Item $m_fpc_item,
-        POHeaders $m_poh
+        CustomerContact    $m_contact,
+        ContactPersons     $m_contact_person,
+        SalesPersonsOra    $m_sales_person,
+        RequirementHeader  $m_requirement,
+        Competitor         $m_competitor,
+        FPC                $m_fpc,
+        FPC_Item           $m_fpc_item,
+        POHeaders          $m_poh,
+        FWPC               $m_fwpc
     ){
         $project_id             = $request->project_id;
         $project_details        = $m_project->get_details($project_id);
@@ -134,8 +137,6 @@ class ProjectController extends Controller
         $status_colors          = config('app.status_colors');
 
         // fleet price confirmation
-      //  $fpc_list = $m_fpc->get_fpc_by_project($project_id);
-
         $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
         
         $fpc_data = [];
@@ -153,7 +154,9 @@ class ProjectController extends Controller
 
         // purchase orders
         $po_list = $m_poh->get_po_by_project($project_id);
-    
+        
+        // fwpc list
+        $fwpc = $m_fwpc->get_fwpc_by_project($project_id);
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,
@@ -172,7 +175,9 @@ class ProjectController extends Controller
             'vehicle_colors'         => $vehicle_colors,
             'status_colors'          => $status_colors,
             'fpc'                    => $fpc_data,
-            'po_list'                => $po_list
+            'po_list'                => $po_list,
+            'fwpc'                   => $fwpc,
+            'user_type'              => session('user')['user_type_id']
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -387,6 +392,7 @@ class ProjectController extends Controller
                         'requirement_line_id'   => $requirement_line_id,
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
+                        'module_id'             => 1, // Fleet Project module
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id']
@@ -545,7 +551,13 @@ class ProjectController extends Controller
         return $customer_id;
     }
 
-    public function insert_project_approval($m_module_approval,$m_approver,$user_type,$vehicle_type,$project_id){
+    public function insert_project_approval(
+        $m_module_approval,
+        $m_approver,
+        $user_type,
+        $vehicle_type,
+        $project_id
+    ){
          // insert IPC approval
         $approvers = $m_approver->get_project_approvers(
             session('user')['user_id'],
@@ -598,10 +610,7 @@ class ProjectController extends Controller
         $attachment_params      = [];
         $competitor_params      = [];
         $file_index             = 0;
-        $destinationPath        = 'storage/app/attachments';
-        $competitorPath         = 'storage/app/public/competitor';
-        $customerPath           = 'storage/app/public/customer';
-     
+          
         if(!empty($_FILES)){
 
             if(!empty($attachment)){
@@ -610,12 +619,16 @@ class ProjectController extends Controller
                     $file_path = storage_path('app/public/customer/'.$row['filename']); 
                     unlink($file_path);
                 }
+
                 // if new attachment has been placed, delete the old data.
                 $m_attachment->delete_attachment($customer_id);
                 foreach($attachment as $file){
                     //Move Uploaded File
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
+                    $customerPath = Storage::putFileAs(
+                        'public/customer', $file, $filename
+                    );                    
                     $temp = [
                         'filename'              => $filename,
                         'directory'             => $customerPath,
@@ -627,10 +640,12 @@ class ProjectController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 2 // customer as owner
+                        'owner_id'              => 2, // customer as owner
+                        'symlink_dir'           => 'public/storage/customer/'
+
                     ];         
                     array_push($attachment_params,$temp);
-                    $file->move($destinationPath,$filename);
+                    ///$file->move($destinationPath,$filename);
                     $file_index++;
                 }
             }
@@ -640,6 +655,9 @@ class ProjectController extends Controller
                     //Move Uploaded File 
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
+                    $competitorPath = Storage::putFileAs(
+                        'public/competitor', $file, $filename
+                    ); 
                     $temp = [
                         'filename'              => $filename,
                         'directory'             => $competitorPath,
@@ -651,10 +669,11 @@ class ProjectController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 1 // competitor as owner of the file
+                        'owner_id'              => 1,// competitor as owner of the file
+                        'symlink_dir'           => 'public/storage/competitor/'
                     ];         
                     array_push($attachment_params,$temp);
-                    $file->move($destinationPath,$filename);
+                   // $file->move($destinationPath,$filename);
                     $file_index++;
                 }
             }
@@ -697,7 +716,7 @@ class ProjectController extends Controller
         if($status == "approve"){
             $status_id = 4; // approve
         }
-        else {
+        else if($status == "reject"){
             $status_id = 5; // reject
         }
         
@@ -714,30 +733,36 @@ class ProjectController extends Controller
 
         // count pending approval for dealers
         $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
-    
+       
         // if there is no pending approval amount dealers, set project status to For IPC Review
-        if(count($pending_approval) == 0){
-          
+        if(count($pending_approval) == 0 && $status == "approve"){
+            $project_status = 11; // submitted
+            // get pending approval for ipc
+            $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
+
+            if(count($ipc_pending_approval) == 0 && $status == "approve"){
+                $project_status = 10; // acknowledged
+            }
+            
             $m_project->update_status(
                 $project_id,
-                11, // update status to Submitted
+                $project_status, 
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+
+        }
+        else {
+
+            $m_project->update_status(
+                $project_id,
+                5, // rejected 
                 session('user')['user_id'],
                 session('user')['source_id']
             );
         }
 
-        // count pending approval for ipc
-        $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
-        // if there is no pending approval for IPC, set project status to approved
-        if(count($ipc_pending_approval) == 0){
-          
-            $m_project->update_status(
-                $project_id,
-                10, // update status Acknowledged
-                session('user')['user_id'],
-                session('user')['source_id']
-            );
-        }
+    
     }
 
     public function ajax_cancel_project(Request $request, Project $m_project){
