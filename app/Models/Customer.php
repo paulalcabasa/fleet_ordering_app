@@ -174,13 +174,19 @@ class Customer extends Model
                     LEFT JOIN ipc_dms.fs_organization_types fot
                         ON fot.organization_type_id = fc.organization_type_id
                 WHERE fc.customer_id IN (
-                    SELECT customer_id
-                    FROM ipc_dms.fs_projects 
-                    WHERE status = :status
-                        AND vehicle_type = :vehicle_type
+                    SELECT fp.customer_id
+                    FROM ipc_dms.fs_projects fp
+                        LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                            ON fp.project_id = rh.project_id
+                        LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                            ON fp.project_id = fpc_prj.project_id
+                            AND rh.requirement_header_id = fpc_prj.requirement_header_id
+                    WHERE 1 = 1
+                        AND fp.status NOT IN(6)
+                        AND fpc_prj.fpc_project_id IS NULL
+                        AND rh.vehicle_type = :vehicle_type
                 )";
         $params = [
-            'status'       => 10,
             'vehicle_type' => $vehicle_type
         ];
         $query = DB::select($sql,$params);

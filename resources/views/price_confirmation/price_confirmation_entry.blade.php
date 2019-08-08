@@ -29,24 +29,17 @@
                         >@{{ row.customer_name }}</option>
                     </select>
                 </div>
-                <div class="form-group row">
-                    <label>Vehicle Type</label>
-                    <input type="text" class="form-control" name="" v-model="vehicle_type" readonly="readonly" />
-                </div>
             </div>
-
             <div class="kt-portlet__foot">
                 <div class="row">
                     <div class="col-lg-6 kt-align-left">
-                        <button type="button" class="btn btn-brand" @click="getProjects()" v-show="vehicle_type && customerDetails.customerId">Search</button>
+                        <button type="button" class="btn btn-brand" @click="getProjects()" v-show="customerDetails.customerId">Search</button>
                     </div>
                     <div class="col-lg-6 kt-align-right">
                         <button type="button" @click="createPriceConfirmation()" class="btn btn-success" v-show="projects.length > 0">Create</button>
                     </div>
                 </div>
-        
             </div>
-            
         </div> 
     </div>
     <div class="col-md-4" v-if="customerDetails.customerId">
@@ -125,7 +118,6 @@
         data: {
             customers : {!! json_encode($customers) !!},
             base_url : {!! json_encode($base_url) !!},
-            vehicle_type : {!! json_encode($vehicle_type) !!},
             customerDetails : {
                 tin : '',
                 address : '',
@@ -156,8 +148,7 @@
                         });
                         axios.post('/save-fpc', {
                             customerDetails : self.customerDetails,
-                            projects : self.projects,
-                            vehicle_type : self.vehicle_type
+                            projects : self.projects
                         })
                         .then(function (response) {
                             Swal.fire({
@@ -166,7 +157,7 @@
                                 showConfirmButton: false,
                                 timer: 1500,
                                 onClose : function(){
-                                    window.location.href = self.base_url + "/all-price-confirmation";
+                                    window.location.href = self.base_url + "/price-confirmation-details/"  + response.data.fpc_id;
                                 }
                             });
                             KTApp.unblockPage();
@@ -203,7 +194,7 @@
                     message: 'Please wait...'
                 });
 
-                axios.get('/ajax-get-projects/' + self.customerDetails.customerId + '/' + self.vehicle_type)
+                axios.get('/ajax-get-projects/' + self.customerDetails.customerId)
                     .then(function (response) {
                         self.projects = response.data;
                         KTApp.unblockPage();

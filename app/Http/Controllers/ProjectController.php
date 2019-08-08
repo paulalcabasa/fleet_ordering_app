@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\OrganizationTypes;
@@ -24,6 +24,12 @@ use App\Models\Attachment;
 use App\Models\Vehicle;
 use App\Models\RequirementHeader;
 use App\Models\RequirementLine;
+use App\Models\FleetCategories;
+use App\Models\FPC;
+use App\Models\FPC_Item;
+use App\Models\POHeaders;
+use App\Models\FWPC;
+
 
 class ProjectController extends Controller
 {
@@ -43,9 +49,10 @@ class ProjectController extends Controller
         $sales_persons    = $sales_person->get_sales_person_options(session('user')['customer_id']);
         $vehicle_models   = $m_vehicle->get_vehicles();
         $vehicle_types    = VehicleType::all();
+        $fleet_categories = FleetCategories::all();
+        $grouped          = collect($vehicle_models)->groupBy('model_variant'); 
+        $vehicle_options  = array();
 
-        $grouped = collect($vehicle_models)->groupBy('model_variant'); 
-        $vehicle_options = array();
         foreach($grouped as $model => $variant){
 
             $children = array();
@@ -76,7 +83,8 @@ class ProjectController extends Controller
             'sales_persons'    => $sales_persons,
             'vehicle_models'   => $vehicle_options,
             'vehicle_types'    => $vehicle_types,
-            'base_url'         => url('/')
+            'base_url'         => url('/'),
+            'fleet_categories' => $fleet_categories
     	);
     	return view('projects.manage_project', $page_data);
     }
@@ -90,25 +98,31 @@ class ProjectController extends Controller
     
         $page_data = array(
             'projects' => $projects,
-            'base_url' => url('/')
+            'base_url' => url('/'),
+            'status_colors' => config('app.status_colors')
         );
 
     	return view('projects.all_projects',$page_data);
     }
 
     public function project_overview(
-        Request $request,
-        Customer $m_customer,
-        Project $m_project,
-        Attachment $m_attachment,
+        Request            $request,
+        Customer           $m_customer,
+        Project            $m_project,
+        Attachment         $m_attachment,
         CustomerAffiliates $m_affiliates,
-        CustomerContact $m_contact,
-        ContactPersons $m_contact_person,
-        SalesPersonsOra $m_sales_person,
-        RequirementHeader $m_requirement,
-        Competitor $m_competitor
+        CustomerContact    $m_contact,
+        ContactPersons     $m_contact_person,
+        SalesPersonsOra    $m_sales_person,
+        RequirementHeader  $m_requirement,
+        Competitor         $m_competitor,
+        FPC                $m_fpc,
+        FPC_Item           $m_fpc_item,
+        POHeaders          $m_poh,
+        FWPC               $m_fwpc
     ){
-        $project_details        = $m_project->get_details($request->project_id);
+        $project_id             = $request->project_id;
+        $project_details        = $m_project->get_details($project_id);
         $customer_details       = $m_customer->get_customer_details_by_id($project_details->customer_id);
         $attachments            = $m_attachment->get_customer_attachments($project_details->customer_id);
         $affiliates             = $m_affiliates->get_customer_affiliates($project_details->customer_id);
@@ -119,11 +133,30 @@ class ProjectController extends Controller
         $requirement            = collect($requirement)->groupBy('vehicle_type');
         $competitors            = $m_competitor->get_competitors($project_details->project_id);
         $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
-  
+        $vehicle_colors         = config('app.vehicle_badge_colors');
+        $status_colors          = config('app.status_colors');
 
+        // fleet price confirmation
+        $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
         
+        $fpc_data = [];
 
+        foreach($fpc_headers as $fpc){
+            $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
+            $attachments  = $m_attachment->get_fpc_attachments($fpc->fpc_id);
+            $temp_array = [
+                'fpc_header' => $fpc,
+                'fpc_lines'  => $items,
+                'attachments' => $attachments
+            ];
+            array_push($fpc_data,$temp_array);
+        }
 
+        // purchase orders
+        $po_list = $m_poh->get_po_by_project($project_id);
+        
+        // fwpc list
+        $fwpc = $m_fwpc->get_fwpc_by_project($project_id);
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,
@@ -138,7 +171,13 @@ class ProjectController extends Controller
             'sales_persons'          => $sales_persons,
             'contact_persons'        => $contact_persons,
             'competitor_attachments' => $competitor_attachments,
-            'base_url'               => url('/')
+            'base_url'               => url('/'),
+            'vehicle_colors'         => $vehicle_colors,
+            'status_colors'          => $status_colors,
+            'fpc'                    => $fpc_data,
+            'po_list'                => $po_list,
+            'fwpc'                   => $fwpc,
+            'user_type'              => session('user')['user_type_id']
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -253,6 +292,7 @@ class ProjectController extends Controller
             'bid_date_sched'        => $account_details['bid_date_sched'],
             'bidding_venue'         => $account_details['bidding_venue'],
             'approved_budget_cost'  => $account_details['approved_budget_cost'],
+            'fleet_category'        => $account_details['fleet_category'],
             'competitor_flag'       => $competitor_flag, 
             'competitor_remarks'    => $competitor_reason, 
             'status'                => 3 // default status (NEW)
@@ -309,6 +349,7 @@ class ProjectController extends Controller
                         'requirement_line_id'   => $requirement_line_id,
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
+                        'module_id'             => 1, // Fleet Project module
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id']
@@ -351,6 +392,7 @@ class ProjectController extends Controller
                         'requirement_line_id'   => $requirement_line_id,
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
+                        'module_id'             => 1, // Fleet Project module
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id']
@@ -369,10 +411,21 @@ class ProjectController extends Controller
                 'brand'                 => $row['brand'],
                 'model'                 => $row['model'],
                 'price'                 => $row['price'],
+                'ipc_item_id'           => $row['ipc_item_id'],
                 'created_by'            => session('user')['user_id'],
                 'creation_date'         => Carbon::now(),
                 'create_user_source_id' => session('user')['source_id'],
             ];
+
+            // create or update competitor master file
+            $m_competitor->create_competitor(
+                $row['brand'],
+                $row['model'],
+                session('user')['user_id'], 
+                session('user')['source_id'],
+                Carbon::now()
+            );
+            
             array_push($competitor_params,$temp);
         }
         $m_competitor->insert_competitor($competitor_params);
@@ -498,7 +551,13 @@ class ProjectController extends Controller
         return $customer_id;
     }
 
-    public function insert_project_approval($m_module_approval,$m_approver,$user_type,$vehicle_type,$project_id){
+    public function insert_project_approval(
+        $m_module_approval,
+        $m_approver,
+        $user_type,
+        $vehicle_type,
+        $project_id
+    ){
          // insert IPC approval
         $approvers = $m_approver->get_project_approvers(
             session('user')['user_id'],
@@ -551,27 +610,28 @@ class ProjectController extends Controller
         $attachment_params      = [];
         $competitor_params      = [];
         $file_index             = 0;
-        $destinationPath        = 'storage/app/attachments';
-     /*   return [
-            'data' => base_url('/') . $destinationPath
-        ];*/
+          
         if(!empty($_FILES)){
 
             if(!empty($attachment)){
                 $customer_attachments = $m_attachment->get_customer_attachments($customer_id);
                 foreach($customer_attachments as $row){
-                    $file_path = storage_path('app/attachments/'.$row['filename']); 
+                    $file_path = storage_path('app/public/customer/'.$row['filename']); 
                     unlink($file_path);
                 }
+
                 // if new attachment has been placed, delete the old data.
                 $m_attachment->delete_attachment($customer_id);
                 foreach($attachment as $file){
                     //Move Uploaded File
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
+                    $customerPath = Storage::putFileAs(
+                        'public/customer', $file, $filename
+                    );                    
                     $temp = [
                         'filename'              => $filename,
-                        'directory'             => $destinationPath,
+                        'directory'             => $customerPath,
                         'module_id'             => 1, // Fleet project
                         'reference_id'          => $customer_id,
                         'reference_table'       => 'fs_customers',
@@ -580,10 +640,12 @@ class ProjectController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 2 // customer as owner
+                        'owner_id'              => 2, // customer as owner
+                        'symlink_dir'           => 'public/storage/customer/'
+
                     ];         
                     array_push($attachment_params,$temp);
-                    $file->move($destinationPath,$filename);
+                    ///$file->move($destinationPath,$filename);
                     $file_index++;
                 }
             }
@@ -593,9 +655,12 @@ class ProjectController extends Controller
                     //Move Uploaded File 
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
+                    $competitorPath = Storage::putFileAs(
+                        'public/competitor', $file, $filename
+                    ); 
                     $temp = [
                         'filename'              => $filename,
-                        'directory'             => $destinationPath,
+                        'directory'             => $competitorPath,
                         'module_id'             => 1, // Fleet project
                         'reference_id'          => $project_id,
                         'reference_table'       => 'fs_projects',
@@ -604,10 +669,11 @@ class ProjectController extends Controller
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 1 // competitor as owner of the file
+                        'owner_id'              => 1,// competitor as owner of the file
+                        'symlink_dir'           => 'public/storage/competitor/'
                     ];         
                     array_push($attachment_params,$temp);
-                    $file->move($destinationPath,$filename);
+                   // $file->move($destinationPath,$filename);
                     $file_index++;
                 }
             }
@@ -632,7 +698,6 @@ class ProjectController extends Controller
             session('user')['user_type_id']
         );
 
-      
         $page_data = [
             'approval_list' => $approval_list,
             'base_url'         =>  url('/')
@@ -651,7 +716,7 @@ class ProjectController extends Controller
         if($status == "approve"){
             $status_id = 4; // approve
         }
-        else {
+        else if($status == "reject"){
             $status_id = 5; // reject
         }
         
@@ -668,31 +733,68 @@ class ProjectController extends Controller
 
         // count pending approval for dealers
         $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
-    
+       
         // if there is no pending approval amount dealers, set project status to For IPC Review
-        if(count($pending_approval) == 0){
-          
+        if(count($pending_approval) == 0 && $status == "approve"){
+            $project_status = 11; // submitted
+            // get pending approval for ipc
+            $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
+
+            if(count($ipc_pending_approval) == 0 && $status == "approve"){
+                $project_status = 10; // acknowledged
+            }
+            
             $m_project->update_status(
                 $project_id,
-                11, // update status to Submitted
+                $project_status, 
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+
+        }
+        else {
+
+            $m_project->update_status(
+                $project_id,
+                5, // rejected 
                 session('user')['user_id'],
                 session('user')['source_id']
             );
         }
 
-        // count pending approval for ipc
-        $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
-        // if there is no pending approval for IPC, set project status to approved
-        if(count($ipc_pending_approval) == 0){
-          
-            $m_project->update_status(
-                $project_id,
-                10, // update status Acknowledged
-                session('user')['user_id'],
-                session('user')['source_id']
-            );
-        }
+    
     }
 
+    public function ajax_cancel_project(Request $request, Project $m_project){
+        $project_id = $request->project_id;
+        $status_id = 6; // cancelled
+
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        return [
+            'status' => 'Cancelled'
+        ];
+    }
+
+    public function ajax_close_project(Request $request, Project $m_project){
+        $project_id = $request->project_id;
+        $status_id = 13; // closed
+
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        return [
+            'status' => 'Closed'
+        ];
+    }
  
 }

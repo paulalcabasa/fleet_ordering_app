@@ -10,7 +10,41 @@ return [
     */
     'system_id' => 6,
     'hostname' => 'http://localhost',
-
+    'vehicle_badge_colors' => [
+        'SPLASH WHITE'       => "kt-badge kt-badge--splash-white kt-badge--md kt-badge--rounded",
+        'RED SPINEL MICA'    => "kt-badge kt-badge--red-spinel-mica kt-badge--md kt-badge--rounded",
+        'ARC WHITE'          => "kt-badge kt-badge--arc-white kt-badge--md kt-badge--rounded",
+        'SILKY PEARL WHITE'  => "kt-badge kt-badge--silky-pearl-white kt-badge--md kt-badge--rounded",
+        'GALENA GRAY'        => "kt-badge kt-badge--galena-gray kt-badge--md kt-badge--rounded",
+        'MARINE BLUE'        => "kt-badge kt-badge--marine-blue kt-badge--md kt-badge--rounded",
+        'OBSIDIAN GRAY MICA' => "kt-badge kt-badge--obsidian-gray-mica kt-badge--md kt-badge--rounded",
+        'HUNTER GREEN'       => "kt-badge kt-badge--hunter-green kt-badge--md kt-badge--rounded",
+        'GARNET RED'         => "kt-badge kt-badge--garnet-red kt-badge--md kt-badge--rounded",
+        'TITANIUM SILVER'    => "kt-badge kt-badge--titanium-silver kt-badge--md kt-badge--rounded",
+        'COSMIC BLACK MICA'  => "kt-badge kt-badge--cosmic-black-mica kt-badge--md kt-badge--rounded",
+        'CREAM WHITE'        => "kt-badge kt-badge--cream-white kt-badge--md kt-badge--rounded",
+        'DARK SILVER'        => "kt-badge kt-badge--dark-silver kt-badge--md kt-badge--rounded",
+        'OUTBACK BROWN'      => "kt-badge kt-badge--outback-brown kt-badge--md kt-badge--rounded",
+        'SAPPHIRE BLUE'      => "kt-badge kt-badge--sapphire-blue kt-badge--md kt-badge--rounded",
+        'SILVER'             => "kt-badge kt-badge--silver kt-badge--md kt-badge--rounded",
+        'ASH BEIGE'          => "kt-badge kt-badge--ash-beige kt-badge--md kt-badge--rounded",
+        'AQUA BLUE'          => "kt-badge kt-badge--aqua-blue kt-badge--md kt-badge--rounded",
+        'VENETIAN RED'       => "kt-badge kt-badge--venetian-red kt-badge--md kt-badge--rounded",
+        'HAVANA BROWN'       => "kt-badge kt-badge--havana-brown kt-badge--md kt-badge--rounded",
+        'NO COLOR'           => "kt-badge kt-badge--no-color kt-badge--md kt-badge--rounded"
+    ],
+    'status_colors' => [
+        'New'          => "kt-badge kt-badge--brand kt-badge--inline",
+        'Acknowledged' => "kt-badge kt-badge--success kt-badge--inline",
+        'Approved'     => "kt-badge kt-badge--success kt-badge--inline",
+        'Submitted'    => "kt-badge kt-badge--warning kt-badge--inline",
+        'Cancelled'    => "kt-badge kt-badge--danger kt-badge--inline",
+        'CANCELLED'    => "kt-badge kt-badge--danger kt-badge--inline",
+        'Rejected'     => "kt-badge kt-badge--danger kt-badge--inline",
+        'In progress'  => "kt-badge kt-badge--warning kt-badge--inline",
+        'Pending'      => "kt-badge kt-badge--warning kt-badge--inline",
+        'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline"
+    ],
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -183,6 +217,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class
 
     ],
 
@@ -234,6 +269,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

@@ -35,11 +35,7 @@
                         Competitors
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#terms" role="tab" aria-selected="false">
-                        Terms and Conditions
-                    </a>
-                </li>
+                
             </ul>
         </div>
     </div>
@@ -68,6 +64,12 @@
                                     <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Fleet Category</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_category_name }}</span>
+                                </div>
+
+                                
+                                <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Project Source</span>
                                     <span class="col-md-8">@{{ projectDetails.project_source }}</span>
                                 </div>
@@ -94,20 +96,28 @@
                             </div>
                             <div class="card-body">
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bidding Ref No.</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_ref_no }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bid Docs Amount</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_docs_amount }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Pre-bid Schedule</span>
+                                    <span class="col-md-8">@{{ projectDetails.pre_bid_sched }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Submitted By</span>
-                                    <span class="col-md-8">@{{ projectDetails.created_by }}</span>
+                                    <span class="col-md-4 kt-font-bold">Bid Date Sched</span>
+                                    <span class="col-md-8">@{{ projectDetails.bid_date_sched }}</span>
+                                </div> 
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Bidding Venue</span>
+                                    <span class="col-md-8">@{{ projectDetails.bidding_venue }}</span>
+                                </div> 
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Approved Budget Cost</span>
+                                    <span class="col-md-8">@{{ projectDetails.approved_budget_cost }}</span>
                                 </div> 
                             </div>
                         </div>
@@ -135,7 +145,7 @@
                                     <span class="col-md-8">
                                         <ul style="list-style:none;padding:0;">
                                             <li v-for="(row,index) in attachments">
-                                                <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                                <a :href="base_url + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
                                             </li>
                                         </ul>
                                     </span>
@@ -191,24 +201,23 @@
                                 </div>
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Email</span>
-                                    <span class="col-md-8"><a href="mailto:xxx@xxx.mail">@{{ projectDetails.email}}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.email}}</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Website</span>
-                                    <span class="col-md-8"><a href="http://www.website.com">@{{ projectDetails.website_url }}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.website_url }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Facebook</span>
-                                    <span class="col-md-8"><a href="http://www.facebook.com">@{{ projectDetails.facebook_url }}</a></span>
+                                    <span class="col-md-8">@{{ projectDetails.facebook_url }}</span>
                                 </div>
                             </div>
                         </div>  
                     </div>
                 </div>
-                
-             
+            
                 <div class="card kt-margin-b-10">
                     <div class="card-header">
                         Contact Persons
@@ -269,24 +278,29 @@
                 <table class="table table-condensed"  style="font-size:90%;">
                     <thead>
                         <tr class="kt-font-bold bg-light-gray-1">
+                            <th>Actions</th>
                             <th>Model</th>
                             <th>Color</th>
                             <th>Quantity</th>
                             <th>PO Quantity</th>
                             <th>Suggested Price</th>
-                            <th>Additional details</th>
-                            <th>Delivery Schedule</th>
+                      <!--       <th>Additional details</th>
+                            <th>Delivery Schedule</th> -->
                         </tr>
                     </thead>
 
                     <tbody v-for="(vehicles,vehicle_type) in requirement">
                         <tr v-for="(row,index) in vehicles">
+                            <td nowrap="nowrap">
+                                <a href="#"  title="Additional details" @click="showAdditionalDetails(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
+                                <a href="#"  title="Delivery schedule" @click="showDeliveryDetail(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-calendar"></i></a>
+                            </td>
                             <td>@{{ row.sales_model }}</td>
-                            <td>@{{ row.color }}</td>
+                            <td><span :class="vehicle_colors[row.color]">&nbsp</span> @{{ row.color }}</td>
                             <td>@{{ row.quantity }}</td>
                             <td>@{{ row.po_qty }}</td>
                             <td>@{{ formatPrice(row.suggested_price) }}</td>
-                            <td>
+                          <!--   <td>
                                 <button type="button" @click="showAdditionalDetails(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-info-circle"></i>
                                 </button>
@@ -295,7 +309,7 @@
                                 <button type="button" @click="showDeliveryDetail(row)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                     <i class="la la-calendar"></i>
                                 </button>
-                            </td>
+                            </td> -->
                         </tr>
 
                         <tr class="kt-font-bold bg-light-gray-1">
@@ -316,7 +330,6 @@
                         </tr>
                     </tfoot>
                 </table>
-               
             </div>
             <div class="tab-pane" id="competitors">
                 <div class="row" v-if="projectDetails.competitor_flag == 'Y'">
@@ -330,6 +343,8 @@
                                             <th>Brand</th>
                                             <th>Model</th>
                                             <th>Price</th> 
+                                            <th>Isuzu Model</th> 
+                                            <th>Suggested Price</th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -337,6 +352,11 @@
                                             <td>@{{ row.brand }}</td>
                                             <td>@{{ row.model }}</td>
                                             <td>@{{ formatPrice(row.price) }}</td>
+                                            <td>
+                                                @{{ row.sales_model }} 
+                                                <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.color}}</span>
+                                            </td>
+                                            <td>@{{ formatPrice(row.suggested_price) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -349,7 +369,7 @@
                             <div class="card-body">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in competitor_attachments">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                        <a :href="base_url + '/' + row.symlink_dir + row.filename " download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -357,20 +377,6 @@
                     </div>
                 </div>  
                 <p v-if="projectDetails.competitor_flag == 'N'">@{{ projectDetails.competitor_remarks }}</p>
-            </div>
-            <div class="tab-pane" id="terms">
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Price Validity</span>
-                    <span class="col-md-8">May 31, 2019</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Deadline of Submission</span>
-                    <span class="col-md-8">May 31, 2019</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Payment Terms</span>
-                    <span class="col-md-8">Strictly C.O.D only</span>
-                </div>
             </div>
         </div>
     </div>
@@ -380,16 +386,12 @@
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
                 @if($action == "validate")
-                <button type="submit" class="btn btn-success" @click="validateProject('approve')">Approve</button>
-                <button type="submit" class="btn btn-danger"  @click="validateProject('reject')">Reject</button>
-                @elseif($action == "cancel")
-                <a href="#"class="btn btn-danger">
-                    <span class="kt-hidden-mobile">Cancel</span>
-                </a>
+                <button type="submit" class="btn btn-success btn-sm" @click="validateProject('approve')">Approve</button>
+                <button type="submit" class="btn btn-danger btn-sm"  @click="validateProject('reject')">Reject</button>
                 @elseif($action == "view")
-                <button type="button" class="btn btn-danger" @click="closeProject()">Cancel</button>
-                <button type="button" class="btn btn-success" @click="closeProject()">Close</button>
-                <button type="button" class="btn btn-primary" @click="closeProject()">Print</button>
+                <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="cancel_flag">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
+                <!-- <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button> -->
                 @endif
             </div>
         </div>
@@ -398,252 +400,25 @@
 </div>
 
 @if($action == "view")
-<div class="kt-portlet kt-portlet--mobile">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Fleet Price Confirmation 
-            </h3> 
-        </div>
-      
-    </div>
+    @include('projects.subform.fpc')
+    @include('projects.subform.po')
+    @include('projects.subform.fwpc')
+@endif
 
-    <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
-            <thead>
-                <tr>
-                    <th>FPC No.</th>
-                    <th>Account Name</th>
-                    <th>Date Confirmed</th>
-                    <th>Confirmed By</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in fpc"> 
-                    <td>@{{ row.fpc_no }}</td>
-                    <td>@{{ row.account_name }}</td>
-                    <td>@{{ row.date_confirmed }}</td>
-                    <td>@{{ row.confirmed_by }}</td>
-                    <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
-                    </td>
-                    <td nowrap="nowrap">
-                        <a href="{{ url('view-fpc/001')}}" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="kt-portlet kt-portlet--mobile">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Purchase Order
-            </h3>
-        </div>
-        <div class="kt-portlet__head-toolbar">
-            <a href="{{ url('/manage-po/create/001')}}" class="btn btn-primary btn-sm">
-                <span class="kt-hidden-mobile">Submit PO</span>
-            </a>
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
-            <thead>
-                <tr>
-                    <th>PO Ref</th>
-                    <th>PO No.</th>
-                    <th>Submitted By</th>
-                    <th>Date Submitted</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in po"> 
-                    <td>@{{ row.po_ref_no }}</td>
-                    <td>@{{ row.po_no }}</td>
-                    <td>@{{ row.submitted_by }}</td>
-                    <td>@{{ row.date_submitted }}</td>
-                    <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
-                    </td>
-                    <td nowrap="nowrap">
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="kt-portlet kt-portlet--mobile">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Fleet Wholesale Price Confirmation
-            </h3>
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <table class="table table-sm table-head-bg-brand">
-            <thead>
-                <tr>
-                    <th>Sales Order No.</th>
-                    <th>Ordered Date</th>
-                    <th>Customer Name</th>
-                    <th>Order Type</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in fwpc"> 
-                    <td>@{{ row.oracle_so_num }}</td>
-                    <td>@{{ row.ordered_date }}</td>
-                    <td>@{{ row.customer_name }}</td>
-                    <td>@{{ row.order_type }}</td>
-                    <td>
-                        <span class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">@{{ row.status }}</span>
-                    </td>
-                    <td nowrap="nowrap">
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                        <a href="#" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
-
-
-
-
-    </div>
-</div>
-
-@endif;
-
-<!--begin::Modal-->
-<div class="modal fade" id="deliveryScheduleModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Model</span>
-                                    <span class="details-subtext">@{{ curModel }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Color</span>
-                                    <span class="details-subtext">@{{ curColor }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">@{{ curQuantity}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <td>Quantity</td>
-                                    <td>Date</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(row,index) in curDeliveryDetails">
-                                    <td>@{{ row.quantity }}</td>
-                                    <td>@{{ row.delivery_date }}</td>
-                                </tr>
-                            
-                            </tbody>
-                        </table>                    
-                    </div>
-                </div>
-    
-            </div>
-           <!--  <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Add row</button>
-            </div> -->
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-<!--begin::Modal-->
-<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">    
-                <div class="details-item">
-                    <span class="details-label">Name of Body Builder</span>
-                    <span class="details-subtext">@{{ curBodyBuilder == null ? '-' : curBodyBuilder }}</span>
-                </div>
-                <div class="details-item">
-                    <span class="details-label">Rear Body Type</span>
-                    <span class="details-subtext">@{{ curRearBody == null ? '-' : curRearBody  }}</span>
-                </div>
-                <div class="details-item">
-                    <span class="details-label">Additional Items</span>
-                    <span class="details-subtext">@{{ curAdditionalItems == null ? '-' : curAdditionalItems  }}</span>
-                </div>      
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-
-
-<!--begin::Modal-->
-<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Reject Project</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">          
-                <div class="form-group">
-                    <label>Are you sure to cancel this project? Kindly state your reason.</label>
-                    <textarea class="form-control" v-model="remarks"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" @click="confirmReject" class="btn btn-primary">Confirm</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-
-</div> <!-- end of app wrapper -->
+<!-- delivery schedule modal -->
+@include('projects.modal.delivery_schedule')
+<!-- additional details modal -->
+@include('projects.modal.additional_details')
+<!-- price confirmation modal -->
+@include('projects.modal.price_confirmation')
+<!-- add fwpc modal -->
+@include('projects.modal.add_fwpc')
+<!-- view fwpc modal -->
+@include('projects.modal.view_fwpc')
+<!-- validate modal -->
+@include('projects.modal.validate')
+</div> 
+<!-- end of app wrapper -->
 @stop
 
 
@@ -665,6 +440,9 @@
             competitors:            {!! json_encode($competitors) !!},
             base_url:               {!! json_encode($base_url) !!},
             competitor_attachments: {!! json_encode($competitor_attachments) !!},
+            status_colors:          {!! json_encode($status_colors) !!},
+            vehicle_colors:         {!! json_encode($vehicle_colors) !!},
+            cancel_flag:            false,
             remarks:                null,
             curBodyBuilder:         null,
             curRearBody:            null,
@@ -673,40 +451,16 @@
             curColor:               "",
             curQuantity:            "",
             curDeliveryDetails:     [],
-            status_colors : {
-                'New' : "kt-badge kt-badge--brand kt-badge--inline",
-                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
-                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
-                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
-            },
-            fpc:                    [
-                {
-                    fpc_no : "FPC001",
-                    account_name : "RCP SENIA TRADING/ RCP SENIA TRANSPORT",
-                    date_confirmed : "May 22, 2019",
-                    confirmed_by : "Paul Alcabasa",
-                    status : "Approved"
-
-                }
-            ],
-            po : [
-                {
-                    po_ref_no : 'PO001',
-                    po_no : 'CUSTPO11',
-                    submitted_by : 'Mary Jan Watson',
-                    date_submitted : 'May 23, 2019',
-                    status : 'Approved'
-                }
-            ],
-            fwpc : [
-                {
-                    oracle_so_num : "3010000123",
-                    ordered_date : "May 30, 2019",
-                    customer_name : "ISUZU AUTOMOTIVE DEALERSHIP, INC.",
-                    order_type : "FLT.Sales Order (LCV A)",
-                    status : "Booked"
-                }
-            ]
+            curFreebies:            [],
+            curDeliverySched:       [],
+            fpc:                    {!! json_encode($fpc) !!},
+            po_list:                {!! json_encode($po_list) !!},
+            cur_sales_order_number: '',
+            cur_so_details:         [],
+            cur_so_header:          [],
+            cur_so_lines:           [],
+            fwpc:                   {!! json_encode($fwpc) !!},
+            user_type:              {!! json_encode($user_type) !!}
         },
         methods : {
             showDeliveryDetail(data){
@@ -734,6 +488,17 @@
                 this.curAdditionalItems = row.additional_items;
                 $("#additionalDetailsModal").modal('show');
             },
+            showDetails(header_index,line_index){
+                var self                = this;
+                var fpc_item_id         = self.fpc[header_index]['fpc_lines'][line_index].fpc_item_id;
+                var requirement_line_id = self.fpc[header_index]['fpc_lines'][line_index].requirement_line_id;
+                axios.get('ajax-get-fpc-details/' + fpc_item_id + '/' + requirement_line_id)
+                    .then( (response) => {
+                        self.curFreebies = response.data.freebies;
+                        self.curDeliverySched = response.data.delivery_sched;   
+                        $("#fpc_details_modal").modal('show');
+                    });
+            },
             confirmReject(){
                 this.submitApproval('reject', 'error', 'Project has been rejected.')
             },
@@ -760,39 +525,107 @@
             },
             submitApproval(status, swal_type, swal_title){
                 var self = this;
-                axios.post('/save-approval', {
+                axios.patch('/save-approval', {
                     approvalId : self.approvalId,
                     projectId : self.projectId,
                     remarks : self.remarks,
                     status : status
                 })
                 .then(function (response) {
-                    console.log(response);
                     Swal.fire({
                         type: swal_type,
                         title: swal_title,
                         showConfirmButton: false,
                         timer: 1500,
                         onClose : function(){
-                            window.location.href = "{{ url('all-projects')}}";
+                           window.location.href = "{{ url('all-projects')}}";
                         }
                     });
-
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
             closeProject(){
+                var self = this;
                 Swal.fire({
-                    type: "success",
-                    title: "Successfully closed the project!",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    onClose : function(){
-                        window.location.href = "{{ url('all-projects')}}";
+                    title: 'Are you sure you want to close the project?',
+                    text: "Once the project is closed, it cannot be reopened.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/ajax-close-project', {
+                            project_id : self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            var data = response.data;
+                            self.projectDetails.status_name = data.status;
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Project has been closed!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                     }
-                });
+                });  
+            },
+            cancelProject(){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure to cancel the project?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                        
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/ajax-cancel-project', {
+                            project_id : self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            self.cancel_flag = false;
+                            var data = response.data;
+                            self.projectDetails.status_name = data.status;
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Project has been cancelled!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });  
             },
             sumOrderQty(vehicle_type){
                 return this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
@@ -805,14 +638,105 @@
             },
             formatPrice(value) {
                 return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            },
+            sumQty(header_index){
+                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
+            },
+            sumPrice(header_index){
+                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * (parseFloat(item.fleet_price) + parseFloat(item.freebies)) ),0);
+            },
+            searchSalesOrder(){
+                var self = this;
+                KTApp.block("#addFWPC .modal-content",{});
+
+                axios.get('/sales-order/' + self.cur_sales_order_number)
+                    .then( (response) => {
+                        self.cur_so_details = response.data.header_data;
+                        KTApp.unblock("#addFWPC .modal-content",{});
+                    });
+            },
+            addSalesOrder(){
+                var self = this;
+                KTApp.block("#addFWPC .modal-content",{});
+                axios.post('/sales-order', {
+                    project_id : self.projectDetails.project_id,
+                    sales_order_id : self.cur_so_details.header_id,
+                    so_number : self.cur_so_details.order_number
+                }).then( (response) => {
+                    KTApp.unblock("#addFWPC .modal-content",{});
+                    $("#addFWPC").modal('hide');
+                    self.fwpc.push(response.data);
+                    self.cur_so_details = [];
+                    self.cur_sales_order_number = '';
+                });
+            },
+            deleteFwpc(index){
+                var self = this;
+
+              Swal.fire({
+                    title: 'Are you sure to delete this FWPC?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                        
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                        
+                        axios.delete('/fwpc/' + self.fwpc[index].fwpc_id)
+                        .then(function (response) {
+                            self.fwpc.splice(index,1);
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'error',
+                                title: 'FWPC has been deleted!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });  
+            },
+            viewFwpc(index){
+                var self = this;
+                self.cur_so_header = [];
+                self.cur_so_lines = [];
+                $("#viewFWPC").modal('show');
+                KTApp.block("#viewFWPC .modal-content",{});
+                axios.get('/sales-order-data/' + this.fwpc[index].fwpc_id)
+                    .then( (response) => {
+                        self.cur_so_header = response.data.so_header;
+                        self.cur_so_lines = response.data.so_lines;
+                        KTApp.unblock("#viewFWPC .modal-content",{});
+                    });
+
             }
         },
         created: function () {
             // `this` points to the vm instance
-
+            var self = this;
+            if(self.projectDetails.status_name == 'New'){
+                self.cancel_flag = true;
+            }
         },
         mounted : function () {
-
+            
+        },
+        filters: {
+            formatPeso: function (value) {
+                 return `${parseFloat(value).toLocaleString()}`
+            }
         },
         computed : {
             totalQty : function(){
@@ -835,6 +759,9 @@
                     total += this.requirement[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
                 }
                 return total;
+            },
+            sumFreebies(){
+                return this.curFreebies.reduce((acc,item) => parseFloat(acc) + parseFloat(item.amount),0);
             }
         }
         

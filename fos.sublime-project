@@ -18,6 +18,15 @@
 		},
 		{
 			"path": "routes"
+		},
+		{
+			"path": "app\\Helpers"
+		},
+		{
+			"path": "resources\\sass"
+		},
+		{
+			"path": "resources\\js"
 		}
 	]
 }

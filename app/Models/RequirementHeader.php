@@ -26,14 +26,28 @@ class RequirementHeader extends Model
                         rl.body_builder_name,
                         rl.rear_body_type,
                         rl.additional_items,
-                        0 po_qty
+                        nvl(SUM(pl.po_quantity),0) po_qty
                 FROM ipc_dms.fs_prj_requirement_headers rh
-                    LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+                    INNER JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rh.requirement_header_id = rl.requirement_header_id
-                    LEFT JOIN IPC_DMS.IPC_VEHICLE_MODELS_V vehicle
+                    INNER JOIN IPC_DMS.IPC_VEHICLE_MODELS_V vehicle
                         ON vehicle.inventory_item_id = rl.inventory_item_id
+                    LEFT JOIN ipc_dms.fs_po_lines pl
+                        ON pl.requirement_line_id = rl.requirement_line_id
+                    LEFT JOIN ipc_dms.fs_po_headers ph
+                        ON ph.po_header_id = ph.po_header_id
                 WHERE 1 = 1
-                    AND rh.project_id = :project_id";
+                    AND rh.project_id = :project_id
+                    AND ph.status = 10
+                 GROUP BY rl.requirement_line_id,
+                        rh.vehicle_type,
+                        vehicle.sales_model,
+                        vehicle.color,
+                        rl.quantity,
+                        rl.suggested_price,
+                        rl.body_builder_name,
+                        rl.rear_body_type,
+                        rl.additional_items";
 
         $params = [
             'project_id' => $project_id
@@ -42,6 +56,5 @@ class RequirementHeader extends Model
         $query = DB::select($sql,$params);
         return $query;
     }
-
-
+    
 }
