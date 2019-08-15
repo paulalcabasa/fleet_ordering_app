@@ -221,7 +221,8 @@ class ProjectController extends Controller
             $account_details,
             $contact_details, 
             $request['competitor_flag'],
-            $request['no_competitor_reason']
+            $request['no_competitor_reason'],
+            $m_activity_logs
         );
     
         // project contact number 
@@ -245,7 +246,8 @@ class ProjectController extends Controller
             $m_module_approval,
             $m_approver,
             $request['requirement'],
-            $project_id
+            $project_id,
+            $m_activity_logs
         );
 
         // project competitor
@@ -253,7 +255,12 @@ class ProjectController extends Controller
     
 
         // activity Logs
-        $this->create_project_activity_log($m_activity_logs, $account_details, $project_id);
+        $this->create_project_activity_log(
+            $m_activity_logs, 
+            $account_details, 
+            $project_id,
+            $m_project
+        );
 
         return response()->json(
             [
@@ -273,7 +280,8 @@ class ProjectController extends Controller
         $account_details,
         $contact_details, 
         $competitor_flag, 
-        $competitor_reason
+        $competitor_reason,
+        $m_activity_logs
     ){
          // Project Details
         $project_params = [
@@ -299,7 +307,14 @@ class ProjectController extends Controller
         ];
 
         $project_id = $m_project->insert_project($project_params);
-        $this->insert_project_approval($m_module_approval,$m_approver, 'DLR_MANAGER','',$project_id);
+        $this->insert_project_approval(
+            $m_module_approval,
+            $m_approver, 
+            'DLR_MANAGER',
+            '', // vehicle type
+            $project_id,
+            $m_activity_logs
+        );
         return $project_id;
     }
 
@@ -310,7 +325,8 @@ class ProjectController extends Controller
         $m_module_approval,
         $m_approver,
         $requirements,
-        $project_id
+        $project_id,
+        $m_activity_logs
     ){   
         $lcv_requirement = $requirements['LCV'];
         $cv_requirement = $requirements['CV'];
@@ -327,7 +343,14 @@ class ProjectController extends Controller
             $lcv_requirement_id = $m_requirement_header->insert_requirement_header($params);
 
             // APPROVAL HERE
-            $this->insert_project_approval($m_module_approval,$m_approver,'IPC_STAFF','LCV',$project_id);
+            $this->insert_project_approval(
+                $m_module_approval,
+                $m_approver,
+                'IPC_STAFF',
+                'LCV',
+                $project_id,
+                $m_activity_logs
+            );
 
             foreach($lcv_requirement as $row){
                 $line_params = [
@@ -370,7 +393,14 @@ class ProjectController extends Controller
             ];
             $cv_requirement_id = $m_requirement_header->insert_requirement_header($params);
 
-            $this->insert_project_approval($m_module_approval,$m_approver,'IPC_STAFF','CV',$project_id);
+            $this->insert_project_approval(
+                $m_module_approval,
+                $m_approver,
+                'IPC_STAFF',
+                'CV',
+                $project_id,
+                $m_activity_logs
+            );
 
             foreach($cv_requirement as $row){
                 $line_params = [
@@ -431,11 +461,18 @@ class ProjectController extends Controller
         $m_competitor->insert_competitor($competitor_params);
     }
 
-    public function create_project_activity_log($m_activity_logs, $account_details, $project_id){
+    public function create_project_activity_log(
+        $m_activity_logs, 
+        $account_details, 
+        $project_id,
+        $m_project
+    ){
+
+        $project_details = $m_project->get_details($project_id);
         $activity_log_params = [
             'module_id'             => 1, // Fleet Project
             'module_code'           => 'PRJ',
-            'content'               => 'Fleet project ' . $account_details['account_name'] . ' has been created.',
+            'content'               => 'Project No. <strong>'. $project_id.'</strong> with account name <strong>' . $account_details['account_name'] . '</strong> has been <strong>created</strong>.',
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
@@ -444,7 +481,8 @@ class ProjectController extends Controller
             'reference_table'       => 'fs_projects',
             'mail_flag'             => 'Y',
             'is_sent_flag'          => 'N',
-            'mail_recepient'        => 'paul-alcabasa@isuzuphil.com;paulalcabasa@gmail.com'
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
         ];
 
         $m_activity_logs->insert_log($activity_log_params);
@@ -556,7 +594,8 @@ class ProjectController extends Controller
         $m_approver,
         $user_type,
         $vehicle_type,
-        $project_id
+        $project_id,
+        $m_activity_logs
     ){
          // insert IPC approval
         $approvers = $m_approver->get_project_approvers(
@@ -564,15 +603,16 @@ class ProjectController extends Controller
             $user_type, //'IPC_STAFF',
             $vehicle_type
         );
-        
+    
         $approval_params = [];
-
+        $activity_log = [];
+  
         foreach($approvers as $row){
             $temp_arr = [
                 'module_id'             => 1, // Fleet Project
                 'module_reference_id'   => $project_id,
-                'approver_id'           => $row['approver_id'],
-                'hierarchy'             => $row['hierarchy'],
+                'approver_id'           => $row->approver_id,
+                'hierarchy'             => $row->hierarchy,
                 'status'                => 7, // Pending
                 'column_reference'      => 'project_id',
                 'created_by'            => session('user')['user_id'],
@@ -581,9 +621,34 @@ class ProjectController extends Controller
                 'table_reference'       => 'fs_projects'
             ];
             array_push($approval_params,$temp_arr);
+            $mail_flag = 'Y';
+
+            if($row->user_type == 'IPC_STAFF') {
+                $mail_flag = 'N';
+            }
+            // BY DEFAULT, DO NOT FIRST ALLOW SENDING NOTIFICATION TO IPC APPROVER
+            // IT NEED TO BE APPROVED BY DEALER MANAGER FIRST
+
+            $log_arr = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Project No. <strong>' . $project_id . '</strong> is waiting for your approval.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => $mail_flag,
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'N',
+                'mail_recipient'        => $row->email_address
+            ];
+            array_push($activity_log,$log_arr);
         }
         // insert approval
         $m_module_approval->insert_module_approval($approval_params);
+        $m_activity_logs->insert_log($activity_log);
     }
 
     public function create_project_source($m_project_source,$account_details){
@@ -705,13 +770,18 @@ class ProjectController extends Controller
         return view('projects.project_approval',$page_data); 
     }
 
-    public function save_approval(Request $request, ModuleApproval $m_approval, Project $m_project){
-        $project_id = $request->projectId;
-        $approval_id = $request->approvalId;
-        $remarks = $request->remarks;
-        $status  = $request->status;
-
-        $status_id = 0;
+    public function save_approval(
+        Request $request, 
+        ModuleApproval $m_approval, 
+        Project $m_project,
+        ActivityLogs $m_activity_logs 
+    ){
+        $project_id      = $request->projectId;
+        $approval_id     = $request->approvalId;
+        $remarks         = $request->remarks;
+        $status          = $request->status;
+        $project_details = $m_project->get_details($project_id);
+        $status_id       = 0;
 
         if($status == "approve"){
             $status_id = 4; // approve
@@ -731,17 +801,48 @@ class ProjectController extends Controller
             session('user')['source_id']
         );
 
+        // email to requestor
+        $status_remarks = $status == "approve" ? "<strong>approved</strong>" : "<strong>rejected</strong>"; 
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => 'Project No. <strong>' . $project_id . '</strong> has been ' . $status_remarks . ' by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
+        ];
+
+        $m_activity_logs->insert_log($activity_log_params);
+
         // count pending approval for dealers
         $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
        
         // if there is no pending approval amount dealers, set project status to For IPC Review
         if(count($pending_approval) == 0 && $status == "approve"){
             $project_status = 11; // submitted
+
+            // send notification to IPC 
+            $m_activity_logs->update_mail_flag(
+                'Y', // mail flag
+                $project_id,
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
             // get pending approval for ipc
             $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
 
             if(count($ipc_pending_approval) == 0 && $status == "approve"){
                 $project_status = 10; // acknowledged
+
+              
+
             }
             
             $m_project->update_status(
@@ -751,6 +852,42 @@ class ProjectController extends Controller
                 session('user')['source_id']
             );
 
+            if($project_status == 11){
+                $activity_log_params = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>submitted.</strong>',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'reference_id'          => $project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $project_details->requestor_email
+                ];
+                $m_activity_logs->insert_log($activity_log_params);
+            }
+            else if ($project_status == 10){
+                $activity_log_params = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>acknowledged.</strong>',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'reference_id'          => $project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $project_details->requestor_email
+                ];
+                $m_activity_logs->insert_log($activity_log_params);
+            }
         }
         else {
 
@@ -762,7 +899,7 @@ class ProjectController extends Controller
             );
         }
 
-    
+        
     }
 
     public function ajax_cancel_project(Request $request, Project $m_project){

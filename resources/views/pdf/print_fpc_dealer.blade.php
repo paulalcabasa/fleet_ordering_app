@@ -157,7 +157,7 @@
                         <tr>
                             <td class="text-bold">Ref No.</td>
                             <td>:</td>
-                            <td>{{ $fpc['fpc_header']->fpc_id }}</td>
+                            <td>{{ $fpc['fpc_header']->fpc_project_id }}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Date Created</td>

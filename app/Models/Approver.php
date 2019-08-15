@@ -10,28 +10,100 @@ class Approver extends Model
     protected $connection = "oracle";
 
     public function get_project_approvers($requestor_user_id,$user_type,$vehicle_type){
+        //$params = [];
+     /*   $sql = "SELECT fs_app.approver_id,
+                            fs_app.vehicle_type,
+                            fs_app.user_type,
+                            fs_app.requestor_user_id,
+                            fs_app.approver_user_id,
+                            fs_app.hierarchy,
+                            usr.first_name || ' ' || usr.last_name approver_name,
+                            usr.email_address,
+                            fs_app.module_code,
+                            fs_app.approver_source_id
+                    FROM ipc_dms.fs_approvers fs_app
+                        LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                            ON usr.user_id = fs_app.approver_user_id
+                            AND usr.user_source_id = fs_app.approver_source_id
+                    WHERE 1 = 1";*/
 
     	if($user_type == "DLR_MANAGER"){
-			$approvers = $this
+            $sql = "SELECT fs_app.approver_id,
+                            fs_app.vehicle_type,
+                            fs_app.user_type,
+                            fs_app.requestor_user_id,
+                            fs_app.approver_user_id,
+                            fs_app.hierarchy,
+                            usr.first_name || ' ' || usr.last_name approver_name,
+                            usr.email_address,
+                            fs_app.module_code,
+                            fs_app.approver_source_id
+                    FROM ipc_dms.fs_approvers fs_app
+                        LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                            ON usr.user_id = fs_app.approver_user_id
+                            AND usr.user_source_id = fs_app.approver_source_id
+                    WHERE 1 = 1  
+                        AND fs_app.requestor_user_id = :requestor_user_id
+                        AND fs_app.user_type         = :user_type 
+                        AND fs_app.status_id         = :status_id
+                        AND fs_app.module_code       = :module_code";
+            $params = [
+                'requestor_user_id' => $requestor_user_id,
+                'user_type'         => $user_type,
+                'status_id'         => 1,
+                'module_code'       => 'PRJ',
+            ];
+            $query = DB::select($sql,$params);
+            return $query;
+
+			/*$approvers = $this
 				->select('approver_id','hierarchy')
 				->where([
 					['requestor_user_id', '=', $requestor_user_id],
 					['user_type', '=', $user_type],
 					['status_id', '=', 1],
                     ['module_code', '=', 'PRJ'] 
-				])->get();
+				])->get();*/
 		}
 		else if($user_type == "IPC_STAFF") {
-			$approvers = $this
+            $sql = "SELECT fs_app.approver_id,
+                            fs_app.vehicle_type,
+                            fs_app.user_type,
+                            fs_app.requestor_user_id,
+                            fs_app.approver_user_id,
+                            fs_app.hierarchy,
+                            usr.first_name || ' ' || usr.last_name approver_name,
+                            usr.email_address,
+                            fs_app.module_code,
+                            fs_app.approver_source_id
+                    FROM ipc_dms.fs_approvers fs_app
+                        LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                            ON usr.user_id = fs_app.approver_user_id
+                            AND usr.user_source_id = fs_app.approver_source_id
+                    WHERE 1 = 1
+                        AND fs_app.vehicle_type = :vehicle_type
+                        AND fs_app.user_type    = :user_type 
+                        AND fs_app.status_id    = :status_id
+                        AND fs_app.module_code  = :module_code";
+            $params = [
+                'vehicle_type' => $vehicle_type,
+                'user_type'    => $user_type,
+                'status_id'    => 1,
+                'module_code'  => 'PRJ',
+            ];
+            $query = DB::select($sql,$params);
+            return $query;
+		/*	$approvers = $this
 				->select('approver_id','hierarchy')
 				->where([
 					['user_type', '=', $user_type],
 					['vehicle_type', '=', $vehicle_type],
 					['status_id', '=', 1],
                     ['module_code', '=', 'PRJ']
-				])->get();
+				])->get();*/
 		}
-		return $approvers;
+
+
     }
 
     public function get_fpc_signatories($vehicle_type){
@@ -60,14 +132,42 @@ class Approver extends Model
     }
 
     public function get_po_approvers($vehicle_type){
-        $query = $this
+       $sql = "SELECT fs_app.approver_id,
+                        fs_app.vehicle_type,
+                        fs_app.user_type,
+                        fs_app.requestor_user_id,
+                        fs_app.approver_user_id,
+                        fs_app.hierarchy,
+                        usr.first_name || ' ' || usr.last_name approver_name,
+                        usr.email_address,
+                        fs_app.module_code,
+                        fs_app.approver_source_id
+                FROM ipc_dms.fs_approvers fs_app
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fs_app.approver_user_id
+                        AND usr.user_source_id = fs_app.approver_source_id
+                WHERE 1 = 1
+                    AND fs_app.vehicle_type = :vehicle_type
+                    AND fs_app.user_type    = :user_type 
+                    AND fs_app.status_id    = :status_id
+                    AND fs_app.module_code  = :module_code";
+        $params = [
+            'vehicle_type' => $vehicle_type,
+            'user_type'    => 'IPC_STAFF',
+            'status_id'    => 1,
+            'module_code'  => 'PO',
+        ];
+        
+        $query = DB::select($sql,$params);
+
+ /*       $query = $this
             ->select('approver_id','hierarchy')
             ->where([
                 ['user_type', '=', 'IPC_STAFF'],
                 ['vehicle_type', '=', $vehicle_type],
                 ['status_id', '=', 1],
                 ['module_code', '=', 'PO']
-            ])->get();
+            ])->get();*/
       
         return $query;
     }

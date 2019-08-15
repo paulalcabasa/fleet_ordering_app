@@ -292,7 +292,8 @@
                     status:       self.validate_status,
                     po_header_id: self.po_header_id,
                     approval_id:  self.approval_id,
-                    remarks:      self.remarks
+                    remarks:      self.remarks,
+                    project_id:   self.po_details.project_id
                 })
                 .then(function (response) {
                     window.location.href = self.base_url +  "/all-po";

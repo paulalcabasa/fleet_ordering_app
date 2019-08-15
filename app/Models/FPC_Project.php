@@ -17,34 +17,38 @@ class FPC_Project extends Model
 
 	public function get_projects($fpc_id){
 		$sql = "SELECT fpc_prj.fpc_project_id,
-			            fc.customer_name,
-			            dlr.account_name dealer_account,
-			            dlr.customer_name dealer_name,
-			            fp.project_id,
-			            TO_CHAR(fp.creation_date,'MM/DD/YYYY') project_creation_date,
-			            st.status_name project_status,
-			            fpc_prj.fpc_id,
-			            fpc_prj.payment_terms,
-			            to_char(fpc_prj.validity, 'YYYY-MM-DD') validity,
+                        fc.customer_name,
+                        dlr.account_name dealer_account,
+                        dlr.customer_name dealer_name,
+                        fp.project_id,
+                        TO_CHAR(fp.creation_date,'MM/DD/YYYY') project_creation_date,
+                        st.status_name project_status,
+                        fpc_prj.fpc_id,
+                        fpc_prj.payment_terms,
+                        to_char(fpc_prj.validity, 'YYYY-MM-DD') validity,
                         to_char(fpc_prj.validity, 'MM/DD/YYYY') validity_disp,
-			            fpc_prj.availability,
-			            fpc_prj.note,
+                        fpc_prj.availability,
+                        fpc_prj.note,
                         pt.term_name,
                         fp.competitor_flag,
-                        fp.competitor_remarks
-				FROM ipc_dms.fs_fpc_projects fpc_prj
-				    LEFT JOIN ipc_dms.fs_projects fp
-				        ON fpc_prj.project_id = fp.project_id
-				    LEFT JOIN ipc_dms.fs_customers fc
-				        ON fc.customer_id = fp.customer_id
-				    LEFT JOIN ipc_dms.fs_status st
-				        ON st.status_id = fp.status
-				    LEFT JOIN ipc_dms.dealers_v dlr
-				        ON dlr.cust_account_id = fp.dealer_id
+                        fp.competitor_remarks,
+                        usr.email_address requestor_email
+                FROM ipc_dms.fs_fpc_projects fpc_prj
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fpc_prj.project_id = fp.project_id
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fp.customer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fp.status
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fp.dealer_id
                     LEFT JOIN ipc_dms.fs_payment_terms pt 
                         ON pt.term_id = fpc_prj.payment_terms
-				 WHERE 1 = 1
-				 	AND fpc_prj.fpc_id = :fpc_id";
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fp.created_by
+                        AND usr.user_source_id = fp.create_user_source_id
+                 WHERE 1 = 1
+                     AND fpc_prj.fpc_id = :fpc_id";
 		$params = [
 			'fpc_id' => $fpc_id
 		];

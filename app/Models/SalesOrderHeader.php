@@ -37,7 +37,7 @@ class SalesOrderHeader extends Model
                     INNER JOIN apps.ra_terms_tl rt
                         ON rt.term_id = ooha.payment_term_id
                 WHERE 1 = 1
-                    AND ooha.order_number = :order_number
+                    AND to_char(ooha.order_number) = :order_number
                     AND ooha.sold_to_org_id = :customer_id
                     AND ott.transaction_type_id IN (
                         1124,

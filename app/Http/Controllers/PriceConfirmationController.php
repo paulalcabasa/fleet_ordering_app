@@ -22,6 +22,7 @@ use App\Models\FleetCategories;
 use PDF;
 use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
+use App\Models\ActivityLogs;
 
 class PriceConfirmationController extends Controller
 {   
@@ -307,14 +308,16 @@ class PriceConfirmationController extends Controller
         Request $request, 
         Attachment $m_attachment, 
         FPC $m_fpc, 
-        FPCHelper $fpc_helper
+        FPCHelper $fpc_helper,
+        ActivityLogs $m_activity_logs,
+        FPC_Project $m_fpc_project
     ){
         $attachment        = $request->fpc_attachment;
         $fpc_id            = $request->fpc_id;
         $remarks           = $request->remarks;
         $attachment_params = [];
         $file_index        = 0;
-//$destinationPath   = 'storage/app/attachments';
+        //$destinationPath   = 'storage/app/attachments';
         
         // approve fpc
         $m_fpc->update_status(
@@ -325,6 +328,27 @@ class PriceConfirmationController extends Controller
             4 // approved
         );
 
+        $fpc_projects = $m_fpc_project->get_projects($fpc_id);
+        foreach($fpc_projects as $row){
+            /* activity logs */
+            $activity_log_params = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created an FPC for Project No. <strong>'. $row->project_id .'</strong>',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $row->project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        => $row->requestor_email
+            ];
+            $m_activity_logs->insert_log($activity_log_params);
+        }
+    
         if(!empty($_FILES)){
             if(!empty($attachment)){
                 foreach($attachment as $file){

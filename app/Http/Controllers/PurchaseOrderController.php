@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use App\Models\Attachment;
 use App\Models\Approver;
 use App\Models\ModuleApproval;
+use App\Models\ActivityLogs;
+
 
 class PurchaseOrderController extends Controller
 {
@@ -120,7 +122,8 @@ class PurchaseOrderController extends Controller
         POLines $m_po_lines,
         Approver $m_approver,
         ModuleApproval $m_approval,
-        ProjectDeliverySchedule $m_delivery_sched
+        ProjectDeliverySchedule $m_delivery_sched,
+        ActivityLogs $m_activity_logs
     ){
         $requirement_lines = $request->requirement_lines;
         $po_number         = $request->po_number;
@@ -139,10 +142,29 @@ class PurchaseOrderController extends Controller
 
         $po_header_id = $m_po_header->insert_po_header($po_header_params);
 
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has submitted a purchase order.',
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'N',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => ''
+        ];
+        $m_activity_logs->insert_log($activity_log_params);
+
         $po_lines_arr = [];
         $po_approver_params = [];
         $delivery_sched_params = [];
         // insert po lines
+
+        $email_data = [];
+
         foreach($requirement_lines as $vehicle_type => $models){
             
             $approvers = $m_approver->get_po_approvers($vehicle_type);
@@ -150,8 +172,8 @@ class PurchaseOrderController extends Controller
                 $temp = [
                     'module_id'           => 2, // purchase order
                     'module_reference_id' => $po_header_id,
-                    'approver_id'         => $approver['approver_id'],
-                    'hierarchy'           => $approver['hierarchy'],
+                    'approver_id'         => $approver->approver_id,
+                    'hierarchy'           => $approver->hierarchy,
                     'status'              => 7, // pending
                     'column_reference'    => 'po_header_id',
                     'table_reference'     => 'fs_po_headers',
@@ -160,6 +182,22 @@ class PurchaseOrderController extends Controller
                     'create_user_source_id' => session('user')['source_id'],
                 ];
                 array_push($po_approver_params, $temp);
+
+                $temp_email = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has submitted a purchase order for Project No. <strong>' . $project_id . '</strong>',
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'reference_id'          => $project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'N',
+                    'mail_recipient'        => $approver->email_address
+                ];
+                array_push($email_data, $temp_email);
             }
 
             foreach ($models as $model) {
@@ -184,7 +222,6 @@ class PurchaseOrderController extends Controller
                         'create_user_source_id' => session('user')['source_id']
                     ];
                     array_push($delivery_sched_params, $sched_params);
-                    
                 }
             }
         }
@@ -195,7 +232,8 @@ class PurchaseOrderController extends Controller
         $m_delivery_sched->insert_delivery_schedule($delivery_sched_params);
         // insert po approval
         $m_approval->insert_module_approval($po_approver_params);
-
+        // insert activity logs for email
+        $m_activity_logs->insert_log($email_data);
 
         return [
             'status' => 'success',
@@ -250,13 +288,16 @@ class PurchaseOrderController extends Controller
     public function save_po_validation(
         Request $request, 
         ModuleApproval $m_approval, 
-        POHeaders $m_poh
+        POHeaders $m_poh,
+        Project $m_project,
+        ActivityLogs $m_activity_logs
     ){
         $po_header_id = $request->po_header_id;
         $approval_id = $request->approval_id;
         $remarks = $request->remarks;
         $status  = $request->status;
-
+        $project_id = $request->project_id;
+        $project_details = $m_project->get_details($project_id);
         $status_id = 0;
 
         if($status == "approve"){
@@ -275,7 +316,26 @@ class PurchaseOrderController extends Controller
             $remarks,
             session('user')['user_id'],
             session('user')['source_id']
-        );
+        ); 
+
+
+        $activity_log = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has approved purchase order no. <strong>'.$po_header_id.'</strong>',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
+        ];
+        $m_activity_logs->insert_log($activity_log);
+
 
         $pending = $m_approval->get_pending_per_po($po_header_id);
 
@@ -287,6 +347,24 @@ class PurchaseOrderController extends Controller
                 session('user')['user_id'],
                 session('user')['source_id']
             );
+
+            $activity_log = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Purchase Order No. <strong>'.$po_header_id.'</strong> has been <strong>acknowledged</strong>.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        =>  $project_details->requestor_email
+            ];
+            $m_activity_logs->insert_log($activity_log);
+
         }
     }
 
