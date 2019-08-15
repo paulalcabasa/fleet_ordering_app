@@ -59,7 +59,7 @@ class DashboardController extends Controller
 
         $index = 0;
         foreach($monthly_projects as $key => $value){
-            $mp_flat[$index] =  $value  + rand(1,5);
+            $mp_flat[$index] =  $value;
             $index++;
         }
 
