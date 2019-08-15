@@ -104,6 +104,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
 	Route::get('print-fwpc/{fwpc_id}', 'FWPCController@print_fwpc');
 
+	//
+	Route::get('send-notification' , 'EmailController@send_notification');
 });
 
 // ----------------- Authentication ----------------- //
