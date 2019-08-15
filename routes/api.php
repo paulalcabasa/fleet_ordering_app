@@ -19,3 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 //Route::get('sales_order/{sales_order_number}', 'SalesOrderController@get_so_details');
+
+// ----------------- Authentication ----------------- //
+
+// -------------- End of authentication -------------- //

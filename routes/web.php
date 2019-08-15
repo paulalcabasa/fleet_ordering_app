@@ -108,8 +108,5 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('send-notification' , 'EmailController@send_notification');
 });
 
-// ----------------- Authentication ----------------- //
-Route::get('api/login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
-Route::get('api/logout', 'Auth\LogoutController@logout')->name('api_logout');
-// -------------- End of authentication -------------- //
-
+Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
+Route::get('logout', 'Auth\LogoutController@logout')->name('api_logout');
