@@ -78,6 +78,7 @@ class FPC extends Model
                 [ 'fpc_id', '=' , $fpc_id ]
             ])
             ->update([
+                'remarks'               => $remarks,
                 'updated_by'            => $user_id,
                 'update_user_source_id' => $user_source_id,
                 'status'                => $status

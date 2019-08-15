@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th>Action</th>
+                    <th>FPC Ref No.</th>
                     <th>Sales Order No.</th>
                     <th>Ordered Date</th>
                     <th>Customer Name</th>
@@ -21,10 +22,11 @@
             <tbody>
                 <tr v-for="(row,index) in fwpc"> 
                     <td nowrap="nowrap">
-                        <a href="#"  title="View" @click.prevent="viewFwpc(index)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
-                        <a href="#" v-if="false" title="Print" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
-                        <a href="#" @click.prevent="deleteFwpc(index)" v-if="user_type == 32 || user_type == 33" title="Delete" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-trash"></i></a>
+                        <a href="#" title="View" @click.prevent="viewFwpc(index)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
+                        <a target="_blank" :href="base_url + '/print-fwpc/' + row.fwpc_id" title="Print" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-print"></i></a>
+                        <a href="#" title="Delete" @click.prevent="deleteFwpc(index)" v-if="(user_type == 32 || user_type == 33) && projectDetails.status_name != 'Closed'" title="Delete" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-trash"></i></a>
                     </td>
+                    <td>@{{ row.fpc_project_id }}</td>
                     <td>@{{ row.order_number }}</td>
                     <td>@{{ row.ordered_date }}</td>
                     <td>@{{ row.party_name }} - @{{ row.account_name }}</td>
@@ -34,7 +36,7 @@
             </tbody>
         </table>
     </div>
-    <div class="kt-portlet__foot" v-if="user_type == 32 || user_type == 33">
+   <!--  <div class="kt-portlet__foot" v-if="(user_type == 32 || user_type == 33) && projectDetails.status_name != 'Closed'">
         <div class="row kt-pull-right">
             <div class="col-lg-12">
                  <a href="#"  data-toggle="modal" data-target="#addFWPC" class="btn btn-primary btn-sm">
@@ -42,5 +44,5 @@
                 </a>  
             </div>
         </div>
-    </div>
+    </div> -->
 </div>

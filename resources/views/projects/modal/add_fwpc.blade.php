@@ -17,7 +17,24 @@
                             </button>
                         </div>
                     </div>
-
+                    <div 
+                        class="alert alert-danger kt-margin-t-10" 
+                        role="alert"
+                        v-show="cur_so_details.length == 0 && display_alert"
+                    >
+                        <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+                        <div class="alert-text">
+                            <strong>@{{ cur_sales_order_number }}</strong> does not exist. <br/>
+                            <span>Note : </span>
+                            <ul>
+                                <li>The sales order must be of Fleet Order Type.</li>
+                                <li>
+                                    @{{ projectDetails.dealer_name }} - @{{ projectDetails.dealer_account}}
+                                     must be the customer.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="card kt-margin-t-10" v-show="cur_so_details.hasOwnProperty('order_number')">
                         <div class="card-header kt-font-boldest">Sales Order Details</div>
                         <div class="card-body">

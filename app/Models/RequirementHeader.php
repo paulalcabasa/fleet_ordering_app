@@ -57,4 +57,20 @@ class RequirementHeader extends Model
         return $query;
     }
     
+    public function get_headers($project_id){
+
+        $sql = "SELECT rh.requirement_header_id,
+                        rh.vehicle_type,
+                        rh.project_id
+                FROM ipc_dms.fs_prj_requirement_headers rh
+                WHERE rh.project_id = :project_id";
+
+        $params = [
+            'project_id' => $project_id
+        ];
+
+        $query = DB::select($sql,$params);
+
+        return $query;
+    }
 }

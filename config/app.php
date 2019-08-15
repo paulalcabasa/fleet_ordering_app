@@ -43,7 +43,8 @@ return [
         'Rejected'     => "kt-badge kt-badge--danger kt-badge--inline",
         'In progress'  => "kt-badge kt-badge--warning kt-badge--inline",
         'Pending'      => "kt-badge kt-badge--warning kt-badge--inline",
-        'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline"
+        'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline",
+        'Closed'       => "kt-badge kt-badge--success kt-badge--inline"
     ],
     /*
     |--------------------------------------------------------------------------

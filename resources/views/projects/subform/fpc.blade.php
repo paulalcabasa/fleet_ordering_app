@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Ref No.</span>
-                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_id }}</span>
+                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_project_id }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date Created</span>
@@ -103,7 +103,10 @@
     <div class="kt-portlet__foot">
         <div class="row  kt-pull-right">
         <div class="col-lg-12">
-              <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
+            <button type="button" @click="addFWPCModal(row['fpc_header'].fpc_project_id)"  class="btn btn-primary btn-sm">
+                Add FWPC
+            </button>  
+            <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
                 <span class="kt-hidden-mobile">Print</span>
             </a>
         </div>

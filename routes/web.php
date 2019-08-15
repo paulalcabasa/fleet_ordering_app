@@ -97,11 +97,12 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('/ajax-get-competitor-models/', 'CompetitorController@ajax_get_competitor_models');
 	
 	// FWPC
-	Route::get('sales-order/{sales_order_number}', 'SalesOrderController@get_so_details');
+	Route::get('sales-order/{sales_order_number}/{dealer_id}', 'SalesOrderController@get_so_details');
 	Route::post('sales-order', 'FWPCController@add_fwpc');
 	Route::get('fwpc/{project_id}', 'FWPCController@get_fwpc_list');
 	Route::delete('fwpc/{fwpc_id}', 'FWPCController@destroy');
 	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
+	Route::get('print-fwpc/{fwpc_id}', 'FWPCController@print_fwpc');
 
 });
 

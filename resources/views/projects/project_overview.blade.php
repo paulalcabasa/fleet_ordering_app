@@ -460,7 +460,9 @@
             cur_so_header:          [],
             cur_so_lines:           [],
             fwpc:                   {!! json_encode($fwpc) !!},
-            user_type:              {!! json_encode($user_type) !!}
+            user_type:              {!! json_encode($user_type) !!},
+            display_alert : false,
+            cur_fpc_project_id : ''
         },
         methods : {
             showDeliveryDetail(data){
@@ -649,31 +651,56 @@
                 var self = this;
                 KTApp.block("#addFWPC .modal-content",{});
 
-                axios.get('/sales-order/' + self.cur_sales_order_number)
+                axios.get('/sales-order/' + self.cur_sales_order_number + '/' + self.projectDetails.dealer_id)
                     .then( (response) => {
                         self.cur_so_details = response.data.header_data;
+                        if(self.cur_so_details.length == 0){
+                            self.display_alert = true;
+                        }
+                        else {
+                            self.display_alert = false;
+                        }
                         KTApp.unblock("#addFWPC .modal-content",{});
                     });
             },
             addSalesOrder(){
                 var self = this;
-                KTApp.block("#addFWPC .modal-content",{});
-                axios.post('/sales-order', {
-                    project_id : self.projectDetails.project_id,
-                    sales_order_id : self.cur_so_details.header_id,
-                    so_number : self.cur_so_details.order_number
-                }).then( (response) => {
-                    KTApp.unblock("#addFWPC .modal-content",{});
-                    $("#addFWPC").modal('hide');
-                    self.fwpc.push(response.data);
-                    self.cur_so_details = [];
-                    self.cur_sales_order_number = '';
+                var isExist = self.fwpc.filter(function(elem){
+                    if(
+                        elem.order_number === self.cur_sales_order_number || 
+                        elem.fpc_project_id === self.cur_fpc_project_id
+                    ) {
+                        return elem.order_number;
+                    }
                 });
+                if(isExist == 0 ){
+                    KTApp.block("#addFWPC .modal-content",{});
+                    axios.post('/sales-order', {
+                        project_id : self.projectDetails.project_id,
+                        sales_order_id : self.cur_so_details.header_id,
+                        so_number : self.cur_so_details.order_number,
+                        fpc_project_id : self.cur_fpc_project_id
+                    }).then( (response) => {
+                        KTApp.unblock("#addFWPC .modal-content",{});
+                        $("#addFWPC").modal('hide');
+                        self.fwpc.push(response.data);
+                        self.cur_so_details = [];
+                        self.cur_sales_order_number = '';
+                    });
+                }
+                else {
+                    Swal.fire({
+                        type: 'error',
+                        title: "FWPC already exist for this FPC",
+                        showConfirmButton: true,
+                        timer: 1500
+                    }); 
+                }
             },
             deleteFwpc(index){
                 var self = this;
 
-              Swal.fire({
+                Swal.fire({
                     title: 'Are you sure to delete this FWPC?',
                     text: "You won't be able to revert this!",
                     type: 'warning',
@@ -720,7 +747,10 @@
                         self.cur_so_lines = response.data.so_lines;
                         KTApp.unblock("#viewFWPC .modal-content",{});
                     });
-
+            },
+            addFWPCModal(fpc_project_id){
+                this.cur_fpc_project_id = fpc_project_id;
+                $("#addFWPC").modal('show');
             }
         },
         created: function () {

@@ -31,7 +31,8 @@ class FWPC extends Model
                         ooha.flow_status_code status_name,
                         ooha.payment_term_id,
                         rt.name payment_term,
-                        fwpc.FWPC_ID
+                        fwpc.fwpc_id,
+                        fwpc.fpc_project_id
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id
@@ -56,6 +57,10 @@ class FWPC extends Model
 
     public function get_fwpc_by_id($fwpc_id){
         $sql = "SELECT fwpc.fwpc_id,
+                        fwpc.fpc_project_id,
+                        to_char(fwpc.creation_date,'DD-MON-YYYY') creation_date,
+                        fwpc.project_id,
+                        fc.customer_name,
                         ooha.order_number,
                         ott.name order_type_name,
                         ott.description order_type_desc,
@@ -69,7 +74,9 @@ class FWPC extends Model
                         cust.profile_class,
                         ooha.flow_status_code status_name,
                         ooha.payment_term_id,
-                        rt.name payment_term
+                        rt.name payment_term,
+                        terms.term_name payment_terms,
+                        fwpc.sales_order_header_id
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id
@@ -82,6 +89,14 @@ class FWPC extends Model
                         AND ooha.invoice_to_org_id = cust.site_use_id
                     INNER JOIN apps.ra_terms_tl rt
                         ON rt.term_id = ooha.payment_term_id
+                    INNER JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fwpc.project_id
+                    INNER JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fp.customer_id
+                    INNER JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
+                    INNER JOIN ipc_dms.fs_payment_terms terms
+                        ON terms.term_id = fpc_prj.payment_terms
                 WHERE 1 = 1
                         AND fwpc.fwpc_id = :fwpc_id";
         $params = [
@@ -97,4 +112,6 @@ class FWPC extends Model
             [ 'fwpc_id', '=', $fwpc_id ]
         ])->delete();
     }
+
+
 }

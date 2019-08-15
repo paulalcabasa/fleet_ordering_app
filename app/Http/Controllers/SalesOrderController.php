@@ -10,7 +10,8 @@ class SalesOrderController extends Controller
 {
     public function get_so_details(Request $request, SalesOrderHeader $m_soh){
         $sales_order_no = $request->sales_order_number;
-        $header_details = $m_soh->get_so_headers($sales_order_no);
+        $dealer_id = $request->dealer_id;
+        $header_details = $m_soh->get_so_headers($sales_order_no, $dealer_id);
         return ['header_data' => $header_details];//$header_details;
     }
 
