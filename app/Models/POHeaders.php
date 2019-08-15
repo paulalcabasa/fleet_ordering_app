@@ -119,4 +119,26 @@ class POHeaders extends Model
         return $query;
     }
 
+    public function count_all_po($user_type,$dealer_id){
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+            $sql = "SELECT count(po_header_id) ctr
+                    FROM ipc_Dms.fs_po_headers ph
+                        LEFT JOIN ipc_dms.fs_projects fp
+                            ON fp.project_id = ph.project_id
+                    WHERE 1 = 1
+                        AND fp.dealer_id = :dealer_id";
+            $params = [
+                'dealer_id' => $dealer_id
+            ];
+            $query = DB::select($sql,$params);
+            return $query[0]->ctr;
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_po_headers";
+            $query = DB::select($sql);
+            return $query[0]->ctr;            
+        }
+    }
+
 }

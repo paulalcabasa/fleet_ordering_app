@@ -61,11 +61,12 @@
                 </a>
             </li>
             @endif
-
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">Pricing</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
+            @endif
             @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__item {{ request()->is('price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/price-confirmation') }}" class="kt-menu__link ">
@@ -81,15 +82,7 @@
                     <span class="kt-menu__link-text">FPC</span>
                 </a>
             </li>
-            @endif
-            <li class="kt-menu__item {{ request()->is('all-fwpc') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/all-fwpc') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
-                    <span class="kt-menu__link-text">FWPC</span>
-                </a>
-            </li>
-
-        
+            @endif        
         </ul>
     </div>
 </div>
