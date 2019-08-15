@@ -20,7 +20,7 @@ Route::get('/', 'RedirectController@redirect_login');
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
 
 	/* Dashboard */
-	Route::view('dashboard', 'dashboard')->name('dashboard');
+	Route::get('dashboard', 'DashboardController@dashboard'); //->name('dashboard');
 
 	/* Customers */
 	Route::get('all-customers', 'CustomerController@all_customers');

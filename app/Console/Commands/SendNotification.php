@@ -34,22 +34,20 @@ class SendNotification extends Command
         // get logs for mailing
         $logs = $m_activity_logs->get_logs_for_mail();
 
-        $mail             = new PHPMailer\PHPMailer(); // create a n
-        $mail->SMTPAuth   = true; // authentication enabled
-        $mail->SMTPSecure = 'tls'; // secure transfer enabled REQUIRED for Gmail
-        $mail->Host       = "smtp.office365.com";
-        $mail->Port       = 587; // or 587
-        $mail->IsSMTP();
-        $mail->Username = "notification2@isuzuphil.com";
-        $mail->Password = "KuBT0749mtXa";
-        $mail->SetFrom("notification2@isuzuphil.com", 'Notification');
-
-        $mail->Subject = 'Fleet Ordering System';
-
-        
-
-
         foreach($logs as $log){
+
+            $mail             = new PHPMailer\PHPMailer(); // create a n
+            $mail->SMTPAuth   = true; // authentication enabled
+            $mail->SMTPSecure = 'tls'; // secure transfer enabled REQUIRED for Gmail
+            $mail->Host       = "smtp.office365.com";
+            $mail->Port       = 587; // or 587
+            $mail->IsSMTP();
+            $mail->Username = "notification2@isuzuphil.com";
+            $mail->Password = "KuBT0749mtXa";
+            $mail->SetFrom("notification2@isuzuphil.com", 'Notification');
+
+            $mail->Subject = 'Fleet Ordering System';
+
              $content = [
                 'message' => $log->content
             ];

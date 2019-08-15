@@ -213,4 +213,175 @@ class Project extends Model
         $query = DB::select($sql,$params);
         return $query;
     }
+
+    public function count_all_projects($user_type,$dealer_id){
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+            $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_projects
+                    WHERE dealer_id = :dealer_id";
+            $params = [
+                'dealer_id' => $dealer_id
+            ];
+            $query = DB::select($sql,$params);
+            return $query[0]->ctr;
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_projects";
+            $query = DB::select($sql);
+            return $query[0]->ctr;            
+        }
+    }
+
+    public function count_open_projects($user_type,$dealer_id){
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+           $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_projects
+                    WHERE dealer_id = :dealer_id
+                        AND status <> 13";
+            $params = [
+                'dealer_id' => $dealer_id
+            ];
+            $query = DB::select($sql,$params);
+            return $query[0]->ctr;
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            
+            
+            $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_projects
+                    WHERE status <> 13";
+            $query = DB::select($sql);
+            return $query[0]->ctr;
+
+        }
+    }
+
+    public function count_pending_fpc_projects($user_type,$dealer_id){
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+            $sql = "SELECT count(project_id) ctr
+                    FROM ipc_dms.fs_projects
+                    WHERE 1 = 1
+                        AND dealer_id = :dealer_id
+                        AND project_id NOT IN (
+                            SELECT project_id 
+                            FROM ipc_dms.fs_fpc_projects prj
+                                LEFT JOIN ipc_dms.fs_fpc fpc
+                                    ON FPC.FPC_ID = prj.fpc_id
+                            WHERE fpc.status = 4
+                        )";
+            $params = [
+                'dealer_id' => $dealer_id
+            ];
+            $query = DB::select($sql,$params);
+            return $query[0]->ctr;
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+                $sql = "SELECT count(project_id) ctr
+                        FROM ipc_dms.fs_projects
+                        WHERE 1 = 1
+                            AND project_id NOT IN (
+                                SELECT project_id 
+                                FROM ipc_dms.fs_fpc_projects prj
+                                    LEFT JOIN ipc_dms.fs_fpc fpc
+                                        ON FPC.FPC_ID = prj.fpc_id
+                                WHERE fpc.status = 4
+                            )";
+                $query = DB::select($sql);
+                return $query[0]->ctr;
+        }
+
+    }
+
+    public function count_projects_yearly($user_type,$dealer_id,$year){
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+            $sql = "SELECT 
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 1 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JAN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 2 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) FEB,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 3 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) MAR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 4 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) APR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 5 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) MAY,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 6 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JUN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 7 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JUL,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 8 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) AUG,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 9 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) SEP,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 10 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) OCT,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 11 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) NOV,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 12 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) DEC
+                FROM ipc_dms.fs_projects fp
+                WHERE fp.dealer_id = :dealer_id
+                GROUP BY fp.creation_date";
+            $params = [
+                'dealer_id' => $dealer_id,
+                'year' => $year
+            ];
+            $query = DB::select($sql,$params);
+            return $query;
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            $sql = "SELECT 
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 1 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JAN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 2 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) FEB,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 3 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) MAR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 4 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) APR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 5 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) MAY,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 6 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JUN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 7 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) JUL,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 8 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) AUG,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 9 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) SEP,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 10 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) OCT,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 11 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) NOV,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 12 AND  extract(YEAR from fp.creation_date) = :year  THEN 1 ELSE 0 END) DEC
+                FROM ipc_dms.fs_projects fp
+                GROUP BY fp.creation_date";
+            $params = [
+                'year' => $year
+            ];
+            $query = DB::select($sql,$params);
+            return $query;
+        }
+    }
+
+    public function count_projects_monthly($last_day,$month, $year, $user_type, $dealer_id){
+        $select = "";
+        for($i = 1; $i <= $last_day; $i++){
+            if($i == $last_day){
+                $select .= "SUM(
+                    CASE 
+                        WHEN extract(month from fp.creation_date) = $month 
+                        AND    extract(YEAR from fp.creation_date) = $year 
+                        AND extract(DAY from fp.creation_Date) = $i   THEN 1 ELSE 0 
+                    END
+                 ) day_" . $i;  
+            }
+            else {
+                $select .= "SUM(
+                    CASE 
+                        WHEN extract(month from fp.creation_date) = $month 
+                        AND    extract(YEAR from fp.creation_date) = $year
+                        AND extract(DAY from fp.creation_Date) = $i   THEN 1 ELSE 0 
+                    END
+                 ) day_" . $i . ",";
+            }
+        }
+
+        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+            $sql = "SELECT 
+                    $select
+                    FROM ipc_dms.fs_projects fp
+                    WHERE fp.dealer_id = ".$dealer_id."
+                    GROUP BY fp.creation_date";
+            $query = DB::select($sql);
+            return $query[0];
+        }
+        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+            $sql = "SELECT 
+                    $select
+                    FROM ipc_dms.fs_projects fp
+                    GROUP BY fp.creation_date";
+            $query = DB::select($sql);
+            return $query[0];
+        }
+
+    }
 }

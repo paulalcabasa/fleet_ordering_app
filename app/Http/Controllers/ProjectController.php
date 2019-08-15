@@ -918,16 +918,39 @@ class ProjectController extends Controller
         ];
     }
 
-    public function ajax_close_project(Request $request, Project $m_project){
+    public function ajax_close_project(
+        Request $request, 
+        Project $m_project,
+        ActivityLogs $m_activity_logs
+    ){
         $project_id = $request->project_id;
         $status_id = 13; // closed
 
+        $project_details = $m_project->get_details($project_id);    
         $m_project->update_status(
             $project_id,
             $status_id,
             session('user')['user_id'],
             session('user')['source_id']
         );
+
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => 'Project No. <strong>' . $project_id . '</strong> has been <strong>closed</strong> by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
+        ];
+
+        $m_activity_logs->insert_log($activity_log_params);
 
         return [
             'status' => 'Closed'
