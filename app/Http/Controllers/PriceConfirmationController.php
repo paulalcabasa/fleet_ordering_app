@@ -426,6 +426,7 @@ class PriceConfirmationController extends Controller
         $signatories = $m_approver->get_fpc_signatories($header_data->vehicle_type);
         $signatories = collect($signatories)->groupBy('user_type');
 
+    
         $data = [
             'header_data'   => $header_data,
             'sales_persons' => $sales_persons,

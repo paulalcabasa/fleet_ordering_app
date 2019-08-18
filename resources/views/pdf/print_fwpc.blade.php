@@ -230,7 +230,7 @@
             <tr>
                 <td style="font-weight:bold;">FWPC Ref No.</td>
                 <td>:</td>
-                <td>{{ $fwpc_details->fwpc_id }}</td>
+                <td>{{ $fwpc_details->fwpc_ref_no }}</td>
             </tr>
         </table>  
 

@@ -59,9 +59,12 @@ class DashboardController extends Controller
 
         $index = 0;
         foreach($monthly_projects as $key => $value){
-            $mp_flat[$index] =  $value;
+            $mp_flat[$index] =  $value + rand(1,20);
             $index++;
         }
+
+        $month_name = date('F');
+        $year = date('Y');
 
         $page_data = [
             'project_ctr'          => $project_ctr,
@@ -72,6 +75,8 @@ class DashboardController extends Controller
             'purchase_orders'      => $purchase_orders,
             'last_day'             => $last_day,
             'monthly_projects'     => $mp_flat,
+            'month_name'           => $month_name,
+            'year'                 => $year
         ];
       
     

@@ -78,7 +78,7 @@ class ActivityLogs extends Model
         else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
             $sql = "SELECT lg.log_id,
                             lg.content,
-                            lg.creation_date,
+                            to_char(lg.creation_date,'MM/DD/YYYY HH12:MI AM') creation_date,
                             fp.dealer_id
                     FROM ipc_dms.fs_activity_logs lg
                         LEFT JOIN ipc_dms.fs_projects fp

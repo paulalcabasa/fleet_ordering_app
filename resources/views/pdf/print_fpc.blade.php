@@ -137,7 +137,7 @@
             <tr>
                 <td style="font-weight:bold;">REF NO.</td>
                 <td>:</td>
-                <td>{{ $header_data->fpc_project_id }}</td>
+                <td>{{ $header_data->fpc_ref_no }}</td>
             </tr>  
         </table>  
 

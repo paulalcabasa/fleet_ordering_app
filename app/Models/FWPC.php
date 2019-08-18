@@ -55,6 +55,8 @@ class FWPC extends Model
         return $query;
     }
 
+/* 
+*/
     public function get_fwpc_by_id($fwpc_id){
         $sql = "SELECT fwpc.fwpc_id,
                         fwpc.fpc_project_id,
@@ -76,7 +78,12 @@ class FWPC extends Model
                         ooha.payment_term_id,
                         rt.name payment_term,
                         terms.term_name payment_terms,
-                        fwpc.sales_order_header_id
+                        fwpc.sales_order_header_id,
+                        dbb.abbreviation || 
+                        to_char(fwpc.creation_date,'MM') || 
+                        to_char(fwpc.creation_date,'YY') || 
+                        '-' || 
+                        fwpc.fwpc_id fwpc_ref_no
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id
@@ -97,6 +104,8 @@ class FWPC extends Model
                         ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
                     INNER JOIN ipc_dms.fs_payment_terms terms
                         ON terms.term_id = fpc_prj.payment_terms
+                    LEFT JOIN ipc_dms.dealer_abbrev_names dbb
+                        ON dbb.cust_account_id = fp.dealer_id
                 WHERE 1 = 1
                         AND fwpc.fwpc_id = :fwpc_id";
         $params = [

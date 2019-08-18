@@ -1,4 +1,4 @@
-<div class="kt-portlet kt-portlet--mobile" v-if="fpc.length > 0">
+<div class="kt-portlet kt-portlet--mobile" >
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">

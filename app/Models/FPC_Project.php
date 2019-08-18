@@ -83,6 +83,11 @@ class FPC_Project extends Model
     public function get_fpc_project_details($fpc_project_id){
         $sql = "SELECT fpc_prj.fpc_project_id,
                         fpc_prj.project_id,
+                        dbb.abbreviation || 
+                        to_char(fpc.creation_date,'MM') || 
+                        to_char(fpc.creation_date,'YY') || 
+                        '-' || 
+                        fpc_prj.fpc_project_id fpc_ref_no,  
                         fc.customer_name,
                         dlr.customer_name dealer_name,
                         dlr.account_name dealer_account,
@@ -115,6 +120,8 @@ class FPC_Project extends Model
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fpc.created_by
                         AND usr.user_source_id = fpc.create_user_source_id
+                    LEFT JOIN ipc_dms.dealer_abbrev_names dbb
+                        ON dbb.cust_account_id = fp.dealer_id
                 WHERE 1 = 1
                     AND fpc_prj.fpc_project_id = :fpc_project_id";
         $params = [
