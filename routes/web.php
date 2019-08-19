@@ -69,6 +69,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
 	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
+	Route::patch('update-suggested-date', 'DeliveryScheduleController@update_suggested_date');
 	
 	/* FPC */
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
@@ -104,7 +105,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
 	Route::get('print-fwpc/{fwpc_id}', 'FWPCController@print_fwpc');
 
-	//
+	// EMAIL NOTIFICATION
 	Route::get('send-notification' , 'EmailController@send_notification');
 });
 

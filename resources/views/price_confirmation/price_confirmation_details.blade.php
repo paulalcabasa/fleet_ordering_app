@@ -81,8 +81,6 @@
                     <span class="col-md-4 kt-font-bold">Address</span>
                     <span class="col-md-8">@{{ customer_details.address }}</span>
                 </div>
-                
-                
             </div>
         </div>
     </div>
@@ -554,12 +552,14 @@
                                     <thead>
                                         <tr>
                                             <td>Date</td>
+                                            <td>Suggested Date</td>
                                             <td>Quantity</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(row,index) in curDeliveryDetails">
-                                            <td>@{{ row.delivery_date}}</td>
+                                            <td>@{{ row.delivery_date_disp }}</td>
+                                            <td><input type="date"  v-model="row.suggested_delivery_date" class="form-control form-control-sm" name=""  /></td>
                                             <td>@{{ row.quantity }}</td>
                                         </tr>
                                     </tbody>
@@ -570,6 +570,7 @@
                 </div>   
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @click="saveDeliveryDate">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -887,6 +888,13 @@
             printFPC(index){
                 //console.log(this.projects[index].fpc_project_id);
                 window.open(this.baseURL + '/print-fpc/' + this.projects[index].fpc_project_id);    
+            },
+            saveDeliveryDate(){
+                axios.patch('/update-suggested-date/', {
+                    delivery_details : this.curDeliveryDetails
+                }).then( (response) => {
+                    console.log(response.data);
+                });
             }
         },
         created: function () {

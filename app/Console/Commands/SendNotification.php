@@ -42,8 +42,8 @@ class SendNotification extends Command
             $mail->Host       = "smtp.office365.com";
             $mail->Port       = 587; // or 587
             $mail->IsSMTP();
-            $mail->Username = "notification2@isuzuphil.com";
-            $mail->Password = "Luh29512";
+            $mail->Username = "ecommerce-notification@isuzuphil.com";
+            $mail->Password = "JunE08$n@k54fr";
             $mail->SetFrom("notification2@isuzuphil.com", 'Notification');
 
             $mail->Subject = 'Fleet Ordering System';
