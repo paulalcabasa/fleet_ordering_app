@@ -60,7 +60,8 @@ class ProjectController extends Controller
                 $temp_array = array(
                     "id"           => $var->sales_model,
                     "value"        => $var->sales_model,
-                    "vehicle_type" => $var->vehicle_type
+                    "vehicle_type" => $var->vehicle_type,
+                    "variant"      => $var->model_variant
                 );
                 array_push($children,$temp_array);
             }
@@ -77,14 +78,15 @@ class ProjectController extends Controller
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
-            'organizations'    => $organizations,
-            'project_sources'  => $project_sources,
-            'customer_options' => $customer_options,
-            'sales_persons'    => $sales_persons,
-            'vehicle_models'   => $vehicle_options,
-            'vehicle_types'    => $vehicle_types,
-            'base_url'         => url('/'),
-            'fleet_categories' => $fleet_categories
+            'organizations'         => $organizations,
+            'project_sources'       => $project_sources,
+            'customer_options'      => $customer_options,
+            'sales_persons'         => $sales_persons,
+            'vehicle_models'        => $vehicle_options,
+            'vehicle_types'         => $vehicle_types,
+            'base_url'              => url('/'),
+            'fleet_categories'      => $fleet_categories,
+            'vehicle_lead_times'    => config('app.vehicle_lead_time')
     	);
     	return view('projects.manage_project', $page_data);
     }

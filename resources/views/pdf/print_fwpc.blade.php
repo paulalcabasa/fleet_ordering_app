@@ -257,21 +257,28 @@
             </thead>
             <tbody>
                 @foreach($so_lines as $row)
-                {{ $ctr = 1 }}
-                {{ $grand_total = 0 }}
+                <?php 
+                    $ctr = 1; 
+                    $grand_total = 0;
+                    $unit_price = $row->fleet_price - $row->dealer_margin - $row->lto_registration;
+                    $fwpu = $unit_price + $row->freebies;
+                    $total_fwpu = $fwpu * $row->quantity;
+                ?>
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td>{{ $row->sales_model }}</td>
                     <td align="center">{{ $row->quantity }}</td>
-                    <td align="center">{{ number_format($row->fleet_price,2,'.',',') }}</td>
-                    <td align="center">{{ number_format( ( $row->fleet_price - $row->dealer_margin - $row->lto_registration ), 2,'.',',') }}</td>
-                    <td align="center">-</td>
-                    <td align="center">{{ number_format( ($row->fleet_price - $row->dealer_margin - $row->lto_registration), 2,'.',',') }}</td>
-                    <td align="center">{{ number_format( (($row->fleet_price - $row->dealer_margin - $row->lto_registration) * $row->quantity), 2,'.',',') }}</td>
+                    <td align="center">{{ number_format($row->fleet_price,2) }}</td>
+                    <td align="center">{{ number_format($unit_price,2) }}</td>
+                    <td align="center">{{ number_format($row->freebies,2) }}</td>
+                    <td align="center">{{ number_format($fwpu,2) }}</td>
+                    <td align="center">{{ number_format($total_fwpu,2) }}</td>
                     <td>{{ $row->term_name }}</td>
                 </tr>
-                {{ $grand_total += ($row->fleet_price - $row->dealer_margin - $row->lto_registration) * $row->quantity }}
-                {{ $ctr++ }}
+                <?php 
+                    $grand_total += $total_fwpu;
+                    $ctr++; 
+                ?>
                 @endforeach
             </tbody>
             <tfoot>

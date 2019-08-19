@@ -101,7 +101,7 @@
                                 <div class="form-group row">
                                     <div class="col-lg-8">
                                         <label>Account Name</label>
-                                        <div class="typeahead">
+                                         <div class="typeahead">
                                             <input 
                                                 type="text" 
                                                 class="form-control" 
@@ -226,6 +226,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Address</label>
+
                                     <textarea 
                                         class="form-control" 
                                         name="address" 
@@ -426,7 +427,12 @@
                                         <select class="form-control" id="sel_vehicle_models" v-model="selected_model" v-select style="width:100%;">
                                             <option value="-1">Select a model</option>
                                             <optgroup v-for="(row,index) in  vehicle_models" :label="row.model">
-                                                <option v-for="(variant,index) in row.variants" :value="variant.id" :data-vehicle_type="variant.vehicle_type">@{{ variant.value}}</option>
+                                                <option 
+                                                    v-for="(variant,index) in row.variants" 
+                                                    :value="variant.id" 
+                                                    :data-vehicle_type="variant.vehicle_type"
+                                                    :data-variant="variant.variant"
+                                                >@{{ variant.value}}</option>
                                             </optgroup>
                                         </select>   
                                     </div>
@@ -452,8 +458,8 @@
                                                     <th>Color</th>
                                                     <th>Quantity</th>
                                                     <th>Suggested Price</th>
-                                                    <th>Additional Details</th>
-                                                    <th>Delivery Schedule</th>
+                                                    <th>Subtotal</th>
+                                                    <th>Other details</th>
                                                 </tr>
                                             </thead>
                                             <tbody v-for="(vehicleGroup,index) in Object.keys(vehicleRequirement)">
@@ -475,11 +481,12 @@
                                                             v-model="model.suggested_price" 
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td>@{{ (formatPrice(model.suggested_price * model.quantity))}}</td>
+                                                 <!--    <td>
                                                         <button type="button" @click="showAdditionalDetails(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                                             <i class="la la-info-circle"></i>
                                                         </button>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <button type="button" @click="showDeliveryDetail(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
                                                             <i class="la la-calendar"></i>
@@ -501,7 +508,7 @@
                                                     <th>@{{ (computeCVQty + computeLCVQty) }}</th>
                                                     <th>@{{ formatPrice(computeCVPrice + computeLCVPrice) }}</th>
                                                     <th>@{{ formatPrice((computeCVQty * computeCVPrice) + (computeLCVQty * computeLCVPrice)) }}</th>
-                                                    <th></th>   
+                                                    <th></th>
                                                 </tr>
                                                 
                                             </tfoot>
@@ -671,113 +678,8 @@
     </div>
 </div>
 
-<!--begin::Modal-->
-<div class="modal fade" id="deliveryScheduleModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
-             <!--    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button> -->
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Model</span>
-                                    <span class="details-subtext">@{{ cur_model }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Color</span>
-                                    <span class="details-subtext">@{{ cur_color }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">@{{ cur_quantity }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Quantity</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(row,index) in cur_delivery_sched" :key="index">
-                                    <td>
-                                        <a href="#" @click.prevent="deleteDeliveryDate(index)">
-                                            <i class="flaticon flaticon-delete kt-margin-r-10 kt-font-danger"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" size="4" v-model="row.quantity" />
-                                    </td>
-                                    <td>
-                                        <input type="date" class="form-control form-control-sm" v-model="row.delivery_date" name="">
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th colspan="2">@{{ computeDeliveryQuantity }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>                    
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" @click="saveDeliverySched">Save</button>
-                <button type="button" class="btn btn-primary" @click="addDeliverySched">Add row</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
 
-
-<!--begin::Modal-->
-<div class="modal fade" id="additionalDetailsModal"  tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Additional Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">          
-                <div class="form-group">
-                    <label>Name of Body Builder</label>
-                    <input type="text" class="form-control" v-model="cur_body_builder" placeholder="Body builder" />
-                    <span class="form-text text-muted">Please a body builder</span>
-                </div>
-                <div class="form-group">
-                    <label>Rear Body Type</label>
-                    <input type="text" class="form-control" v-model="cur_rear_body" name="fname" placeholder="Rear Body Type" >
-                    <span class="form-text text-muted">Please enter rear body type</span>
-                </div>  
-                <div class="form-group">
-                    <label>Additional Items</label>
-                    <textarea class="form-control" v-model="cur_addtl_items"></textarea>
-                    <span class="form-text text-muted">Please enter additional items</span>
-                </div> 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
+@include('projects/modal/mp_delivery_additional_details')
 
 <!--begin::Modal-->
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1035,6 +937,7 @@ jQuery(document).ready(function() {
             vehicle_details_flag:    true,
             vehicle_models:           {!! json_encode($vehicle_models) !!},
             vehicle_types:           {!! json_encode($vehicle_types) !!},
+            vehicle_lead_times:           {!! json_encode($vehicle_lead_times) !!},
             selected_row_index:      null,
             selected_vehicle_group : '',
             selected_model:          -1,
@@ -1056,6 +959,8 @@ jQuery(document).ready(function() {
             cur_quantity:            null,
             cur_competitor_brand:    null,
             cur_competitor_model:    null,
+            cur_variant : null,
+            cur_lead_time_desc : null,
             // step 4 - competitors
             competitors:             [],
             no_competitor_reason:    "",
@@ -1224,12 +1129,24 @@ jQuery(document).ready(function() {
                 );
             },
             showDeliveryDetail(vehicle_group,index){
-                this.selected_row_index = index;
+                // delivery details
+                this.selected_row_index     = index;
                 this.selected_vehicle_group = vehicle_group;
-                this.cur_model = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].model;
-                this.cur_color = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].color;
-                this.cur_quantity = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].quantity;
-                this.cur_delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
+                this.cur_model              = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].model;
+                this.cur_color              = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].color;
+                this.cur_quantity           = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].quantity;
+                this.cur_delivery_sched     = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
+                this.cur_variant            = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].variant;
+                
+                // additional details
+                this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;
+                this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;
+                this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;
+
+                let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];  
+                this.cur_lead_time_desc = vehicle_lead_time == 1 ? vehicle_lead_time + " month" : vehicle_lead_time + " months";
+     
+
                 if(this.cur_quantity > 0){
                     $("#deliveryScheduleModal").modal('show');
                 }
@@ -1242,14 +1159,14 @@ jQuery(document).ready(function() {
                     });
                 }
             },
-            showAdditionalDetails(vehicle_group,index){
+            /*showAdditionalDetails(vehicle_group,index){
                 this.selected_row_index     = index;
                 this.selected_vehicle_group = vehicle_group;
                 this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;
                 this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;
                 this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;
                 $("#additionalDetailsModal").modal('show');
-            },
+            },*/
             confirmReject(){
                 Swal.fire({
                     type: 'error',
@@ -1358,6 +1275,7 @@ jQuery(document).ready(function() {
                 let self = this;
                 let color = $("#sel_vehicle_colors option:selected").text();
                 var vehicle_type = $("#sel_vehicle_models option:selected").data('vehicle_type');
+                var variant = $("#sel_vehicle_models option:selected").data('variant');
 
                 if(self.selected_model != -1 && self.selected_color != -1){
 
@@ -1370,6 +1288,7 @@ jQuery(document).ready(function() {
                     if(isExist == 0){
                         var newObj = {
                                 inventory_item_id : self.selected_color,
+                                variant : variant,
                                 model : self.selected_model,
                                 color : color,
                                 quantity : 0,
@@ -1404,9 +1323,14 @@ jQuery(document).ready(function() {
                 this.vehicleRequirement[vehicle_group].splice(index,1);
             },
             addDeliverySched(){
+                let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];
+                let min_delivery_date =  moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD');
+                let default_delivery_date = moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD')
+                
                 this.cur_delivery_sched.push({
                     quantity : 0,
-                    delivery_date : null
+                    delivery_date : default_delivery_date,
+                    min_delivery_date : min_delivery_date
                 });
             },
             deleteDeliveryDate(index){
@@ -1415,6 +1339,20 @@ jQuery(document).ready(function() {
             saveDeliverySched(){
                 var delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
                 var is_error = 0;
+    
+                if(this.selected_vehicle_group == "CV"){
+                    if(this.cur_rear_body == null || this.cur_body_builder == null){
+                        Swal.fire({
+                            type: 'error',
+                            title: "Body builder name and Rear body type is required for CV models",
+                            showConfirmButton: true,
+                            timer: 1500
+                        });
+                        is_error++;
+                        return false;
+                    }
+                }
+
                 for(data in delivery_sched){
                     if(delivery_sched[data].delivery_date == null || delivery_sched[data].quantity == null || delivery_sched[data].quantity == 0){
                         is_error++;
@@ -1435,6 +1373,7 @@ jQuery(document).ready(function() {
                     }
                 }
                 else {
+
                     Swal.fire({
                         type: 'error',
                         title: "Please enter value for delivery date and quantity.",
@@ -1487,6 +1426,8 @@ jQuery(document).ready(function() {
       
         },
         mounted : function () {
+
+
             var self = this;
         
             Select2.init(

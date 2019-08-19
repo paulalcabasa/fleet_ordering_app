@@ -312,7 +312,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Freebies</div>
+                            <div class="card-header">Other Items</div>
                             <div class="card-body">
                                 <!-- Form for entering freebies -->
                                 <table class="table table-condensed" style="font-size:90%;" v-if="editable">

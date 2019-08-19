@@ -416,7 +416,8 @@ class PriceConfirmationController extends Controller
         FPC_Project $m_fpc_project,
         SalesPersonsOra $m_sales_persons,
         FPC_Item $m_fpc_item,
-        Approver $m_approver
+        Approver $m_approver,
+        FPCItemFreebies $m_freebies
 
     ){
         $fpc_project_id = $request->fpc_project_id;
@@ -426,11 +427,21 @@ class PriceConfirmationController extends Controller
         $signatories = $m_approver->get_fpc_signatories($header_data->vehicle_type);
         $signatories = collect($signatories)->groupBy('user_type');
 
-    
+        $items_arr = [];
+        foreach($items as $row){
+            $arr = [
+                'header' => $row,
+                'other_items' => $m_freebies->get_item_freebies($row->fpc_item_id)
+            ];
+
+            array_push($items_arr, $arr);
+        }
+        
+      
         $data = [
             'header_data'   => $header_data,
             'sales_persons' => $sales_persons,
-            'items'         => $items,
+            'items'         => $items_arr,
             'signatories'   => $signatories
         ];
 

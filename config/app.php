@@ -46,6 +46,17 @@ return [
         'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline",
         'Closed'       => "kt-badge kt-badge--success kt-badge--inline"
     ],
+    'vehicle_lead_time' => [
+        // In months
+        'N-SERIES'       => 1,
+        'CROSSWIND'      => 0,
+        'C AND E SERIES' => 3,
+        'MU-X'           => 0,
+        'Q-SERIES'       => 2,
+        'D-MAX'          => 0,
+        'F-SERIES'       => 2,
+        'BUS'            => 2
+    ],
     /*
     |--------------------------------------------------------------------------
     | Application Name

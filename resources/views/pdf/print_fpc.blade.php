@@ -52,7 +52,7 @@
             }
 
             .item-table {
-                font-size:11px;
+                font-size:10px;
                 width:100%;
             }
 
@@ -109,11 +109,11 @@
             <h4 style="text-align:center;">FLEET PRICE CONFIRMATION</h4>
         </div>
 
-        <table border="0" style="border-collapse: collapse;width:50%;font-size:11px;" cellpadding="2" >
+        <table border="0" style="border-collapse: collapse;width:100%;font-size:11px;" cellpadding="2" >
             <tr>
-                <td style="font-weight:bold;">DEALER</td>
-                <td>:</td>
-                <td>{{ $header_data->dealer_name }}</td>
+                <td style="font-weight:bold;width:20%;">DEALER</td>
+                <td style="width:5%;">:</td>
+                <td style="width:75%;">{{ $header_data->dealer_name }} {{ $header_data->dealer_account}}</td>
             </tr>
             <tr>
                 <td style="font-weight:bold;vertical-align: top;">ATTENTION</td>
@@ -149,6 +149,7 @@
                 <tr>
                     <th rowspan="2"></th>
                     <th rowspan="2">MODEL</th>
+                    <th rowspan="2">COLOR</th>
                     <th rowspan="2">QTY</th>
                     <th rowspan="2">UNIT PRICE</th>
                     <th rowspan="2">BODY TYPE</th>
@@ -164,12 +165,26 @@
                 @foreach($items as $item)
                 <tr>
                     <td>{{ $ctr }}</td>
-                    <td class="item-data-style1">{{ $item->sales_model }}</td>
-                    <td class="item-data-style2">{{ $item->quantity }}</td>
-                    <td class="item-data-style2">P {{ number_format($item->fleet_price,2,'.',',') }}</td>
-                    <td class="item-data-style2">{{ $item->rear_body_type }}</td>
-                    <td class="item-data-style2">N\A</td>
-                    <td class="item-data-style2">{{ $item->additional_items }}</td>
+                    <td class="item-data-style1">{{ $item['header']->sales_model }}</td>
+                    <td class="item-data-style1">{{ $item['header']->color }}</td>
+                    <td class="item-data-style2">{{ $item['header']->quantity }}</td>
+                    <td class="item-data-style2">P {{ number_format($item['header']->fleet_price,2,'.',',') }}</td>
+                    <td class="item-data-style2">{{ $item['header']->rear_body_type }}</td>
+                    <td class="item-data-style2">
+                        <?php 
+                            $index = 1;
+                            $total_items = count($item['other_items'])
+                        ?>
+                 
+                        @foreach($item['other_items'] as $freebie)
+                        <span>{{ $freebie->description }}</span>
+                            @if($index != $total_items)
+                            ,
+                            @endif
+                            <?php $index++; ?>
+                        @endforeach
+                    </td>
+                    <td class="item-data-style2">{{ $item['header']->lto_registration != 0 ? "Complete 3 Years LTO Registration" : "" }}</td>
                 </tr>
                 {{ $ctr++ }}
                 @endforeach
