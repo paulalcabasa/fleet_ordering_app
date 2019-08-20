@@ -101,9 +101,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('sales-order/{sales_order_number}/{dealer_id}', 'SalesOrderController@get_so_details');
 	Route::post('sales-order', 'FWPCController@add_fwpc');
 	Route::get('fwpc/{project_id}', 'FWPCController@get_fwpc_list');
-	Route::delete('fwpc/{fwpc_id}', 'FWPCController@destroy');
+	Route::post('delete-fwpc', 'FWPCController@delete_fwpc');
 	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
 	Route::get('print-fwpc/{fwpc_id}', 'FWPCController@print_fwpc');
+	Route::post('upload-fwpc-doc', 'FWPCController@upload_fwpc_doc');
 
 	// EMAIL NOTIFICATION
 	Route::get('send-notification' , 'EmailController@send_notification');

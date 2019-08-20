@@ -76,5 +76,25 @@ class Attachment extends Model
 		return $query;
 	}
 
+	public function get_fwpc_attachments($fwpc_id, $owner_id){
+		$query = $this
+					->where([
+						[ 'reference_id', '=', $fwpc_id ],
+						[ 'reference_table', '=', 'fs_fwpc' ],
+						[ 'reference_column', '=', 'fwpc_id' ],
+						[ 'owner_id' , '=' , $owner_id]
+					])
+					->get();
+		return $query;
+	}
+
+	public function delete_fwpc_attachment($fwpc_id, $owner_id){
+		$this->where([
+			[ 'reference_id', '=', $fwpc_id ],
+			[ 'reference_table', '=', 'fs_fwpc' ],
+			[ 'reference_column', '=', 'fwpc_id' ],
+			[ 'owner_id', '=', $owner_id ],
+		])->delete();
+	}
 	
 }

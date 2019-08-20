@@ -318,7 +318,6 @@ class PurchaseOrderController extends Controller
             session('user')['source_id']
         ); 
 
-
         $activity_log = [
             'module_id'             => 1, // Fleet Project
             'module_code'           => 'PRJ',

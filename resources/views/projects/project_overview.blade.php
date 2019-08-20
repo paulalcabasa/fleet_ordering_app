@@ -442,6 +442,7 @@
             competitor_attachments: {!! json_encode($competitor_attachments) !!},
             status_colors:          {!! json_encode($status_colors) !!},
             vehicle_colors:         {!! json_encode($vehicle_colors) !!},
+            vehicle_user_type:         {!! json_encode($vehicle_user_type) !!},
             cancel_flag:            false,
             remarks:                null,
             curBodyBuilder:         null,
@@ -462,7 +463,24 @@
             fwpc:                   {!! json_encode($fwpc) !!},
             user_type:              {!! json_encode($user_type) !!},
             display_alert : false,
-            cur_fpc_project_id : ''
+            cur_fpc_project_id : '',
+            selected_fpc : "",
+            cur_fpc_details : {
+                date_created : '',
+                prepared_by : '',
+                validity : '',
+                status_name : '',
+                fpc_project_id : ''
+            },
+            selected_po : "",
+            cur_po_details : {
+                date_created : '',
+                prepared_by : '',
+                po_header_id : '',
+                status_name : ''
+            },
+            signed_fwpc : '',
+            cur_fwpc_id : ''
         },
         methods : {
             showDeliveryDetail(data){
@@ -668,7 +686,7 @@
                 var isExist = self.fwpc.filter(function(elem){
                     if(
                         elem.order_number === self.cur_sales_order_number || 
-                        elem.fpc_project_id === self.cur_fpc_project_id
+                        elem.fpc_project_id === self.cur_fpc_details.fpc_project_id
                     ) {
                         return elem.order_number;
                     }
@@ -679,7 +697,9 @@
                         project_id : self.projectDetails.project_id,
                         sales_order_id : self.cur_so_details.header_id,
                         so_number : self.cur_so_details.order_number,
-                        fpc_project_id : self.cur_fpc_project_id
+                        fpc_project_id : self.cur_fpc_details.fpc_project_id,
+                        po_header_id : self.cur_po_details.po_header_id
+
                     }).then( (response) => {
                         KTApp.unblock("#addFWPC .modal-content",{});
                         $("#addFWPC").modal('hide');
@@ -718,7 +738,9 @@
                             message: 'Please wait...'
                         });
                         
-                        axios.delete('/fwpc/' + self.fwpc[index].fwpc_id)
+                        axios.post('delete-fwpc',{
+                            fwpc_id : self.fwpc[index].fwpc_id
+                        })
                         .then(function (response) {
                             self.fwpc.splice(index,1);
                             KTApp.unblockPage();
@@ -748,10 +770,69 @@
                         KTApp.unblock("#viewFWPC .modal-content",{});
                     });
             },
-            addFWPCModal(fpc_project_id){
-                this.cur_fpc_project_id = fpc_project_id;
-                $("#addFWPC").modal('show');
-            }
+            triggerFileUpload(index){
+                $("#signed_fwpc").click();
+                this.cur_fwpc_id = this.fwpc[index].fwpc_id;
+            },
+            uploadDocument(){
+                var self = this;
+                self.signed_fwpc = self.$refs.signed_fwpc.files[0];
+                var size_mb = self.signed_fwpc.size / 1024 / 1024;
+                if(size_mb >= 10){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'File must be less than 10mb.',
+                        timer : 1500,
+                        showConfirmButton : false
+                    });
+                    $("#signed_fwpc").val("");
+                    self.signed_fwpc = '';
+                } // (size_mb >= 10)
+                else {
+                    Swal.fire({
+                        title: 'Uploading this file will override the previous one you uploaded, click Confirm to continue.',
+                        text: "You won't be able to revert this!",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Confirm'
+                    }).then((result) => {
+                        if (result.value) {
+                            
+                            KTApp.blockPage({
+                                overlayColor: '#000000',
+                                type: 'v2',
+                                state: 'success',
+                                message: 'Please wait...'
+                            });
+                            
+                            let formData = new FormData();
+
+                            formData.append('file', self.signed_fwpc);
+                            formData.append('fwpc_id', self.cur_fwpc_id);
+
+                            axios.post('upload-fwpc-doc',
+                                formData,{
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            }).then( (response) => {
+                                KTApp.unblockPage();
+                                Swal.fire({
+                                    type: 'success',
+                                    title: 'File has been uploaded!',
+                                    timer : 1500,
+                                    showConfirmButton : false       
+                                });
+                        
+                            }).catch(function(){
+                                console.log('FAILURE!!');
+                            });
+                        }
+                    });   
+                } // else 
+            } // uploadDocument(){
         },
         created: function () {
             // `this` points to the vm instance
@@ -792,6 +873,21 @@
             },
             sumFreebies(){
                 return this.curFreebies.reduce((acc,item) => parseFloat(acc) + parseFloat(item.amount),0);
+            }
+        },
+        watch : {
+            selected_fpc : function(val){
+                this.cur_fpc_details.date_created   = this.fpc[val]['fpc_header'].date_created;
+                this.cur_fpc_details.prepared_by    = this.fpc[val]['fpc_header'].prepared_by;
+                this.cur_fpc_details.validity       = this.fpc[val]['fpc_header'].validity;
+                this.cur_fpc_details.status_name    = this.fpc[val]['fpc_header'].status_name;
+                this.cur_fpc_details.fpc_project_id = this.fpc[val]['fpc_header'].fpc_project_id;
+            }, 
+            selected_po : function(val){
+                this.cur_po_details.date_created = this.po_list[val].date_created;
+                this.cur_po_details.prepared_by  = this.po_list[val].created_by;
+                this.cur_po_details.po_header_id = this.po_list[val].po_header_id;
+                this.cur_po_details.status_name  = this.po_list[val].status_name;
             }
         }
         

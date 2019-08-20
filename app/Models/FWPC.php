@@ -17,7 +17,10 @@ class FWPC extends Model
     }
 
     public function get_fwpc_by_project($project_id){
-        $sql = "SELECT ooha.order_number,
+        $sql = "SELECT  fwpc.fwpc_id,
+                        fwpc.fpc_project_id,
+                        fwpc.po_header_id,
+                        ooha.order_number,
                         ott.name order_type_name,
                         ott.description order_type_desc,
                         to_char(ooha.ordered_date, 'MM/DD/YYYY HH12:MI AM') ordered_date,
@@ -28,11 +31,14 @@ class FWPC extends Model
                         cust.party_name,
                         cust.account_name,
                         cust.profile_class,
-                        ooha.flow_status_code status_name,
+                        ooha.flow_status_code,
                         ooha.payment_term_id,
                         rt.name payment_term,
-                        fwpc.fwpc_id,
-                        fwpc.fpc_project_id
+                        fs.status_name,
+                        ffa_ipc.symlink_dir || ffa_ipc.filename ipc_file,
+                        FFA_IPC.ORIG_FILENAME ipc_file_orig,
+                        ffa_dlr.symlink_dir || ffa_dlr.filename dlr_file,
+                        ffa_dlr.ORIG_FILENAME dlr_file_orig
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id
@@ -45,6 +51,18 @@ class FWPC extends Model
                         AND ooha.invoice_to_org_id = cust.site_use_id
                     INNER JOIN apps.ra_terms_tl rt
                         ON rt.term_id = ooha.payment_term_id
+                    LEFT JOIN ipc_dms.fs_status fs 
+                        ON fs.status_id = fwpc.status
+                    LEFT JOIN ipc_dms.fs_file_attachments ffa_ipc
+                        ON ffa_ipc.reference_id = fwpc.fwpc_id
+                        AND ffa_ipc.reference_table = 'fs_fwpc'
+                        AND ffa_ipc.reference_column = 'fwpc_id'
+                        AND ffa_ipc.owner_id  = 5
+                    LEFT JOIN ipc_dms.fs_file_attachments ffa_dlr
+                        ON ffa_dlr.reference_id = fwpc.fwpc_id
+                        AND ffa_dlr.reference_table = 'fs_fwpc'
+                        AND ffa_dlr.reference_column = 'fwpc_id'
+                        AND ffa_dlr.owner_id  = 6
                 WHERE 1 = 1
                         AND fwpc.project_id = :project_id";
         $params = [
@@ -83,7 +101,10 @@ class FWPC extends Model
                         to_char(fwpc.creation_date,'MM') || 
                         to_char(fwpc.creation_date,'YY') || 
                         '-' || 
-                        fwpc.fwpc_id fwpc_ref_no
+                        fwpc.fwpc_id fwpc_ref_no,
+                        fwpc.po_header_id,
+                        usr.email_address,
+                        fpc.vehicle_type
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id
@@ -106,6 +127,11 @@ class FWPC extends Model
                         ON terms.term_id = fpc_prj.payment_terms
                     LEFT JOIN ipc_dms.dealer_abbrev_names dbb
                         ON dbb.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fp.created_by
+                        AND usr.user_source_id = fp.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
                 WHERE 1 = 1
                         AND fwpc.fwpc_id = :fwpc_id";
         $params = [

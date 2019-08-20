@@ -156,9 +156,17 @@ class ProjectController extends Controller
 
         // purchase orders
         $po_list = $m_poh->get_po_by_project($project_id);
-        
+        $vehicle_user_type = "";
         // fwpc list
         $fwpc = $m_fwpc->get_fwpc_by_project($project_id);
+
+        if(session('user')['user_type_id'] == 32){
+            $vehicle_user_type = 'LCV';
+        }
+        else if(session('user')['user_type_id'] == 33){
+            $vehicle_user_type = 'CV';
+        }
+
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,
@@ -179,7 +187,8 @@ class ProjectController extends Controller
             'fpc'                    => $fpc_data,
             'po_list'                => $po_list,
             'fwpc'                   => $fwpc,
-            'user_type'              => session('user')['user_type_id']
+            'user_type'              => session('user')['user_type_id'],
+            'vehicle_user_type'      => $vehicle_user_type
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -686,7 +695,6 @@ class ProjectController extends Controller
                     $file_path = storage_path('app/public/customer/'.$row['filename']); 
                     unlink($file_path);
                 }
-
                 // if new attachment has been placed, delete the old data.
                 $m_attachment->delete_attachment($customer_id);
                 foreach($attachment as $file){

@@ -70,7 +70,11 @@ class SalesOrderHeader extends Model
                         ooha.flow_status_code,
                         ooha.payment_term_id,
                         rt.name payment_term,
-                        ooha.header_id
+                        ooha.header_id,
+                        fwpc.po_header_id,
+                        fwpc.fpc_project_id,
+                        fs.status_name,
+                        fwpc.fwpc_id
                 FROM ipc_dms.fs_fwpc fwpc
                     INNER JOIN apps.oe_order_headers_all ooha
                         ON fwpc.sales_order_header_id = ooha.header_id 
@@ -83,6 +87,8 @@ class SalesOrderHeader extends Model
                         AND ooha.invoice_to_org_id = cust.site_use_id
                     INNER JOIN apps.ra_terms_tl rt
                         ON rt.term_id = ooha.payment_term_id
+                    LEFT JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = fwpc.status
                 WHERE 1 = 1
                     AND fwpc.fwpc_id = :fwpc_id";
         $params = [

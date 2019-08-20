@@ -4,6 +4,7 @@
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
                 Fleet Price Confirmation <small>@{{ row['fpc_header'].vehicle_type }}</small>
+
             </h3>
         </div>
     </div>
@@ -99,17 +100,29 @@
             </tfoot>
         </table>
     </div>
-
+    
     <div class="kt-portlet__foot">
         <div class="row  kt-pull-right">
         <div class="col-lg-12">
-            <button type="button" @click="addFWPCModal(row['fpc_header'].fpc_project_id)"  class="btn btn-primary btn-sm">
+            <!-- <button 
+                type="button" 
+                @click="addFWPCModal(row['fpc_header'].fpc_project_id)" 
+                class="btn btn-primary btn-sm"
+                v-if="row['fpc_header'].vehicle_type == vehicle_user_type"
+            >
                 Add FWPC
-            </button>  
-            <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
+            </button>   -->
+            <a 
+                target="_blank" 
+                :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" 
+                class="btn btn-primary btn-sm"
+            >
                 <span class="kt-hidden-mobile">Print</span>
             </a>
         </div>
         </div>
     </div>
+
+
+    
 </div>

@@ -14,6 +14,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">FWPC No.</span>
+                                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ cur_so_header.fwpc_id }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Sales Order No.</span>
                                     <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ cur_so_header.order_number }}</span>
                                 </div>
@@ -36,14 +40,14 @@
                                         @{{ cur_so_header.ordered_date }}
                                     </span> 
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Order Type</span>
                                     <span class="col-md-8">
                                         @{{ cur_so_header.order_type_name }}
                                     </span> 
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Price List</span>
                                     <span class="col-md-8">
@@ -57,10 +61,24 @@
                                     </span> 
                                 </div>
                                 <div class="row kt-margin-b-5">
-                                    <span class="col-md-4 kt-font-bold">Status</span>
+                                    <span class="col-md-4 kt-font-bold">SO Status</span>
                                     <span class="col-md-8">
-                                        @{{ cur_so_header.flow_status_code }}
+                                        <span :class="status_colors[cur_so_header.flow_status_code]">@{{ cur_so_header.flow_status_code }}</span> 
                                     </span> 
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">FPC Ref No.</span>
+                                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ cur_so_header.fpc_project_id }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">PO Ref No.</span>
+                                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ cur_so_header.po_header_id }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">FWPC Status</span>
+                                    <span class="col-md-8">
+                                        <span :class="status_colors[cur_so_header.status_name]">@{{ cur_so_header.status_name }}</span>
+                                    </span>
                                 </div>
                             </div>
                         </div> 
@@ -85,7 +103,7 @@
                                     <td>@{{ index + 1 }}</td>
                                     <td>@{{ row.sales_model }}</td>
                                     <td>@{{ row.color }}</td>
-                                    <td>@{{ row.unit_list_price }}</td>
+                                    <td>@{{ row.unit_list_price | formatPeso }}</td>
                                     <td>@{{ row.quantity }}</td>
                                     <td></td>
                                 </tr>

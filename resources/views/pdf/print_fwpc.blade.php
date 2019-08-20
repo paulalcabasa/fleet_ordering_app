@@ -131,13 +131,13 @@
         </div>
         <table cellpadding="0" cellspacing="0">
             <tr>
-                <td width="350">
+                <td width="350" valign="top">
                     <table style="font-size:10px;">
-                        <tr>
+                      <!--   <tr>
                             <td style="font-weight:bold;">Payment Term</td>
                             <td>:</td>
                             <td>{{ $fwpc_details->payment_terms }}</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td style="font-weight:bold;">Witholding Tax</td>
                             <td>:</td>
@@ -243,6 +243,7 @@
                 <tr>
                     <th rowspan="2">Item</th>
                     <th rowspan="2" style="width:15%;">Model</th>
+                    <th rowspan="2">Color</th>
                     <th rowspan="2">Qty</th>
                     <th rowspan="2">Approved Fleet Price per unit</th>
                     <th colspan="2">Price Breakdown</th>
@@ -267,6 +268,7 @@
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td>{{ $row->sales_model }}</td>
+                    <td>{{ $row->color }}</td>
                     <td align="center">{{ $row->quantity }}</td>
                     <td align="center">{{ number_format($row->fleet_price,2) }}</td>
                     <td align="center">{{ number_format($unit_price,2) }}</td>
@@ -283,7 +285,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="7">Total Fleet Wholesale Price (w/ VAT)</th>
+                    <th colspan="8">Total Fleet Wholesale Price (w/ VAT)</th>
                     <th>{{ number_format($grand_total,2,'.',',') }}</th>
                     <th></th>
                 </tr>
@@ -299,6 +301,7 @@
                 <tr>
                     <th>Item</th>
                     <th>Model</th>
+                    <th>Color</th>
                     <th>Dealer Margin</th>
                     <th>LTO Reg. & Free Items</th>
                     <th>Total Dealer Margin</th>
@@ -310,6 +313,7 @@
                 <tr>
                     <td align="center">{{ $ctr }}</td>
                     <td align="center">{{ $row->sales_model }}</td>
+                    <td align="center">{{ $row->color }}</td>
                     <td align="center">{{ number_format($row->dealer_margin,2,'.',',') }}</td>
                     <td align="center">{{ number_format($row->lto_registration,2,'.',',') }}</td>
                     <td align="center">{{ number_format($row->lto_registration + $row->dealer_margin,2,'.',',') }}</td>
