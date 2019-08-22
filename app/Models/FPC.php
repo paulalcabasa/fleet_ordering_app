@@ -207,6 +207,24 @@ class FPC extends Model
         return $query;
     }
 
+    public function get_max_validity_by_project($project_id){
+        $sql = "SELECT nvl(max(fpc_prj.validity),sysdate) max_validity
+                FROM ipc_dms.fs_fpc_projects fpc_prj
+                    INNER JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                WHERE 1 = 1
+                AND  fpc_prj.project_id = :project_id
+                AND fpc.status = 4";
+        $params = [
+            'project_id' => $project_id
+        ];
+
+        $query = DB::select($sql,$params);
+
+        return !empty($query) ? $query[0]->max_validity : null;
+
+    }
+
 
 
 

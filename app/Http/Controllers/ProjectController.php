@@ -137,10 +137,22 @@ class ProjectController extends Controller
         $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
         $vehicle_colors         = config('app.vehicle_badge_colors');
         $status_colors          = config('app.status_colors');
+        $max_validity_date      = $m_fpc->get_max_validity_by_project($project_id);
+        $add_po_flag            = false;
+        $current_date           = date('Y-m-d H:i:s');
 
+
+        // get max validity date from FPC Projects
+        // compare to current to know if dealer can still add purchase orders
+        // purchase orders can only added if FPC validity date is still covered
+        if($current_date < $max_validity_date){
+            $add_po_flag = true;
+        }
+
+    
         // fleet price confirmation
         $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
-        
+       
         $fpc_data = [];
 
         foreach($fpc_headers as $fpc){
@@ -167,6 +179,8 @@ class ProjectController extends Controller
             $vehicle_user_type = 'CV';
         }
 
+      
+
         $page_data = [
             'project_id'             => $request->project_id,
             'action'                 => $request->action,
@@ -188,7 +202,8 @@ class ProjectController extends Controller
             'po_list'                => $po_list,
             'fwpc'                   => $fwpc,
             'user_type'              => session('user')['user_type_id'],
-            'vehicle_user_type'      => $vehicle_user_type
+            'vehicle_user_type'      => $vehicle_user_type,
+            'add_po_flag'            => $add_po_flag
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -850,9 +865,6 @@ class ProjectController extends Controller
 
             if(count($ipc_pending_approval) == 0 && $status == "approve"){
                 $project_status = 10; // acknowledged
-
-              
-
             }
             
             $m_project->update_status(
@@ -964,6 +976,45 @@ class ProjectController extends Controller
 
         return [
             'status' => 'Closed'
+        ];
+    }
+
+    public function ajax_reopen_project(
+        Request $request, 
+        Project $m_project,
+        ActivityLogs $m_activity_logs
+    ){
+        $project_id = $request->project_id;
+        $status_id = 10; // acknowledged
+
+        $project_details = $m_project->get_details($project_id);    
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => 'Project No. <strong>' . $project_id . '</strong> has been <strong>re-opened</strong> by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
+        ];
+
+        $m_activity_logs->insert_log($activity_log_params);
+
+        return [
+            'status' => 'Acknowledged'
         ];
     }
  

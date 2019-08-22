@@ -37,7 +37,7 @@
             </tbody>
         </table>
     </div>
-    <div class="kt-portlet__foot" v-if="projectDetails.status_name != 'Closed'">
+    <div class="kt-portlet__foot" v-if="projectDetails.status_name == 'Acknowledged' && add_po_flag">
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
                 <a 

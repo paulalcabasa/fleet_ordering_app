@@ -389,8 +389,9 @@
                 <button type="submit" class="btn btn-success btn-sm" @click="validateProject('approve')">Approve</button>
                 <button type="submit" class="btn btn-danger btn-sm"  @click="validateProject('reject')">Reject</button>
                 @elseif($action == "view")
-                <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="cancel_flag">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="projectDetails.status_name != 'Cancelled'">Cancel</button>
                 <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name != 'Closed' && projectDetails.status_name != 'Cancelled'">Close</button>
+                <button type="button" class="btn btn-success btn-sm" @click="reopenProject()" v-if="projectDetails.status_name == 'Closed'">Re-open</button>
                 <!-- <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button> -->
                 @endif
             </div>
@@ -442,7 +443,8 @@
             competitor_attachments: {!! json_encode($competitor_attachments) !!},
             status_colors:          {!! json_encode($status_colors) !!},
             vehicle_colors:         {!! json_encode($vehicle_colors) !!},
-            vehicle_user_type:         {!! json_encode($vehicle_user_type) !!},
+            vehicle_user_type:      {!! json_encode($vehicle_user_type) !!},
+            add_po_flag:            {!! json_encode($add_po_flag) !!},
             cancel_flag:            false,
             remarks:                null,
             curBodyBuilder:         null,
@@ -462,10 +464,10 @@
             cur_so_lines:           [],
             fwpc:                   {!! json_encode($fwpc) !!},
             user_type:              {!! json_encode($user_type) !!},
-            display_alert : false,
-            cur_fpc_project_id : '',
-            selected_fpc : "",
-            cur_fpc_details : {
+            display_alert:          false,
+            cur_fpc_project_id:     '',
+            selected_fpc:           "",
+            cur_fpc_details:        {
                 date_created : '',
                 prepared_by : '',
                 validity : '',
@@ -570,7 +572,6 @@
                 var self = this;
                 Swal.fire({
                     title: 'Are you sure you want to close the project?',
-                    text: "Once the project is closed, it cannot be reopened.",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -605,6 +606,45 @@
                         });
                     }
                 });  
+            },
+            reopenProject(){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure you want to re-open the project?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        axios.post('/ajax-reopen-project', {
+                            project_id : self.projectDetails.project_id
+                        })
+                        .then(function (response) {
+                            var data = response.data;
+                            self.projectDetails.status_name = data.status;
+                            KTApp.unblockPage();
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Project has been re-opened!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });
             },
             cancelProject(){
                 var self = this;

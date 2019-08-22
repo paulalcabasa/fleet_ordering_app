@@ -20,6 +20,10 @@
                             <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_project_id }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Validity</span>
+                            <span class="col-md-8">@{{ row['fpc_header'].validity }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date Created</span>
                             <span class="col-md-8">@{{ row['fpc_header'].date_created }}</span>
                         </div>

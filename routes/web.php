@@ -49,8 +49,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
 	Route::post('ajax-close-project', 'ProjectController@ajax_close_project');
+	Route::post('ajax-reopen-project', 'ProjectController@ajax_reopen_project');
 	
-
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
 	Route::get('all-price-confirmation', 'PriceConfirmationController@all_price_confirmation');
