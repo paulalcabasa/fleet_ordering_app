@@ -12,6 +12,7 @@ use App\Models\ActivityLogs;
 use App\Models\Project;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Attachment;
+use App\Models\Approver;
 
 class FWPCController extends Controller
 {
@@ -123,7 +124,8 @@ class FWPCController extends Controller
         Request $request,
         Attachment $m_attachment,
         ActivityLogs $m_activity_logs,
-        FWPC $m_fwpc
+        FWPC $m_fwpc,
+        Approver $m_approver
     ){
         $file = $request->file('file');
         $fwpc_id = $request->fwpc_id;
@@ -131,11 +133,55 @@ class FWPCController extends Controller
 
         $owner_id = 5;
         $user_type = session('user')['user_type_id'];
+        
         if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
             $owner_id = 6;
+            $email_data = [];
+            // send notification to approvers
+            $approvers = $m_approver->get_po_approvers($fwpc_details->vehicle_type);
+            foreach($approvers as $approver){   
+                $temp_email = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has uploaded a signed FPWC Document for FPWC No. <strong>'. $fwpc_details->fwpc_id .'</strong> with Sales Order No. <strong>'. $fwpc_details->order_number.'</strong> for Project No. <strong>'.$fwpc_details->project_id.'</strong>.',
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'created_by'            => session('user')['user_id'],
+                    'reference_id'          => $fwpc_details->project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $approver->email_address
+                ];
+                array_push($email_data, $temp_email);
+            }
+            
+            // insert activity logs for email
+            $m_activity_logs->insert_log($email_data);
         }
         else if(in_array($user_type,array(32,33))) { //  Fleet LCV User
             $owner_id = 5;
+            // send notification to Requestor
+            // activity log insertion
+            $activity_log = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has uploaded a signed FPWC Document for FPWC No. <strong>'. $fwpc_details->fwpc_id .'</strong> with Sales Order No. <strong>'. $fwpc_details->order_number.'</strong> for Project No. <strong>'.$fwpc_details->project_id.'</strong>.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $fwpc_details->project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        => $fwpc_details->email_address
+            ];
+            $m_activity_logs->insert_log($activity_log);
+            // end of activity log
         }
 
         // delete previous file before uploading new
@@ -168,12 +214,58 @@ class FWPCController extends Controller
         ];         
         $m_attachment->insert_attachment($file_params);
         // end of file upload 
+        // update status
+        $m_fwpc->update_fwpc_status(
+            $fwpc_id, 
+            '', 
+            7, // pending status 
+            session('user')['user_id'], 
+            session('user')['source_id']
+        );
+
+        
+    }
+
+    public function validate_fwpc(
+        Request $request,
+        FWPC $m_fwpc,
+        ActivityLogs $m_activity_logs
+    ){
+        $fwpc_id      = $request->fwpc_id;
+        $status       = $request->status;
+        $remarks      = $request->remarks;
+        $fwpc_details = $m_fwpc->get_fwpc_by_id($fwpc_id);
+        // update FWPC status
+        $status_id = 0;
+        $message = "";
+        if($status == "approve") {
+            $status_id = 4;
+            $message = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has approved FPWC No. <strong>'.$fwpc_id.'</strong>.';
+
+        }
+        else if($status == "reject"){
+            $status_id = 5;
+            $message = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has rejected FPWC No. <strong>'.$fwpc_id.'</strong>.';
+        }
+
+        if($remarks != ""){
+            $message .= '<br/>Remarks : <i>' . $remarks . '</i>';
+        }
+
+        $m_fwpc->update_fwpc_status(
+            $fwpc_id, 
+            $remarks, 
+            $status_id, 
+            session('user')['user_id'], 
+            session('user')['source_id']
+        );
+        // end of updating of FWPC status
 
         // activity log insertion
         $activity_log = [
             'module_id'             => 1, // Fleet Project
             'module_code'           => 'PRJ',
-            'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has uploaded a signed FPWC Document for FPWC No. <strong>'. $fwpc_details->fwpc_id .'</strong> with Sales Order No. <strong>'. $fwpc_details->order_number.'</strong> for Project No. <strong>'.$fwpc_details->project_id.'</strong>.',
+            'content'               => $message,
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],

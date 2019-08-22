@@ -148,5 +148,23 @@ class FWPC extends Model
         ])->delete();
     }
 
+    public function update_fwpc_status(
+        $fwpc_id, 
+        $remarks, 
+        $status, 
+        $update_user, 
+        $user_source_id
+    ){
+        $this
+            ->where([
+                [ 'fwpc_id', '=' , $fwpc_id ]
+            ])
+            ->update([
+                'remarks'               => $remarks,
+                'status'                => $status,
+                'updated_by'            => $update_user,
+                'update_user_source_id' => $user_source_id
+            ]);
+    }
 
 }

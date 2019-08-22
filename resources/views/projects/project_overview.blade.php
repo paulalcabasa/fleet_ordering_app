@@ -832,7 +832,52 @@
                         }
                     });   
                 } // else 
-            } // uploadDocument(){
+            }, // uploadDocument(){
+            validateFWPC(index,status){
+                // to do on august 22 2019
+                var self = this;
+                var fwpc_details = self.fwpc[index];
+        
+                Swal.fire({
+                    title: "Confirmation",
+                    text: "Are you sure to " + status + " the FWPC?",
+                    input: 'text',
+                    inputPlaceholder : "Please state your reason (optional)",
+                    showCancelButton: true        
+                }).then((result) => {
+    
+                    axios.post('validate-fwpc', {
+                        fwpc_id : fwpc_details.fwpc_id,
+                        status : status,
+                        remarks : result.value
+                    })
+                    .then(function (response) {
+                        var data = response.data;
+                        console.log(data);
+
+                        if(status == 'approve'){
+                            swal_type = "success";
+                            swal_message = "FWPC has been approved!";
+                        }
+                        else if(status == 'reject'){
+                            swal_type = "error";
+                            swal_message = "FWPC has been rejected!"; 
+                        }
+                  
+                        Swal.fire({
+                            type: swal_type,
+                            title: swal_message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                       
+                });
+           
+            }
         },
         created: function () {
             // `this` points to the vm instance

@@ -421,11 +421,11 @@ class PriceConfirmationController extends Controller
 
     ){
         $fpc_project_id = $request->fpc_project_id;
-        $header_data = $m_fpc_project->get_fpc_project_details($fpc_project_id);
-        $sales_persons = $m_sales_persons->get_sales_persons($header_data->project_id);
-        $items = $m_fpc_item->get_item_requirements($fpc_project_id);
-        $signatories = $m_approver->get_fpc_signatories($header_data->vehicle_type);
-        $signatories = collect($signatories)->groupBy('user_type');
+        $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
+        $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
+        $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = collect($signatories)->groupBy('user_type');
 
         $items_arr = [];
         foreach($items as $row){

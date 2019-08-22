@@ -33,13 +33,13 @@
                             <div class="dropdown-menu dropdown-menu-left" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-149px, 33px, 0px);">
                                 <a class="dropdown-item" href="#" @click.prevent="viewFwpc(index)"><i class="la la-eye"></i> View details</a>
                                 <a class="dropdown-item" :href="base_url + '/print-fwpc/' + row.fwpc_id" target="_blank"><i class="la la-print"></i> Print</a>
-                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index)"><i class="la la-cloud-upload"></i> Upload signed document</a>
+                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index)" v-if="row.status_name != 'Approved'"><i class="la la-cloud-upload"></i> Upload signed document</a>
                                 
-                                <div class="dropdown-divider" v-if="(user_type == 32 || user_type == 33)"></div>
-                                <a class="dropdown-item" href="#" @click.prevent="validateFWPC(index,'approve')" v-if="(user_type == 32 || user_type == 33)"><i class="la la-check"></i> Approve</a>
-                                <a class="dropdown-item" href="#" @click.prevent="validateFWPC(index,'reject')" v-if="(user_type == 32 || user_type == 33)"><i class="la la-remove"></i> Reject dealer document</a>
-                                <div class="dropdown-divider" v-if="(user_type == 32 || user_type == 33)"></div>
-                                <a class="dropdown-item" href="#" @click.prevent="deleteFwpc(index)" v-if="(user_type == 32 || user_type == 33)"><i class="la la-trash"></i> Delete</a>
+                                <div class="dropdown-divider" v-if="(user_type == 32 || user_type == 33) && row.dlr_file_orig != null && row.status_name != 'Approved'"></div>
+                                <a class="dropdown-item" href="#" @click.prevent="validateFWPC(index,'approve')" v-if="(user_type == 32 || user_type == 33) && row.dlr_file_orig != null && row.status_name != 'Approved'"><i class="la la-check"></i> Approve</a>
+                                <a class="dropdown-item" href="#" @click.prevent="validateFWPC(index,'reject')" v-if="(user_type == 32 || user_type == 33) && row.dlr_file_orig != null && row.status_name != 'Approved'"><i class="la la-remove"></i> Reject dealer document</a>
+                                <div class="dropdown-divider" v-if="(user_type == 32 || user_type == 33) && row.status_name != 'Approved'"></div>
+                                <a class="dropdown-item" href="#" @click.prevent="deleteFwpc(index)" v-if="(user_type == 32 || user_type == 33) && row.status_name != 'Approved'"><i class="la la-trash"></i> Delete</a>
                             </div>
                         </div> 
                     </td>
