@@ -11,6 +11,11 @@ class ActivityLogs extends Model
     protected $connection = "oracle";
     const CREATED_AT = 'CREATION_DATE';
     const UPDATED_AT = 'UPDATE_DATE';
+    protected $dates = [
+        'creation_date',
+        'UPDATE_DATE',
+        // your other new column
+    ];
 
     public function insert_log($params){
 		$this->insert($params);
@@ -91,6 +96,24 @@ class ActivityLogs extends Model
         }
     }
 
+    public function get_activities_by_project($project_id){
+         $sql = "SELECT lg.log_id,
+                        lg.content,
+                        to_char(lg.creation_date,'MM/DD/YYYY HH12:MI AM') creation_date,
+                        fp.dealer_id,
+                        lg.creation_date raw_date
+                FROM ipc_dms.fs_activity_logs lg
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = lg.reference_id
+                WHERE lg.timeline_flag = 'Y'
+                    AND fp.project_id = :project_id
+                    ORDER BY lg.creation_date DESC";
+            $params = [
+                'project_id' => $project_id
+            ];
+            $query = DB::select($sql,$params);
+            return $query;
+    }
 
 
 

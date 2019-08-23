@@ -61,9 +61,13 @@ class PriceConfirmationController extends Controller
         $customers = $m_customer->get_project_customers(
             $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
         );
+
+        //$test_data = $m_customer->test_query();
+        //dd($test_data);
         $page_data = [
             'customers'    => $customers,
-            'base_url'     => url('/')
+            'base_url'     => url('/'),
+            'status_colors' => config('app.status_colors')
         ];
     	return view('price_confirmation.price_confirmation_entry', $page_data);
     }

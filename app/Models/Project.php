@@ -31,7 +31,7 @@ class Project extends Model
             else if($user_type == 33){
                 $vehicle_type = 'CV';
             }
-            $where = "AND rh.vehicle_type = '" . $vehicle_type . "' AND fp.status IN (10,11,13)";
+            $where = "AND rh.vehicle_type = '" . $vehicle_type . "'";//  AND fp.status IN (10,11,13)
             $addtl_table = "LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                                 ON rh.project_id = fp.project_id";
     	}
@@ -177,6 +177,34 @@ class Project extends Model
     }
 
     public function get_projects_for_fpc($customer_id,$vehicle_type){
+        /*$sql = "SELECT fs.project_id,
+                        fs.customer_id,
+                        fc.customer_name,
+                        dlr.customer_name dealer_name,
+                        dlr.account_name dealer_account,
+                        st.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fs.creation_date,'mm/dd/yyyy') date_created,
+                        fs.dealer_id,
+                        rh.vehicle_type,
+                        rh.requirement_header_id
+                FROM ipc_dms.fs_projects fs
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON fs.project_id = rh.project_id
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fs.customer_id = fc.customer_id 
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fs.dealer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fs.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fs.created_by 
+                        AND usr.user_source_id = fs.create_user_source_id
+                WHERE 1 = 1
+                        AND fs.status = 11
+                        AND rh.status = 4
+                        AND fs.customer_id = :customer_id
+                        AND rh.vehicle_type = :vehicle_type";*/
         $sql = "SELECT fs.project_id,
                         fs.customer_id,
                         fc.customer_name,
@@ -201,9 +229,18 @@ class Project extends Model
                         ON usr.user_id = fs.created_by 
                         AND usr.user_source_id = fs.create_user_source_id
                 WHERE 1 = 1
-                        AND st.status_name IN ('Acknowledged')
+                        AND fs.status = 11
+                        AND rh.status = 4
                         AND fs.customer_id = :customer_id
-                        AND rh.vehicle_type = :vehicle_type";
+                        AND rh.vehicle_type = :vehicle_type
+                        AND fs.project_id NOT IN (
+                            SELECT project_id
+                            FROM ipc_dms.fs_fpc_projects fpc_prj
+                                LEFT JOIN ipc_dms.fs_fpc fpc
+                                ON fpc.fpc_id = fpc_prj.fpc_id
+                            WHERE 1 = 1
+                                AND fpc.status IN(4,12)
+                        )";
        
         $params = [
             'customer_id'  => $customer_id,

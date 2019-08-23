@@ -201,7 +201,9 @@ class ModuleApproval extends Model
                         fa.approver_user_id,
                         fa.approver_source_id,
                         usr_app.first_name || ' ' || usr_app.last_name approver_name,
-                        to_char(ma.update_date,'mm/dd/yyyy HH:MI:SS AM') date_approved
+                        to_char(ma.update_date,'mm/dd/yyyy HH:MI:SS AM') date_approved,
+                        ma.status,
+                        fa.user_type
                 FROM ipc_dms.fs_module_approval ma
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON ma.module_reference_id = fp.project_id

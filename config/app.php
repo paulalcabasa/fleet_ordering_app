@@ -38,6 +38,7 @@ return [
         'Acknowledged' => "kt-badge kt-badge--success kt-badge--inline",
         'Approved'     => "kt-badge kt-badge--success kt-badge--inline",
         'Submitted'    => "kt-badge kt-badge--warning kt-badge--inline",
+        'Open'    => "kt-badge kt-badge--warning kt-badge--inline",
         'Cancelled'    => "kt-badge kt-badge--danger kt-badge--inline",
         'CANCELLED'    => "kt-badge kt-badge--danger kt-badge--inline",
         'Rejected'     => "kt-badge kt-badge--danger kt-badge--inline",

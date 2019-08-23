@@ -91,7 +91,7 @@
                     <td>@{{ row.project_id }}</td>
                     <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
                     <td>@{{ row.date_created }}</td>
-                    <td><span class="kt-badge kt-badge--success kt-badge--inline">@{{ row.status_name }}</span></td>
+                    <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                     <td nowrap>
                         <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                         <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
@@ -118,6 +118,7 @@
         data: {
             customers : {!! json_encode($customers) !!},
             base_url : {!! json_encode($base_url) !!},
+            status_colors : {!! json_encode($status_colors) !!},
             customerDetails : {
                 tin : '',
                 address : '',

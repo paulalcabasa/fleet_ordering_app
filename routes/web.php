@@ -44,7 +44,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::get('approval-list', 'ApprovalController@approval_list');
-	Route::patch('save-approval', 'ProjectController@save_approval');
+	Route::post('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
