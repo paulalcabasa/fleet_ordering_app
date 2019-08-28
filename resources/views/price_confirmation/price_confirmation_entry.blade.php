@@ -71,6 +71,15 @@
     </div>
 </div>
 
+<div class="alert alert-info" role="alert" v-if="projects.length == 0 && search_flag">
+    <div class="alert-text">
+        <h4 class="alert-heading">No results found!</h4>
+        <p>It seems you have already created an FPC for this customer or not yet approved the project.</p>
+<!--         <hr>
+        <p class="mb-0">Kind</p> -->
+    </div>
+</div>
+
 <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" v-if="projects.length > 0">
     <div class="kt-portlet__head" style="">
         <div class="kt-portlet__head-label">
@@ -78,6 +87,7 @@
         </div>
     </div>
     <div class="kt-portlet__body"> 
+
         <table class="table">
             <thead>
                 <th>Project No</th>
@@ -91,7 +101,7 @@
                     <td>@{{ row.project_id }}</td>
                     <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
                     <td>@{{ row.date_created }}</td>
-                    <td><span class="kt-badge kt-badge--success kt-badge--inline">@{{ row.status_name }}</span></td>
+                    <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                     <td nowrap>
                         <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                         <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
@@ -118,13 +128,15 @@
         data: {
             customers : {!! json_encode($customers) !!},
             base_url : {!! json_encode($base_url) !!},
+            status_colors : {!! json_encode($status_colors) !!},
             customerDetails : {
                 tin : '',
                 address : '',
                 customerId : '',
                 orgType : ''
             },
-            projects : []
+            projects : [],
+            search_flag :false
         },
         methods : {
             createPriceConfirmation(){
@@ -197,6 +209,7 @@
                 axios.get('/ajax-get-projects/' + self.customerDetails.customerId)
                     .then(function (response) {
                         self.projects = response.data;
+                        self.search_flag = true;
                         KTApp.unblockPage();
                     })
                     .catch(function (error) {

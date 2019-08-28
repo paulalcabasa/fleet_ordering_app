@@ -12,7 +12,7 @@
             <div class="kt-portlet__head kt-portlet__head--noborder kt-portlet__space-x">
                 <div class="kt-portlet__head-label">
                    <h3 class="kt-portlet__head-title">
-                        Activity
+                        {{ $year }} Registrations
                    </h3>
                 </div>
             </div>
@@ -118,10 +118,10 @@
             <div class="kt-widget14">
                 <div class="kt-widget14__header kt-margin-b-30">
                     <h3 class="kt-widget14__title">
-                        Daily Registrations              
+                        {{ $month_name }} {{ $year }}              
                     </h3>
                     <span class="kt-widget14__desc">
-                        Check out each collumn for more details
+                        Daily registrations for this month
                     </span>
                 </div>
                 <div class="kt-widget14__chart" style="height:120px;"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>

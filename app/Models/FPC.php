@@ -138,23 +138,24 @@ class FPC extends Model
                         fpc_prj.note,
                         flt_c.fleet_category_name
                 FROM ipc_dms.fs_fpc_projects fpc_prj
-                    INNER JOIN ipc_dms.fs_prj_requirement_headers rh
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                         ON rh.requirement_header_id = fpc_prj.requirement_header_id
-                    INNER JOIN ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_prj.fpc_id
-                    INNER JOIN ipc_dms.fs_status st
+                    LEFT JOIN ipc_dms.fs_status st
                         ON st.status_id = fpc.status
-                    INNER JOIN ipc_dms.ipc_portal_users_v usr
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
                         ON usr.user_id = fpc.created_by
                         AND usr.user_source_id = fpc.create_user_Source_id
-                    INNER JOIN ipc_dms.fs_payment_terms pt
+                    LEFT JOIN ipc_dms.fs_payment_terms pt
                         ON pt.term_id = fpc_prj.payment_terms
-                    INNER JOIN ipc_dms.fs_projects fp
+                    LEFT JOIN ipc_dms.fs_projects fp
                         ON fp.project_id = fpc_prj.project_id
-                    INNER JOIN ipc_dms.fs_fleet_categories flt_c
+                    LEFT JOIN ipc_dms.fs_fleet_categories flt_c
                         ON flt_c.fleet_category_id = fp.fleet_category
                 WHERE 1 = 1
-                    AND  fpc_prj.project_id = :project_id";
+                    AND fpc_prj.project_id = :project_id
+                    AND fpc.status = 4";
 
         $params = [
             'project_id' => $project_id
@@ -205,6 +206,24 @@ class FPC extends Model
         $query = DB::select($sql,$params);
 
         return $query;
+    }
+
+    public function get_max_validity_by_project($project_id){
+        $sql = "SELECT nvl(max(fpc_prj.validity),sysdate) max_validity
+                FROM ipc_dms.fs_fpc_projects fpc_prj
+                    INNER JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                WHERE 1 = 1
+                AND  fpc_prj.project_id = :project_id
+                AND fpc.status = 4";
+        $params = [
+            'project_id' => $project_id
+        ];
+
+        $query = DB::select($sql,$params);
+
+        return !empty($query) ? $query[0]->max_validity : null;
+
     }
 
 

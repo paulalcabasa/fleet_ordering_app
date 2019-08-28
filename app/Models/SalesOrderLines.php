@@ -41,11 +41,12 @@ class SalesOrderLines extends Model
     public function get_fwpc_lines($fpc_project_id){
         $sql = "SELECT vehicle.sales_model,
                         rl.quantity,
-                        fpc_item.fleet_price - sum(freebies.amount) fleet_price,
-                        (fpc_item.fleet_price - sum(freebies.amount) ) * (fpc_item.dealers_margin/100) dealer_margin,
+                        fpc_item.fleet_price - nvl(sum(freebies.amount),0) fleet_price,
+                        (fpc_item.fleet_price - nvl(sum(freebies.amount),0) ) * (fpc_item.dealers_margin/100) dealer_margin,
                         fs_term.term_name,
                         fpc_item.lto_registration,
-                        sum(freebies.amount) freebies
+                        sum(freebies.amount) freebies,
+                        vehicle.color
                 FROM ipc_dms.fs_fpc_items fpc_item
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rl.requirement_line_id = fpc_item.requirement_line_id
@@ -64,7 +65,8 @@ class SalesOrderLines extends Model
                         fpc_item.fleet_price,
                         fpc_item.dealers_margin,
                         fs_term.term_name,
-                        fpc_item.lto_registration";
+                        fpc_item.lto_registration,
+                        vehicle.color";
         $params = [
             'fpc_project_id' => $fpc_project_id
         ];

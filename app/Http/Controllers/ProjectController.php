@@ -60,7 +60,8 @@ class ProjectController extends Controller
                 $temp_array = array(
                     "id"           => $var->sales_model,
                     "value"        => $var->sales_model,
-                    "vehicle_type" => $var->vehicle_type
+                    "vehicle_type" => $var->vehicle_type,
+                    "variant"      => $var->model_variant
                 );
                 array_push($children,$temp_array);
             }
@@ -77,14 +78,15 @@ class ProjectController extends Controller
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
-            'organizations'    => $organizations,
-            'project_sources'  => $project_sources,
-            'customer_options' => $customer_options,
-            'sales_persons'    => $sales_persons,
-            'vehicle_models'   => $vehicle_options,
-            'vehicle_types'    => $vehicle_types,
-            'base_url'         => url('/'),
-            'fleet_categories' => $fleet_categories
+            'organizations'         => $organizations,
+            'project_sources'       => $project_sources,
+            'customer_options'      => $customer_options,
+            'sales_persons'         => $sales_persons,
+            'vehicle_models'        => $vehicle_options,
+            'vehicle_types'         => $vehicle_types,
+            'base_url'              => url('/'),
+            'fleet_categories'      => $fleet_categories,
+            'vehicle_lead_times'    => config('app.vehicle_lead_time')
     	);
     	return view('projects.manage_project', $page_data);
     }
@@ -94,8 +96,7 @@ class ProjectController extends Controller
             session('user')['user_type_id'],
             session('user')['customer_id']
         );
-
-    
+         
         $page_data = array(
             'projects' => $projects,
             'base_url' => url('/'),
@@ -119,7 +120,8 @@ class ProjectController extends Controller
         FPC                $m_fpc,
         FPC_Item           $m_fpc_item,
         POHeaders          $m_poh,
-        FWPC               $m_fwpc
+        FWPC               $m_fwpc,
+        ActivityLogs       $m_activity_logs
     ){
         $project_id             = $request->project_id;
         $project_details        = $m_project->get_details($project_id);
@@ -135,10 +137,22 @@ class ProjectController extends Controller
         $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
         $vehicle_colors         = config('app.vehicle_badge_colors');
         $status_colors          = config('app.status_colors');
+        $max_validity_date      = $m_fpc->get_max_validity_by_project($project_id);
+        $add_po_flag            = false;
+        $current_date           = date('Y-m-d H:i:s');
+        $timeline               = $m_activity_logs->get_activities_by_project($project_id);
+
+        // get all vehicle types based on requirement
+        $vehicle_types_requirement = [];
+        foreach ($requirement as $key => $value) {
+            array_push($vehicle_types_requirement, $key);
+        }
+        // remove duplicates for vehicle types
+        $vehicle_types_requirement = array_unique($vehicle_types_requirement);
 
         // fleet price confirmation
         $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
-        
+        $vehicle_types_fpc = [];
         $fpc_data = [];
 
         foreach($fpc_headers as $fpc){
@@ -149,35 +163,62 @@ class ProjectController extends Controller
                 'fpc_lines'  => $items,
                 'attachments' => $attachments
             ];
+            array_push($vehicle_types_fpc, $fpc->vehicle_type);
             array_push($fpc_data,$temp_array);
+        }
+        $vehicle_types_fpc = array_unique($vehicle_types_fpc);
+        
+        // check if FPC has been created for all VEHICLE TYPE REQUIREMENTS
+        $pending_fpc_vehicle_type = array_diff($vehicle_types_requirement,$vehicle_types_fpc);
+        if(empty($pending_fpc_vehicle_type) && $current_date < $max_validity_date){
+            // get max validity date from FPC Projects
+            // compare to current to know if dealer can still add purchase orders
+            // purchase orders can only added if FPC validity date is still covered
+           // if($current_date < $max_validity_date){
+            $add_po_flag = true;
+           // }
         }
 
         // purchase orders
         $po_list = $m_poh->get_po_by_project($project_id);
-        
+        $vehicle_user_type = "";
         // fwpc list
         $fwpc = $m_fwpc->get_fwpc_by_project($project_id);
+
+        if(session('user')['user_type_id'] == 32){
+            $vehicle_user_type = 'LCV';
+        }
+        else if(session('user')['user_type_id'] == 33){
+            $vehicle_user_type = 'CV';
+        }
+
+      
+
         $page_data = [
-            'project_id'             => $request->project_id,
-            'action'                 => $request->action,
-            'approval_id'            => $request->approval_id,
-            'project_details'        => $project_details,
-            'customer_details'       => $customer_details,
-            'attachments'            => $attachments,
-            'competitors'            => $competitors,
-            'affiliates'             => $affiliates,
-            'requirement'            => $requirement,
-            'contacts'               => $contacts,
-            'sales_persons'          => $sales_persons,
-            'contact_persons'        => $contact_persons,
-            'competitor_attachments' => $competitor_attachments,
-            'base_url'               => url('/'),
-            'vehicle_colors'         => $vehicle_colors,
-            'status_colors'          => $status_colors,
-            'fpc'                    => $fpc_data,
-            'po_list'                => $po_list,
-            'fwpc'                   => $fwpc,
-            'user_type'              => session('user')['user_type_id']
+            'project_id'               => $request->project_id,
+            'action'                   => $request->action,
+            'approval_id'              => $request->approval_id,
+            'project_details'          => $project_details,
+            'customer_details'         => $customer_details,
+            'attachments'              => $attachments,
+            'competitors'              => $competitors,
+            'affiliates'               => $affiliates,
+            'requirement'              => $requirement,
+            'contacts'                 => $contacts,
+            'sales_persons'            => $sales_persons,
+            'contact_persons'          => $contact_persons,
+            'competitor_attachments'   => $competitor_attachments,
+            'base_url'                 => url('/'),
+            'vehicle_colors'           => $vehicle_colors,
+            'status_colors'            => $status_colors,
+            'fpc'                      => $fpc_data,
+            'po_list'                  => $po_list,
+            'fwpc'                     => $fwpc,
+            'user_type'                => session('user')['user_type_id'],
+            'vehicle_user_type'        => $vehicle_user_type,
+            'add_po_flag'              => $add_po_flag,
+            'timeline'                 => $timeline,
+            'pending_fpc_vehicle_type' => $pending_fpc_vehicle_type
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -684,7 +725,6 @@ class ProjectController extends Controller
                     $file_path = storage_path('app/public/customer/'.$row['filename']); 
                     unlink($file_path);
                 }
-
                 // if new attachment has been placed, delete the old data.
                 $m_attachment->delete_attachment($customer_id);
                 foreach($attachment as $file){
@@ -774,7 +814,8 @@ class ProjectController extends Controller
         Request $request, 
         ModuleApproval $m_approval, 
         Project $m_project,
-        ActivityLogs $m_activity_logs 
+        ActivityLogs $m_activity_logs,
+        RequirementHeader $m_rh
     ){
         $project_id      = $request->projectId;
         $approval_id     = $request->approvalId;
@@ -790,6 +831,7 @@ class ProjectController extends Controller
             $status_id = 5; // reject
         }
         
+        // save status for ipc_dms.fs_module_approval table
         $m_approval->save_approval(
             $approval_id, 
             $project_id, // module_reference_id, 
@@ -801,12 +843,38 @@ class ProjectController extends Controller
             session('user')['source_id']
         );
 
+        // update requirement header status ipc_dms.fs_prj_requirement_headers
+        if(session('user')['user_type_id'] == 32){
+            $vehicle_user_type = 'LCV';
+            $m_rh->update_status(
+                $project_id,
+                $status_id,
+                'LCV',
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+        }
+        else if(session('user')['user_type_id'] == 33){
+            $vehicle_user_type = 'CV';
+            $m_rh->update_status(
+                $project_id,
+                $status_id,
+                'CV',
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+        }
+
         // email to requestor
         $status_remarks = $status == "approve" ? "<strong>approved</strong>" : "<strong>rejected</strong>"; 
+        $message = 'Project No. <strong>' . $project_id . '</strong> has been ' . $status_remarks . ' by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.';
+        if($remarks != ""){
+            $message .= '<br/>Remarks : ' . $remarks;
+        }
         $activity_log_params = [
             'module_id'             => 1, // Fleet Project
             'module_code'           => 'PRJ',
-            'content'               => 'Project No. <strong>' . $project_id . '</strong> has been ' . $status_remarks . ' by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.',
+            'content'               => $message,
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
@@ -823,10 +891,11 @@ class ProjectController extends Controller
 
         // count pending approval for dealers
         $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
-       
-        // if there is no pending approval amount dealers, set project status to For IPC Review
+        
+        // this will sending email to IPC
+        // if there is no pending approval for dealers, set project status to Open
         if(count($pending_approval) == 0 && $status == "approve"){
-            $project_status = 11; // submitted
+            $project_status = 11; // open
 
             // send notification to IPC 
             $m_activity_logs->update_mail_flag(
@@ -835,16 +904,8 @@ class ProjectController extends Controller
                 session('user')['user_id'],
                 session('user')['source_id']
             );
-            // get pending approval for ipc
-            $ipc_pending_approval = $m_approval->get_pending_per_project($project_id,'IPC_STAFF');
-
-            if(count($ipc_pending_approval) == 0 && $status == "approve"){
-                $project_status = 10; // acknowledged
-
-              
-
-            }
             
+            // update status of project to open in ipc_dms.fs_projects
             $m_project->update_status(
                 $project_id,
                 $project_status, 
@@ -852,29 +913,11 @@ class ProjectController extends Controller
                 session('user')['source_id']
             );
 
-            if($project_status == 11){
+            if($project_status == 11 && session('user')['user_type_id'] == 31){
                 $activity_log_params = [
                     'module_id'             => 1, // Fleet Project
                     'module_code'           => 'PRJ',
-                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>submitted.</strong>',
-                    'created_by'            => session('user')['user_id'],
-                    'creation_date'         => Carbon::now(),
-                    'create_user_source_id' => session('user')['source_id'],
-                    'reference_id'          => $project_id,
-                    'reference_column'      => 'project_id',
-                    'reference_table'       => 'fs_projects',
-                    'mail_flag'             => 'Y',
-                    'is_sent_flag'          => 'N',
-                    'timeline_flag'         => 'Y',
-                    'mail_recipient'        => $project_details->requestor_email
-                ];
-                $m_activity_logs->insert_log($activity_log_params);
-            }
-            else if ($project_status == 10){
-                $activity_log_params = [
-                    'module_id'             => 1, // Fleet Project
-                    'module_code'           => 'PRJ',
-                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>acknowledged.</strong>',
+                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>opened.</strong>',
                     'created_by'            => session('user')['user_id'],
                     'creation_date'         => Carbon::now(),
                     'create_user_source_id' => session('user')['source_id'],
@@ -890,13 +933,42 @@ class ProjectController extends Controller
             }
         }
         else {
+          
+            // if user is Dealer Manager, once reject by other approvers, project already rejected
+            if(session('user')['user_type_id'] == 31){
+               
+                $m_project->update_status(
+                    $project_id,
+                    5, // rejected 
+                    session('user')['user_id'],
+                    session('user')['source_id']
+                );
+            }
+            // if user is LCV is CV user, project will only be rejected in All of the approvers rejected the project
+            else if(in_array(session('user')['user_type_id'],array(32,33))){
+                $approval = $m_approval->get_project_approval_workflow($project_id);
+                $total_approvers = 0;
+                $total_reject = 0;
 
-            $m_project->update_status(
-                $project_id,
-                5, // rejected 
-                session('user')['user_id'],
-                session('user')['source_id']
-            );
+                foreach ($approval as $row) {
+                    if($row->user_type == 'IPC_STAFF'){
+                        if($row->status == 5){
+                            $total_reject++;
+                        }
+                        $total_approvers++;
+                    }
+                }
+                
+                if($total_approvers == $total_reject){
+                    $m_project->update_status(
+                        $project_id,
+                        5, // rejected 
+                        session('user')['user_id'],
+                        session('user')['source_id']
+                    );
+                }
+
+            }
         }
 
         
@@ -954,6 +1026,45 @@ class ProjectController extends Controller
 
         return [
             'status' => 'Closed'
+        ];
+    }
+
+    public function ajax_reopen_project(
+        Request $request, 
+        Project $m_project,
+        ActivityLogs $m_activity_logs
+    ){
+        $project_id = $request->project_id;
+        $status_id = 11; // submitted
+
+        $project_details = $m_project->get_details($project_id);    
+        $m_project->update_status(
+            $project_id,
+            $status_id,
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => 'Project No. <strong>' . $project_id . '</strong> has been <strong>re-opened</strong> by <strong>' . session('user')['first_name'] . ' ' . session('user')['last_name'] . '</strong>.',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $project_id,
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $project_details->requestor_email
+        ];
+
+        $m_activity_logs->insert_log($activity_log_params);
+
+        return [
+            'status' => 'Open'
         ];
     }
  

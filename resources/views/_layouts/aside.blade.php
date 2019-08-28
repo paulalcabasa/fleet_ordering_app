@@ -53,7 +53,7 @@
             @if(in_array(session('user')['user_type_id'], array(31,32,33))) 
             <li class="kt-menu__item {{ request()->is('project-approval') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/approval-list') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-price-tag"></i>
+                    <i class="kt-menu__link-icon flaticon-users"></i>
                     <span class="kt-menu__link-text">Approval</span>
                  <!--    <span class="kt-menu__link-badge">
                         <span class="kt-badge kt-badge--rounded kt-badge--primary">5</span>

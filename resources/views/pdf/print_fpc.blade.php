@@ -52,7 +52,7 @@
             }
 
             .item-table {
-                font-size:11px;
+                font-size:10px;
                 width:100%;
             }
 
@@ -82,7 +82,28 @@
                 font-weight: bold;
             }
 
+            .text-center {
+                text-align:center;
+            }
 
+            .header-text {
+                width:100%;
+                background-color:#ccc;
+                font-weight:bold;
+                text-align:center;
+                font-size:12px;
+                padding: .3em 0 .3em 0;
+                margin-bottom:0;
+                margin-top:0;
+            }
+
+            .show {
+                display:block;
+            }
+
+            .hide {
+                display:none;
+            }
             
         </style>
         <link rel="stylesheet" type="text/css" href="">
@@ -109,11 +130,11 @@
             <h4 style="text-align:center;">FLEET PRICE CONFIRMATION</h4>
         </div>
 
-        <table border="0" style="border-collapse: collapse;width:50%;font-size:11px;" cellpadding="2" >
+        <table border="0" style="border-collapse: collapse;width:100%;font-size:11px;" cellpadding="2" >
             <tr>
-                <td style="font-weight:bold;">DEALER</td>
-                <td>:</td>
-                <td>{{ $header_data->dealer_name }}</td>
+                <td style="font-weight:bold;width:20%;">DEALER</td>
+                <td style="width:5%;">:</td>
+                <td style="width:75%;">{{ $header_data->dealer_name }} {{ $header_data->dealer_account}}</td>
             </tr>
             <tr>
                 <td style="font-weight:bold;vertical-align: top;">ATTENTION</td>
@@ -137,7 +158,7 @@
             <tr>
                 <td style="font-weight:bold;">REF NO.</td>
                 <td>:</td>
-                <td>{{ $header_data->fpc_project_id }}</td>
+                <td>{{ $header_data->fpc_ref_no }}</td>
             </tr>  
         </table>  
 
@@ -149,6 +170,7 @@
                 <tr>
                     <th rowspan="2"></th>
                     <th rowspan="2">MODEL</th>
+                    <th rowspan="2">COLOR</th>
                     <th rowspan="2">QTY</th>
                     <th rowspan="2">UNIT PRICE</th>
                     <th rowspan="2">BODY TYPE</th>
@@ -164,12 +186,26 @@
                 @foreach($items as $item)
                 <tr>
                     <td>{{ $ctr }}</td>
-                    <td class="item-data-style1">{{ $item->sales_model }}</td>
-                    <td class="item-data-style2">{{ $item->quantity }}</td>
-                    <td class="item-data-style2">P {{ number_format($item->fleet_price,2,'.',',') }}</td>
-                    <td class="item-data-style2">{{ $item->rear_body_type }}</td>
-                    <td class="item-data-style2">N\A</td>
-                    <td class="item-data-style2">{{ $item->additional_items }}</td>
+                    <td class="item-data-style1">{{ $item['header']->sales_model }}</td>
+                    <td class="item-data-style1">{{ $item['header']->color }}</td>
+                    <td class="item-data-style2">{{ $item['header']->quantity }}</td>
+                    <td class="item-data-style2">P {{ number_format($item['header']->fleet_price,2,'.',',') }}</td>
+                    <td class="item-data-style2">{{ $item['header']->rear_body_type }}</td>
+                    <td class="item-data-style2">
+                        <?php 
+                            $index = 1;
+                            $total_items = count($item['other_items'])
+                        ?>
+                 
+                        @foreach($item['other_items'] as $freebie)
+                        <span>{{ $freebie->description }}</span>
+                            @if($index != $total_items)
+                            ,
+                            @endif
+                            <?php $index++; ?>
+                        @endforeach
+                    </td>
+                    <td class="item-data-style2">{{ $item['header']->lto_registration != 0 ? "Complete 3 Years LTO Registration" : "" }}</td>
                 </tr>
                 {{ $ctr++ }}
                 @endforeach
@@ -311,6 +347,155 @@
                 </tr>
             </table>
         </div>
+
+
+        <!-- END OF PAGE 1 -->
+
+        <!-- START OF PAGE 2 -->
+        <div style="page-break-before: always"></div>
+        <div>
+            <h4 style="text-align:center;">FLEET PRICE COMPUTATION DETAILS</h4>
+        </div>
+
+        @foreach($items as $item)
+        <?php
+            $dealer_margin = ($item['header']->fleet_price - $item['header']->freebies) * ($item['header']->dealers_margin/100);
+            $wsp           = $item['header']->suggested_retail_price - ($item['header']->suggested_retail_price * ($item['header']->dealers_margin/100));
+            $cost          = $item['header']->suggested_retail_price + $dealer_margin + $item['header']->freebies;
+            $net_cost      = $item['header']->wholesale_price + $dealer_margin + $item['header']->lto_registration;
+            $subsidy       = $net_cost - $item['header']->fleet_price;
+            $total_subsidy = $subsidy * $item['header']->quantity;
+        ?>
+        
+        <table style="font-size:11px;" width="100%">
+            <tr>
+                <td valign="top" width="50%">
+                    <table style="width:100%;">
+                        <tr>
+                            <td>
+                                <table style="width:100%;">
+                                     <tr style="background-color:#ccc;">
+                                        <td colspan="2" class="text-bold text-center">Vehicle Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Model</td>
+                                        <td>{{ $item['header']->sales_model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Color</td>
+                                        <td>{{ $item['header']->color }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Quantity</td>
+                                        <td>{{ $item['header']->quantity }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Suggested Price</td>
+                                        <td>{{ number_format($item['header']->suggested_price,2) }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        @if(count($item['other_items']) > 0)
+                        <tr>
+                            <td>
+                                <table style="width:100%;" style="display:none;">
+                                    <thead>
+                                        <tr style="background-color:#ccc;">
+                                            <th  colspan="3" class="text-bold text-center">Other Items</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Item</th>
+                                            <th align="right">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                            $index = 1;
+                                            $total_items = count($item['other_items']);
+
+                                        ?>
+                             
+                                        @foreach($item['other_items'] as $freebie)
+                                        <tr>
+                                            <td>{{ $index }}</td>
+                                            <td>{{ $freebie->description }}</td>
+                                            <td align="right">{{ number_format($freebie->amount,2) }}</td>
+                                        </tr> 
+                                        <?php $index++; ?>
+                                        @endforeach
+                                        
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2" align="right"> Total</th>
+                                            <th align="right" >{{ number_format($item['header']->freebies,2) }}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </td>
+                        </tr>
+                        @endif
+                    </table>
+                </td>
+                <td width="50%">
+                    <table style="width:100%;">
+                        <tr style="background-color:#ccc;">
+                            <td colspan="2" class="text-bold text-center">Pricing</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">SRP</td>
+                            <td align="right">{{ number_format($item['header']->suggested_retail_price,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">WSP</td>
+                            <td align="right">{{ number_format($wsp,2) }}<td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Dealers Margin</td>
+                            <td align="right">{{ number_format($dealer_margin,2) }} </td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">3 Yrs LTO Registration</td>
+                            <td align="right">{{ number_format($item['header']->lto_registration,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Other Items</td>
+                            <td align="right">{{ number_format($item['header']->freebies,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Cost</td>
+                            <td align="right">{{ number_format($cost,2)}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Net Cost</td>
+                            <td align="right">{{ number_format($net_cost, 2)}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Fleet Price</td>
+                            <td align="right">{{ number_format($item['header']->fleet_price,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Subsidy</td>
+                            <td align="right">{{ number_format($subsidy,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Total IPC Subsidy</td>
+                            <td align="right">{{ number_format($total_subsidy,2)}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+          <!--   <tr>
+                <td colspan="2">
+                    
+                </td>
+            </tr> -->
+        </table>
+        <hr />
+        @endforeach
+        
     </main>
     
 </body>

@@ -38,6 +38,7 @@ return [
         'Acknowledged' => "kt-badge kt-badge--success kt-badge--inline",
         'Approved'     => "kt-badge kt-badge--success kt-badge--inline",
         'Submitted'    => "kt-badge kt-badge--warning kt-badge--inline",
+        'Open'    => "kt-badge kt-badge--warning kt-badge--inline",
         'Cancelled'    => "kt-badge kt-badge--danger kt-badge--inline",
         'CANCELLED'    => "kt-badge kt-badge--danger kt-badge--inline",
         'Rejected'     => "kt-badge kt-badge--danger kt-badge--inline",
@@ -45,6 +46,17 @@ return [
         'Pending'      => "kt-badge kt-badge--warning kt-badge--inline",
         'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline",
         'Closed'       => "kt-badge kt-badge--success kt-badge--inline"
+    ],
+    'vehicle_lead_time' => [
+        // In months
+        'N-SERIES'       => 1,
+        'CROSSWIND'      => 0,
+        'C AND E SERIES' => 3,
+        'MU-X'           => 0,
+        'Q-SERIES'       => 2,
+        'D-MAX'          => 0,
+        'F-SERIES'       => 2,
+        'BUS'            => 2
     ],
     /*
     |--------------------------------------------------------------------------

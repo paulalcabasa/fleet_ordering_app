@@ -37,13 +37,12 @@
             </tbody>
         </table>
     </div>
-    <div class="kt-portlet__foot" v-if="projectDetails.status_name != 'Closed'">
+    <div class="kt-portlet__foot" v-if="projectDetails.status_name == 'Open' && add_po_flag && (user_type == 27 || user_type == 31) ">
         <div class="row  kt-pull-right">
             <div class="col-lg-12">
                 <a 
                     :href="base_url + '/submit-po/' + projectDetails.project_id" 
                     class="btn btn-primary kt-margin-r-5 btn-sm"
-
                 >
                     <span class="kt-hidden-mobile">Add PO</span>
                 </a>  

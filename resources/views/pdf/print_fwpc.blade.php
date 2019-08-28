@@ -131,13 +131,13 @@
         </div>
         <table cellpadding="0" cellspacing="0">
             <tr>
-                <td width="350">
+                <td width="350" valign="top">
                     <table style="font-size:10px;">
-                        <tr>
+                      <!--   <tr>
                             <td style="font-weight:bold;">Payment Term</td>
                             <td>:</td>
                             <td>{{ $fwpc_details->payment_terms }}</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td style="font-weight:bold;">Witholding Tax</td>
                             <td>:</td>
@@ -230,7 +230,7 @@
             <tr>
                 <td style="font-weight:bold;">FWPC Ref No.</td>
                 <td>:</td>
-                <td>{{ $fwpc_details->fwpc_id }}</td>
+                <td>{{ $fwpc_details->fwpc_ref_no }}</td>
             </tr>
         </table>  
 
@@ -243,6 +243,7 @@
                 <tr>
                     <th rowspan="2">Item</th>
                     <th rowspan="2" style="width:15%;">Model</th>
+                    <th rowspan="2">Color</th>
                     <th rowspan="2">Qty</th>
                     <th rowspan="2">Approved Fleet Price per unit</th>
                     <th colspan="2">Price Breakdown</th>
@@ -257,26 +258,34 @@
             </thead>
             <tbody>
                 @foreach($so_lines as $row)
-                {{ $ctr = 1 }}
-                {{ $grand_total = 0 }}
+                <?php 
+                    $ctr = 1; 
+                    $grand_total = 0;
+                    $unit_price = $row->fleet_price - $row->dealer_margin - $row->lto_registration;
+                    $fwpu = $unit_price + $row->freebies;
+                    $total_fwpu = $fwpu * $row->quantity;
+                ?>
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td>{{ $row->sales_model }}</td>
+                    <td>{{ $row->color }}</td>
                     <td align="center">{{ $row->quantity }}</td>
-                    <td align="center">{{ number_format($row->fleet_price,2,'.',',') }}</td>
-                    <td align="center">{{ number_format( ( $row->fleet_price - $row->dealer_margin - $row->lto_registration ), 2,'.',',') }}</td>
-                    <td align="center">-</td>
-                    <td align="center">{{ number_format( ($row->fleet_price - $row->dealer_margin - $row->lto_registration), 2,'.',',') }}</td>
-                    <td align="center">{{ number_format( (($row->fleet_price - $row->dealer_margin - $row->lto_registration) * $row->quantity), 2,'.',',') }}</td>
+                    <td align="center">{{ number_format($row->fleet_price,2) }}</td>
+                    <td align="center">{{ number_format($unit_price,2) }}</td>
+                    <td align="center">{{ number_format($row->freebies,2) }}</td>
+                    <td align="center">{{ number_format($fwpu,2) }}</td>
+                    <td align="center">{{ number_format($total_fwpu,2) }}</td>
                     <td>{{ $row->term_name }}</td>
                 </tr>
-                {{ $grand_total += ($row->fleet_price - $row->dealer_margin - $row->lto_registration) * $row->quantity }}
-                {{ $ctr++ }}
+                <?php 
+                    $grand_total += $total_fwpu;
+                    $ctr++; 
+                ?>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="7">Total Fleet Wholesale Price (w/ VAT)</th>
+                    <th colspan="8">Total Fleet Wholesale Price (w/ VAT)</th>
                     <th>{{ number_format($grand_total,2,'.',',') }}</th>
                     <th></th>
                 </tr>
@@ -292,6 +301,7 @@
                 <tr>
                     <th>Item</th>
                     <th>Model</th>
+                    <th>Color</th>
                     <th>Dealer Margin</th>
                     <th>LTO Reg. & Free Items</th>
                     <th>Total Dealer Margin</th>
@@ -303,6 +313,7 @@
                 <tr>
                     <td align="center">{{ $ctr }}</td>
                     <td align="center">{{ $row->sales_model }}</td>
+                    <td align="center">{{ $row->color }}</td>
                     <td align="center">{{ number_format($row->dealer_margin,2,'.',',') }}</td>
                     <td align="center">{{ number_format($row->lto_registration,2,'.',',') }}</td>
                     <td align="center">{{ number_format($row->lto_registration + $row->dealer_margin,2,'.',',') }}</td>

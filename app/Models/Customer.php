@@ -165,7 +165,7 @@ class Customer extends Model
     }
 
     public function get_project_customers($vehicle_type){
-        $sql = "SELECT fc.customer_id,
+        /*$sql = "SELECT fc.customer_id,
                         fc.customer_name,
                         fc.tin,
                         fc.address,
@@ -181,11 +181,31 @@ class Customer extends Model
                         LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
                             ON fp.project_id = fpc_prj.project_id
                             AND rh.requirement_header_id = fpc_prj.requirement_header_id
+                        LEFT JOIN ipc_dms.fs_fpc fpc
+                            ON fpc.fpc_id = fpc_prj.fpc_id
                     WHERE 1 = 1
-                        AND fp.status NOT IN(6)
-                        AND fpc_prj.fpc_project_id IS NULL
-                        AND rh.vehicle_type = :vehicle_type
-                )";
+                        AND fp.status = 11 
+                        AND rh.status = 4
+                        AND fpc.status NOT IN (12)
+                        AND rh.vehicle_type = :vehicle_type)";*/
+                        // AND fpc_prj.fpc_project_id IS NULL
+        $sql = "SELECT  distinct
+                        fc.customer_id,
+                        fc.customer_name,
+                        fc.tin,
+                        fc.address,
+                        fot.name org_type_name
+                FROM ipc_dms.fs_projects fp
+                    INNER JOIN ipc_dms.fs_customers fc
+                        ON fp.customer_id = fc.customer_id
+                    INNER JOIN ipc_dms.fs_organization_types fot
+                        ON fot.organization_type_id = fc.organization_type_id
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON fp.project_id = rh.project_id
+                WHERE 1 = 1
+                    AND fp.status = 11
+                    AND rh.status = 4
+                    AND rh.vehicle_type = :vehicle_type";
         $params = [
             'vehicle_type' => $vehicle_type
         ];
@@ -193,5 +213,6 @@ class Customer extends Model
         return $query;
     }
 
+    
 
 }

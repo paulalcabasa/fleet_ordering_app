@@ -155,7 +155,17 @@
                             <div class="card-body">
                                 <div class="details-item">
                                     <span class="details-label">Model</span>
-                                    <span class="details-subtext">@{{ curModel }}</span>
+                                    <span class="details-subtext">
+                                        @{{ curModel }}
+                                        <span 
+                                            data-toggle="kt-popover" 
+                                            title="" 
+                                            :data-content="cur_lead_time_desc" 
+                                            data-original-title="Delivery lead time"
+                                            v-show="cur_vehicle_lead_time > 0">
+                                            <i class="fa fa-info-circle kt-font-primary"></i>    
+                                        </span>
+                                    </span>
                                 </div>
                                 <div class="details-item">
                                     <span class="details-label">Color</span>
@@ -183,7 +193,7 @@
                                     <tbody>
                                         <tr v-for="(row,index) in curDeliverySched">
                                             <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
-                                            <td><input type="date" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
+                                            <td><input type="date" :min="curMinDate" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
                                             <td><input type="text" class="form-control form-control-sm" v-model="row.quantity" /></td>
                                         </tr>
                                     </tbody>
@@ -215,7 +225,15 @@
 
 @push('scripts')
 <script>
-
+/*let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];
+    let min_delivery_date =  moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD');
+    let default_delivery_date = moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD')
+    
+    this.cur_delivery_sched.push({
+        quantity : 0,
+        delivery_date : default_delivery_date,
+        min_delivery_date : min_delivery_date
+    });*/
     var vm =  new Vue({
         el : "#app",
         data: {
@@ -224,6 +242,7 @@
             vehicle_colors:       {!! json_encode($vehicle_colors) !!},
             status_colors:        {!! json_encode($status_colors) !!},
             base_url:             {!! json_encode($base_url) !!},
+            vehicle_lead_time:    {!! json_encode($vehicle_lead_time) !!},
             poNumber:             '',
             curDeliverySched:     [],
             curVehicleType:       '',
@@ -233,7 +252,11 @@
             curQuantity:          '',
             attachments:          [],
             curRequirementLineId: '',
-            file_label:           'Choose file'
+            curVariant:           '',
+            file_label:           'Choose file',
+            curMinDate:           '',
+            cur_lead_time_desc: '',
+            cur_vehicle_lead_time: ''
         },
         created: function () {
             this.requirement_lines = _.groupBy(this.requirement_lines, 'vehicle_type');
@@ -250,11 +273,17 @@
             },
             setDeliverySched(vehicle_type,line_index){
                 this.curDeliverySched = this.requirement_lines[vehicle_type][line_index].delivery_sched;
-                this.curModel = this.requirement_lines[vehicle_type][line_index].sales_model;
-                this.curColor = this.requirement_lines[vehicle_type][line_index].color;
-                this.curQuantity = this.requirement_lines[vehicle_type][line_index].quantity;
-                this.curVehicleType = vehicle_type;
-                this.curLineIndex = line_index;
+                this.curModel         = this.requirement_lines[vehicle_type][line_index].sales_model;
+                this.curColor         = this.requirement_lines[vehicle_type][line_index].color;
+                this.curQuantity      = this.requirement_lines[vehicle_type][line_index].quantity;
+                this.curVariant       = this.requirement_lines[vehicle_type][line_index].variant;
+                this.curVehicleType   = vehicle_type;
+                this.curLineIndex     = line_index;
+                let vehicle_lead_time = this.vehicle_lead_time[this.curVariant];
+                let min_delivery_date = moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD');
+                this.curMinDate       = min_delivery_date;
+                this.cur_lead_time_desc = vehicle_lead_time <= 1 ? vehicle_lead_time + " month" : vehicle_lead_time + " months";
+                this.cur_vehicle_lead_time = vehicle_lead_time;
                 $("#deliverySchedModal").modal('show');
             },
             saveDeliverySched(){

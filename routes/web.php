@@ -44,13 +44,13 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
 	Route::get('approval-list', 'ApprovalController@approval_list');
-	Route::patch('save-approval', 'ProjectController@save_approval');
+	Route::post('save-approval', 'ProjectController@save_approval');
 	Route::get('/ajax-get-delivery-detail/{requirement_line_id}', 'DeliveryScheduleController@ajax_get_delivery_detail');
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::post('ajax-cancel-project', 'ProjectController@ajax_cancel_project');
 	Route::post('ajax-close-project', 'ProjectController@ajax_close_project');
+	Route::post('ajax-reopen-project', 'ProjectController@ajax_reopen_project');
 	
-
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
 	Route::get('all-price-confirmation', 'PriceConfirmationController@all_price_confirmation');
@@ -69,6 +69,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
 	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
+	Route::patch('update-suggested-date', 'DeliveryScheduleController@update_suggested_date');
 	
 	/* FPC */
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
@@ -100,11 +101,13 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('sales-order/{sales_order_number}/{dealer_id}', 'SalesOrderController@get_so_details');
 	Route::post('sales-order', 'FWPCController@add_fwpc');
 	Route::get('fwpc/{project_id}', 'FWPCController@get_fwpc_list');
-	Route::delete('fwpc/{fwpc_id}', 'FWPCController@destroy');
+	Route::post('delete-fwpc', 'FWPCController@delete_fwpc');
 	Route::get('sales-order-data/{fwpc_id}', 'SalesOrderController@sales_order_data');
 	Route::get('print-fwpc/{fwpc_id}', 'FWPCController@print_fwpc');
+	Route::post('upload-fwpc-doc', 'FWPCController@upload_fwpc_doc');
+	Route::post('validate-fwpc', 'FWPCController@validate_fwpc');
 
-	//
+	// EMAIL NOTIFICATION
 	Route::get('send-notification' , 'EmailController@send_notification');
 });
 

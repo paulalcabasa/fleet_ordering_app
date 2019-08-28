@@ -33,6 +33,7 @@ class PurchaseOrderController extends Controller
         $attachments  = $m_attachment->get_po_attachments($po_header_id);
         $po_lines     = $m_pol->get_po_lines($po_header_id);
         $po_line_data = [];
+        
         foreach ($po_lines as $row) {
             $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
             $arr = [
@@ -86,7 +87,7 @@ class PurchaseOrderController extends Controller
     ){
         $project_id = $request->project_id;
         $project_details = $m_project->get_details($project_id);
-        $requirement_lines = $m_requirement_line->get_requirement_lines($project_id);
+        $requirement_lines = $m_requirement_line->get_po_requirement_lines($project_id);
         $requirement_lines_data = [];
         foreach ($requirement_lines as $row) {
             $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
@@ -98,20 +99,20 @@ class PurchaseOrderController extends Controller
                 'quantity'            => $row->quantity,
                 'po_qty'              => $row->po_qty,
                 'vehicle_type'        => $row->vehicle_type,
-                'delivery_sched'      => $delivery_sched
+                'delivery_sched'      => $delivery_sched,
+                'variant'             => $row->model_variant
             ];   
             array_push($requirement_lines_data, $arr);
         }
-        $vehicle_colors = config('app.vehicle_badge_colors');
-        $status_colors = config('app.status_colors');
        
         $page_data = [
-            'project_id'        => $project_id,
-            'project_details'   => $project_details,
-            'requirement_lines' => $requirement_lines_data,
-            'vehicle_colors'    => $vehicle_colors,
-            'status_colors'     => $status_colors,
-            'base_url'          => url('/')
+            'project_id'         => $project_id,
+            'project_details'    => $project_details,
+            'requirement_lines'  => $requirement_lines_data,
+            'vehicle_colors'     => config('app.vehicle_badge_colors'),
+            'status_colors'      => config('app.status_colors'),
+            'base_url'           => url('/'),
+            'vehicle_lead_time' => config('app.vehicle_lead_time')
         ];
         return view('purchase_order.submit_po', $page_data);
     }
@@ -137,7 +138,7 @@ class PurchaseOrderController extends Controller
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
-            'status'                => 11 // submitted , to be reviewed by ipc
+            'status'                => 7 // pending , to be reviewed by ipc
         ];
 
         $po_header_id = $m_po_header->insert_po_header($po_header_params);
@@ -305,6 +306,14 @@ class PurchaseOrderController extends Controller
         }
         else if($status == "reject") {
             $status_id = 5; // reject
+            // once rejected by an approver, reject whole PO submission
+            $m_poh->update_status(
+                $po_header_id,
+                $status_id, ///acknowledge
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+
         }
 
         $m_approval->save_approval(
@@ -317,7 +326,6 @@ class PurchaseOrderController extends Controller
             session('user')['user_id'],
             session('user')['source_id']
         ); 
-
 
         $activity_log = [
             'module_id'             => 1, // Fleet Project
@@ -343,7 +351,7 @@ class PurchaseOrderController extends Controller
         if($pending == 0){
             $m_poh->update_status(
                 $po_header_id,
-                10, ///acknowledge
+                $status_id, ///approve or reject
                 session('user')['user_id'],
                 session('user')['source_id']
             );

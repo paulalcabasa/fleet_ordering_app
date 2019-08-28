@@ -49,7 +49,7 @@ mix.styles([
     'public/metronic/assets/vendors/custom/vendors/flaticon/flaticon.css',
     'public/metronic/assets/vendors/custom/vendors/flaticon2/flaticon.css',
     'public/metronic/assets/vendors/custom/vendors/fontawesome5/css/all.min.css',*/
-    'public/metronic/assets/demo/default/base/style.bundle.css',
+ /*   'public/metronic/assets/demo/default/base/style.bundle.css',*/
     // Layout Skins(used by all pages) 
     'public/metronic/assets/demo/default/skins/header/base/light.css',
     'public/metronic/assets/demo/default/skins/header/menu/light.css',
@@ -57,7 +57,7 @@ mix.styles([
     'public/metronic/assets/demo/default/skins/aside/dark.css',
     'public/metronic/assets/css/demo1/pages/general/invoices/invoice-1.css',
     'public/metronic/assets/vendors/global/vendors.bundle.css',
-    'public/metronic/assets/css/demo1/style.bundle.css'
+    /*'public/metronic/assets/css/demo1/style.bundle.css'*/
 ], 'public/css/metronic.bundle.css');
 
 mix.scripts([
@@ -101,11 +101,11 @@ mix.scripts([
 
 	'public/metronic/assets/vendors/general/morris.js/morris.js',
 	'public/metronic/assets/vendors/general/chart.js/dist/Chart.bundle.js',
-	'public/metronic/assets/vendors/global/vendors.bundle.js',
-	'public/metronic/assets/js/demo1/scripts.bundle.js',
+/*	'public/metronic/assets/vendors/global/vendors.bundle.js',*/
+/*	'public/metronic/assets/js/demo1/scripts.bundle.js',*/
 /*	'public/metronic/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js',
 	'public/metronic/assets/maps.js',
 	'public/metronic/assets/vendors/custom/gmaps/gmaps.js',*/
-	'public/metronic/assets/demo/default/base/scripts.bundle.js',
+	'public/metronic/assets/demo/default/base/scripts.bundle.min.js',
 	'public/metronic/assets/app/bundle/app.bundle.min.js'
 ], 'public/js/metronic.bundle.js');

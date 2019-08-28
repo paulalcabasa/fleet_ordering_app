@@ -1,9 +1,15 @@
+<div class="alert alert-info" role="alert" v-for="(row,index) in pending_fpc_vehicle_type">
+    <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+    <div class="alert-text">Awaiting Fleet Price Confirmation for @{{ row }}.</div>
+</div>
+
 <div class="kt-portlet kt-portlet--height-fluid" v-for="(row,index) in fpc" >
    
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
                 Fleet Price Confirmation <small>@{{ row['fpc_header'].vehicle_type }}</small>
+
             </h3>
         </div>
     </div>
@@ -17,6 +23,10 @@
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Ref No.</span>
                             <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ row['fpc_header'].fpc_project_id }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Validity</span>
+                            <span class="col-md-8">@{{ row['fpc_header'].validity }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
                             <span class="col-md-4 kt-font-bold">Date Created</span>
@@ -99,17 +109,29 @@
             </tfoot>
         </table>
     </div>
-
+    
     <div class="kt-portlet__foot">
         <div class="row  kt-pull-right">
         <div class="col-lg-12">
-            <button type="button" @click="addFWPCModal(row['fpc_header'].fpc_project_id)"  class="btn btn-primary btn-sm">
+            <!-- <button 
+                type="button" 
+                @click="addFWPCModal(row['fpc_header'].fpc_project_id)" 
+                class="btn btn-primary btn-sm"
+                v-if="row['fpc_header'].vehicle_type == vehicle_user_type"
+            >
                 Add FWPC
-            </button>  
-            <a target="_blank" :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" class="btn btn-primary btn-sm" >
+            </button>   -->
+            <a 
+                target="_blank" 
+                :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" 
+                class="btn btn-primary btn-sm"
+            >
                 <span class="kt-hidden-mobile">Print</span>
             </a>
         </div>
         </div>
     </div>
+
+
+    
 </div>
