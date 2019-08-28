@@ -8,8 +8,8 @@ return [
     | Custom Config
     |--------------------------------------------
     */
-    'system_id' => 6,
-    'hostname' => 'http://localhost',
+    'system_id' => env('SYSTEM_ID'),
+    'hostname' => env('HOSTNAME'),
     'vehicle_badge_colors' => [
         'SPLASH WHITE'       => "kt-badge kt-badge--splash-white kt-badge--md kt-badge--rounded",
         'RED SPINEL MICA'    => "kt-badge kt-badge--red-spinel-mica kt-badge--md kt-badge--rounded",
@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Fleet Ordering System'),
 
     /*
     |--------------------------------------------------------------------------
@@ -108,8 +108,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/fleet_ordering_app'),
-
+    'url' => env('APP_URL'),
+    
     'asset_url' => env('ASSET_URL', null),
 
     /*
