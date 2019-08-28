@@ -96,7 +96,7 @@ class ProjectController extends Controller
             session('user')['user_type_id'],
             session('user')['customer_id']
         );
-         
+       
         $page_data = array(
             'projects' => $projects,
             'base_url' => url('/'),
