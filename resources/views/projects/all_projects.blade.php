@@ -33,10 +33,10 @@
                         <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-eye"></i>
                         </a>
-                        <a v-if="row.fpc_status == 'good'" :href="base_url + '/submit-po/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                       <!--  <a v-if="row.fpc_status == 'good'" :href="base_url + '/submit-po/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-file-text"></i>
                         </a>
-
+ -->
 
 
                        <!--  <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">

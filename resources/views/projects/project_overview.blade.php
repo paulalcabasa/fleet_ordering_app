@@ -40,7 +40,6 @@
                         Timeline
                     </a>
                 </li>
-                
             </ul>
         </div>
     </div>
@@ -109,46 +108,47 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            approvalId:             {!! json_encode($approval_id) !!},
-            projectId:              {!! json_encode($project_id) !!},
-            projectDetails:         {!! json_encode($project_details) !!},
-            customerDetails:        {!! json_encode($customer_details) !!},
-            attachments:            {!! json_encode($attachments) !!},
-            affiliates:             {!! json_encode($affiliates) !!},
-            contacts:               {!! json_encode($contacts) !!},
-            contactPersons:         {!! json_encode($contact_persons) !!},
-            salesPersons:           {!! json_encode($sales_persons) !!},
-            requirement:            {!! json_encode($requirement) !!},
-            competitors:            {!! json_encode($competitors) !!},
-            base_url:               {!! json_encode($base_url) !!},
-            competitor_attachments: {!! json_encode($competitor_attachments) !!},
-            status_colors:          {!! json_encode($status_colors) !!},
-            vehicle_colors:         {!! json_encode($vehicle_colors) !!},
-            vehicle_user_type:      {!! json_encode($vehicle_user_type) !!},
-            add_po_flag:            {!! json_encode($add_po_flag) !!},
-            cancel_flag:            false,
-            remarks:                null,
-            curBodyBuilder:         null,
-            curRearBody:            null,
-            curAdditionalItems:     null,
-            curModel:               "",
-            curColor:               "",
-            curQuantity:            "",
-            curDeliveryDetails:     [],
-            curFreebies:            [],
-            curDeliverySched:       [],
-            fpc:                    {!! json_encode($fpc) !!},
-            po_list:                {!! json_encode($po_list) !!},
-            cur_sales_order_number: '',
-            cur_so_details:         [],
-            cur_so_header:          [],
-            cur_so_lines:           [],
-            fwpc:                   {!! json_encode($fwpc) !!},
-            user_type:              {!! json_encode($user_type) !!},
-            display_alert:          false,
-            cur_fpc_project_id:     '',
-            selected_fpc:           "",
-            cur_fpc_details:        {
+            approvalId:               {!! json_encode($approval_id) !!},
+            projectId:                {!! json_encode($project_id) !!},
+            projectDetails:           {!! json_encode($project_details) !!},
+            customerDetails:          {!! json_encode($customer_details) !!},
+            attachments:              {!! json_encode($attachments) !!},
+            affiliates:               {!! json_encode($affiliates) !!},
+            contacts:                 {!! json_encode($contacts) !!},
+            contactPersons:           {!! json_encode($contact_persons) !!},
+            salesPersons:             {!! json_encode($sales_persons) !!},
+            requirement:              {!! json_encode($requirement) !!},
+            competitors:              {!! json_encode($competitors) !!},
+            base_url:                 {!! json_encode($base_url) !!},
+            competitor_attachments:   {!! json_encode($competitor_attachments) !!},
+            status_colors:            {!! json_encode($status_colors) !!},
+            vehicle_colors:           {!! json_encode($vehicle_colors) !!},
+            vehicle_user_type:        {!! json_encode($vehicle_user_type) !!},
+            add_po_flag:              {!! json_encode($add_po_flag) !!},
+            pending_fpc_vehicle_type: {!! json_encode($pending_fpc_vehicle_type) !!},
+            cancel_flag:              false,
+            remarks:                  null,
+            curBodyBuilder:           null,
+            curRearBody:              null,
+            curAdditionalItems:       null,
+            curModel:                 "",
+            curColor:                 "",
+            curQuantity:              "",
+            curDeliveryDetails:       [],
+            curFreebies:              [],
+            curDeliverySched:         [],
+            fpc:                      {!! json_encode($fpc) !!},
+            po_list:                  {!! json_encode($po_list) !!},
+            cur_sales_order_number:   '',
+            cur_so_details:           [],
+            cur_so_header:            [],
+            cur_so_lines:             [],
+            fwpc:                     {!! json_encode($fwpc) !!},
+            user_type:                {!! json_encode($user_type) !!},
+            display_alert:            false,
+            cur_fpc_project_id:       '',
+            selected_fpc:             "",
+            cur_fpc_details:          {
                 date_created : '',
                 prepared_by : '',
                 validity : '',
@@ -418,11 +418,11 @@
                 if(isExist == 0 ){
                     KTApp.block("#addFWPC .modal-content",{});
                     axios.post('/sales-order', {
-                        project_id : self.projectDetails.project_id,
-                        sales_order_id : self.cur_so_details.header_id,
-                        so_number : self.cur_so_details.order_number,
-                        fpc_project_id : self.cur_fpc_details.fpc_project_id,
-                        po_header_id : self.cur_po_details.po_header_id
+                        project_id:     self.projectDetails.project_id,
+                        sales_order_id: self.cur_so_details.header_id,
+                        so_number:      self.cur_so_details.order_number,
+                        fpc_project_id: self.cur_fpc_details.fpc_project_id,
+                        po_header_id:   self.cur_po_details.po_header_id
 
                     }).then( (response) => {
                         KTApp.unblock("#addFWPC .modal-content",{});
@@ -430,6 +430,7 @@
                         self.fwpc.push(response.data);
                         self.cur_so_details = [];
                         self.cur_sales_order_number = '';
+                        window.reload();
                     });
                 }
                 else {
@@ -548,6 +549,8 @@
                                     title: 'File has been uploaded!',
                                     timer : 1500,
                                     showConfirmButton : false       
+                                }).then( (response) => {
+                                    window.location.reload(true); 
                                 });
                         
                             }).catch(function(){
@@ -565,41 +568,47 @@
                 Swal.fire({
                     title: "Confirmation",
                     text: "Are you sure to " + status + " the FWPC?",
-                    input: 'text',
+                    input: 'textarea',
                     inputPlaceholder : "Please state your reason (optional)",
-                    showCancelButton: true        
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'        
                 }).then((result) => {
-    
-                    axios.post('validate-fwpc', {
-                        fwpc_id : fwpc_details.fwpc_id,
-                        status : status,
-                        remarks : result.value
-                    })
-                    .then(function (response) {
-                        var data = response.data;
-                       
-                        if(status == 'approve'){
-                            swal_type = "success";
-                            swal_message = "FWPC has been approved!";
-                        }
-                        else if(status == 'reject'){
-                            swal_type = "error";
-                            swal_message = "FWPC has been rejected!"; 
-                        }
-                  
-                        Swal.fire({
-                            type: swal_type,
-                            title: swal_message,
-                            showConfirmButton: false,
-                            timer: 1500
+                   if(result.dismiss != "cancel"){
+                        axios.post('validate-fwpc', {
+                            fwpc_id : fwpc_details.fwpc_id,
+                            status : status,
+                            remarks : result.value
+                        })
+                        .then(function (response) {
+                            var data = response.data;
+                            var status_name = "";
+                            if(status == 'approve'){
+                                swal_type = "success";
+                                swal_message = "FWPC has been approved!";
+                                status_name = "Approved";
+                            }
+                            else if(status == 'reject'){
+                                swal_type = "error";
+                                swal_message = "FWPC has been rejected!"; 
+                                status_name = "Rejected";
+                            }
+                        
+                            Swal.fire({
+                                type: swal_type,
+                                title: swal_message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then( (response) => {
+                                self.fwpc[index].status_name = status_name;
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
                         });
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                       
+                    }  
                 });
-           
             }
         },
         created: function () {

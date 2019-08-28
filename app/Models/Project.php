@@ -46,7 +46,7 @@ class Project extends Model
                         to_char(fp.creation_date,'mm/dd/yyyy') date_created,
                         fp.dealer_id,
                         CASE 
-                            WHEN fp.status IN(10,13) AND count(fpc.status) > 0 THEN 
+                            WHEN fp.status IN(11,13) AND count(fpc.status) > 0 THEN 
                                 CASE WHEN 
                                     SUM(
                                         CASE 
@@ -58,11 +58,11 @@ class Project extends Model
                             ELSE null
                         END fpc_status,
                         CASE 
-                            WHEN fp.status IN(10,13) AND count(ph.status) > 0 THEN 
+                            WHEN fp.status IN(11,13) AND count(ph.status) > 0 THEN 
                               CASE WHEN 
                                     SUM(
                                     CASE 
-                                        WHEN ph.status = 11 THEN 1 ELSE 0
+                                        WHEN ph.status = 7 THEN 1 ELSE 0
                                     END
                                      ) >= 1 THEN 'in_progress'
                                      ELSE 'good'
@@ -70,10 +70,14 @@ class Project extends Model
                             ELSE null
                         END  po_status,
                         CASE 
-                            WHEN fp.status IN(10,13) THEN 
-                              CASE WHEN 
-                                     COUNT(fwpc.fwpc_id) > 0 THEN 'good' ELSE 'in_progress'
-                                
+                            WHEN fp.status IN(11,13) THEN 
+                                CASE WHEN
+                                    SUM(
+                                        CASE WHEN fwpc.status = 4 THEN 1 
+                                        ELSE 0 
+                                    END) > 0
+                                    THEN 'good' 
+                                    ELSE 'in_progress'
                                 END
                             ELSE null
                        END  fwpc_status
@@ -240,6 +244,7 @@ class Project extends Model
                                 ON fpc.fpc_id = fpc_prj.fpc_id
                             WHERE 1 = 1
                                 AND fpc.status IN(4,12)
+                                AND fpc.vehicle_type = :vehicle_type
                         )";
        
         $params = [

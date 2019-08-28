@@ -96,8 +96,7 @@ class ProjectController extends Controller
             session('user')['user_type_id'],
             session('user')['customer_id']
         );
-
-    
+         
         $page_data = array(
             'projects' => $projects,
             'base_url' => url('/'),
@@ -143,17 +142,17 @@ class ProjectController extends Controller
         $current_date           = date('Y-m-d H:i:s');
         $timeline               = $m_activity_logs->get_activities_by_project($project_id);
 
-        // get max validity date from FPC Projects
-        // compare to current to know if dealer can still add purchase orders
-        // purchase orders can only added if FPC validity date is still covered
-        if($current_date < $max_validity_date){
-            $add_po_flag = true;
+        // get all vehicle types based on requirement
+        $vehicle_types_requirement = [];
+        foreach ($requirement as $key => $value) {
+            array_push($vehicle_types_requirement, $key);
         }
+        // remove duplicates for vehicle types
+        $vehicle_types_requirement = array_unique($vehicle_types_requirement);
 
-    
         // fleet price confirmation
         $fpc_headers = $m_fpc->get_fpc_by_project($project_id);
-       // dd($fpc_headers);
+        $vehicle_types_fpc = [];
         $fpc_data = [];
 
         foreach($fpc_headers as $fpc){
@@ -164,7 +163,20 @@ class ProjectController extends Controller
                 'fpc_lines'  => $items,
                 'attachments' => $attachments
             ];
+            array_push($vehicle_types_fpc, $fpc->vehicle_type);
             array_push($fpc_data,$temp_array);
+        }
+        $vehicle_types_fpc = array_unique($vehicle_types_fpc);
+        
+        // check if FPC has been created for all VEHICLE TYPE REQUIREMENTS
+        $pending_fpc_vehicle_type = array_diff($vehicle_types_requirement,$vehicle_types_fpc);
+        if(empty($pending_fpc_vehicle_type) && $current_date < $max_validity_date){
+            // get max validity date from FPC Projects
+            // compare to current to know if dealer can still add purchase orders
+            // purchase orders can only added if FPC validity date is still covered
+           // if($current_date < $max_validity_date){
+            $add_po_flag = true;
+           // }
         }
 
         // purchase orders
@@ -183,29 +195,30 @@ class ProjectController extends Controller
       
 
         $page_data = [
-            'project_id'             => $request->project_id,
-            'action'                 => $request->action,
-            'approval_id'            => $request->approval_id,
-            'project_details'        => $project_details,
-            'customer_details'       => $customer_details,
-            'attachments'            => $attachments,
-            'competitors'            => $competitors,
-            'affiliates'             => $affiliates,
-            'requirement'            => $requirement,
-            'contacts'               => $contacts,
-            'sales_persons'          => $sales_persons,
-            'contact_persons'        => $contact_persons,
-            'competitor_attachments' => $competitor_attachments,
-            'base_url'               => url('/'),
-            'vehicle_colors'         => $vehicle_colors,
-            'status_colors'          => $status_colors,
-            'fpc'                    => $fpc_data,
-            'po_list'                => $po_list,
-            'fwpc'                   => $fwpc,
-            'user_type'              => session('user')['user_type_id'],
-            'vehicle_user_type'      => $vehicle_user_type,
-            'add_po_flag'            => $add_po_flag,
-            'timeline'               => $timeline
+            'project_id'               => $request->project_id,
+            'action'                   => $request->action,
+            'approval_id'              => $request->approval_id,
+            'project_details'          => $project_details,
+            'customer_details'         => $customer_details,
+            'attachments'              => $attachments,
+            'competitors'              => $competitors,
+            'affiliates'               => $affiliates,
+            'requirement'              => $requirement,
+            'contacts'                 => $contacts,
+            'sales_persons'            => $sales_persons,
+            'contact_persons'          => $contact_persons,
+            'competitor_attachments'   => $competitor_attachments,
+            'base_url'                 => url('/'),
+            'vehicle_colors'           => $vehicle_colors,
+            'status_colors'            => $status_colors,
+            'fpc'                      => $fpc_data,
+            'po_list'                  => $po_list,
+            'fwpc'                     => $fwpc,
+            'user_type'                => session('user')['user_type_id'],
+            'vehicle_user_type'        => $vehicle_user_type,
+            'add_po_flag'              => $add_po_flag,
+            'timeline'                 => $timeline,
+            'pending_fpc_vehicle_type' => $pending_fpc_vehicle_type
         ];
         return view('projects.project_overview', $page_data);
     }

@@ -20,6 +20,7 @@ class FWPC extends Model
         $sql = "SELECT  fwpc.fwpc_id,
                         fwpc.fpc_project_id,
                         fwpc.po_header_id,
+                        fpc.vehicle_type,
                         ooha.order_number,
                         ott.name order_type_name,
                         ott.description order_type_desc,
@@ -63,6 +64,10 @@ class FWPC extends Model
                         AND ffa_dlr.reference_table = 'fs_fwpc'
                         AND ffa_dlr.reference_column = 'fwpc_id'
                         AND ffa_dlr.owner_id  = 6
+                     LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj 
+                        ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
+                     LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
                 WHERE 1 = 1
                         AND fwpc.project_id = :project_id";
         $params = [
@@ -92,7 +97,7 @@ class FWPC extends Model
                         cust.party_name,
                         cust.account_name,
                         cust.profile_class,
-                        ooha.flow_status_code status_name,
+                        fs.status_name,
                         ooha.payment_term_id,
                         rt.name payment_term,
                         terms.term_name payment_terms,
@@ -132,6 +137,8 @@ class FWPC extends Model
                         AND usr.user_source_id = fp.create_user_source_id
                     LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_prj.fpc_id
+                    LEFT JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = fwpc.status
                 WHERE 1 = 1
                         AND fwpc.fwpc_id = :fwpc_id";
         $params = [

@@ -71,6 +71,15 @@
     </div>
 </div>
 
+<div class="alert alert-info" role="alert" v-if="projects.length == 0 && search_flag">
+    <div class="alert-text">
+        <h4 class="alert-heading">No results found!</h4>
+        <p>It seems you have already created an FPC for this customer or not yet approved the project.</p>
+<!--         <hr>
+        <p class="mb-0">Kind</p> -->
+    </div>
+</div>
+
 <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" v-if="projects.length > 0">
     <div class="kt-portlet__head" style="">
         <div class="kt-portlet__head-label">
@@ -78,6 +87,7 @@
         </div>
     </div>
     <div class="kt-portlet__body"> 
+
         <table class="table">
             <thead>
                 <th>Project No</th>
@@ -125,7 +135,8 @@
                 customerId : '',
                 orgType : ''
             },
-            projects : []
+            projects : [],
+            search_flag :false
         },
         methods : {
             createPriceConfirmation(){
@@ -198,6 +209,7 @@
                 axios.get('/ajax-get-projects/' + self.customerDetails.customerId)
                     .then(function (response) {
                         self.projects = response.data;
+                        self.search_flag = true;
                         KTApp.unblockPage();
                     })
                     .catch(function (error) {

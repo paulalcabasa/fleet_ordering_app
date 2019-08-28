@@ -130,7 +130,7 @@
                                 <div class="form-group">
                                      <select class="form-control form-control-sm" v-model="selected_po">
                                         <option value="">Select purchase order</option>
-                                        <option :value="index" v-for="(row,index) in po_list">
+                                        <option :value="index" v-for="(row,index) in po_list" v-if="row.status_name == 'Approved'">
                                             @{{ row.po_number }}
                                         </option>
                                     </select>
