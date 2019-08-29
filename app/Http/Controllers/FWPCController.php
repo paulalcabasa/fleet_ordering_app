@@ -280,4 +280,29 @@ class FWPCController extends Controller
         $m_activity_logs->insert_log($activity_log);
         // end of activity log
     }
+
+    public function fwpc_list(FWPC $m_fwpc){
+       
+        $page_data = [
+        ];
+        return view('price_confirmation.fwpc_list', $page_data);
+    }
+
+    public function get_all_fwpc(FWPC $m_fwpc, Request $request){
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $fwpc_status = $request->fwpc_status;
+        $uninvoiced_flag = $request->uninvoiced_flag;
+          
+        $fwpc_list = $m_fwpc->get_fwpc_list(
+            session('user')['user_type_id'],
+            $start_date,
+            $end_date,
+            $fwpc_status,
+            $uninvoiced_flag
+        );
+
+
+        return $fwpc_list;
+    }
 }

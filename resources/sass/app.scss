@@ -206,3 +206,17 @@
 .kt-content .kt-grid__item .kt-grid__item--fluid {
 	padding:1em;
 }
+
+table.dataTable {
+        thead, tbody {
+            th,td {
+                -webkit-box-sizing: content-box !important;
+                -moz-box-sizing: content-box !important;
+                box-sizing: content-box !important;
+            }
+        }
+}
+
+.dataTables_wrapper .dataTable {
+	margin: 0 !important;
+}
