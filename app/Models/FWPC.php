@@ -174,4 +174,86 @@ class FWPC extends Model
             ]);
     }
 
+    public function get_fwpc_list(
+        $user_type,
+        $start_date,
+        $end_date,
+        $fwpc_status,
+        $uninvoiced_flag
+    ){
+
+        $where = "";
+        if($user_type == 32){
+            $where = " AND fpc.vehicle_type = 'LCV'";
+        }
+        else if($user_type == 33){
+            $where = " AND fpc.vehicle_type = 'CV'";
+        }
+
+        if($start_date != "" && $end_date != ""){
+            $where .= " AND trunc(ooha.ordered_date) BETWEEN '".$start_date."' AND '". $end_date."'";
+        }
+
+        if($fwpc_status != ""){
+            $where .= " AND fwpc.status = " . $fwpc_status;
+        }
+
+        if($uninvoiced_flag == "true"){
+            $where .= "AND rcta.trx_number IS NULL";
+        }
+ 
+        $sql = "SELECT fwpc.fwpc_id,
+                        fwpc.project_id,
+                        fs.status_name fwpc_status,
+                        fpc.vehicle_type,
+                        cust.party_name,
+                        cust.account_name,
+                        cust.profile_class,
+                        fc.customer_name fleet_account_name,
+                        ooha.order_number,
+                        oola.line_number,
+                        ooha.ordered_date,
+                        qlh.name price_list_name,
+                        vehicle.sales_model,
+                        vehicle.color,
+                        rcta.trx_number,            
+                        rcta.attribute3 cs_no
+                FROM ipc_dms.fs_fwpc fwpc 
+                    LEFT JOIN ipc_dms.fs_status fs
+                        ON fwpc.status = fs.status_id
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fwpc.project_id
+                    LEFT JOIN IPC_DMS.FS_CUSTOMERS fc
+                        ON fc.customer_id = fp.customer_id
+                    LEFT JOIN apps.oe_order_headers_all ooha
+                        ON ooha.header_id = fwpc.sales_order_header_id
+                    LEFT JOIN apps.oe_order_lines_all oola
+                        ON oola.header_id = ooha.header_id
+                    LEFT JOIN  qp.qp_list_headers_tl qlh
+                        ON qlh.list_header_id = ooha.price_list_id
+                    LEFT JOIN ipc_dms.oracle_customers_v cust
+                        ON cust.cust_account_id = ooha.sold_to_org_id
+                        AND ooha.invoice_to_org_id = cust.site_use_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj 
+                        ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                    LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                        ON vehicle.inventory_item_id = oola.inventory_item_id
+                        AND vehicle.organization_id =  oola.ship_from_org_id   
+                     LEFT JOIN (
+                        SELECT *
+                        FROM apps.ra_customer_trx_all
+                        WHERE cust_trx_type_id =1002
+                     ) rcta
+                        ON (ooha.order_number) = (rcta.interface_header_attribute1)
+                WHERE 1 = 1
+                    $where";
+    //    DB::enableQueryLog();
+        $query = DB::select($sql);
+     //  $query = DB::getQueryLog();
+     //   dd($query);
+        return $query;
+    }
+
 }

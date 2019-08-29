@@ -14,6 +14,12 @@ class DashboardController extends Controller
         POHeaders $m_poh
     ){
 
+        // if sales invoicing user, redirect to FWPC Listing
+        if(session('user')['user_type_id'] == 38){
+            return redirect()->route('fwpc_list');
+        }
+
+
         $project_ctr = $m_project->count_all_projects(
             session('user')['user_type_id'],
             session('user')['customer_id']
@@ -78,7 +84,6 @@ class DashboardController extends Controller
             'month_name'           => $month_name,
             'year'                 => $year
         ];
-      
     
         return view('dashboard', ($page_data));
     }

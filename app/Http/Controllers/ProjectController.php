@@ -192,8 +192,6 @@ class ProjectController extends Controller
             $vehicle_user_type = 'CV';
         }
 
-      
-
         $page_data = [
             'project_id'               => $request->project_id,
             'action'                   => $request->action,
