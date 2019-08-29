@@ -13,7 +13,7 @@ class LogoutController extends Controller
     public function __construct()
     {
       //  $this->host = $_SERVER['HTTP_HOST'];    
-        $this->host = 'localhost';    
+        $this->host = config('app.hostname');    
     }
     
     public function logout(Request $request)
