@@ -148,14 +148,15 @@
             display_alert:            false,
             cur_fpc_project_id:       '',
             selected_fpc:             "",
+            selected_po : "",
             cur_fpc_details:          {
                 date_created : '',
                 prepared_by : '',
                 validity : '',
                 status_name : '',
-                fpc_project_id : ''
+                fpc_project_id : '',
+                vehicle_type : ''
             },
-            selected_po : "",
             cur_po_details : {
                 date_created : '',
                 prepared_by : '',
@@ -609,6 +610,17 @@
                         });
                     }  
                 });
+            },
+            showAddFWPC(){
+                // defaultly select the fpc
+                var self = this;
+                for (var i = 0; i < self.fpc.length; i++) {
+                    if(self.fpc[i]['fpc_header'].vehicle_type == self.vehicle_user_type){
+                        self.selected_fpc = i;
+                        break;
+                    }  
+                }
+                $("#addFWPC").modal('show');
             }
         },
         created: function () {
@@ -654,17 +666,22 @@
         },
         watch : {
             selected_fpc : function(val){
-                this.cur_fpc_details.date_created   = this.fpc[val]['fpc_header'].date_created;
-                this.cur_fpc_details.prepared_by    = this.fpc[val]['fpc_header'].prepared_by;
-                this.cur_fpc_details.validity       = this.fpc[val]['fpc_header'].validity;
-                this.cur_fpc_details.status_name    = this.fpc[val]['fpc_header'].status_name;
-                this.cur_fpc_details.fpc_project_id = this.fpc[val]['fpc_header'].fpc_project_id;
+                if(this.fpc[val]){
+                    this.cur_fpc_details.date_created   = this.fpc[val]['fpc_header'].date_created;
+                    this.cur_fpc_details.prepared_by    = this.fpc[val]['fpc_header'].prepared_by;
+                    this.cur_fpc_details.validity       = this.fpc[val]['fpc_header'].validity;
+                    this.cur_fpc_details.status_name    = this.fpc[val]['fpc_header'].status_name;
+                    this.cur_fpc_details.fpc_project_id = this.fpc[val]['fpc_header'].fpc_project_id;
+                    this.cur_fpc_details.vehicle_type   = this.fpc[val]['fpc_header'].vehicle_type;
+                }
             }, 
             selected_po : function(val){
-                this.cur_po_details.date_created = this.po_list[val].date_created;
-                this.cur_po_details.prepared_by  = this.po_list[val].created_by;
-                this.cur_po_details.po_header_id = this.po_list[val].po_header_id;
-                this.cur_po_details.status_name  = this.po_list[val].status_name;
+                if(this.po_list[val]){
+                    this.cur_po_details.date_created = this.po_list[val].date_created;
+                    this.cur_po_details.prepared_by  = this.po_list[val].created_by;
+                    this.cur_po_details.po_header_id = this.po_list[val].po_header_id;
+                    this.cur_po_details.status_name  = this.po_list[val].status_name;
+                }
             }
         }
         

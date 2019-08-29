@@ -66,7 +66,7 @@
     <div class="kt-portlet__foot" v-if="(user_type == 32 || user_type == 33) && projectDetails.status_name != 'Closed'">
         <div class="row kt-pull-right">
             <div class="col-lg-12">
-                 <a href="#"  data-toggle="modal" data-target="#addFWPC" class="btn btn-primary btn-sm">
+                 <a href="#" @click.prevent="showAddFWPC()" class="btn btn-primary btn-sm">
                     <span class="kt-hidden-mobile">Add FWPC</span>
                 </a>  
             </div>
