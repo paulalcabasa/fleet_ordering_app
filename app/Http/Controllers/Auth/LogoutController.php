@@ -11,8 +11,7 @@ class LogoutController extends Controller
     protected $host;
 
     public function __construct()
-    {
-      //  $this->host = $_SERVER['HTTP_HOST'];    
+    { 
         $this->host = config('app.hostname');    
     }
     
@@ -20,6 +19,6 @@ class LogoutController extends Controller
     {
         Auth::logout();
         $request->session()->flush();
-        return redirect()->intended('http://'.$this->host.'/webapps/login/logout');
+        return redirect()->intended($this->host.'/webapps/login/logout');
     }
 }
