@@ -102,13 +102,13 @@
                                         </option>
                                     </select>
                                     <div v-if="cur_fpc_details.date_created != ''" class="kt-margin-t-10">
-                                        <div class="row kt-margin-b-5">
+                                        <!-- <div class="row kt-margin-b-5">
                                             <span class="col-md-4 kt-font-bold">Date Created</span>
                                             <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ cur_fpc_details.date_created }}</span>
-                                        </div>
+                                        </div> -->
                                         <div class="row kt-margin-b-5">
-                                            <span class="col-md-4 kt-font-bold">Prepared By</span>
-                                            <span class="col-md-8">@{{ cur_fpc_details.prepared_by }}</span>
+                                            <span class="col-md-4 kt-font-bold">Vehicle Type</span>
+                                            <span class="col-md-8">@{{ cur_fpc_details.vehicle_type }}</span>
                                         </div>
                                         <div class="row kt-margin-b-5">
                                             <span class="col-md-4 kt-font-bold">Validity</span>
