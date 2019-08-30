@@ -100,4 +100,10 @@ class CustomerController extends Controller
         return json_encode($customers);
     }
 
+    public function get_customers_select2(Request $request, Customer $m_customer){
+        $query = $request->all();
+        $customers = $m_customer->get_customers_by_project($query['term']);
+        return json_encode($customers);
+    }
+
 }

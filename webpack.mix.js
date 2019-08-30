@@ -106,7 +106,8 @@ mix.scripts([
 /*	'public/metronic/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js',
 	'public/metronic/assets/maps.js',
 	'public/metronic/assets/vendors/custom/gmaps/gmaps.js',*/
-    'public/metronic/assets/vendors/custom/datatables/datatables.bundule.min.js',
-	'public/metronic/assets/demo/default/base/scripts.bundle.min.js',
-	'public/metronic/assets/app/bundle/app.bundle.min.js'
+ 
+	'public/metronic/assets/demo/default/base/scripts.bundle.js',
+	'public/metronic/assets/app/bundle/app.bundle.js',
+    'public/metronic/assets/vendors/custom/datatables/datatables.bundle.js'
 ], 'public/js/metronic.bundle.js'); 

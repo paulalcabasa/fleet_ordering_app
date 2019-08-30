@@ -213,6 +213,32 @@ class Customer extends Model
         return $query;
     }
 
+    public function get_customers_by_project($customer_name){
+        /*$sql = "SELECT  fc.customer_id,
+                        fc.customer_name
+                FROM ipc_dms.fs_customers fc
+                WHERE 1 = 1
+                    AND fc.customer_id IN (
+                        SELECT fp.customer_id
+                        FROM ipc_dms.fs_projects fp
+                        WHERE 1 = 1 
+                    )
+                    AND lower(fc.customer_name) like '%".strtolower($customer_name)."%' 
+                    AND fc.status = 1
+                LIMIT 10";
+        $query = DB::select($sql);
+        return $query;*/
+
+        $query = DB::connection('oracle')
+                ->table('ipc_dms.fs_customers')
+                ->selectRaw(DB::raw('customer_id,customer_name'))
+                ->whereRaw("lower(customer_name) like '%".strtolower($customer_name)."%' and status = '1'")
+                ->whereRaw("customer_id IN (SELECT customer_id FROM ipc_dms.fs_projects)")
+                ->limit(5)
+                ->get();
+        return $query;
+
+    }
     
 
 }
