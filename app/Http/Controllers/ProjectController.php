@@ -29,6 +29,7 @@ use App\Models\FPC;
 use App\Models\FPC_Item;
 use App\Models\POHeaders;
 use App\Models\FWPC;
+use App\Models\Dealer;
 
 
 class ProjectController extends Controller
@@ -92,15 +93,24 @@ class ProjectController extends Controller
     }
 
     public function all_projects(Project $m_project){
-        $projects = $m_project->get_projects(
+       /* $projects = $m_project->get_projects(
             session('user')['user_type_id'],
             session('user')['customer_id']
-        );
-       
+        );*/
+        
+        if(in_array(session('user')['user_type_id'], array(31,32)) ){
+            $dealers = Dealer::all();
+        }
+        else {
+            $dealers = Dealer::find(session('user')['customer_id']);
+        }
+
         $page_data = array(
-            'projects' => $projects,
-            'base_url' => url('/'),
-            'status_colors' => config('app.status_colors')
+            'base_url'      => url('/'),
+            'status_colors' => config('app.status_colors'),
+            'dealers'       => $dealers,
+            'user_type'     => session('user')['user_type_id'],
+            'customer_id'   => session('user')['customer_id'] == null ? "" : session('user')['customer_id']
         );
 
     	return view('projects.all_projects',$page_data);
@@ -1064,6 +1074,26 @@ class ProjectController extends Controller
         return [
             'status' => 'Open'
         ];
+    }
+
+    public function ajax_get_filtered_projects(Request $m_request, Project $m_project){
+        $customer_id = $m_request->customer_id;
+        $start_date  = $m_request->start_date;
+        $end_date    = $m_request->end_date;
+        $dealer      = $m_request->dealer;
+        $status      = $m_request->status;
+
+        $projects = $m_project->get_filtered_projects(
+            session('user')['user_type_id'],
+            $dealer,
+            $start_date,
+            $end_date,
+            $customer_id,
+            $status
+        );
+
+        return $projects;
+    
     }
  
 }
