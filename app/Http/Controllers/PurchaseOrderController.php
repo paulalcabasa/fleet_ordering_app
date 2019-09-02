@@ -14,6 +14,7 @@ use App\Models\Attachment;
 use App\Models\Approver;
 use App\Models\ModuleApproval;
 use App\Models\ActivityLogs;
+use App\Models\Dealer;
 
 
 class PurchaseOrderController extends Controller
@@ -65,15 +66,26 @@ class PurchaseOrderController extends Controller
 
     public function all_po(POHeaders $m_poh){
 
-        $po_list = $m_poh->get_all_po(
+     /*   $po_list = $m_poh->get_all_po(
             session('user')['customer_id'], 
             session('user')['user_type_id']
-        );
+        );*/
+
+        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+            $dealers = Dealer::all();
+        }
+        else {
+            $dealers = Dealer::find(session('user')['customer_id']);
+        }
+     
 
         $page_data = [
-            'po_list'       => $po_list,
             'status_colors' => config('app.status_colors'),
-            'base_url'      => url('/')
+            'base_url'      => url('/'),
+            'dealers'       => $dealers,
+            'user_type'     => session('user')['user_type_id'],
+            'customer_id'   => session('user')['customer_id'] == null ? "" : session('user')['customer_id']
+
         ];
 
     	return view('purchase_order.all_po',$page_data);
@@ -376,5 +388,23 @@ class PurchaseOrderController extends Controller
         }
     }
 
+    public function get_filtered_po(Request $m_request, POHeaders $m_poh){
+        $customer_id = $m_request->customer_id;
+        $start_date  = $m_request->start_date;
+        $end_date    = $m_request->end_date;
+        $dealer      = $m_request->dealer;
+        $status      = $m_request->status;
+     
+        $po = $m_poh->get_filtered_po(
+            session('user')['user_type_id'],
+            $dealer,
+            $start_date,
+            $end_date,
+            $customer_id,
+            $status
+        );
 
+        return $po;
+
+    }
 }

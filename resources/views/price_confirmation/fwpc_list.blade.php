@@ -14,58 +14,74 @@
             </div>
             <div class="kt-portlet__head-toolbar">
                 <div class="kt-portlet__head-group">
-                    <a href="#" data-ktportlet-tool="toggle" class="btn btn-sm btn-icon btn-clean btn-icon-md"><i class="la la-angle-down"></i></a>
-                    <a href="#" data-ktportlet-tool="remove" class="btn btn-sm btn-icon btn-clean btn-icon-md"><i class="la la-close"></i></a>
+                    <a href="#" v-show="showFilterButton" @click.prevent="filterFWPC" class="btn btn-clean btn-sm btn-icon btn-icon-md">
+                        <i class="flaticon2-search-1"></i>
+                    </a>
+                    <a href="#" data-ktportlet-tool="toggle" class="btn btn-sm btn-icon btn-clean btn-icon-md">
+                        <i class="la la-angle-down"></i>
+                    </a>
                 </div>
             </div>
         </div>
         <div class="kt-portlet__body">
             <div class="kt-portlet__content">
                 <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group row" style="margin-bottom:1em !important;">
-                        <label class="col-3  col-form-label">Order Date : </label>
-                        <div class="col-4">
-                            <input type="date" class="form-control" name="" v-model="start_date">
+                    <div class="col-md-6">
+                        <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-2  col-form-label">Date</label>
+                            <div class="col-5">
+                                <input type="date" class="form-control" name="" v-model="start_date">
+                            </div>
+                            <div class="col-5">
+                                <input type="date" class="form-control" name="" v-model="end_date">
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <input type="date" class="form-control" name="" v-model="end_date">
+
+                        <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-2  col-form-label"></label>
+                            <div class="col-10">
+                                <select class="form-control" id="sel_customer" style="width:100%;">
+                                    <option value="">Select a customer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-2"></label>
+                            <div class="col-10">
+                                <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
+                                    <input type="checkbox" v-model="uninvoiced_flag" /> Show only uninvoiced orders
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6"> 
+                        <div class="form-group row" style="margin-bottom:1em !important;" v-show="user_type == 33 || user_type == 32">
+                            <label class="col-3  col-form-label">Dealer </label>
+                            <div class="col-9">
+                                <select class="custom-select form-control" style="width:100%;" id="sel_dealer" v-model="selected_dealer" v-select>
+                                    <option selected value="">Select a dealer</option>
+                                    <option v-for="(row,index) in dealers" :value="row.cust_account_id">
+                                        @{{ row.account_name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-3  col-form-label">Status</label>
+                            <div class="col-9">
+                                <select class="form-control" v-model="fwpc_status" v-select style="width:100%;" id="sel_status" >
+                                    <option selected value="">Select status</option>
+                                    <option value="4">Approved</option>
+                                    <option value="7">Pending</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="form-group row" style="margin-bottom:1em !important;">
-                        <label class="col-3  col-form-label">FWPC Status : </label>
-                        <div class="col-9">
-                            <select class="custom-select form-control">
-                                <option selected value="">Select status</option>
-                                <option value="4">Approved</option>
-                                <option value="7">Pending</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" style="margin-bottom:1em !important;">
-                        <label class="col-3"></label>
-                        <div class="col-9">
-                            <label class="kt-checkbox kt-checkbox--solid kt-checkbox--brand">
-                                <input type="checkbox" v-model="uninvoiced_flag" /> Show only uninvoiced orders
-                                <span></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" style="margin-bottom:1em !important;">
-                        <label class="col-3"></label>
-                        <div class="col-9 ">
-                            <button type="button" class="btn btn-info btn-sm" @click="filterFWPC()">Filter</button>
-                        </div>
-                    </div>
-
                 </div>
-                <div class="col-md-6">
-
-                </div>
-            </div>
             </div>
         </div>
     </div>  
@@ -77,7 +93,6 @@
                     FWPC List
                 </h3>
             </div>
-            
         </div>
         <div class="kt-portlet__body">    
             <table id="price_confirmation_table" class="display table table-bordered  nowrap" style="width:100%" >
@@ -116,6 +131,7 @@
                     </tr>
                 </tbody>
             </table>  
+        </div>
     </div>
 </div>
 @stop
@@ -124,17 +140,41 @@
 @push('scripts')
 <script>    
 
+    function updateFunction (el, binding) {
+        // get options from binding value. 
+        // v-select="THIS-IS-THE-BINDING-VALUE"
+        let options = binding.value || {};
+
+        // set up select2
+        $(el).select2(options).on("select2:select", (e) => {
+            // v-model looks for
+            //  - an event named "change"
+            //  - a value with property path "$event.target.value"
+            el.dispatchEvent(new Event('change', { target: e.target }));
+        });
+    }
+
+    Vue.directive('select', {
+        inserted: updateFunction ,
+        componentUpdated: updateFunction,
+    });
+
     var table;
 
 
     var vm =  new Vue({
         el : "#app",
         data: {
-            fwpc_list : [],
-            start_date : '',
-            end_date : '',
-            uninvoiced_flag : '',
-            fwpc_status : ''
+            fwpc_list:         [],
+            start_date:        '',
+            end_date:          '',
+            uninvoiced_flag:   '',
+            fwpc_status:       '',
+            dealers:           {!! json_encode($dealers) !!},
+            user_type:         {!! json_encode($user_type) !!},
+            selected_customer: '',
+            selected_dealer:   {!! json_encode($customer_id) !!},
+            showFilterButton:  false
         },
         created: function () {
 
@@ -155,14 +195,58 @@
                 self.fwpc_status = localStorage.getItem('fwpc_status');
             } 
             
-
+            $("#sel_dealer,#sel_status").select2();
             self.supplyFWPC();  
+
+            var portlet = new KTPortlet('kt_portlet_tools_1');
+
+             // Toggle event handlers
+            portlet.on('beforeCollapse', function(portlet) {
+                self.showFilterButton = false;
+            });
+
+            portlet.on('beforeExpand', function(portlet) {
+                self.showFilterButton = true;
+            });
+
+            $('#sel_customer').select2({
+                tokenSeparators: [',', ' '],
+                minimumInputLength: 2,
+                minimumResultsForSearch: 10,
+                allowClear:true,
+                placeholder : 'Select a customer',
+                ajax: {
+                    url: "{{ url('get-customers-select2')}}",
+                    dataType: "json",
+                    type: "GET",
+                    data: function (params) {
+
+                        var queryParameters = {
+                            term: params.term
+                        }
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.customer_name,
+                                    id: item.customer_id
+                                }
+                            })
+                        };
+                    }
+                }
+            });
+
+
   
         },
         methods : {
             supplyFWPC(){
                 var self = this;
-           
+                var customer_id = $("#sel_customer").val();
+                
                 KTApp.blockPage({
                     overlayColor: '#000000',
                     type: 'v2',
@@ -173,10 +257,12 @@
                 // supply fwpc table
                 axios.get('get-all-fwpc', {
                     params : {
-                        start_date : self.start_date,
-                        end_date : self.end_date,
-                        uninvoiced_flag : self.uninvoiced_flag,
-                        fwpc_status : self.fwpc_status
+                        start_date:      self.start_date,
+                        end_date:        self.end_date,
+                        uninvoiced_flag: self.uninvoiced_flag,
+                        fwpc_status:     self.fwpc_status,
+                        customer_id:     customer_id,
+                        dealer:          self.selected_dealer,
                     }
                 }).then( (response) => {
                     if($.fn.dataTable.isDataTable('#price_confirmation_table')){

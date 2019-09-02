@@ -179,15 +179,17 @@ class FWPC extends Model
         $start_date,
         $end_date,
         $fwpc_status,
-        $uninvoiced_flag
+        $uninvoiced_flag,
+        $customer_id,
+        $dealer
     ){
 
         $where = "";
         if($user_type == 32){
-            $where = " AND fpc.vehicle_type = 'LCV'";
+            $where .= " AND fpc.vehicle_type = 'LCV'";
         }
         else if($user_type == 33){
-            $where = " AND fpc.vehicle_type = 'CV'";
+            $where .= " AND fpc.vehicle_type = 'CV'";
         }
 
         if($start_date != "" && $end_date != ""){
@@ -199,7 +201,15 @@ class FWPC extends Model
         }
 
         if($uninvoiced_flag == "true"){
-            $where .= "AND rcta.trx_number IS NULL";
+            $where .= " AND rcta.trx_number IS NULL";
+        }
+
+        if($dealer != ""){
+            $where .= " AND fp.dealer_id = " . $dealer;
+        }
+
+        if($customer_id != ""){
+            $where .= " AND fp.customer_id = " . $customer_id;
         }
  
         $sql = "SELECT fwpc.fwpc_id,
@@ -249,10 +259,8 @@ class FWPC extends Model
                         ON (ooha.order_number) = (rcta.interface_header_attribute1)
                 WHERE 1 = 1
                     $where";
-    //    DB::enableQueryLog();
+
         $query = DB::select($sql);
-     //  $query = DB::getQueryLog();
-     //   dd($query);
         return $query;
     }
 

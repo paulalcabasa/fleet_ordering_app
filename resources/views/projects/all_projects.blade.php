@@ -93,8 +93,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-      
+        </div>  
     </div>  
 
     <div class="kt-portlet kt-portlet--mobile">
@@ -175,7 +174,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
 </div>
@@ -316,6 +314,7 @@
                 tokenSeparators: [',', ' '],
                 minimumInputLength: 2,
                 minimumResultsForSearch: 10,
+                allowClear:true,
                 placeholder : 'Select a customer',
                 ajax: {
                     url: "{{ url('get-customers-select2')}}",
@@ -340,6 +339,8 @@
                     }
                 }
             });
+
+      
 
         }
     });

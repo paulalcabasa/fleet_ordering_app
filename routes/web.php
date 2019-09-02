@@ -76,6 +76,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
 	Route::get('ajax-get-fpc-details/{fpc_item_id}/{requirement_line_id}', 'PriceConfirmationController@ajax_get_fpc_details');
 	Route::get('print-fpc-dealer/{print_type}/{project_id}/{fpc_id}/', 'PriceConfirmationController@print_fpc_dealer');
+	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');
@@ -86,6 +87,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('save-po', 'PurchaseOrderController@save_po');
 	Route::post('upload-po-attachment', 'PurchaseOrderController@upload_po_attachment');
 	Route::post('save-po-validation', 'PurchaseOrderController@save_po_validation');
+	Route::get('ajax-get-filtered-po', 'PurchaseOrderController@get_filtered_po');
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');
