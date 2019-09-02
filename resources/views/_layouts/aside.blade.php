@@ -45,7 +45,7 @@
             </li>
             <li class="kt-menu__item {{ request()->is('all-purchase-order') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-po') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
+                    <i class="kt-menu__link-icon flaticon2-shopping-cart"></i>
                     <span class="kt-menu__link-text">Purchase Orders</span>
                 </a>
             </li>
@@ -58,7 +58,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33,38)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">Pricing</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -72,18 +72,18 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33)))
             <li class="kt-menu__item {{ request()->is('all-price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-price-confirmation') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
+                    <i class="kt-menu__link-icon flaticon2-crisp-icons"></i>
                     <span class="kt-menu__link-text">FPC</span>
                 </a>
             </li>
             @endif 
-            @if(in_array(session('user')['user_type_id'], array(32,33,38)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38)))
             <li class="kt-menu__item {{ request()->is('fwpc-list') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/fwpc-list') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-interface-9"></i>
+                    <i class="kt-menu__link-icon flaticon2-paper"></i>
                     <span class="kt-menu__link-text">FWPC</span>
                 </a>
             </li>

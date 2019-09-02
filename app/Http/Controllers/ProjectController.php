@@ -93,12 +93,8 @@ class ProjectController extends Controller
     }
 
     public function all_projects(Project $m_project){
-       /* $projects = $m_project->get_projects(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        );*/
         
-        if(in_array(session('user')['user_type_id'], array(31,32)) ){
+        if(in_array(session('user')['user_type_id'], array(32,33)) ){
             $dealers = Dealer::all();
         }
         else {

@@ -226,6 +226,65 @@ class FPC extends Model
 
     }
 
+    public function get_filtered_fpc(
+        $user_type,
+        $dealer_id,
+        $start_date,
+        $end_date,
+        $customer_id,
+        $status,
+        $vehicle_type
+    ){
+
+        $where = "";
+        
+        
+        if($user_type == 32 || $user_type == 33){ // Dealer staff or dealer manager
+            $where = "AND fpc.vehicle_type = '".$vehicle_type."'";
+        }
+        
+
+        if($start_date != "" && $end_date != ""){
+            $where .= " AND trunc(fpc.creation_date) BETWEEN '".$start_date."' AND '". $end_date."'";
+        }
+        if($dealer_id != ""){
+            $where .= "AND fp.dealer_id = " . $dealer_id;
+        }
+        if($customer_id != ""){
+            $where .= "AND fp.customer_id = " . $customer_id;
+        }
+
+        if($status != ""){
+            $where .= "AND fpc.status = " . $status;
+        }
+
+        $sql = "SELECT fpc.fpc_id,
+                        fpc_prj.project_id,
+                        fc.customer_name,
+                        fpc.vehicle_type,
+                        fs.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fpc.creation_date,'mm/dd/yyyy') date_created
+                FROM ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.fs_status fs  
+                        ON fs.status_id = fpc.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fpc.created_by 
+                        AND usr.user_source_id = fpc.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_id = fpc.fpc_id
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fpc_prj.project_id
+                WHERE 1 = 1
+                    {$where}";
+      
+        $query = DB::select($sql);
+        return $query;
+    }
+
+
 
 
 

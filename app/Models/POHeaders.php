@@ -141,4 +141,57 @@ class POHeaders extends Model
         }
     }
 
+    public function get_filtered_po(
+        $user_type,
+        $dealer_id,
+        $start_date,
+        $end_date,
+        $customer_id,
+        $status
+    ){
+
+        $where = "";
+        
+        /*
+        if($user_type == 27 || $user_type == 30){ // Dealer staff or dealer manager
+            $where = "AND fp.dealer_id = " . $dealer_id;
+        }
+        */
+
+        if($start_date != "" && $end_date != ""){
+            $where .= " AND trunc(ph.creation_date) BETWEEN '".$start_date."' AND '". $end_date."'";
+        }
+        if($dealer_id != ""){
+            $where .= "AND fp.dealer_id = " . $dealer_id;
+        }
+        if($customer_id != ""){
+            $where .= "AND fp.customer_id = " . $customer_id;
+        }
+
+        if($status != ""){
+            $where .= "AND ph.status = " . $status;
+        }
+        $sql = "SELECT ph.po_header_id,
+                        ph.po_number,
+                        ph.project_id,
+                        fc.customer_name account_name,
+                        to_char(ph.creation_date,'MM/DD/YYYY') date_created,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        fs.status_name
+                FROM ipc_dms.fs_po_headers ph
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = ph.project_id
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fp.customer_id 
+                    LEFT JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = ph.created_by
+                        AND ph.create_user_source_id = usr.user_source_id
+                    LEFT JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = ph.status
+                WHERE  1 = 1
+                    {$where}";
+        $query = DB::select($sql);
+        return $query;
+    }
+
 }

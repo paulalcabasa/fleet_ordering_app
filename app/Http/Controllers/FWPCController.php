@@ -13,6 +13,7 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Attachment;
 use App\Models\Approver;
+use App\Models\Dealer;
 
 class FWPCController extends Controller
 {
@@ -283,23 +284,41 @@ class FWPCController extends Controller
 
     public function fwpc_list(FWPC $m_fwpc){
        
+        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+            $dealers = Dealer::all();
+        }
+        else {
+            $dealers = Dealer::find(session('user')['customer_id']);
+        }
+
         $page_data = [
+            'dealers'       => $dealers,
+            'status_colors' => config('app.status_colors'),
+            'user_type'     => session('user')['user_type_id'],
+            'customer_id'   => session('user')['customer_id'] == null ? "" : session('user')['customer_id']
         ];
+
+        
         return view('price_confirmation.fwpc_list', $page_data);
     }
 
     public function get_all_fwpc(FWPC $m_fwpc, Request $request){
-        $start_date = $request->start_date;
-        $end_date = $request->end_date;
-        $fwpc_status = $request->fwpc_status;
+        $start_date      = $request->start_date;
+        $end_date        = $request->end_date;
+        $fwpc_status     = $request->fwpc_status;
         $uninvoiced_flag = $request->uninvoiced_flag;
-          
+        $customer_id     = $request->customer_id;
+        $dealer          = $request->dealer;
+        $user_type_id    = session('user')['user_type_id'];
+
         $fwpc_list = $m_fwpc->get_fwpc_list(
-            session('user')['user_type_id'],
+            $user_type_id,
             $start_date,
             $end_date,
             $fwpc_status,
-            $uninvoiced_flag
+            $uninvoiced_flag,
+            $customer_id,
+            $dealer
         );
 
 

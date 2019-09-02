@@ -23,6 +23,7 @@ use PDF;
 use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
+use App\Models\Dealer;
 
 class PriceConfirmationController extends Controller
 {   
@@ -36,25 +37,22 @@ class PriceConfirmationController extends Controller
     public function all_price_confirmation(FPC $m_fpc){
         $user_type_id = session('user')['user_type_id'];
 
-        if(in_array($user_type_id, array(32,33))){
-            $fpc_list = $m_fpc->get_fpc(
-                $this->vehicle_type->get_vehicle_type($user_type_id)
-            );
-
-            $page_data = [
-                'fpc_list' => $fpc_list,
-                'base_url' => url('/')
-            ];
-        	return view('price_confirmation.all_price_confirmation', $page_data);
+        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+            $dealers = Dealer::all();
         }
-  /*      else if(in_array($user_type_id, array(27))){
-            $fpc_list = $m_fpc->get_fpc_dealer(session('user')['customer_id']);
-            $page_data = [
-                'fpc_list' => $fpc_list,
-                'base_url' => url('/')
-            ];
-            return view('price_confirmation.dealer_fpc_list', $page_data);
-        }*/
+        else {
+            $dealers = Dealer::find(session('user')['customer_id']);
+        }
+
+        $page_data = [
+            'base_url'      => url('/'),
+            'dealers'       => $dealers,
+            'status_colors' => config('app.status_colors'),
+            'user_type'     => session('user')['user_type_id'],
+            'customer_id'   => session('user')['customer_id'] == null ? "" : session('user')['customer_id']
+        ];
+    	return view('price_confirmation.all_price_confirmation', $page_data);
+       
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
@@ -547,5 +545,28 @@ class PriceConfirmationController extends Controller
 
         $pdf = PDF::loadView('pdf.print_fpc_dealer', $data);
         return $pdf->setPaper('a4','portrait')->stream();
+    }
+
+
+    public function get_filtered_fpc(Request $m_request, FPC $m_fpc){
+        $customer_id  = $m_request->customer_id;
+        $start_date   = $m_request->start_date;
+        $end_date     = $m_request->end_date;
+        $dealer       = $m_request->dealer;
+        $status       = $m_request->status;
+        $user_type_id = session('user')['user_type_id'];
+
+        $fpc = $m_fpc->get_filtered_fpc(
+            $user_type_id,
+            $dealer,
+            $start_date,
+            $end_date,
+            $customer_id,
+            $status,
+            $this->vehicle_type->get_vehicle_type($user_type_id)
+        );
+
+        return $fpc;
+
     }
 }
