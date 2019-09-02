@@ -169,4 +169,91 @@ class OracleUser extends Authenticatable
 
         return $query;
     }
+
+    public function get_users(){
+        $sql = "SELECT usr.user_id,
+                        usa.access_id,
+                        usr.first_name,
+                        usr.middle_name,
+                        usr.last_name,
+                        usr.customer_name dealer_name,
+                        usr.account_name dealer_account,
+                        sut.user_type_name,
+                        st.status_name,
+                        usa.user_type_id,
+                        usr.user_source_id,
+                        usr.customer_id
+                FROM ipc_dms.ipc_portal_users_v usr
+                    LEFT JOIN ipc_portal.user_system_access usa
+                        ON usr.user_id = usa.user_id
+                        AND usr.user_source_id = usa.user_source_id
+                    LEFT JOIN ipc_portal.system_user_types sut
+                        ON sut.user_type_id = usa.user_type_id
+                    LEFT JOIN ipc_portal.status st
+                        ON st.status_id = usr.status_id
+                WHERE usa.system_id = 6
+                    AND usa.status_id = 1";
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    public function get_approver($user_id, $user_source_id){
+        $sql = "SELECT fa.approver_id,
+                        usr.first_name || ' ' || usr.last_name name,
+                        fa.user_type,
+                        fa.requestor_source_id,
+                        fa.requestor_user_id,
+                        fa.hierarchy,
+                        fa.approver_user_id,
+                        fa.approver_source_id,
+                        'N' delete_flag
+                FROM ipc_dms.fs_approvers fa 
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND usr.user_source_id = fa.approver_source_id
+                WHERE 1 = 1
+                    AND fa.requestor_user_id = :user_id
+                    AND fa.requestor_source_id = :source_id";
+        $params = [
+            'user_id'   => $user_id,
+            'source_id' => $user_source_id
+        ];
+
+        $query = DB::select($sql,$params);
+        return $query;
+    }
+
+    public function get_dlr_managers($customer_id){
+        $sql = "SELECT usr.user_id,
+                        usa.access_id,
+                        usr.first_name,
+                        usr.middle_name,
+                        usr.last_name,
+                        usr.customer_name dealer_name,
+                        usr.account_name dealer_account,
+                        sut.user_type_name,
+                        st.status_name,
+                        usr.user_source_id
+                FROM ipc_dms.ipc_portal_users_v usr
+                    LEFT JOIN ipc_portal.user_system_access usa
+                        ON usr.user_id = usa.user_id
+                        AND usr.user_source_id = usa.user_source_id
+                    LEFT JOIN ipc_portal.system_user_types sut
+                        ON sut.user_type_id = usa.user_type_id
+                    LEFT JOIN ipc_portal.status st
+                        ON st.status_id = usr.status_id
+                WHERE usa.system_id = 6
+                    AND usa.status_id = 1
+                    AND sut.user_type_id = 31
+                    AND usr.customer_id = :customer_id";
+
+        $params = [
+            'customer_id' => $customer_id
+        ];
+
+        $query = DB::select($sql,$params);
+        return $query;
+    }
+
+
 }

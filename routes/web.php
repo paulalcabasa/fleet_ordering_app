@@ -114,6 +114,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	// EMAIL NOTIFICATION
 	Route::get('send-notification' , 'EmailController@send_notification');
+
+	// USERS SETUP
+	Route::get('user-list' , 'UserController@user_list');
+	Route::get('ajax-get-user-approver' , 'UserController@ajax_get_approver');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
