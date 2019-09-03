@@ -37,51 +37,54 @@
                         Contact Persons
                     </div>
                     <div class="card-body">
-                         <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Department</th>
-                                    <th>Contact No</th>
-                                    <th>Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(row,index) in contactPersons">
-                                    <td>@{{ row.name }}</td>
-                                    <td>@{{ row.position_title }}</td>
-                                    <td>@{{ row.department }}</td>
-                                    <td>@{{ row.contact_number }}</td>
-                                    <td>@{{ row.email_address }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                             <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Department</th>
+                                        <th>Contact No</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row,index) in contactPersons">
+                                        <td>@{{ row.name }}</td>
+                                        <td>@{{ row.position_title }}</td>
+                                        <td>@{{ row.department }}</td>
+                                        <td>@{{ row.contact_number }}</td>
+                                        <td>@{{ row.email_address }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
              
                 <div class="card">
                     <div class="card-header">Dealer Sales Executives</div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>  
-                                    <th>Mobile No.</th>  
-                                    <th>Email</th>  
-                                    <th></th>  
-                                </tr>
-                            </thead> 
-                            <tbody>
-                                <tr v-for="(row, index) in salesPersons">
-                                    <td>@{{ row.name }}</td>
-                                    <td>@{{ row.position }}</td> 
-                                    <td>@{{ row.mobile_no }}</td> 
-                                    <td>@{{ row.email_address }}</td> 
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>  
+                                        <th>Mobile No.</th>  
+                                        <th>Email</th>  
+                                        <th></th>  
+                                    </tr>
+                                </thead> 
+                                <tbody>
+                                    <tr v-for="(row, index) in salesPersons">
+                                        <td>@{{ row.name }}</td>
+                                        <td>@{{ row.position }}</td> 
+                                        <td>@{{ row.mobile_no }}</td> 
+                                        <td>@{{ row.email_address }}</td> 
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
