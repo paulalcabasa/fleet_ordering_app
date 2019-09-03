@@ -113,51 +113,52 @@
                 </div>
             </div>
         </div>
-        
-        <table class="table table-bordered table-condensed kt-margin-t-10">
-            <thead>
-                <tr>
-                    <td rowspan="2"></td>
-                    <td rowspan="2">Model</td>
-                    <td rowspan="2">Color</td>
-                    <td rowspan="2">Qty</td>
-                    <td rowspan="2">Body Type</td>
-                    <td rowspan="2">Unit Price</td>
-                    <td rowspan="2">Freebies</td>
-                    <td colspan="2">Inclusion</td>
-                </tr>
-                <tr>
-                    <td>STD</td>
-                    <td>ADD'L</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, item_index) in row['fpc_lines']">
-                    <td>
-                        <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
-                            <i class="la la-info"></i>
-                        </a>
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed kt-margin-t-10">
+                <thead>
+                    <tr>
+                        <td rowspan="2"></td>
+                        <td rowspan="2">Model</td>
+                        <td rowspan="2">Color</td>
+                        <td rowspan="2">Qty</td>
+                        <td rowspan="2">Body Type</td>
+                        <td rowspan="2">Unit Price</td>
+                        <td rowspan="2">Freebies</td>
+                        <td colspan="2">Inclusion</td>
+                    </tr>
+                    <tr>
+                        <td>STD</td>
+                        <td>ADD'L</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, item_index) in row['fpc_lines']">
+                        <td>
+                            <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
+                                <i class="la la-info"></i>
+                            </a>
+                            </td>
                         </td>
-                    </td>
-                    <td>@{{ item.sales_model }}</td>
-                    <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
-                    <td>@{{ item.quantity }}</td>
-                    <td>@{{ item.rear_body_type }}</td>
-                    <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
-                    <td align="right">@{{ item.freebies | formatPeso }}</td>
-                    <td>N/A</td>
-                    <td>@{{ item.additional_items }}</td>
-                </tr>
-            </tbody>
-            <tfoot class="kt-font-boldest">
-                <tr>
-                    <td colspan="3" align="right">Total</td>
-                    <td> @{{ sumQty(index) }}</td>
-                    <td></td>
-                    <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
-                </tr>
-            </tfoot>
-        </table>
+                        <td>@{{ item.sales_model }}</td>
+                        <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
+                        <td>@{{ item.quantity }}</td>
+                        <td>@{{ item.rear_body_type }}</td>
+                        <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
+                        <td align="right">@{{ item.freebies | formatPeso }}</td>
+                        <td>N/A</td>
+                        <td>@{{ item.additional_items }}</td>
+                    </tr>
+                </tbody>
+                <tfoot class="kt-font-boldest">
+                    <tr>
+                        <td colspan="3" align="right">Total</td>
+                        <td> @{{ sumQty(index) }}</td>
+                        <td></td>
+                        <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -177,20 +178,22 @@
                         <div class="card">
                             <div class="card-header">Delivery Schedule</div>
                             <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.delivery_date}}</td> 
-                                            <td>@{{ row.quantity }}</td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row,index) in curDeliverySched">
+                                                <td>@{{ row.delivery_date}}</td> 
+                                                <td>@{{ row.quantity }}</td> 
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,26 +201,28 @@
                         <div class="card" v-show="curFreebies.length > 0">
                             <div class="card-header">Freebies</div>
                             <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row,index) in curFreebies">
-                                            <td>@{{ row.description}}</td> 
-                                            <td>@{{ row.amount | formatPeso }}</td> 
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Total</th>
-                                            <th align="right">P @{{ sumFreebies | formatPeso }}</th>
-                                        </tr> 
-                                    </tfoot>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row,index) in curFreebies">
+                                                <td>@{{ row.description}}</td> 
+                                                <td>@{{ row.amount | formatPeso }}</td> 
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Total</th>
+                                                <th align="right">P @{{ sumFreebies | formatPeso }}</th>
+                                            </tr> 
+                                        </tfoot>
+                                    </table>
+                                </div>
 
                             </div>
                         </div>

@@ -87,28 +87,29 @@
         </div>
     </div>
     <div class="kt-portlet__body"> 
-
-        <table class="table">
-            <thead>
-                <th>Project No</th>
-                <th>Dealer</th>
-                <th>Date Requested</th>
-                <th>Status</th>
-                <th>Action</th>
-            </thead>
-            <tbody>
-                <tr v-for="(row,index) in projects">
-                    <td>@{{ row.project_id }}</td>
-                    <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
-                    <td>@{{ row.date_created }}</td>
-                    <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
-                    <td nowrap>
-                        <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
-                        <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <th>Project No</th>
+                    <th>Dealer</th>
+                    <th>Date Requested</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <tr v-for="(row,index) in projects">
+                        <td>@{{ row.project_id }}</td>
+                        <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
+                        <td>@{{ row.date_created }}</td>
+                        <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
+                        <td nowrap>
+                            <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                            <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

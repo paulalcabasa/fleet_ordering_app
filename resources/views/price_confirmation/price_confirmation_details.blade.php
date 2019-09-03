@@ -116,36 +116,37 @@
     <div class="kt-portlet__body">
         <div class="tab-content">
             <div class="tab-pane active" :id="'orders_tab_' + index">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Actions</th>
+                                <th>Model</th>
+                                <th>Color</th>
+                                <th>Order Qty</th>
+                                <th>Suggested Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(order, index) in project.requirements">
+                                <td nowrap="nowrap">
+                                    <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
+                                    <a href="#"  title="View"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
 
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Actions</th>
-                            <th>Model</th>
-                            <th>Color</th>
-                            <th>Order Qty</th>
-                            <th>Suggested Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(order, index) in project.requirements">
-                            <td nowrap="nowrap">
-                                <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
-                                <a href="#"  title="View"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
-
-                              
-                            </td>
-                        <!--     <td nowrap>
-                                <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-primary btn-sm btn-icon btn-circle"><i class="fas fa-money-bill-wave"></i></a>
-                                <a href="#" @click="showAdditionalDetails(order)" class="btn btn-success btn-sm btn-icon btn-circle"><i class="la la-info-circle"></i></a> 
-                            </td> -->
-                            <td> @{{ order.sales_model }} </td>
-                            <td> @{{ order.color }} </td>
-                            <td> @{{ order.quantity }} </td>
-                            <td> @{{ formatPrice(order.suggested_price) }} </td> 
-                        </tr>
-                    </tbody>
-                </table>
+                                  
+                                </td>
+                            <!--     <td nowrap>
+                                    <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-primary btn-sm btn-icon btn-circle"><i class="fas fa-money-bill-wave"></i></a>
+                                    <a href="#" @click="showAdditionalDetails(order)" class="btn btn-success btn-sm btn-icon btn-circle"><i class="la la-info-circle"></i></a> 
+                                </td> -->
+                                <td> @{{ order.sales_model }} </td>
+                                <td> @{{ order.color }} </td>
+                                <td> @{{ order.quantity }} </td>
+                                <td> @{{ formatPrice(order.suggested_price) }} </td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="tab-pane" :id="'competitors_tab_'+ index">
                 <div class="row" v-if="project.competitor_flag == 'Y'">
@@ -153,29 +154,31 @@
                         <div class="card">
                             <div class="card-header">Vehicles</div>
                             <div class="card-body">
-                                <table class="table table-bordered table-striped" style="font-size:85%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Brand</th>
-                                            <th>Model</th>
-                                            <th>Price</th>
-                                            <th>Isuzu Model</th>
-                                            <th>Suggested Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(competitor, index) in project.competitors">
-                                            <td> @{{ competitor.brand }} </td>
-                                            <td> @{{ competitor.model }} </td>
-                                            <td> @{{ formatPrice(competitor.price) }} </td>
-                                            <td> 
-                                                @{{ competitor.sales_model }} 
-                                                <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ competitor.color }}</span>
-                                            </td>
-                                            <td> @{{ formatPrice(competitor.suggested_price) }} </td>
-                                        </tr>
-                                    </tbody>
-                                </table>  
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" style="font-size:85%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Brand</th>
+                                                <th>Model</th>
+                                                <th>Price</th>
+                                                <th>Isuzu Model</th>
+                                                <th>Suggested Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(competitor, index) in project.competitors">
+                                                <td> @{{ competitor.brand }} </td>
+                                                <td> @{{ competitor.model }} </td>
+                                                <td> @{{ formatPrice(competitor.price) }} </td>
+                                                <td> 
+                                                    @{{ competitor.sales_model }} 
+                                                    <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ competitor.color }}</span>
+                                                </td>
+                                                <td> @{{ formatPrice(competitor.suggested_price) }} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>  
                             </div>
                         </div>
                     </div>
@@ -315,42 +318,45 @@
                             <div class="card-header">Other Items</div>
                             <div class="card-body">
                                 <!-- Form for entering freebies -->
-                                <table class="table table-condensed" style="font-size:90%;" v-if="editable">
-                                    <thead>
-                                        <th></th>
-                                        <th>Item</th>
-                                        <th>Amount</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
-                                            <td>
-                                                <a href="#" @click.prevent="deleteRow(freebie,index)">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                            <td v-if="freebie.hasOwnProperty('freebie_id')"><input type="text" disabled="" class="form-control form-control-sm" :value="freebie.description"/></td>
-                                            <td v-if="!freebie.hasOwnProperty('freebie_id')"><input type="text" class="form-control form-control-sm" v-model.lazy="freebie.description"/></td>
-                                            <td><input type="text" class="form-control form-control-sm" v-model="freebie.amount" /></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-condensed" style="font-size:90%;" v-if="editable">
+                                        <thead>
+                                            <th></th>
+                                            <th>Item</th>
+                                            <th>Amount</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
+                                                <td>
+                                                    <a href="#" @click.prevent="deleteRow(freebie,index)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                                <td v-if="freebie.hasOwnProperty('freebie_id')"><input type="text" disabled="" class="form-control form-control-sm" :value="freebie.description"/></td>
+                                                <td v-if="!freebie.hasOwnProperty('freebie_id')"><input type="text" class="form-control form-control-sm" v-model.lazy="freebie.description"/></td>
+                                                <td><input type="text" class="form-control form-control-sm" v-model="freebie.amount" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <!-- End for form for entering freebies -->
-
+                                <div class="table-responsive">
                                 <!-- table for viewing only freebies -->
-                                <table class="table table-condensed" style="font-size:90%;" v-if="!editable">
-                                    <thead>
-                                        <th>No.</th>
-                                        <th>Item</th>
-                                        <th>Amount</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
-                                            <td>@{{ index + 1 }}</td>
-                                            <td>@{{ freebie.description }}</td>
-                                            <td>@{{ formatPrice(freebie.amount) }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                    <table class="table table-condensed" style="font-size:90%;" v-if="!editable">
+                                        <thead>
+                                            <th>No.</th>
+                                            <th>Item</th>
+                                            <th>Amount</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
+                                                <td>@{{ index + 1 }}</td>
+                                                <td>@{{ freebie.description }}</td>
+                                                <td>@{{ formatPrice(freebie.amount) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <!-- table for viewing only freebies -->
                             </div>
                             <div class="card-footer" v-if="editable">
@@ -548,22 +554,24 @@
                         <div class="card">
                             <div class="card-header">Delivery Schedule</div>
                             <div class="card-body">
-                                 <table class="table table-condensed">
-                                    <thead>
-                                        <tr>
-                                            <td>Date</td>
-                                            <td>Suggested Date</td>
-                                            <td>Quantity</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row,index) in curDeliveryDetails">
-                                            <td>@{{ row.delivery_date_disp }}</td>
-                                            <td><input type="date"  v-model="row.suggested_delivery_date" class="form-control form-control-sm" name=""  /></td>
-                                            <td>@{{ row.quantity }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>  
+                                <div class="table-responsive">
+                                     <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <td>Date</td>
+                                                <td>Suggested Date</td>
+                                                <td>Quantity</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row,index) in curDeliveryDetails">
+                                                <td>@{{ row.delivery_date_disp }}</td>
+                                                <td><input type="date"  v-model="row.suggested_delivery_date" class="form-control form-control-sm" name=""  /></td>
+                                                <td>@{{ row.quantity }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div> 
                             </div>
                         </div>
                     </div>
