@@ -211,6 +211,7 @@
                             'copyHtml5',
                             'excelHtml5'
                         ],
+                        responsive:true
                     });
                 }).finally( (response) => {
                     KTApp.unblockPage();
