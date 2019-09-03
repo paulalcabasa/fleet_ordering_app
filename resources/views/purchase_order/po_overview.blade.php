@@ -81,50 +81,52 @@
       
     </div>
     <div class="kt-portlet__body">
-        <table class="table table-bordered">
-            <thead>
-                <tr class="bg-light-gray-2">
-                    <th>Model</th>
-                    <th>Color</th>
-                    <th>Unit Price</th>
-                    <th>Order Qty</th>
-                    <th>Total Price</th>
-                    <th>PO Qty</th>
-                    <th>Delivery Sched</th>
-                </tr>
-            </thead>
-            <tbody v-for="(value,key) in po_lines">
-                <tr v-for="(item,index) in po_lines[key]">
-                    <td> @{{ item.sales_model }} </td>
-                    <td> <span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }} </td>
-                    <td align="right"> @{{ item.fleet_price | formatPeso }} </td>
-                    <td align="right"> @{{ item.quantity }} </td>
-                    <td align="right"> @{{ ( parseFloat(item.quantity) * parseFloat(item.fleet_price) ) | formatPeso }} </td>
-                    <td align="right">@{{ item.po_quantity }}</td>
-                    <td>
-                        <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
-                            <i class="la la-calendar"></i>
-                        </a> 
-                    </td>
-                </tr>
-                <tr  class="bg-light-gray-1 kt-font-bold">
-                    <td colspan="3">@{{ key }}</td>
-                    <td align="right">@{{ sumQty(key) }}</td>
-                    <td align="right">@{{ calculateSubtotal(key) | formatPeso}}</td>
-                    <td align="right">@{{ sumPOQty(key) }}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr class="bg-light-gray-2 kt-font-boldest">
-                    <td colspan="3">Grand Total</td>
-                    <td align="right">@{{ totalQty }}</td>
-                    <td align="right">@{{ totalPrice | formatPeso}}</td>
-                    <td align="right">@{{ totalPO }}</td> 
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="bg-light-gray-2">
+                        <th>Model</th>
+                        <th>Color</th>
+                        <th>Unit Price</th>
+                        <th>Order Qty</th>
+                        <th>Total Price</th>
+                        <th>PO Qty</th>
+                        <th>Delivery Sched</th>
+                    </tr>
+                </thead>
+                <tbody v-for="(value,key) in po_lines">
+                    <tr v-for="(item,index) in po_lines[key]">
+                        <td> @{{ item.sales_model }} </td>
+                        <td> <span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }} </td>
+                        <td align="right"> @{{ item.fleet_price | formatPeso }} </td>
+                        <td align="right"> @{{ item.quantity }} </td>
+                        <td align="right"> @{{ ( parseFloat(item.quantity) * parseFloat(item.fleet_price) ) | formatPeso }} </td>
+                        <td align="right">@{{ item.po_quantity }}</td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
+                                <i class="la la-calendar"></i>
+                            </a> 
+                        </td>
+                    </tr>
+                    <tr  class="bg-light-gray-1 kt-font-bold">
+                        <td colspan="3">@{{ key }}</td>
+                        <td align="right">@{{ sumQty(key) }}</td>
+                        <td align="right">@{{ calculateSubtotal(key) | formatPeso}}</td>
+                        <td align="right">@{{ sumPOQty(key) }}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light-gray-2 kt-font-boldest">
+                        <td colspan="3">Grand Total</td>
+                        <td align="right">@{{ totalQty }}</td>
+                        <td align="right">@{{ totalPrice | formatPeso}}</td>
+                        <td align="right">@{{ totalPO }}</td> 
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>
 

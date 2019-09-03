@@ -450,69 +450,71 @@
                                    
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <table class="table table-condensed table-bordered">
-                                            <thead  class="bg-light-gray-2">
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Model</th>
-                                                    <th>Color</th>
-                                                    <th>Quantity</th>
-                                                    <th>Suggested Price</th>
-                                                    <th>Subtotal</th>
-                                                    <th>Other details</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody v-for="(vehicleGroup,index) in Object.keys(vehicleRequirement)">
-                                                <tr v-for="(model,index) in vehicleRequirement[vehicleGroup]">
-                                                    <td>
-                                                        <a href="#" @click.prevent="removeVehicle(vehicleGroup,index)">
-                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
-                                                        </a>
-                                                    </td>
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed table-bordered">
+                                                <thead  class="bg-light-gray-2">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Model</th>
+                                                        <th>Color</th>
+                                                        <th>Quantity</th>
+                                                        <th>Suggested Price</th>
+                                                        <th>Subtotal</th>
+                                                        <th>Other details</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-for="(vehicleGroup,index) in Object.keys(vehicleRequirement)">
+                                                    <tr v-for="(model,index) in vehicleRequirement[vehicleGroup]">
+                                                        <td>
+                                                            <a href="#" @click.prevent="removeVehicle(vehicleGroup,index)">
+                                                                <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                            </a>
+                                                        </td>
 
-                                                    <td>@{{ model.model }}</td>
-                                                    <td>@{{ model.color }}</td>
-                                                    <td><input type="text" name="" class="form-control form-control-sm" size="4" v-model="model.quantity"/></td>
-                                                    <td>
-                                                        <input 
-                                                            type="text" 
-                                                            name="" 
-                                                            class="form-control form-control-sm" 
-                                                            v-model="model.suggested_price" 
-                                                        />
-                                                    </td>
-                                                    <td>@{{ (formatPrice(model.suggested_price * model.quantity))}}</td>
-                                                 <!--    <td>
-                                                        <button type="button" @click="showAdditionalDetails(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
-                                                            <i class="la la-info-circle"></i>
-                                                        </button>
-                                                    </td> -->
-                                                    <td>
-                                                        <button type="button" @click="showDeliveryDetail(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
-                                                            <i class="la la-calendar"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr v-if="vehicleRequirement[vehicleGroup].length > 0" class="kt-font-bold bg-light-gray-1" >
-                                                    <td colspan="3">@{{ vehicleGroup }}</td>
-                                                    <td>@{{ vehicleGroup =="CV" ? (computeCVQty) : (computeLCVQty) }}</td>
-                                                    <td>@{{ vehicleGroup =="CV" ? formatPrice(computeCVPrice) : formatPrice(computeLCVPrice) }}</td>
-                                                    <td>@{{ vehicleGroup =="CV" ? formatPrice(computeCVQty * computeCVPrice) : formatPrice(computeLCVQty * computeLCVPrice) }}</td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
+                                                        <td>@{{ model.model }}</td>
+                                                        <td>@{{ model.color }}</td>
+                                                        <td><input type="text" name="" class="form-control form-control-sm" size="4" v-model="model.quantity"/></td>
+                                                        <td>
+                                                            <input 
+                                                                type="text" 
+                                                                name="" 
+                                                                class="form-control form-control-sm" 
+                                                                v-model="model.suggested_price" 
+                                                            />
+                                                        </td>
+                                                        <td>@{{ (formatPrice(model.suggested_price * model.quantity))}}</td>
+                                                     <!--    <td>
+                                                            <button type="button" @click="showAdditionalDetails(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                                                <i class="la la-info-circle"></i>
+                                                            </button>
+                                                        </td> -->
+                                                        <td>
+                                                            <button type="button" @click="showDeliveryDetail(vehicleGroup,index)" class="btn btn-outline-dark btn-elevate btn-icon btn-sm">
+                                                                <i class="la la-calendar"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr v-if="vehicleRequirement[vehicleGroup].length > 0" class="kt-font-bold bg-light-gray-1" >
+                                                        <td colspan="3">@{{ vehicleGroup }}</td>
+                                                        <td>@{{ vehicleGroup =="CV" ? (computeCVQty) : (computeLCVQty) }}</td>
+                                                        <td>@{{ vehicleGroup =="CV" ? formatPrice(computeCVPrice) : formatPrice(computeLCVPrice) }}</td>
+                                                        <td>@{{ vehicleGroup =="CV" ? formatPrice(computeCVQty * computeCVPrice) : formatPrice(computeLCVQty * computeLCVPrice) }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
 
-                                            <tfoot>
-                                                <tr class="bg-light-gray-2">
-                                                    <th colspan="3">Grand Total</th>
-                                                    <th>@{{ (computeCVQty + computeLCVQty) }}</th>
-                                                    <th>@{{ formatPrice(computeCVPrice + computeLCVPrice) }}</th>
-                                                    <th>@{{ formatPrice((computeCVQty * computeCVPrice) + (computeLCVQty * computeLCVPrice)) }}</th>
-                                                    <th></th>
-                                                </tr>
-                                                
-                                            </tfoot>
-                                        </table>
+                                                <tfoot>
+                                                    <tr class="bg-light-gray-2">
+                                                        <th colspan="3">Grand Total</th>
+                                                        <th>@{{ (computeCVQty + computeLCVQty) }}</th>
+                                                        <th>@{{ formatPrice(computeCVPrice + computeLCVPrice) }}</th>
+                                                        <th>@{{ formatPrice((computeCVQty * computeCVPrice) + (computeLCVQty * computeLCVPrice)) }}</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    
+                                                </tfoot>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>                 
                             </div>
@@ -620,34 +622,35 @@
                                 <div class="row" v-if="competitor_flag == 'Y'">
                                     <div class="col-md-12">
                                         
-
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Brand</th>
-                                                    <th>Model</th>
-                                                    <th>Price</th>
-                                                    <th>Isuzu Model</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(row,index) in competitors">
-                                                    <td style="width:10%;">
-                                                        <a href="#" @click.prevent="removeCompetitor(index)">
-                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
-                                                        </a>
-                                                    </td>
-                                                    <td style="width:30%;">@{{ row.brand }}</td>
-                                                    <td style="width:20%;">@{{ row.model }}</td>
-                                                    <td><input type="text" v-model.lazy="row.price" class="form-control form-control-sm"/></td>
-                                                    <td>
-                                                        @{{ row.ipc_model }}
-                                                        <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.ipc_color}}</span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Brand</th>
+                                                        <th>Model</th>
+                                                        <th>Price</th>
+                                                        <th>Isuzu Model</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(row,index) in competitors">
+                                                        <td style="width:10%;">
+                                                            <a href="#" @click.prevent="removeCompetitor(index)">
+                                                                <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                            </a>
+                                                        </td>
+                                                        <td style="width:30%;">@{{ row.brand }}</td>
+                                                        <td style="width:20%;">@{{ row.model }}</td>
+                                                        <td><input type="text" v-model.lazy="row.price" class="form-control form-control-sm"/></td>
+                                                        <td>
+                                                            @{{ row.ipc_model }}
+                                                            <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.ipc_color}}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

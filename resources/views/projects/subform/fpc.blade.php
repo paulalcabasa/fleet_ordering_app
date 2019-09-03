@@ -63,51 +63,52 @@
                 </div>
             </div>
         </div>
-        
-        <table class="table table-bordered table-condensed kt-margin-t-10">
-            <thead>
-                <tr>
-                    <td rowspan="2"></td>
-                    <td rowspan="2">Model</td>
-                    <td rowspan="2">Color</td>
-                    <td rowspan="2">Qty</td>
-                    <td rowspan="2">Body Type</td>
-                    <td rowspan="2">Unit Price</td>
-                    <td rowspan="2">Freebies</td>
-                    <td colspan="2">Inclusion</td>
-                </tr>
-                <tr>
-                    <td>STD</td>
-                    <td>ADD'L</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, item_index) in row['fpc_lines']">
-                    <td>
-                        <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
-                            <i class="la la-info"></i>
-                        </a>
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed kt-margin-t-10">
+                <thead>
+                    <tr>
+                        <td rowspan="2"></td>
+                        <td rowspan="2">Model</td>
+                        <td rowspan="2">Color</td>
+                        <td rowspan="2">Qty</td>
+                        <td rowspan="2">Body Type</td>
+                        <td rowspan="2">Unit Price</td>
+                        <td rowspan="2">Freebies</td>
+                        <td colspan="2">Inclusion</td>
+                    </tr>
+                    <tr>
+                        <td>STD</td>
+                        <td>ADD'L</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, item_index) in row['fpc_lines']">
+                        <td>
+                            <a href="#" @click.prevent="showDetails(index,item_index)" class="btn btn-primary btn-sm btn-icon btn-circle">
+                                <i class="la la-info"></i>
+                            </a>
+                            </td>
                         </td>
-                    </td>
-                    <td>@{{ item.sales_model }}</td>
-                    <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
-                    <td>@{{ item.quantity }}</td>
-                    <td>@{{ item.rear_body_type }}</td>
-                    <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
-                    <td align="right">@{{ item.freebies | formatPeso }}</td>
-                    <td>N/A</td>
-                    <td>@{{ item.additional_items }}</td>
-                </tr>
-            </tbody>
-            <tfoot class="kt-font-boldest">
-                <tr>
-                    <td colspan="3" align="right">Total</td>
-                    <td> @{{ sumQty(index) }}</td>
-                    <td></td>
-                    <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
-                </tr>
-            </tfoot>
-        </table>
+                        <td>@{{ item.sales_model }}</td>
+                        <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
+                        <td>@{{ item.quantity }}</td>
+                        <td>@{{ item.rear_body_type }}</td>
+                        <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
+                        <td align="right">@{{ item.freebies | formatPeso }}</td>
+                        <td>N/A</td>
+                        <td>@{{ item.additional_items }}</td>
+                    </tr>
+                </tbody>
+                <tfoot class="kt-font-boldest">
+                    <tr>
+                        <td colspan="3" align="right">Total</td>
+                        <td> @{{ sumQty(index) }}</td>
+                        <td></td>
+                        <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
     
     <div class="kt-portlet__foot">
