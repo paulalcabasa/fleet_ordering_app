@@ -8,6 +8,23 @@ class Approver extends Model
 {
     protected $table = "IPC_DMS.FS_APPROVERS";
     protected $connection = "oracle";
+    protected $fillable = [
+        'vehicle_type',
+        'user_type',
+        'requestor_user_id',
+        'approver_user_id',
+        'hierarchy',
+        'status_id',
+        'module_code',
+        'approver_source_id',
+        'requestor_source_id',
+        'create_user_source_id',
+        'created_by'
+    ];
+    const CREATED_AT = 'CREATION_DATE';
+    const UPDATED_AT = 'UPDATE_DATE';
+    protected $primaryKey = 'approver_id';
+
 
     public function get_project_approvers($requestor_user_id,$user_type,$vehicle_type){
         //$params = [];
@@ -171,6 +188,11 @@ class Approver extends Model
       
         return $query;
     }
+
+    public function insert_approver($attrs,$values){
+        Model::updateOrCreate($attrs,$values);
+    }
+
 
 
     

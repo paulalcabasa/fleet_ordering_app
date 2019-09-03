@@ -13,7 +13,7 @@ class DashboardController extends Controller
         ActivityLogs $m_logs,
         POHeaders $m_poh
     ){
-
+    
         // if sales invoicing user, redirect to FWPC Listing
         if(session('user')['user_type_id'] == 38){
             return redirect()->route('fwpc_list');

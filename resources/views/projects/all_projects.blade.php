@@ -108,7 +108,7 @@
             <table class="table table-bordered table-hover" style="font-size:90%;" width="100%" id="projects_table">
                 <thead>
                     <tr>
-                   <!--      <th>Actions</th> -->
+                        <th>Actions</th>
                         <th>Project No.</th>
                         <th>Account Name</th>
                         <th>Dealer</th>
@@ -121,11 +121,11 @@
                 </thead>
                 <tbody>
                     <tr v-for="(row, index) in projects" @click="viewProject(row.project_id)" style="cursor:pointer;">
-                        <!-- <td nowrap>
+                        <td nowrap>
                             <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                               <i class="la la-eye"></i>
                             </a>
-                        </td> -->
+                        </td>
                         <td>@{{ row.project_id }}</td>
                         <td nowrap>@{{ row.customer_name }}</td>
                         <td>@{{ row.account_name }}</td>

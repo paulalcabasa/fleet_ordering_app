@@ -8,6 +8,7 @@ class RedirectController extends Controller
 {
     public function redirect_login()
     {
-  		return redirect()->intended('http://localhost/fleet_ordering_app/dashboard');
+        //'http://localhost/fleet_ordering_app/dashboard'
+  		return redirect()->intended(config('app.hostname') . '/fleet_ordering_app/dashboard');
     }
 }

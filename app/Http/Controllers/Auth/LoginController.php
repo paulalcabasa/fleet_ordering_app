@@ -6,6 +6,9 @@ use App\Models\OracleUser;
 use App\Helpers\UserTypeIdentification;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\UserLog;
+use Session;
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -17,8 +20,9 @@ class LoginController extends Controller
         $this->user_type = $type;
     }
 
-    public function authenticate($user_id, OracleUser $oracle_user)
+    public function authenticate($user_id, OracleUser $oracle_user, UserLog $user_log)
     {
+        
         echo 'AUTHENTICATING...';
       //  die;
         // Redirect if authenticated already
@@ -57,6 +61,17 @@ class LoginController extends Controller
 
             // Save user instance on session
             session(['user' => $user_session]);
+
+            $user_log_params = [
+                'user_id'    => $user->user_id,
+                'system_id'  => config('app.system_id'),
+                'login_date' => Carbon::now(),
+                'source_id'  => $user->source_id,
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT']
+            ];
+
+            $user_log->insert_log($user_log_params);
 
             // Redirect User on initial page
            // return redirect()->route('dashboard');
