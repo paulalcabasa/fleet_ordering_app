@@ -207,6 +207,7 @@
                             'copyHtml5',
                             'excelHtml5'
                         ],
+                        responsive:true
                     });
         }
     });
