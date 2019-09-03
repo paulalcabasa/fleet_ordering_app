@@ -21,6 +21,7 @@
                     <th>Name</th>
                     <th>Dealer</th>
                     <th>User Type</th>
+                    <th>Last login</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -37,10 +38,10 @@
                     <td>@{{ row.first_name + ' ' + row.last_name }}</td>
                     <td>@{{ row.dealer_account }}</td>
                     <td>@{{ row.user_type_name }}</td>
+                    <td>@{{ row.last_login }}</td>
                     <td nowrap>
                         <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
                     </td>
-                    
                 </tr>
             </tbody>
         </table>
@@ -65,10 +66,17 @@
             cur_requestor_source_id: '',
             cur_customer_id: '',
             cur_dealer_managers:     [],
-            selected_dealer_manager : ''
+            selected_dealer_manager : -1
         },
         methods :{
             loadApprover(user_id, user_source_id, customer_id){
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+       
                 var self = this;
                 self.cur_requestor_id = user_id;
                 self.cur_requestor_source_id = user_source_id;
@@ -83,43 +91,105 @@
                     self.cur_approvers = response.data.approvers;
                     self.cur_dealer_managers = response.data.dealer_managers;
                     $("#approverModal").modal('show');
+                    KTApp.unblockPage();
                 });
             },
             addApprover(){
                 var self = this;
+                
+                if(self.selected_dealer_manager == -1){
+                    Swal.fire({
+                        type: 'error',
+                        title: "Kindly select an approver.",
+                        showConfirmButton: true,
+                        timer: 1500
+                    }); 
+                    return false;
+                }
                 var approver = self.cur_dealer_managers[self.selected_dealer_manager];
 
-                self.cur_approvers.push({
-                    delete_flag:         'N',
-                    hierarchy:           1,
-                    requestor_source_id: self.cur_requestor_source_id,
-                    requestor_user_id:   self.user_id,
-                    approver_id:         approver.user_id,
-                    approver_source_id:  approver.user_source_id,
-                    name : approver.first_name + " " + approver.last_name
-
-                });
-            },
-            deleteApprover(index){
-                var self = this;
-                Swal.fire({
-                    title: "Confirmation",
-                    text: "Are you sure to delete this approver?",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes'        
-                }).then((result) => {
-                    if(result.value){
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Approver has been deleted!',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        self.cur_approvers.splice(index,1);
+                var isExist = self.cur_approvers.filter(function(elem){
+                    if(
+                        elem.approver_user_id === approver.user_id
+                    ) {
+                        return elem.approver_user_id;
                     }
                 });
+
+                if(isExist == 0 ){
+                    self.cur_approvers.push({
+                        hierarchy:           (self.cur_approvers.length+1),
+                        requestor_source_id: self.cur_requestor_source_id,
+                        requestor_user_id:   self.cur_requestor_id,
+                        approver_user_id:    approver.user_id,
+                        approver_source_id:  approver.user_source_id,
+                        name:                approver.first_name + " " + approver.last_name,
+                        approver_id:         -1,
+                        status_id:           1,
+                        status:              true
+                    });
+                }
+                else {
+                    Swal.fire({
+                        type: 'error',
+                        title: "Approver already exists!",
+                        showConfirmButton: true,
+                        timer: 1500
+                    }); 
+                }
+            },
+            saveApprover(){
+                var self = this;
+                var is_error = self.cur_approvers.filter(function(elem){
+                    if(
+                        elem.hierarchy > 90
+                    ) {
+                        return elem.hierarchy;
+                    }
+                });
+                if(is_error.length > 0){
+
+                    Swal.fire({
+                        type: 'error',
+                        title: "Please check the hierarchy, maximum value is until 90 only.",
+                        showConfirmButton: true,
+                        timer: 1500
+                    }); 
+                    return false;
+                }
+
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+
+                axios.post('save-user-approver',{
+                    approvers : self.cur_approvers
+                }).then( (response) => {
+                    Swal.fire({
+                        type: 'success',
+                        title: "Approvers has been updated!",
+                        showConfirmButton: true,
+                        timer: 1500
+                    }).then( (response) => {
+                        $("#approverModal").modal('hide');
+                        KTApp.unblockPage();
+                    }); 
+                });
+            },
+            updateStatus(index){
+                var self = this;
+                if(!self.cur_approvers[index].status){
+                    self.cur_approvers[index].status_id = 1;
+                }
+                else {
+                    self.cur_approvers[index].status_id = 2;
+                }
+            },
+            deleteApprover(index){
+                this.cur_approvers.splice(index,1);
             }
         },
         created: function () {
