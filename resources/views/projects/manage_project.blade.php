@@ -331,32 +331,34 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <h4 class="kt-pull-left">Contact Persons</h4>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th></th> 
-                                                <th>Name</th> 
-                                                <th>Position</th> 
-                                                <th>Department</th> 
-                                                <th>Contact Number</th>
-                                                <th>Email</th>
-                                            </tr>
-                                        </thead> 
-                                        <tbody>
-                                            <tr v-for="(row, index) in contactDetails.contactPersons">
-                                                <td>
-                                                    <a href="#" @click.prevent="removeContactPerson(index)">
-                                                        <i class="flaticon flaticon-delete kt-font-danger"></i>
-                                                    </a>
-                                                </td>
-                                                <td><input type="text" v-model.lazy="row.name" class="form-control form-control-sm"></td> 
-                                                <td><input type="text" v-model.lazy="row.position" class="form-control form-control-sm"></td>
-                                                <td><input type="text" v-model.lazy="row.department" class="form-control form-control-sm"></td>
-                                                <td><input type="text" v-model.lazy="row.contact_number" class="form-control form-control-sm"></td>
-                                                <td><input type="text" v-model.lazy="row.email" class="form-control form-control-sm"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th> 
+                                                    <th>Name</th> 
+                                                    <th>Position</th> 
+                                                    <th>Department</th> 
+                                                    <th>Contact Number</th>
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead> 
+                                            <tbody>
+                                                <tr v-for="(row, index) in contactDetails.contactPersons">
+                                                    <td>
+                                                        <a href="#" @click.prevent="removeContactPerson(index)">
+                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td><input type="text" v-model.lazy="row.name" class="form-control form-control-sm"></td> 
+                                                    <td><input type="text" v-model.lazy="row.position" class="form-control form-control-sm"></td>
+                                                    <td><input type="text" v-model.lazy="row.department" class="form-control form-control-sm"></td>
+                                                    <td><input type="text" v-model.lazy="row.contact_number" class="form-control form-control-sm"></td>
+                                                    <td><input type="text" v-model.lazy="row.email" class="form-control form-control-sm"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     <button type="button" class="btn btn-success kt-pull-right" @click="addContactRow">Add</button>
                                 </div>
                             </div>
@@ -374,31 +376,33 @@
                                             <button class="btn btn-primary" type="button" @click="addSalesPerson">Add</button>
                                         </div>   
                                     </div>
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Name</th>
-                                                <th>Position</th>  
-                                                <th>Mobile No.</th>  
-                                                <th>Email</th>  
-                                                <th></th>  
-                                            </tr>
-                                        </thead> 
-                                        <tbody>
-                                            <tr v-for="(row, index) in contactDetails.salesPersons">
-                                                <td>
-                                                    <a href="#" @click.prevent="removeSalesPersons(index)">
-                                                        <i class="flaticon flaticon-delete kt-font-danger"></i>
-                                                    </a>
-                                                </td>
-                                                <td>@{{ row.name }}</td>
-                                                <td>@{{ row.position_title }}</td> 
-                                                <td>@{{ row.mobile_no }}</td> 
-                                                <td>@{{ row.email }}</td> 
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Name</th>
+                                                    <th>Position</th>  
+                                                    <th>Mobile No.</th>  
+                                                    <th>Email</th>  
+                                                    <th></th>  
+                                                </tr>
+                                            </thead> 
+                                            <tbody>
+                                                <tr v-for="(row, index) in contactDetails.salesPersons">
+                                                    <td>
+                                                        <a href="#" @click.prevent="removeSalesPersons(index)">
+                                                            <i class="flaticon flaticon-delete kt-font-danger"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>@{{ row.name }}</td>
+                                                    <td>@{{ row.position_title }}</td> 
+                                                    <td>@{{ row.mobile_no }}</td> 
+                                                    <td>@{{ row.email }}</td> 
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
