@@ -121,6 +121,8 @@ var KTDatatablesBasicScrollable = function() {
                     'copyHtml5',
                     'excelHtml5'
                 ],
+
+                        responsive:true,
             columnDefs: [
                 {
                     targets: 5,

@@ -80,7 +80,9 @@
         },
 
         mounted : function () {
-            var table = $("#datatable").DataTable();
+            var table = $("#datatable").DataTable({
+                responsive:true
+            });
         }
     });
 </script>

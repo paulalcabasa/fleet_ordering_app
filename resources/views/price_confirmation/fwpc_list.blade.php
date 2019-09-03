@@ -276,12 +276,12 @@
                         dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
                         <'row'<'col-sm-12'tr>>
                         <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
-
                         buttons: [
                             'print',
                             'copyHtml5',
                             'excelHtml5'
                         ],
+                        responsive:true,
                         initComplete: function (settings, json) {  
                             $("#price_confirmation_table").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
                         }

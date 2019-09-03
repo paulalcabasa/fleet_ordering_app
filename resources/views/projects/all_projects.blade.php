@@ -120,7 +120,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, index) in projects" @click="viewProject(row.project_id)" style="cursor:pointer;">
+                    <tr v-for="(row, index) in projects">
                         <td nowrap>
                             <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                               <i class="la la-eye"></i>
@@ -287,6 +287,7 @@
                             'copyHtml5',
                             'excelHtml5'
                         ],
+                        responsive:true
                     });
                 }).finally( (response) => {
                     KTApp.unblockPage();
