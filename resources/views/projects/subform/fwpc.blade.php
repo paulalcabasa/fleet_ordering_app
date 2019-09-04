@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="kt-portlet__body">
-        <div class="table-responsive">
+       
         <table class="table table-sm table-head-bg-brand">
             <thead>
                 <tr>
@@ -63,7 +63,7 @@
                 </tr>
             </tbody>
         </table>
-        </div>
+      
     </div>
     <div class="kt-portlet__foot" v-if="(user_type == 32 || user_type == 33) && projectDetails.status_name != 'Closed'">
         <div class="row kt-pull-right">
