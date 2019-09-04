@@ -281,7 +281,6 @@
                             'copyHtml5',
                             'excelHtml5'
                         ],
-                        responsive:true,
                         initComplete: function (settings, json) {  
                             $("#price_confirmation_table").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
                         }
