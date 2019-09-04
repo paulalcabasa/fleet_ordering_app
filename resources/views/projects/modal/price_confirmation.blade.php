@@ -16,13 +16,15 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
+                                            <th>Suggested date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.delivery_date}}</td> 
+                                            <td>@{{ row.suggested_delivery_date }}</td> 
+                                            <td>@{{ row.delivery_date }}</td> 
                                             <td>@{{ row.quantity }}</td> 
                                         </tr>
                                     </tbody>

@@ -168,20 +168,23 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
+                                            <th>Suggested Date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.delivery_date }}</td>
+                                            <td>@{{ row.suggested_delivery_date_disp }}</td>
+                                            <td>@{{ row.delivery_date_disp }}</td>
                                             <td>@{{ row.quantity }}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr class="kt-font-bold">
                                             <td>Total</td>
-                                            <td>@{{ totalDeliveryQty }}</td>
+                                            <td></td>
+                                            <td >@{{ totalDeliveryQty }}</td>
                                         </tr>
                                     </tfoot>
                                 </table> 
