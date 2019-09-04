@@ -554,7 +554,7 @@
                         <div class="card">
                             <div class="card-header">Delivery Schedule</div>
                             <div class="card-body">
-                                <div class="table-responsive">
+                                <!-- <div class="table-responsive"> -->
                                      <table class="table table-condensed">
                                         <thead>
                                             <tr>
@@ -571,7 +571,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div> 
+                                <!-- </div>  -->
                             </div>
                         </div>
                     </div>
@@ -898,10 +898,12 @@
                 window.open(this.baseURL + '/print-fpc/' + this.projects[index].fpc_project_id);    
             },
             saveDeliveryDate(){
+                var self = this;
                 axios.patch('/update-suggested-date/', {
                     delivery_details : this.curDeliveryDetails
                 }).then( (response) => {
-                    console.log(response.data);
+                     self.toast('success','Delivery schedule has been saved.');
+                      $("#additionalDetailsModal").modal('hide');
                 });
             }
         },

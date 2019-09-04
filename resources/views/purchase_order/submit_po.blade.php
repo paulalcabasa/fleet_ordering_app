@@ -188,6 +188,7 @@
                                     <thead>
                                         <tr>
                                             <th></th>
+                                            <th>Suggested Date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
@@ -195,8 +196,9 @@
                                     <tbody>
                                         <tr v-for="(row,index) in curDeliverySched">
                                             <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
+                                            <td><abbr title="MM/DD/YYYY">@{{ row.suggested_delivery_date_disp}}</abbr></td>
                                             <td><input type="date" :min="curMinDate" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
-                                            <td><input type="text" class="form-control form-control-sm" v-model="row.quantity" /></td>
+                                            <td><input type="text" size="3" class="form-control form-control-sm" v-model="row.quantity" /></td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
