@@ -621,6 +621,15 @@
                     }  
                 }
                 $("#addFWPC").modal('show');
+            },
+            printFPC(project_id,fpc_id){
+                //:href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" ";
+                if(this.user_type == 32 || this.user_type == 33){
+                    window.open(this.base_url + "/print-fpc/" + fpc_id); 
+                }
+                else {
+                    window.open(this.base_url +'/print-fpc-dealer/single/' + project_id + '/' + fpc_id);
+                }
             }
         },
         created: function () {

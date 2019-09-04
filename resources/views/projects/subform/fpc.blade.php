@@ -123,9 +123,10 @@
                 Add FWPC
             </button>   -->
             <a 
-                target="_blank" 
-                :href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" 
+                href="#"
+                
                 class="btn btn-primary btn-sm"
+                @click.prevent="printFPC(projectDetails.project_id,row['fpc_header'].fpc_id)"
             >
                 <span class="kt-hidden-mobile">Print</span>
             </a>
