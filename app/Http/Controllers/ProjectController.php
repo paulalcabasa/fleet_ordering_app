@@ -417,6 +417,7 @@ class ProjectController extends Controller
                         'requirement_line_id'   => $requirement_line_id,
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
+                        'owner_id'              => 6, // dealer is the default owner
                         'module_id'             => 1, // Fleet Project module
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
@@ -468,6 +469,7 @@ class ProjectController extends Controller
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
                         'module_id'             => 1, // Fleet Project module
+                        'owner_id'              => 6, // dealer is the default owner
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id']

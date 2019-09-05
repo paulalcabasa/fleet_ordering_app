@@ -110,6 +110,11 @@
                         Terms and Conditions
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" :href="'#details_tab_' + index" role="tab" aria-selected="false">
+                        Details
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -131,11 +136,10 @@
                             <tr v-for="(order, index) in project.requirements">
                                 <td nowrap="nowrap">
                                     <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
-                                    <a href="#"  title="View"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
-
-                                  
+                                    <a href="#"  title="Show details"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
                                 </td>
-                            <!--     <td nowrap>
+                                <!--     
+                                <td nowrap>
                                     <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-primary btn-sm btn-icon btn-circle"><i class="fas fa-money-bill-wave"></i></a>
                                     <a href="#" @click="showAdditionalDetails(order)" class="btn btn-success btn-sm btn-icon btn-circle"><i class="la la-info-circle"></i></a> 
                                 </td> -->
@@ -204,8 +208,8 @@
                     <div class="form-group row" style="margin-bottom:.5em !important;">
                         <div class="col-md-6">
                             <label class="col-form-label">Payment Terms</label>
-                            <select class="form-control" v-model="project.payment_terms" v-select style="width:100%;">
-                                <option value="-1">Choose payment term</option>
+                            <select class="form-control" v-model="project.payment_terms" v-select style="width:100%;" id="sel_payment_term">
+                                <option value="">Choose payment term</option>
                                 <option v-for="(row,index) in payment_terms" :value="row.term_id">@{{ row.term_name }}</option>
                             </select>
                         </div>
@@ -252,382 +256,57 @@
                 </div>
                 <!-- only show when status is approved -->
             </div>
+            <div class="tab-pane" :id="'details_tab_' + index">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Project No.</span>
+                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ project.project_id }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Status</span>
+                            <span class="col-md-8">
+                                <span :class="status_colors[project.project_status]">@{{ project.project_status }}</span>
+                            </span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">FPC Project Ref No.</span>
+                            <span class="col-md-8">@{{ project.fpc_project_id }}</span>
+                        </div>      
+                        <div class="row kt-margin-b-5" v-if="project.fpc_project_attachments.length > 0">
+                            <span class="col-md-4 kt-font-bold">Attachment</span>
+                            <span class="col-md-8">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in project.fpc_project_attachments">
+                                        <a :href="baseURL + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
+                                    </li>
+                                </ul>    
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                       
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="kt-portlet__foot">
          <div class="row  kt-pull-right">
             <div class="col-lg-12">
-                <button type="button" class="btn btn-primary btn-sm" @click="printFPC(index)">Print</button>
-                <button type="button" class="btn btn-success btn-sm" @click="saveTerms(index)"  v-if="editable">Save</button>
+                <button type="button" class="btn btn-secondary btn-sm" @click="printFPC(index)">Print</button>
+                <button type="button" class="btn btn-primary btn-sm" @click="showAttachmentModal(index)" v-if="editable">Attach files</button>
+                <button type="button" class="btn btn-success btn-sm" @click="saveTerms(index)" v-if="editable">Save</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="priceConfirmationModal" style="z-index:1050" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width: 90% !important;" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Price Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-               <div class="row">
-                    <div class="col-md-5">
-                        <div class="card kt-margin-b-10">
-                            <div class="card-header">Item Detail</div>
-                            <div class="card-body" style="font-size:90%;">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="details-item">
-                                            <span class="details-label">Project No.</span>
-                                            <span class="details-subtext">@{{ curModel.project_id }}</span>
-                                        </div>
-                                        <div class="details-item">
-                                            <span class="details-label">Account Name</span>
-                                            <span class="details-subtext">@{{ customer_details.customer_name}}</span>
-                                        </div>
-                                        <div class="details-item">
-                                            <span class="details-label">Dealer</span>
-                                            <span class="details-subtext">@{{ curDealerAccount }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="details-item">
-                                            <span class="details-label">Model</span>
-                                            <span class="details-subtext">@{{ curModel.sales_model }}</span>
-                                        </div>
-                                        <div class="details-item">
-                                            <span class="details-label">Quantity</span>
-                                            <span class="details-subtext">@{{ curModel.quantity }}</span>
-                                        </div>
-                                        <div class="details-item">
-                                            <span class="details-label">Suggested Price</span>
-                                            <span class="details-subtext">@{{ formatPrice(curModel.suggested_price) }}</span>
-                                        </div> 
+@include('price_confirmation.modal.price_details')
 
-                                    </div>
-                                </div>
+@include('price_confirmation.modal.approval')
 
-                                
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header">Other Items</div>
-                            <div class="card-body">
-                                <!-- Form for entering freebies -->
-                                <div class="table-responsive">
-                                    <table class="table table-condensed" style="font-size:90%;" v-if="editable">
-                                        <thead>
-                                            <th></th>
-                                            <th>Item</th>
-                                            <th>Amount</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
-                                                <td>
-                                                    <a href="#" @click.prevent="deleteRow(freebie,index)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                                <td v-if="freebie.hasOwnProperty('freebie_id')"><input type="text" disabled="" class="form-control form-control-sm" :value="freebie.description"/></td>
-                                                <td v-if="!freebie.hasOwnProperty('freebie_id')"><input type="text" class="form-control form-control-sm" v-model.lazy="freebie.description"/></td>
-                                                <td><input type="text" class="form-control form-control-sm" v-model="freebie.amount" /></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- End for form for entering freebies -->
-                                <div class="table-responsive">
-                                <!-- table for viewing only freebies -->
-                                    <table class="table table-condensed" style="font-size:90%;" v-if="!editable">
-                                        <thead>
-                                            <th>No.</th>
-                                            <th>Item</th>
-                                            <th>Amount</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
-                                                <td>@{{ index + 1 }}</td>
-                                                <td>@{{ freebie.description }}</td>
-                                                <td>@{{ formatPrice(freebie.amount) }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- table for viewing only freebies -->
-                            </div>
-                            <div class="card-footer" v-if="editable">
-                                <button type="button" class="btn btn-primary btn-sm"  @click="addRow()">Add</button>
-                            </div>
-                        </div>          
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card">
-                            <div class="card-header">Pricing</div>
-                            <div class="card-body">
-
-                                <!-- form for entering pricing details -->
-                                <form class="form-horizontal" v-if="editable">
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">SRP</label>
-                                        <div class="col-lg-9">
-                                            <input 
-                                                type="text" 
-                                                class="form-control form-control-sm" 
-                                                :value="formatPrice(curModel.suggested_retail_price)"
-                                                disabled="disabled" 
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Wholesale Price</label>
-                                        <div class="col-lg-9">
-                                            <input 
-                                                type="text" 
-                                                class="form-control form-control-sm" 
-                                                :value="formatPrice(calculateWSP)" 
-                                                disabled="disabled" 
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Dealer's Margin</label>
-                                        <div class="col-lg-9">
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <div class="input-group input-group-sm">
-                                                        <input type="text" class="form-control" v-model="curModel.dealers_margin" aria-describedby="basic-addon2">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text" id="basic-addon2">%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7">
-                                                    <input type="text" disabled="" class="form-control form-control-sm" :value="formatPrice(calculateMargin)" />
-                                                </div> 
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">LTO Registration</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" class="form-control form-control-sm" v-model="curModel.lto_registration" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Freebies</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" :value="formatPrice(sumFreebies)" class="form-control form-control-sm" disabled="" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Cost</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" :value="formatPrice(calculateCost)" class="form-control form-control-sm" disabled="" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Net Cost</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" :value="formatPrice(calculateNetCost)" class="form-control form-control-sm" disabled="" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Fleet Price</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" v-model="curModel.fleet_price" class="form-control form-control-sm" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Subsidy per unit</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" :value="formatPrice(calculateSubsidy)" class="form-control form-control-sm" disabled="" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Total IPC Subsidy</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" :value="formatPrice(calculateTotalSubsidy)" class="form-control form-control-sm" disabled="" />
-                                        </div>
-                                    </div>
-                                </form>
-                               <!-- end of form for entering pricing details -->
-
-                               <!-- Viewing of pricing details -->
-                               <div v-if="!editable">
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">SRP</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.suggested_retail_price)}}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Wholesale Price</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(calculateWSP) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Dealer's Margin</span>
-                                        <span class="col-md-8">@{{ formatPrice(calculateMargin)}}  (@{{ curModel.dealers_margin }}%)</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">3 Yrs LTO Registration</span>
-                                        <span class="col-md-8">@{{ formatPrice(curModel.lto_registration) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Freebies</span>
-                                        <span class="col-md-8">@{{ formatPrice(sumFreebies) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Cost</span>
-                                        <span class="col-md-8 kt-font-bold kt-font-danger">@{{ formatPrice(calculateCost) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Net Cost</span>
-                                        <span class="col-md-8 kt-font-bold kt-font-primary">@{{ formatPrice(calculateNetCost) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Fleet Price</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.fleet_price) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Subsidy</span>
-                                        <span class="col-md-8">@{{ formatPrice(calculateSubsidy) }}</span>
-                                    </div>
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Total IPC Subsidy</span>
-                                        <span class="col-md-8">@{{ formatPrice(calculateTotalSubsidy) }}</span>
-                                    </div>
-                                </div>
-                               <!-- end of viewing of pricing details -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer"  v-if="editable">
-                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                <button type="button" class="btn btn-success" @click="saveFPCItem()">Save</button>
-              <!--   <a href="#" @click.prevent="printPrintConfirmation(project_id)" class="btn btn-primary">Print</a> -->
-               <!--  <button type="button" v-if="active_tab == 1" class="btn btn-primary" @click="addRow()">Add row</button> -->
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--begin::Modal-->
-<div class="modal fade" id="additionalDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@{{ curModel.sales_model }} - @{{ curModel.color }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">    
-                <div class="row">
-                    <div class="col-md-6">
-                         <div class="card">
-                            <div class="card-header">Additional Details</div>
-                            <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Name of Body Builder</span>
-                                    <span class="details-subtext">@{{ curModel.body_builder_name  }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Rear Body Type</span>
-                                    <span class="details-subtext">@{{ curModel.rear_body_type }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Additional Items</span>
-                                    <span class="details-subtext">@{{ curModel.additional_items }}</span>
-                                </div> 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Delivery Schedule</div>
-                            <div class="card-body">
-                                <!-- <div class="table-responsive"> -->
-                                     <table class="table table-condensed">
-                                        <thead>
-                                            <tr>
-                                                <td>Date</td>
-                                                <td>Suggested Date</td>
-                                                <td>Quantity</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(row,index) in curDeliveryDetails">
-                                                <td>@{{ row.delivery_date_disp }}</td>
-                                                <td><input type="date"  v-model="row.suggested_delivery_date" class="form-control form-control-sm" name=""  /></td>
-                                                <td>@{{ row.quantity }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                <!-- </div>  -->
-                            </div>
-                        </div>
-                    </div>
-                </div>   
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="saveDeliveryDate">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
-<!--begin::Modal-->
-<div class="modal fade" id="fpcApprovalModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><span class="kt-font-transform-c">@{{ action }}</span></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div class="modal-body">    
-                <div class="form-group" v-if="action == 'approve'">
-                    <label>Attach signed copy of FPC</label>
-                    <div></div>
-                    <div class="custom-file">
-                        <input type="file"   @change="validateFileSize('fpc')" class="custom-file-input" ref="customFile" name="fpc_attachment[]" id="fpc_attachment" multiple="true">
-                        <label class="custom-file-label" for="attachment">@{{ fpc_attachment_label }}</label>
-                         <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
-                            <li v-for="(row,index) in fpc_attachment">
-                                <span>@{{ row.orig_filename }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <span v-if="action == 'approve'">Remarks</span>
-                        <span v-if="action == 'cancel'">Are you sure to cancel the FPC? Please state your reason.</span>
-                    </label>
-                    <textarea class="form-control" v-model.lazy="remarks"></textarea> 
-                </div>
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" v-if="action == 'approve'" @click="confirmApproval()">Confirm</button>
-                <button type="button" class="btn btn-success" v-if="action == 'cancel'" @click="confirmCancellation()">Confirm</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Modal-->
-
+@include('price_confirmation.modal.additional_details')
 
 </div>
 
@@ -664,8 +343,9 @@
             projects:             {!! json_encode($projects) !!},
             payment_terms:        {!! json_encode($payment_terms) !!},
             baseURL:              {!! json_encode($base_url) !!} ,
-            editable:              {!! json_encode($editable) !!} ,
-            fpc_attachments:              {!! json_encode($fpc_attachments) !!} ,
+            editable:             {!! json_encode($editable) !!} ,
+            fpc_attachments:      {!! json_encode($fpc_attachments) !!} ,
+            vehicle_lead_time:    {!! json_encode($vehicle_lead_time) !!} ,
             curModel:             [],
             curDealerAccount:     '',
             curFreebies:          [],
@@ -673,16 +353,12 @@
             active_tab:           0,
             fpc_attachment:       [],
             fpc_attachment_label: 'Choose file',
-            remarks: '',
-            action : '',
-            status_colors : {
-                'New' : "kt-badge kt-badge--brand kt-badge--inline",
-                'Acknowledged' : "kt-badge kt-badge--success kt-badge--inline",
-                'Approved' : "kt-badge kt-badge--success kt-badge--inline",
-                'Submitted' : "kt-badge kt-badge--warning kt-badge--inline",
-                'Cancelled' : "kt-badge kt-badge--danger kt-badge--inline",
-                'In progress' : "kt-badge kt-badge--warning kt-badge--inline"
-            },
+            remarks:              '',
+            action:               '',
+            cur_lead_time_desc:   '',
+            cur_variant:          '',
+            cur_fpc_project_id:   '',
+            status_colors:        {!! json_encode($status_colors) !!}
         },
         methods : {
             cancelFPC(){
@@ -715,9 +391,13 @@
 
                 let data = new FormData();
                 var self = this;
+                var action = self.action;
                 data.append('fpc_id',self.fpc_details.fpc_id);
                 data.append('remarks',self.remarks);
+                data.append('fpc_project_id',self.cur_fpc_project_id);
+                data.append('action',self.action);
 
+             
                 $.each($("#fpc_attachment")[0].files, function(i, file) {
                     data.append('fpc_attachment[]', file);
                 });
@@ -735,10 +415,16 @@
                     }
                 }).then(function (response) {
                     KTApp.unblock("#fpcApprovalModal .modal-content",{});
-                    self.toast('success','FPC has been approved!');
-                    $("#fpcApprovalModal").modal('hide');
-                    self.fpc_details.status_name = response.data.status;
-                    self.editable = response.data.editable; 
+                    if(action == "approve"){
+                        self.toast('success','FPC has been approved!');
+                        $("#fpcApprovalModal").modal('hide');
+                        self.fpc_details.status_name = response.data.status;
+                        self.editable = response.data.editable; 
+                    }
+                    else {
+                        self.toast('success','File successfully uploaded!');
+                        $("#fpcApprovalModal").modal('hide');
+                    }
                 });
 
             },
@@ -781,7 +467,8 @@
                     {
                         fpc_item_id : fpc_item_id,
                         description : "",
-                        amount : 0     
+                        amount : 0,
+                        cost_to : 6     
                     }
                 ); 
             },
@@ -842,6 +529,8 @@
             showAdditionalDetails(order){
                 this.curModel = order;
                 var self = this;
+                let vehicle_lead_time = this.vehicle_lead_time[order.model_variant];  
+                this.cur_lead_time_desc = vehicle_lead_time == 1 ? vehicle_lead_time + " month" : vehicle_lead_time + " months";        
                 axios.get('/ajax-get-delivery-detail/' + this.curModel.requirement_line_id)
                     .then((response) => {
                         this.curDeliveryDetails = response.data;
@@ -899,19 +588,75 @@
             },
             saveDeliveryDate(){
                 var self = this;
-                axios.patch('/update-suggested-date/', {
-                    delivery_details : this.curDeliveryDetails
-                }).then( (response) => {
-                     self.toast('success','Delivery schedule has been saved.');
-                      $("#additionalDetailsModal").modal('hide');
+
+                var total = self.curDeliveryDetails.reduce((acc,item) => parseFloat(acc) + parseFloat( item.owner_id == 5 ? item.quantity : 0),0);
+                if(total == self.curModel.quantity){
+                    axios.post('update-suggested-date', {
+                        delivery_details : this.curDeliveryDetails
+                    }).then( (response) => {
+                         self.toast('success','Delivery schedule has been saved.');
+                          $("#additionalDetailsModal").modal('hide');
+                    });
+                }
+                else {
+                    self.toast('error','Invalid total for suggested delivery schedule.');
+                }
+            },
+            addDeliveryDate(){
+                var self = this;
+
+                let vehicle_lead_time = this.vehicle_lead_time[this.curModel.model_variant];
+                let min_delivery_date =  moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD');
+                let default_delivery_date = moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD')
+              
+
+                self.curDeliveryDetails.push({
+                    delivery_date : default_delivery_date,
+                    owner_id : 5,
+                    quantity : '',
+                    min_delivery_date : min_delivery_date,
+                    requirement_line_id : this.curModel.requirement_line_id,
+                    delivery_schedule_id : -1
                 });
+            },
+            deleteDeliveryDate(row,index){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                        if(row.delivery_schedule_id != -1){
+                            axios.delete('delivery-schedule/' + row.delivery_schedule_id)
+                                .then( (response) => {
+                                    self.curDeliveryDetails.splice(index,1); 
+                                });
+                        }
+                        else {
+                            self.curDeliveryDetails.splice(index,1);  
+                        }      
+                    }
+                });  
+            },
+            showAttachmentModal(index){
+                var self = this;
+                self.cur_fpc_project_id = self.projects[index].fpc_project_id;
+                this.action = "attach";
+                $("#fpcApprovalModal").modal('show');
             }
         },
         created: function () {
             // `this` points to the vm instance
         },
         mounted : function () {
-          
+            $("#sel_payment_term").select2({
+                placeholder : 'Choose payment term'
+            });
         },
         computed: {
             sumFreebies(){

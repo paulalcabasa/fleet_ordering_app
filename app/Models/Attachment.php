@@ -64,6 +64,18 @@ class Attachment extends Model
 		return $query;
 	}
 
+	public function get_fpc_project_attachments($fpc_project_id){
+		$query = $this
+					->where([
+						[ 'reference_id', '=', $fpc_project_id ],
+						[ 'reference_table', '=', 'fs_fpc_projects' ],
+						[ 'reference_column', '=', 'fpc_project_id' ],
+						[ 'owner_id' , '=' , 7]
+					])
+					->get();
+		return $query;
+	}
+
 	public function get_po_attachments($po_header_id){
 		$query = $this
 					->where([

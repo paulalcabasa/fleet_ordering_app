@@ -45,6 +45,7 @@ class FPC_Item extends Model
                         fpc_prj.fpc_project_id,
                         vehicle.sales_model,
                         vehicle.color,
+                        vehicle.model_variant,
                         rl.quantity,
                         nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,
                         nvl(rl.rear_body_type,'-') rear_body_type,
@@ -92,7 +93,8 @@ class FPC_Item extends Model
                         fpc_item.lto_registration,
                         fpc_item.fleet_price,
                         rl.requirement_line_id,
-                        fpc_item.fpc_item_id";
+                        fpc_item.fpc_item_id,
+                        vehicle.model_variant";
 
 		$params = [
 			'fpc_project_id' => $fpc_project_id

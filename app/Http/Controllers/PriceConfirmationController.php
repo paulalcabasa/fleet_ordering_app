@@ -96,23 +96,25 @@ class PriceConfirmationController extends Controller
             $requirements = $m_fpc_item->get_item_requirements($project->fpc_project_id);
             $competitors = $m_competitor->get_competitors($project->project_id);
             $competitor_attachments = $m_attachment->get_competitor_attachments($project->project_id);
+            $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
             $temp_arr = [
-                'project_id'             => $project->project_id,
-                'payment_terms'          => $project->payment_terms,
-                'validity'               => $project->validity,
-                'availability'           => $project->availability,
-                'note'                   => $project->note,
-                'dealer_name'            => $project->dealer_name,
-                'dealer_account'         => $project->dealer_account,
-                'project_status'         => $project->project_status,
-                'fpc_project_id'         => $project->fpc_project_id,
-                'requirements'           => $requirements,
-                'competitors'            => $competitors,
-                'competitor_attachments' => $competitor_attachments,
-                'term_name'              => $project->term_name,
-                'validity_disp'          => $project->validity_disp,
-                'competitor_flag'        => $project->competitor_flag,
-                'competitor_remarks'     => $project->competitor_remarks
+                'project_id'              => $project->project_id,
+                'payment_terms'           => $project->payment_terms,
+                'validity'                => $project->validity,
+                'availability'            => $project->availability,
+                'note'                    => $project->note,
+                'dealer_name'             => $project->dealer_name,
+                'dealer_account'          => $project->dealer_account,
+                'project_status'          => $project->project_status,
+                'fpc_project_id'          => $project->fpc_project_id,
+                'requirements'            => $requirements,
+                'competitors'             => $competitors,
+                'competitor_attachments'  => $competitor_attachments,
+                'term_name'               => $project->term_name,
+                'validity_disp'           => $project->validity_disp,
+                'competitor_flag'         => $project->competitor_flag,
+                'competitor_remarks'      => $project->competitor_remarks,
+                'fpc_project_attachments' => $fpc_project_attachments
             ];
             array_push($projects,$temp_arr);
         }
@@ -121,14 +123,16 @@ class PriceConfirmationController extends Controller
     
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
-            'action'           => $action,
-            'fpc_details'      => $fpc_details,
-            'customer_details' => $customer_details,
-            'projects'         => $projects,
-            'payment_terms'    => $payment_terms,
-            'base_url'         => url('/'),
-            'editable'         => $editable,
-            'fpc_attachments'  => $fpc_attachments
+            'action'            => $action,
+            'fpc_details'       => $fpc_details,
+            'customer_details'  => $customer_details,
+            'projects'          => $projects,
+            'payment_terms'     => $payment_terms,
+            'base_url'          => url('/'),
+            'editable'          => $editable,
+            'fpc_attachments'   => $fpc_attachments,
+            'status_colors'     => config('app.status_colors'),
+            'vehicle_lead_time' => config('app.vehicle_lead_time')
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -265,6 +269,7 @@ class PriceConfirmationController extends Controller
                     $freebie['fpc_item_id'],
                     $freebie['description'], 
                     $freebie['amount'], 
+                    $freebie['cost_to'], 
                     session('user')['user_id'],
                     session('user')['source_id'],
                     Carbon::now()
@@ -317,38 +322,42 @@ class PriceConfirmationController extends Controller
         $attachment        = $request->fpc_attachment;
         $fpc_id            = $request->fpc_id;
         $remarks           = $request->remarks;
+        $fpc_project_id    = $request->fpc_project_id;
+        $action            = $request->action;
         $attachment_params = [];
         $file_index        = 0;
-        //$destinationPath   = 'storage/app/attachments';
+        //$destinationPath = 'storage/app/attachments';
         
-        // approve fpc
-        $m_fpc->update_status(
-            $fpc_id, 
-            $remarks, 
-            session('user')['user_id'],
-            session('user')['source_id'],
-            4 // approved
-        );
+        if($action == "approve"){
+            // approve fpc
+            $m_fpc->update_status(
+                $fpc_id, 
+                $remarks, 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                4 // approved
+            );
 
-        $fpc_projects = $m_fpc_project->get_projects($fpc_id);
-        foreach($fpc_projects as $row){
-            /* activity logs */
-            $activity_log_params = [
-                'module_id'             => 1, // Fleet Project
-                'module_code'           => 'PRJ',
-                'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created an FPC for Project No. <strong>'. $row->project_id .'</strong>',
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id'],
-                'reference_id'          => $row->project_id,
-                'reference_column'      => 'project_id',
-                'reference_table'       => 'fs_projects',
-                'mail_flag'             => 'Y',
-                'is_sent_flag'          => 'N',
-                'timeline_flag'         => 'Y',
-                'mail_recipient'        => $row->requestor_email
-            ];
-            $m_activity_logs->insert_log($activity_log_params);
+            $fpc_projects = $m_fpc_project->get_projects($fpc_id);
+            foreach($fpc_projects as $row){
+                /* activity logs */
+                $activity_log_params = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created an FPC for Project No. <strong>'. $row->project_id .'</strong>',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'reference_id'          => $row->project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $row->requestor_email
+                ];
+                $m_activity_logs->insert_log($activity_log_params);
+            }
         }
     
         if(!empty($_FILES)){
@@ -362,18 +371,39 @@ class PriceConfirmationController extends Controller
                         'public/fpc', $file, $filename
                     );  
 
+                    $reference_table = "";
+                    $reference_column = "";
+                    $reference_id = "";
+                    $owner_id = 0;
+                    $module_id = 0;
+
+                    if($action == "approve"){
+                        $reference_table = 'fs_fpc';
+                        $reference_column = 'fpc_id';
+                        $reference_id = $fpc_id;
+                        $owner_id = 3;
+                        $module_id = 3;
+                    }
+                    else if($action == "attach"){
+                        $reference_table = 'fs_fpc_projects';
+                        $reference_column = 'fpc_project_id';
+                        $reference_id = $fpc_project_id;
+                        $owner_id = 7;
+                        $module_id = 5;
+                    }
+
                     $temp = [
                         'filename'              => $filename,
                         'directory'             => $fpcPath,
-                        'module_id'             => 3, // Fleet Price Confirmation
-                        'reference_id'          => $fpc_id,
-                        'reference_table'       => 'fs_fpc',
-                        'reference_column'      => 'fpc_id',
+                        'module_id'             => $module_id, // Fleet Price Confirmation
+                        'reference_id'          => $reference_id,
+                        'reference_table'       => $reference_table,
+                        'reference_column'      => $reference_column,
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 3, // customer as owner
+                        'owner_id'              => $owner_id, // customer as owner
                         'symlink_dir'           => 'public/storage/fpc/'
                     ];         
                     array_push($attachment_params,$temp);
@@ -384,11 +414,21 @@ class PriceConfirmationController extends Controller
                 $m_attachment->insert_attachment($attachment_params);
             }
         }
- 
-        $editable = $fpc_helper->editable('Approved');
+        
+        
+        $status = "";
+        if($action == "approve"){
+            $editable = $fpc_helper->editable('Approved');
+            $status = "Approved";
+        }
+        else {
+            $editable = false;
+            $status = "Updated";
+        }
+
 
         return [
-            'status' => "Approved",
+            'status' => $status,
             'editable' => $editable
         ];
 

@@ -32,11 +32,13 @@ class Vehicle extends Model
 	}
 
 	public function get_vehicles(){
+		// ipc_vehicles_with_price_v - with price
+		// no price
 		$sql = "SELECT DISTINCT
 			            vm.model_variant,
 			            vm.sales_model,
 			            fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicles_with_price_v vm 
+				FROM ipc_dms.ipc_vehicle_models_v vm 
 				    INNER JOIN ipc_dms.fs_vehicle_groups fvg
 				        ON fvg.model = vm.model_variant
 				WHERE 1 = 1
@@ -48,10 +50,11 @@ class Vehicle extends Model
 	}
 
 	public function get_model_colors($sales_model){
+		/* ipc_vehicles_with_price_v */
 		$sql = "SELECT 
 			        vm.inventory_item_id id,
 			        vm.color text
-				FROM ipc_dms.ipc_vehicles_with_price_v vm
+				FROM ipc_dms.ipc_vehicle_models_v vm
 				WHERE 1 = 1
 					AND vm.sales_model = :sales_model
 					AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)

@@ -16,7 +16,8 @@ class FPCItemFreebies extends Model
                         fpc_item_id,
                         description,
                         amount,
-                        null deleted
+                        null deleted,
+                        cost_to_owner_id cost_to
                 FROM ipc_dms.fs_fpc_item_freebies 
                 WHERE 1 = 1
                     AND fpc_item_id = :fpc_item_id";
@@ -27,7 +28,15 @@ class FPCItemFreebies extends Model
         return $query;
     }
     
-    public function create_freebies($fpc_item_id, $description, $amount, $user_id, $user_source_id, $date_created){
+    public function create_freebies(
+        $fpc_item_id, 
+        $description, 
+        $amount, 
+        $cost_to, 
+        $user_id, 
+        $user_source_id, 
+        $date_created
+    ){
         $this->updateOrInsert(
                 [
                     'description' => $description
@@ -35,12 +44,14 @@ class FPCItemFreebies extends Model
                 [
                     'fpc_item_id'           => $fpc_item_id,
                     'description'           => $description,
+                    'cost_to_owner_id'      => $cost_to,
                     'amount'                => $amount,
                     'created_by'            => $user_id,
                     'updated_by'            => $user_id,
                     'create_user_source_id' => $user_source_id,
                     'creation_date'         => $date_created,
-                    'update_user_source_id' => $user_source_id
+                    'update_user_source_id' => $user_source_id,
+                    'update_user_source_id' => $user_source_id,
                 ]
             );
     }

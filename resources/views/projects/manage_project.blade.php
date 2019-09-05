@@ -1347,7 +1347,7 @@ jQuery(document).ready(function() {
                 var delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
                 var is_error = 0;
     
-                if(this.selected_vehicle_group == "CV"){
+                if(this.selected_vehicle_group == "CV" || this.cur_model.includes('Cab')){
                     if(this.cur_rear_body == null || this.cur_body_builder == null){
                         Swal.fire({
                             type: 'error',
@@ -1484,7 +1484,7 @@ jQuery(document).ready(function() {
                 minLength: 3
             },
             {
-                limit: 5,
+                limit: 10,
                 async: true,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);

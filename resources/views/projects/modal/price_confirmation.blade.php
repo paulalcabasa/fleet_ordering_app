@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card" v-show="curFreebies.length > 0">
-                            <div class="card-header">Freebies</div>
+                            <div class="card-header">Other Items</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
