@@ -125,6 +125,9 @@
                             <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                               <i class="la la-eye"></i>
                             </a>
+                            <a :href="base_url + '/manage-project/edit/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                              <i class="la la-edit"></i>
+                            </a>
                         </td>
                         <td>@{{ row.project_id }}</td>
                         <td nowrap>@{{ row.customer_name }}</td>

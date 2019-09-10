@@ -131,6 +131,15 @@ class Project extends Model
     }
 
     public function get_details($project_id){
+        /*,
+        fc.organization_type_id,
+        fc.tin,
+        fc.address,
+        fc.business_style,
+        fc.establishment_date,
+        fc.products,
+        fc.company_overview
+        */
         $sql = "SELECT fs.project_id,
                         fs.customer_id,
                         fc.customer_name fleet_account_name,
@@ -154,7 +163,9 @@ class Project extends Model
                         fs.competitor_flag,
                         ffc.fleet_category_name,
                         fs.dealer_id,
-                        usr.email_address requestor_email
+                        usr.email_address requestor_email,
+                        fs.project_source_id,
+                        fs.fleet_category
                 FROM ipc_dms.fs_projects fs
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fs.customer_id = fc.customer_id 
@@ -544,5 +555,31 @@ class Project extends Model
         $query = DB::select($sql);
 
         return $query;
+    }
+
+    public function update_project($params){
+        $this
+            ->where([
+                [ 'project_id', '=' , $params['project_id'] ]
+            ])
+            ->update([
+                'customer_id'           => $params['customer_id'],
+                'project_source_id'     => $params['project_source_id'],
+                'status'                => $params['status'],
+                'email'                 => $params['email'],
+                'facebook_url'          => $params['facebook_url'],
+                'website_url'           => $params['website_url'],
+                'bid_ref_no'            => $params['bid_ref_no'],
+                'bid_docs_amount'       => $params['bid_docs_amount'],
+                'pre_bid_sched'         => $params['pre_bid_sched'],
+                'bid_date_sched'        => $params['bid_date_sched'],
+                'approved_budget_cost'  => $params['approved_budget_cost'],
+                'fleet_category'        => $params['fleet_category'],
+                'bidding_venue'         => $params['bidding_venue'],
+                'competitor_flag'       => $params['competitor_flag'],
+                'competitor_remarks'    => $params['competitor_remarks'],
+                'updated_by'            => $params['updated_by'],
+                'update_user_source_id' => $params['update_user_source_id']
+            ]);
     }
 }

@@ -131,4 +131,20 @@ class FPC_Project extends Model
         $query = DB::select($sql,$params);
         return $query[0];
     }
+
+    public function get_projects_with_conflict($fpc_id,$item_ids){
+        $query = DB::table('ipc_dms.fs_fpc_projects fpc_prj')
+            ->leftJoin('ipc_dms.fs_fpc_items fpc_item',
+                'fpc_item.fpc_project_id','=','fpc_prj.fpc_project_id')
+            ->leftJoin('ipc_dms.fs_prj_requirement_lines rl',
+                'rl.requirement_line_id', '=', 'fpc_item.requirement_line_id')
+            ->where('fpc_prj.fpc_id','=', $fpc_id)
+            ->whereIn('rl.inventory_item_id', $item_ids)
+            ->selectRaw('DISTINCT 
+                         fpc_prj.fpc_project_id,
+                         fpc_prj.project_id')
+            ->get();
+        
+        return $query;
+    }
 }

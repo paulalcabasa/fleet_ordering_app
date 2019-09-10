@@ -24,7 +24,8 @@ class Competitor extends Model
                         fpc.price,
                         vehicle.sales_model,
                         vehicle.color,
-                        rl.suggested_price
+                        rl.suggested_price,
+                        fpc.ipc_item_id
                 FROM ipc_dms.fs_project_competitors fpc
                     LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
                         ON vehicle.inventory_item_id = fpc.ipc_item_id

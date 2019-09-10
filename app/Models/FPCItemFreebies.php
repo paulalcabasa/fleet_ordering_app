@@ -12,14 +12,18 @@ class FPCItemFreebies extends Model
     protected $connection = "oracle";
 
     public function get_item_freebies($fpc_item_id){
-        $sql = "SELECT freebie_id,
-                        fpc_item_id,
-                        description,
-                        amount,
+        $sql = "SELECT fif.freebie_id,
+                        fif.fpc_item_id,
+                        fif.description,
+                        fif.amount,
                         null deleted,
-                        cost_to_owner_id cost_to
-                FROM ipc_dms.fs_fpc_item_freebies 
+                        fif.cost_to_owner_id cost_to,
+                        fo.name owner_name
+                FROM ipc_dms.fs_fpc_item_freebies fif 
+                    LEFT JOIN ipc_dms.fs_owners fo 
+                        ON fo.owner_id = fif.cost_to_owner_id
                 WHERE 1 = 1
+
                     AND fpc_item_id = :fpc_item_id";
         $params = [
             'fpc_item_id' => $fpc_item_id

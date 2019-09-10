@@ -41,7 +41,10 @@ class ProjectController extends Controller
         ProjectSources $project_sources,
         Customer $customer,
         SalesPersons $sales_person,
-        Vehicle $m_vehicle
+        Vehicle $m_vehicle,
+        Project $m_project,
+        Attachment $m_attachment,
+        CustomerAffiliates $m_affiliate
     ){
         
         $organizations    = $org_types->get_org_options();
@@ -72,22 +75,30 @@ class ProjectController extends Controller
             );
             array_push($vehicle_options, $option);
         }
-       // dd($vehicle_options);
-        $price_confirmation_id = $request->price_confirmation_id;
-    	$action = $request->action;
-    	
+        
+        $project_id = $request->project_id;
+    	$action = $request->action;  
+
+        if($action == "create"){
+            $page_title = "New Project";
+        }
+        else if($action == "edit"){
+            $page_title = "Edit Project";
+        }
+
     	$page_data = array(
-    		'price_confirmation_id' => $price_confirmation_id,
-    		'action'                => $action,
-            'organizations'         => $organizations,
-            'project_sources'       => $project_sources,
-            'customer_options'      => $customer_options,
-            'sales_persons'         => $sales_persons,
-            'vehicle_models'        => $vehicle_options,
-            'vehicle_types'         => $vehicle_types,
-            'base_url'              => url('/'),
-            'fleet_categories'      => $fleet_categories,
-            'vehicle_lead_times'    => config('app.vehicle_lead_time')
+    		'project_id'           => $project_id,
+    		'action'               => $action,
+            'organizations'        => $organizations,
+            'project_sources'      => $project_sources,
+            'customer_options'     => $customer_options,
+            'sales_persons'        => $sales_persons,
+            'vehicle_models'       => $vehicle_options,
+            'vehicle_types'        => $vehicle_types,
+            'base_url'             => url('/'),
+            'fleet_categories'     => $fleet_categories,
+            'page_title'           => $page_title,
+            'vehicle_lead_times'   => config('app.vehicle_lead_time')
     	);
     	return view('projects.manage_project', $page_data);
     }
@@ -538,17 +549,22 @@ class ProjectController extends Controller
     public function create_project_sales_persons($m_sales_persons, $sales_persons, $project_id){
         $sales_persons_params = [];
         foreach ($sales_persons as $row) {
-            $temp = [
-                'project_id'            => $project_id,
-                'name'                  => $row['name'],
-                'position'              => $row['position_title'],
-                'mobile_no'             => $row['mobile_no'],
-                'email_address'         => $row['email'],
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id']
-            ];
-            array_push($sales_persons_params, $temp);
+            if($row['delete_flag'] == 'N'){
+                $temp = [
+                    'project_id'            => $project_id,
+                    'name'                  => $row['name'],
+                    'position'              => $row['position_title'],
+                    'mobile_no'             => $row['mobile_no'],
+                    'email_address'         => $row['email'],
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id']
+                ];
+                array_push($sales_persons_params, $temp);
+            }
+            else if($row['delete_flag'] == 'Y') {
+                $m_sales_persons->delete_sales_person($row['sales_person_id']);
+            }
         }
 
         $m_sales_persons->insert_sales_person($sales_persons_params);
@@ -557,11 +573,16 @@ class ProjectController extends Controller
     public function create_project_contacts($m_customer_contact,$customer_contacts, $project_id){
         $cust_contact_params = [];
         foreach($customer_contacts as $row){
-            $arr = [
-                'project_id'     => $project_id,
-                'contact_number' => $row['contact_number']
-            ];
-            array_push($cust_contact_params,$arr);
+            if($row['delete_flag'] == 'N' && !isset($row['contact_id'])){
+                $arr = [
+                    'project_id'     => $project_id,
+                    'contact_number' => $row['contact_number']
+                ];
+                array_push($cust_contact_params,$arr);
+            }
+            else if($row['delete_flag'] == 'Y' && isset($row['contact_id'])) {
+               $m_customer_contact->delete_contact($row['contact_id']);
+            }
         }
         $m_customer_contact->insert_contact($cust_contact_params);
     }
@@ -569,18 +590,42 @@ class ProjectController extends Controller
     public function create_contact_persons($m_contact_person, $contact_persons, $project_id){
         $contact_person_params = [];
         foreach($contact_persons as $row){
-            $temp = [
-                'project_id'            => $project_id,
-                'name'                  => $row['name'],
-                'position_title'        => $row['position'],
-                'department'            => $row['department'],
-                'contact_number'        => $row['contact_number'],
-                'email_address'         => $row['email'],
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id']
-            ];
-            array_push($contact_person_params, $temp);
+            if($row['delete_flag'] == 'N'){
+               if(isset($row['contact_person_id'])){
+                    // update details
+                    $m_contact_person->update_contact_person(
+                        [
+                            'contact_person_id'     => $row['contact_person_id'],
+                            'name'                  => $row['name'],
+                            'position_title'        => $row['position'],
+                            'department'            => $row['department'],
+                            'contact_number'        => $row['contact_number'],
+                            'email_address'         => $row['email'],
+                            'updated_by'            => session('user')['user_id'],
+                            'update_user_source_id' => session('user')['source_id']
+                        ]
+                    );
+               }
+               else {
+                    //insert
+                   $temp = [
+                        'project_id'            => $project_id,
+                        'name'                  => $row['name'],
+                        'position_title'        => $row['position'],
+                        'department'            => $row['department'],
+                        'contact_number'        => $row['contact_number'],
+                        'email_address'         => $row['email'],
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id']
+                    ];
+                    array_push($contact_person_params, $temp);
+                }
+            }
+            else if($row['delete_flag'] == 'Y' && isset($row['contact_person_id'])) {
+                $m_contact_person->delete_contact_person($row['contact_person_id']);
+            }
+
         }   
         $m_contact_person->insert_contact_persons($contact_person_params);
     }
@@ -610,7 +655,6 @@ class ProjectController extends Controller
             ];
        
         $customer_id = $m_customer->insert_customer($customer_attrs,$customer_values);
-       
         // End of customer details
        
        // Affiliate details
@@ -835,6 +879,12 @@ class ProjectController extends Controller
         }
         else if($status == "reject"){
             $status_id = 5; // reject
+        }
+        else if($status == "revise"){
+            $status_id = 7;
+            
+            // only update all approvers all dealer to pending
+
         }
         
         // save status for ipc_dms.fs_module_approval table
@@ -1080,7 +1130,6 @@ class ProjectController extends Controller
         $end_date    = $m_request->end_date;
         $dealer      = $m_request->dealer;
         $status      = $m_request->status;
-
         $projects = $m_project->get_filtered_projects(
             session('user')['user_type_id'],
             $dealer,
@@ -1089,9 +1138,201 @@ class ProjectController extends Controller
             $customer_id,
             $status
         );
-
         return $projects;
+    }
+
+    public function get_project_details(
+        Request                 $request, 
+        Project                 $m_project,
+        CustomerContact         $m_contact,
+        ContactPersons          $m_contact_person,
+        SalesPersonsOra         $m_sales_person,
+        RequirementHeader       $m_requirement,
+        ProjectDeliverySchedule $m_delivery_sched,
+        Competitor              $m_competitor,
+        Attachment $m_attachment
+    ){
+        $project_id             = $request->project_id;
+        $project_details        = $m_project->get_details($project_id);
+        $contacts               = $m_contact->get_contacts($project_details->project_id);
+        $contact_persons        = $m_contact_person->get_contacts($project_details->project_id);
+        $sales_persons          = $m_sales_person->get_sales_persons($project_details->project_id);
+        $sales_persons_arr      = [];
+        $requirement            = $m_requirement->get_requirements($project_details->project_id);
+        $requirement_arr        = [];
+        $competitors            = $m_competitor->get_competitors($project_details->project_id);
+        $competitor_attachments = $m_attachment->get_competitor_attachments($project_details->project_id);
+
+        // contacts
+        $contacts_arr = [];
+        foreach($contacts as $con){
+            array_push(
+                $contacts_arr,
+                [
+                    'contact_id'     => $con->contact_id,
+                    'contact_number' => $con->contact_number,
+                    'delete_flag'    => 'N'
+                ]
+            );
+        }
+
+        // contact persons
+        $contact_persons_arr = [];
+        foreach($contact_persons as $cp){
+            array_push(
+                $contact_persons_arr,
+                [
+                    'contact_person_id' => $cp->contact_person_id,
+                    'name'              => $cp->name,
+                    'email'             => $cp->email,
+                    'department'        => $cp->department,
+                    'contact_number'    => $cp->contact_number,
+                    'position'          => $cp->position,
+                    'delete_flag'       => 'N'
+                ]
+            );
+        }
+
+        // requirement
+        foreach($requirement as $req){
+            $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($req->requirement_line_id);
+            $arr = [
+                'requirement_line_id' => $req->requirement_line_id,
+                'vehicle_type'        => $req->vehicle_type,
+                'inventory_item_id'   => $req->inventory_item_id,
+                'sales_model'         => $req->sales_model,
+                'color'               => $req->color,
+                'quantity'            => $req->quantity,
+                'suggested_price'     => $req->suggested_price,
+                'body_builder_name'   => $req->body_builder_name,
+                'rear_body_type'      => $req->rear_body_type,
+                'additional_items'    => $req->additional_items,
+                'variant'             => $req->model_variant,
+                'delivery_schedule'   => $delivery_sched
+            ];
+            array_push($requirement_arr,$arr);
+        }
+
+        // sales persons
+        foreach($sales_persons as $sp){
+            array_push(
+                $sales_persons_arr,
+                [
+                    'sales_person_id' => $sp->sales_person_id,
+                    'email'           => $sp->email_address,
+                    'mobile_no'       => $sp->mobile_no,
+                    'name'            => $sp->name,
+                    'position_title'  => $sp->position,
+                    'creation_date'   => $sp->creation_date,
+                    'delete_flag'     => 'N'
+                ]
+            );
+        }
+
+        // competitors
+        $competitors_arr = [];
+        foreach($competitors as $comp){
+            array_push(
+                $competitors_arr,
+                [
+                    'brand'       => $comp->brand,
+                    'ipc_color'   => $comp->color,
+                    'ipc_item_id' => $comp->ipc_item_id,
+                    'ipc_model'   => $comp->sales_model,
+                    'model'       => $comp->model,
+                    'price'       => $comp->price
+
+                ]
+            );
+        }
+
+        $data = [
+            'project_details'        => $project_details,
+            'contacts'               => $contacts_arr,
+            'contact_persons'        => $contact_persons_arr,
+            'sales_persons'          => $sales_persons_arr,
+            'requirement'            => $requirement_arr,
+            'competitors'            => $competitors_arr,
+            'competitor_attachments' => $competitor_attachments
+        ];
+        return response()->json($data);
+    }
+
+    public function update_project(
+        Request $request,
+        Customer $m_customer,
+        ProjectSources $m_project_source,
+        CustomerAffiliates $m_affiliates,
+        Project $m_project,
+        CustomerContact $m_customer_contact,
+        ContactPersons $m_contact_person,
+        SalesPersonsOra $m_sales_persons,
+        ProjectRequirement $m_requirement,
+        ProjectDeliverySchedule $m_delivery_sched,
+        Competitor $m_competitor,
+        Approver $m_approver,
+        ModuleApproval $m_module_approval,
+        ActivityLogs $m_activity_logs,
+        RequirementHeader $m_requirement_header,
+        RequirementLine $m_requirement_line
+    ){
+        ini_set('memory_limit', '256M');
+        $account_details = $request['accountDetails'];
+        $contact_details = $request['contactDetails'];
+        $project_id = $request->project_id;
+        // create project source
+        $project_source_id = $this->create_project_source($m_project_source,$account_details);
     
+        // create or update customer data
+        $customer_id = $this->insert_project_customer($m_customer,$m_affiliates,$account_details);
+    
+        // update project header
+        $project_params = [
+            'customer_id'           => $customer_id,
+            'project_source_id'     => $project_source_id,
+            'updated_by'            => session('user')['user_id'],
+            'update_user_source_id' => session('user')['source_id'],
+            'email'                 => $contact_details['email_address'],
+            'facebook_url'          => $contact_details['facebook_url'],
+            'website_url'           => $contact_details['website_url'],
+            'bid_ref_no'            => $account_details['bid_ref_no'],
+            'bid_docs_amount'       => $account_details['bid_docs_amount'],
+            'pre_bid_sched'         => $account_details['pre_bid_sched'],
+            'bid_date_sched'        => $account_details['bid_date_sched'],
+            'bidding_venue'         => $account_details['bidding_venue'],
+            'approved_budget_cost'  => $account_details['approved_budget_cost'],
+            'fleet_category'        => $account_details['fleet_category'],
+            'competitor_flag'       => $request->competitor_flag, 
+            'competitor_remarks'    => $request->competitor_reason, 
+            'status'                => 3, // new
+            'project_id'            => $project_id
+        ];
+
+        $m_project->update_project($project_params);
+
+         // project contact number 
+        $this->create_project_contacts(
+            $m_customer_contact, 
+            $contact_details['custContacts'], 
+            $project_id
+        );
+  
+
+        // project contact persons
+        $this->create_contact_persons(
+            $m_contact_person, 
+            $contact_details['contactPersons'], 
+            $project_id
+        );
+
+        // project sales persons       
+        $this->create_project_sales_persons(
+            $m_sales_persons, 
+            $contact_details['salesPersons'], 
+            $project_id
+        );
+
+     
     }
  
 }

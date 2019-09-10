@@ -24,6 +24,7 @@ use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
+use App\Models\OracleUser;
 
 class PriceConfirmationController extends Controller
 {   
@@ -608,5 +609,102 @@ class PriceConfirmationController extends Controller
 
         return $fpc;
 
+    }
+
+    public function print_fpc_conflict(
+        Request $request,
+        FPC_Item $m_fpc_item,
+        FPCHelper $fpc_helper,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        Approver $m_approver,
+        FPC $m_fpc,
+        FPCItemFreebies $m_freebies,
+        OracleUser $m_ora_user
+    ){
+
+        $fpc_id = $request->fpc_id;
+        $vehicle_type = "";
+        
+
+        $inventory_items = $m_fpc_item->get_items_by_fpc($fpc_id);
+        $inventory_items = array_pluck($inventory_items, 'inventory_item_id');
+        $common_items = $fpc_helper->getArrayCommonValues($inventory_items);
+        
+        if(!empty($common_items)){
+
+
+            $user_details = $m_ora_user->get_user_details(
+                session('user')['user_id'],            
+                session('user')['source_id']            
+            );
+
+            $fpc_details = $m_fpc->get_details($fpc_id);
+            $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type);
+            $signatories = collect($signatories)->groupBy('user_type');
+
+            $common_inventory_item_id = array_unique($common_items);
+
+            $projects  = [];
+            $attention = [];
+            $terms     = [];
+
+            $fpc_projects = $m_fpc_project->get_projects_with_conflict($fpc_id,$common_inventory_item_id);
+            foreach ($fpc_projects as $project) {
+                $header_data = $m_fpc_project->get_fpc_project_details($project->fpc_project_id);
+                $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
+                array_push($projects, $header_data);
+                array_push($attention, $sales_persons);
+                array_push(
+                    $terms,
+                    [
+                        $header_data->note,
+                        $header_data->availability,
+                        $header_data->validity,
+                        $header_data->term_name,
+                    ]
+                );
+            }
+
+            $terms = array_unique($terms,SORT_REGULAR);
+        
+
+            $requirements = $m_fpc_item->get_conflict_item_requirement($fpc_id, $common_inventory_item_id);
+            
+            
+
+            $detailed_price = $m_fpc_item->get_item_requirement_by_fpc_id($fpc_id,$common_inventory_item_id);
+            $items_arr = [];
+
+            foreach($detailed_price as $row){
+                $arr = [
+                    'header' => $row,
+                    'other_items' => $m_freebies->get_item_freebies($row->fpc_item_id)
+                ];
+
+                array_push($items_arr, $arr);
+            }
+
+        
+            $data = [
+                'projects'       => $projects,
+                'attention'      => $attention,
+                'requirements'   => $requirements,
+                'detailed_price' => $items_arr,
+                'signatories'    => $signatories,
+                'fpc_details'    => $fpc_details,
+                'terms'          => $terms,
+                'user_details'   => $user_details
+            ];
+
+     
+            $pdf = PDF::loadView('pdf.print_fpc_conflict', $data);
+            return $pdf->setPaper('a4','portrait')->stream();
+
+        }
+        else {
+            return 'No conflicting models';
+        }
+        
     }
 }

@@ -20,4 +20,10 @@ class SalesPersonsOra extends Model
 			->get();
 		return $query;
 	}
+
+    public function delete_sales_person($sales_person_id){
+        $this->where([
+            [ 'sales_person_id', '=', $sales_person_id ]
+        ])->delete();
+    }
 }

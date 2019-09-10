@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"header",
+				"header_data"
+			],
+			[
+				"dliver",
+				"delivery_schedule_id"
+			],
+			[
+				"delivery",
+				"delivery_schedule_id"
+			],
+			[
+				"delivery_",
+				"delivery_schedule_id"
+			],
+			[
+				"req",
+				"requirement_line_id"
+			],
+			[
 				"table",
 				"table-responsive"
 			],
@@ -132,20 +152,12 @@
 				"ProjectDeliverySchedule"
 			],
 			[
-				"req",
-				"requirement_lines"
-			],
-			[
 				"po_header",
 				"po_header_params"
 			],
 			[
 				"m_po",
 				"m_po_header"
-			],
-			[
-				"delivery",
-				"delivery_date"
 			],
 			[
 				"fomr",
@@ -502,55 +514,25 @@
 			[
 				"grand",
 				"grand_total"
-			],
-			[
-				"subrow",
-				"subrow_index"
-			],
-			[
-				"table_head",
-				"table_header_style"
-			],
-			[
-				"subro",
-				"subrow_index"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "app/Models/Vehicle.php",
+			"file": "resources/views/projects/project_overview.blade.php",
 			"settings":
 			{
-				"buffer_size": 1888,
+				"buffer_size": 31063,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "resources/views/projects/manage_project.blade.php",
+			"file": "routes/web.php",
 			"settings":
 			{
-				"buffer_size": 98070,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "app/Models/Customer.php",
-			"settings":
-			{
-				"buffer_size": 8951,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "resources/views/price_confirmation/price_confirmation_details.blade.php",
-			"settings":
-			{
-				"buffer_size": 50421,
+				"buffer_size": 7847,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -559,7 +541,28 @@
 			"file": "app/Http/Controllers/ProjectController.php",
 			"settings":
 			{
-				"buffer_size": 45284,
+				"buffer_size": 45437,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "resources/views/projects/all_projects.blade.php",
+			"settings":
+			{
+				"buffer_size": 15045,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "@extends('_layouts.metronic')\n\n@section('page-title', 'New Project')\n\n@section('content')\n\n\n<div id=\"app\">\n\n<div class=\"kt-portlet\">\n     <div class=\"kt-portlet__head\">\n        <div class=\"kt-portlet__head-label\">\n            <h3 class=\"kt-portlet__head-title\">\n                Project\n            </h3>\n        </div>\n        <div class=\"kt-portlet__head-toolbar\">\n            <div class=\"kt-portlet__head-actions\">\n                @if ($action == \"validate\")\n                <a href=\"#\" @click=\"approveProject()\" class=\"btn btn-success\">\n                    <span class=\"kt-hidden-mobile\">Approve</span>\n                </a>\n                <a href=\"#\" @click=\"rejectProject()\" class=\"btn btn-danger\">\n                    <span class=\"kt-hidden-mobile\">Reject</span>\n                </a>\n                @elseif ($action == \"edit\")\n                <a href=\"#\" class=\"btn btn-success\">\n                    <span class=\"kt-hidden-mobile\">Save Changes</span>\n                </a>\n                @elseif ($action == \"cancel\")\n                <a href=\"#\" class=\"btn btn-danger\">\n                    <span class=\"kt-hidden-mobile\">Cancel</span>\n                </a>\n                @endif\n            </div>\n        </div>\n    </div>\n    <div class=\"kt-portlet__body kt-portlet__body--fit\">\n        <div class=\"kt-grid  kt-wizard-v1 kt-wizard-v1--white\" id=\"kt_wizard_v1\" data-ktwizard-state=\"first\">\n            <div class=\"kt-grid__item\">\n\n                <!--begin: Form Wizard Nav -->\n                <div class=\"kt-wizard-v1__nav\">\n                    <div class=\"kt-wizard-v1__nav-items\">\n                        <a class=\"kt-wizard-v1__nav-item\" href=\"#\" data-ktwizard-type=\"step\" data-ktwizard-state=\"current\">\n                            <div class=\"kt-wizard-v1__nav-body\">\n                                <div class=\"kt-wizard-v1__nav-icon\">\n                                    <i class=\"flaticon-bus-stop\"></i>\n                                </div>\n                                <div class=\"kt-wizard-v1__nav-label\">\n                                    1) Account\n                                </div>\n                            </div>\n                        </a>\n                        <a class=\"kt-wizard-v1__nav-item\" href=\"#\" data-ktwizard-type=\"step\" data-ktwizard-state=\"pending\">\n                            <div class=\"kt-wizard-v1__nav-body\">\n                                <div class=\"kt-wizard-v1__nav-icon\">\n                                    <i class=\"flaticon-list\"></i>\n                                </div>\n                                <div class=\"kt-wizard-v1__nav-label\">\n                                    2) Contact Information\n                                </div>\n                            </div>\n                        </a>\n                      \n                        <a class=\"kt-wizard-v1__nav-item\" href=\"#\" data-ktwizard-type=\"step\" data-ktwizard-state=\"pending\">\n                            <div class=\"kt-wizard-v1__nav-body\">\n                                <div class=\"kt-wizard-v1__nav-icon\">\n                                    <i class=\"flaticon-list\"></i>\n                                </div>\n                                <div class=\"kt-wizard-v1__nav-label\">\n                                    3) Requirement\n                                </div>\n                            </div>\n                        </a>\n                        <a class=\"kt-wizard-v1__nav-item\" href=\"#\" data-ktwizard-type=\"step\" data-ktwizard-state=\"pending\">\n                            <div class=\"kt-wizard-v1__nav-body\">\n                                <div class=\"kt-wizard-v1__nav-icon\">\n                                    <i class=\"flaticon-list\"></i>\n                                </div>\n                                <div class=\"kt-wizard-v1__nav-label\">\n                                    4) Competitors\n                                </div>\n                            </div>\n                        </a>\n         \n                    </div>\n                </div>\n                <!--end: Form Wizard Nav -->\n            </div>\n            <div class=\"kt-grid__item kt-grid__item--fluid kt-wizard-v1__wrapper\">\n\n                <!--begin: Form Wizard Form-->\n                <form class=\"kt-form\" id=\"kt_form\" novalidate=\"novalidate\" method=\"post\"  enctype=\"multipart/form-data\" >\n                    <!--begin: Form Wizard Step 1-->\n                    <div class=\"kt-wizard-v1__content kt-wizard-sm\" data-ktwizard-type=\"step-content\" data-ktwizard-state=\"current\">\n                        <div class=\"kt-heading kt-heading--md\">Select account</div>\n                        <div class=\"kt-form__section kt-form__section--first kt-wizard-sm\">\n                            <div class=\"kt-wizard-v1__form\">\n                                \n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-8\">\n                                        <label>Account Name</label>\n                                         <div class=\"typeahead\">\n                                            <input \n                                                type=\"text\" \n                                                class=\"form-control\" \n                                                v-model.lazy=\"accountDetails.account_name\"   \n                                                id=\"txt_account_name\" \n                                                autocomplete=\"off\" \n                                                name=\"account_name\" \n                                                dir=\"ltr\" \n                                                placeholder=\"Account Name\"  \n                                            />\n                                        </div> \n                                    </div>\n                                    <div class=\"col-lg-4\">\n                                        <label>Fleet Category</label>\n                                        <select \n                                            class=\"form-control\" \n                                            id=\"sel_fleet_category\" \n                                            v-model.lazy=\"accountDetails.fleet_category\" \n                                            v-select \n                                            style=\"width:100%;\">\n                                            <option value=\"-1\">Choose fleet category</option>\n                                            <option v-for=\"category in fleetCategories\" :value=\"category.fleet_category_id\">@{{ category.fleet_category_name}}</option>\n                                        </select>\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Project Source</label>\n                                        <div class=\"row\">\n                                            <div :class=\"accountDetails.selected_project_source != 8 ? 'col-md-12' : 'col-md-6'\"> \n                                                <select class=\"form-control\" id=\"sel_project_source\" v-model=\"accountDetails.selected_project_source\" v-select style=\"width:100%;\"></select>\n                                            </div>\n                                            <div :class=\"accountDetails.selected_project_source == 8 ? 'col-md-6' : ''\" v-show=\"accountDetails.selected_project_source == 8\">\n                                                <input \n                                                    type=\"text\" \n                                                    class=\"form-control\" \n                                                    value=\"\" \n                                                    id=\"txt_others\" \n                                                    \n                                                    v-model.lazy=\"accountDetails.others\" \n                                                    placeholder=\"Enter project source\"\n                                                           \n                                                /> \n                                            </div>\n                                        </div>\n                                     <!--    <span class=\"form-text text-muted\">Select the project source</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Organization Type</label>\n                                        <select class=\"form-control\" id=\"sel_org_type\" v-model.lazy=\"accountDetails.selected_org_type\" v-select style=\"width:100%;\"></select>\n                                        \n                             <!--            <span class=\"form-text text-muted\">Select organization type</span> -->\n                                    </div>\n                                </div>\n                                \n                                <div class=\"form-group row\" v-if=\"accountDetails.selected_org_type == 1\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Bidding Ref. No</label>\n                                        <input type=\"text\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.bid_ref_no\" name=\"bid_ref_no\" placeholder=\"Bidding Reference No.\" />\n                                      <!--   <span class=\"form-text text-muted\">Please enter bidding ref. no</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Bid Docs Amount</label>\n                                        <input type=\"text\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.bid_docs_amount\" name=\"bid_docs_amount\" placeholder=\"Bidding Docs Amount\" />\n                                      <!--   <span class=\"form-text text-muted\">Please enter bidding docs amount</span> -->\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\" v-if=\"accountDetails.selected_org_type == 1\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Pre-bid schedule</label>\n                                        <input type=\"date\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.pre_bid_sched\" name=\"pre_bid_sched\" id=\"txt_pre_bid_sched\" placeholder=\"Bidding Reference No.\" />\n                                    <!--     <span class=\"form-text text-muted\">Please enter pre bid schedule</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Bid Date Schedule</label>\n                                        <input type=\"date\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.bid_date_sched\" name=\"bid_date_sched\" placeholder=\"Bidding Date Schedule\" />\n                               <!--          <span class=\"form-text text-muted\">Please enter bid date sched</span> -->\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\" v-if=\"accountDetails.selected_org_type == 1\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Bidding Venue</label>\n                                        <input type=\"text\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.bidding_venue\" name=\"bidding_venue\" placeholder=\"Bidding Venue\" />\n                                       <!--  <span class=\"form-text text-muted\">Please enter bidding venue</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Approved budget cost</label>\n                                        <input type=\"text\" class=\"form-control\" value=\"\" v-model.lazy=\"accountDetails.approved_budget_cost\" name=\"approved_budget_cost\" placeholder=\"Approved buget cost\" />\n                                <!--         <span class=\"form-text text-muted\">Please enter approved budget cost</span> -->\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-6\">\n                                        <label>TIN</label>\n                                        <input \n                                            type=\"text\" \n                                            class=\"form-control\" \n                                            name=\"tin\" \n                                            id=\"txt_tin\" \n                                            placeholder=\"TIN\" \n                                            aria-describedby=\"fname-error\">\n                                       <!--  <span class=\"form-text text-muted\">Please enter TIN number (XXX-XXX-XXXXX)</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Attachment</label>\n                                        <div></div>\n                                        <div class=\"custom-file\">\n                                            <input type=\"file\" @change=\"validateFileSize('customer')\" class=\"custom-file-input\" ref=\"customFile\" name=\"attachment[]\" id=\"attachment\" multiple=\"true\">\n                                            <label class=\"custom-file-label\" for=\"attachment\">@{{ file_label }}</label>\n                                            <ul style=\"list-style:none;padding-left:0;\" class=\"kt-margin-t-10\">\n                                                <li v-for=\"(row,index) in attachments\">\n                                                    <a target=\"_blank\" :href=\"baseUrl + '/' + row.directory + '/' + row.filename\" download v-if=\"row.directory != null\">@{{ row.orig_filename }}</a>\n                                                    <span v-if=\"row.directory == null\">@{{ row.orig_filename }}</span>\n                                                </li>\n                                            </ul>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"form-group\">\n                                    <label>Address</label>\n\n                                    <textarea \n                                        class=\"form-control\" \n                                        name=\"address\" \n                                        :value=\"accountDetails.address\"\n                                         @change=\"v => accountDetails.address = v.target.value\"\n                                    ></textarea>\n                                  <!--   v-model=\"accountDetails.address\" <span class=\"form-text text-muted\">Please enter the address</span> -->\n                                </div>\n\n                                <div class=\"form-group row\">\n\n                                    <div class=\"col-lg-6\">\n                                        <label>Business Style</label>\n                                        <div class=\"typeahead\">\n                                            <input type=\"text\" class=\"form-control\" v-model.lazy=\"accountDetails.business_style\" id=\"txt_business_style\" autocomplete=\"off\" name=\"business_style\" dir=\"ltr\" placeholder=\"Business style\"  />\n                                        </div>                \n                                        <!-- <select class=\"form-control\" name=\"business_style\" id=\"sel_scope_of_business\" data-placeholder=\"Select business style\" style=\"width:100%;\">\n                                            <option value=\"-1\" selected=\"selected\">Choose business style</option>\n                                        </select>\n                                        <span class=\"form-text text-muted\"></span>  -->\n                                    </div>\n\n                                    <div class=\"col-lg-6\">\n                                        <label>Date of Establishment</label>   \n                                        <input type=\"date\" class=\"form-control\" v-model.lazy=\"accountDetails.establishment_date\" />\n                                    </div>\n\n                                </div> \n                                \n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Products</label>\n                                        <textarea class=\"form-control\" name=\"products\" v-model.lazy=\"accountDetails.products\"></textarea>\n                         <!--                <span class=\"form-text text-muted\">Please enter products</span> -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Company Overview</label>\n                                        <textarea class=\"form-control\" name=\"company_overview\" v-model.lazy=\"accountDetails.company_overview\"></textarea>\n                                       <!--  <span class=\"form-text text-muted\">Please enter your first name.</span> -->\n                                    </div>\n                                </div>\n                               \n                                 <div class=\"form-group\">\n                                    <label>Affiliates</label>\n                                    <select class=\"form-control\" id=\"sel_affiliates\" v-model.lazy=\"accountDetails.affiliates\" v-select  multiple=\"multiple\" style=\"width:100%;\">\n                                     \n                                    </select>                            \n                                  <!--   <span class=\"form-text text-muted\">Select affiliates</span> -->\n                                </div>  \n                                \n                            </div>\n                        </div>\n                    </div>\n                    <!--end: Form Wizard Step 1-->\n\n                    <!--begin: Form Wizard Step 2-->\n                    <div class=\"kt-wizard-v1__content kt-wizard-md\" data-ktwizard-type=\"step-content\">\n                        <div class=\"kt-heading kt-heading--md\">Enter the Contact Details</div>\n                        <div class=\"kt-form__section kt-form__section--first\">\n                            <div class=\"kt-wizard-v1__form\">\n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-6\">\n                                        <label>Contact No.</label>\n                                        <div class=\"input-group\">\n                                            <input type=\"text\" id=\"txt_contact_number\" class=\"form-control\" v-model=\"contactNumber\">\n                                            <div class=\"input-group-append\">\n                                                <button class=\"btn btn-primary\" type=\"button\" @click=\"addCustContact\">Add</button>\n                                            </div>\n                                        </div>\n                                        <ul class=\"contact-list\">\n                                            <li class=\"kt-font-bold\" v-for=\"(row,index) in contactDetails.custContacts\">\n                                                <a href=\"#\" @click.prevent=\"deleteContact(index)\">\n                                                    <i class=\"flaticon flaticon-delete kt-margin-r-10 kt-font-danger\"></i>\n                                                </a>\n                                                <span>@{{ row.contact_number }}</span>\n                                            </li>\n                                        </ul>\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Email</label>\n                                        <input type=\"text\" class=\"form-control\" v-model.lazy=\"contactDetails.email_address\" name=\"email_address\"  placeholder=\"Email\"  aria-describedby=\"fname-error\">\n                                        <!-- <span class=\"form-text text-muted\">Please enter the email address</span> -->\n                                    </div>\n                                </div>\n                                \n                                <div class=\"form-group row\">\n                                    <div class=\"col-lg-6\">\n                                       <label>Website</label>\n                                        <input type=\"text\" class=\"form-control\" v-model.lazy=\"contactDetails.website_url\" name=\"website_url\" placeholder=\"Website\" aria-describedby=\"fname-error\">\n                                        <!-- <span class=\"form-text text-muted\">Please enter the website url</span>  -->\n                                    </div>\n                                    <div class=\"col-lg-6\">\n                                        <label>Facebook</label>\n                                        <input type=\"text\" class=\"form-control\" v-model.lazy=\"contactDetails.facebook_url\" name=\"facebook_url\" placeholder=\"Facebook\"  aria-describedby=\"fname-error\">\n                                        <span class=\"form-text text-muted\"></span>\n                                    </div>\n                                    \n                                </div>\n                                 \n                            </div>\n                            <hr/>\n                            <div class=\"row\">\n                                <div class=\"col-lg-12\">\n                                    <h4 class=\"kt-pull-left\">Contact Persons</h4>\n                                    <div class=\"table-responsive\">\n                                        <table class=\"table\">\n                                            <thead>\n                                                <tr>\n                                                    <th></th> \n                                                    <th>Name</th> \n                                                    <th>Position</th> \n                                                    <th>Department</th> \n                                                    <th>Contact Number</th>\n                                                    <th>Email</th>\n                                                </tr>\n                                            </thead> \n                                            <tbody>\n                                                <tr v-for=\"(row, index) in contactDetails.contactPersons\">\n                                                    <td>\n                                                        <a href=\"#\" @click.prevent=\"removeContactPerson(index)\">\n                                                            <i class=\"flaticon flaticon-delete kt-font-danger\"></i>\n                                                        </a>\n                                                    </td>\n                                                    <td><input type=\"text\" v-model.lazy=\"row.name\" class=\"form-control form-control-sm\"></td> \n                                                    <td><input type=\"text\" v-model.lazy=\"row.position\" class=\"form-control form-control-sm\"></td>\n                                                    <td><input type=\"text\" v-model.lazy=\"row.department\" class=\"form-control form-control-sm\"></td>\n                                                    <td><input type=\"text\" v-model.lazy=\"row.contact_number\" class=\"form-control form-control-sm\"></td>\n                                                    <td><input type=\"text\" v-model.lazy=\"row.email\" class=\"form-control form-control-sm\"></td>\n                                                </tr>\n                                            </tbody>\n                                        </table>\n                                    </div>\n                                    <button type=\"button\" class=\"btn btn-success kt-pull-right\" @click=\"addContactRow\">Add</button>\n                                </div>\n                            </div>\n                            <hr/>\n                            <div class=\"row\" id=\"se_wrapper\">\n                                <h4 class=\"kt-pull-left\">Dealer Sales Executive</h4>\n                                <div class=\"col-lg-12\">                        \n                                    <div class=\"form-group row\">\n                                        <div class=\"col-md-9\">\n                                            <select class=\"form-control\" id=\"sel_sales_persons\" v-model=\"selected_sales_person\" v-select  style=\"width:100%;\">\n                                                <option value=\"-1\">Select a sales person</option>\n                                            </select>\n                                        </div>\n                                        <div class=\"col-md-3\">\n                                            <button class=\"btn btn-primary\" type=\"button\" @click=\"addSalesPerson\">Add</button>\n                                        </div>   \n                                    </div>\n                                    <div class=\"table-responsive\">\n                                        <table class=\"table\">\n                                            <thead>\n                                                <tr>\n                                                    <th></th>\n                                                    <th>Name</th>\n                                                    <th>Position</th>  \n                                                    <th>Mobile No.</th>  \n                                                    <th>Email</th>  \n                                                    <th></th>  \n                                                </tr>\n                                            </thead> \n                                            <tbody>\n                                                <tr v-for=\"(row, index) in contactDetails.salesPersons\">\n                                                    <td>\n                                                        <a href=\"#\" @click.prevent=\"removeSalesPersons(index)\">\n                                                            <i class=\"flaticon flaticon-delete kt-font-danger\"></i>\n                                                        </a>\n                                                    </td>\n                                                    <td>@{{ row.name }}</td>\n                                                    <td>@{{ row.position_title }}</td> \n                                                    <td>@{{ row.mobile_no }}</td> \n                                                    <td>@{{ row.email }}</td> \n                                                </tr>\n                                            </tbody>\n                                        </table>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <!--end: Form Wizard Step 2-->\n\n                    <!--begin: Form Wizard Step 2-->\n                    <div class=\"kt-wizard-v1__content\" data-ktwizard-type=\"step-content\">\n                        <div class=\"kt-heading kt-heading--md\">Enter your requirement</div>\n                        <div class=\"kt-form__section kt-form__section--first\">\n                            <div class=\"kt-wizard-v1__form\" >\n                               <!--  <div class=\"form-group row\">\n                                    <label class=\"col-3 col-form-label\">Vehicle Type</label>\n                                    <div class=\"col-9\">\n                                        <div class=\"kt-radio-inline\">\n                                            <label class=\"kt-radio kt-radio--brand\" v-for=\"(row,index) in vehicleTypes\">\n                                                <input type=\"radio\" name=\"vehicle_types\" :value=\"row.vehicle_type_id\" @click=\"getVehicles(row.vehicle_type_abbrev)\"> @{{ row.vehicle_type_name }}\n                                                <span></span>\n                                            </label>\n                                        </div>\n                                    </div>\n                                </div> -->\n                                <div class=\"form-group row\">\n                                    <div class=\"col-md-5\">\n                                        <label>Model</label>\n                                        <select class=\"form-control\" id=\"sel_vehicle_models\" v-model=\"selected_model\" v-select style=\"width:100%;\">\n                                            <option value=\"-1\">Select a model</option>\n                                            <optgroup v-for=\"(row,index) in  vehicle_models\" :label=\"row.model\">\n                                                <option \n                                                    v-for=\"(variant,index) in row.variants\" \n                                                    :value=\"variant.id\" \n                                                    :data-vehicle_type=\"variant.vehicle_type\"\n                                                    :data-variant=\"variant.variant\"\n                                                >@{{ variant.value}}</option>\n                                            </optgroup>\n                                        </select>   \n                                    </div>\n                                    <div class=\"col-md-5\">\n                                        <label>Color</label>\n                                        <select class=\"form-control\" id=\"sel_vehicle_colors\" v-model=\"selected_color\" v-select style=\"width:100%;\">\n                                            <option value=\"-1\">Select a color</option>\n                                            <option v-for=\"(row,index) in vehicleColors\" :value=\"row.id\">@{{ row.text }}</option>\n                                        </select>\n                                    </div>\n                                    <div class=\"col-md-2\">\n                                        <button class=\"btn btn-primary kt-margin-t-25\" type=\"button\" @click=\"addVehicle\">Add</button>\n                                    </div>\n                                </div>\n                                   \n                                <div class=\"row\">\n                                    <div class=\"col-md-12\">\n                                        <div class=\"table-responsive\">\n                                            <table class=\"table table-condensed table-bordered\">\n                                                <thead  class=\"bg-light-gray-2\">\n                                                    <tr>\n                                                        <th></th>\n                                                        <th>Model</th>\n                                                        <th>Color</th>\n                                                        <th>Quantity</th>\n                                                        <th>Suggested Price</th>\n                                                        <th>Subtotal</th>\n                                                        <th>Other details</th>\n                                                    </tr>\n                                                </thead>\n                                                <tbody v-for=\"(vehicleGroup,index) in Object.keys(vehicleRequirement)\">\n                                                    <tr v-for=\"(model,index) in vehicleRequirement[vehicleGroup]\">\n                                                        <td>\n                                                            <a href=\"#\" @click.prevent=\"removeVehicle(vehicleGroup,index)\">\n                                                                <i class=\"flaticon flaticon-delete kt-font-danger\"></i>\n                                                            </a>\n                                                        </td>\n\n                                                        <td>@{{ model.model }}</td>\n                                                        <td>@{{ model.color }}</td>\n                                                        <td><input type=\"text\" name=\"\" class=\"form-control form-control-sm\" size=\"4\" v-model=\"model.quantity\"/></td>\n                                                        <td>\n                                                            <input \n                                                                type=\"text\" \n                                                                name=\"\" \n                                                                class=\"form-control form-control-sm\" \n                                                                v-model=\"model.suggested_price\" \n                                                            />\n                                                        </td>\n                                                        <td>@{{ (formatPrice(model.suggested_price * model.quantity))}}</td>\n                                                     <!--    <td>\n                                                            <button type=\"button\" @click=\"showAdditionalDetails(vehicleGroup,index)\" class=\"btn btn-outline-dark btn-elevate btn-icon btn-sm\">\n                                                                <i class=\"la la-info-circle\"></i>\n                                                            </button>\n                                                        </td> -->\n                                                        <td>\n                                                            <button type=\"button\" @click=\"showDeliveryDetail(vehicleGroup,index)\" class=\"btn btn-outline-dark btn-elevate btn-icon btn-sm\">\n                                                                <i class=\"la la-calendar\"></i>\n                                                            </button>\n                                                        </td>\n                                                    </tr>\n                                                    <tr v-if=\"vehicleRequirement[vehicleGroup].length > 0\" class=\"kt-font-bold bg-light-gray-1\" >\n                                                        <td colspan=\"3\">@{{ vehicleGroup }}</td>\n                                                        <td>@{{ vehicleGroup ==\"CV\" ? (computeCVQty) : (computeLCVQty) }}</td>\n                                                        <td>@{{ vehicleGroup ==\"CV\" ? formatPrice(computeCVPrice) : formatPrice(computeLCVPrice) }}</td>\n                                                        <td>@{{ vehicleGroup ==\"CV\" ? formatPrice(computeCVQty * computeCVPrice) : formatPrice(computeLCVQty * computeLCVPrice) }}</td>\n                                                        <td></td>\n                                                    </tr>\n                                                </tbody>\n\n                                                <tfoot>\n                                                    <tr class=\"bg-light-gray-2\">\n                                                        <th colspan=\"3\">Grand Total</th>\n                                                        <th>@{{ (computeCVQty + computeLCVQty) }}</th>\n                                                        <th>@{{ formatPrice(computeCVPrice + computeLCVPrice) }}</th>\n                                                        <th>@{{ formatPrice((computeCVQty * computeCVPrice) + (computeLCVQty * computeLCVPrice)) }}</th>\n                                                        <th></th>\n                                                    </tr>\n                                                    \n                                                </tfoot>\n                                            </table>\n                                        </div>\n                                    </div>\n                                </div>                 \n                            </div>\n                        </div>\n                    </div>\n                    <!--end: Form Wizard Step 2-->\n\n                    <!--begin: Form Wizard Step 3-->\n                    <div class=\"kt-wizard-v1__content\" data-ktwizard-type=\"step-content\">\n                        <div class=\"kt-heading kt-heading--md\">Enter the Competitors</div>\n                        <div class=\"kt-form__section kt-form__section--first\">\n                            <div class=\"kt-wizafrd-v1__form\">\n                                <div class=\"form-group row\">\n                                    <label class=\"col-3 col-form-label\">Has competitor?</label>\n                                    <div class=\"col-9\">\n                                        <div class=\"kt-radio-inline\">\n                                            <label class=\"kt-radio kt-radio--brand\">\n                                                <input type=\"radio\" value=\"Y\"  v-model=\"competitor_flag\">Yes\n                                                <span></span>\n                                            </label>\n                                            <label class=\"kt-radio kt-radio--brand\">\n                                                <input type=\"radio\" value=\"N\" v-model=\"competitor_flag\">No\n                                                <span></span>\n                                            </label>\n                                        </div>\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\" v-show=\"competitor_flag == 'N'\">\n                                    <label class=\"col-3 col-form-label\">Reason</label>\n                                    <div class=\"col-9\">\n                                        <input type=\"text\" v-model.lazy=\"no_competitor_reason\" class=\"form-control\" placeholder=\"Kindly state your reason...\" />\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\" v-show=\"competitor_flag == 'Y'\">\n\n                                    <label class=\"col-form-label col-md-3\">Attachment</label>\n                                    <div class=\" col-md-9\">\n                                        <div class=\"custom-file\">\n                                            <input type=\"file\" @change=\"validateFileSize('competitor')\" class=\"custom-file-input\" ref=\"customFile2\" name=\"competitor_attachments[]\" id=\"competitor_attachments\" multiple=\"true\">\n                                            <label class=\"custom-file-label\" for=\"competitor_attachments\">@{{ file_label2 }}</label>\n                                            <ul style=\"list-style:none;padding-left:0;\" class=\"kt-margin-t-10\">\n                                                <li v-for=\"(row,index) in competitor_attachments\">\n                                                    <a target=\"_blank\" :href=\"baseUrl + '/' + row.directory + '/' + row.filename\" download v-if=\"row.directory != null\">@{{ row.orig_filename }}</a>\n                                                    <span v-if=\"row.directory == null\">@{{ row.orig_filename }}</span>\n                                                </li>\n                                            </ul>\n                                        </div>\n                                    </div>\n                                </div>\n\n                                <div class=\"form-group row\" v-show=\"competitor_flag == 'Y'\">\n                                    <div class=\"col-lg-4\">\n                                        <label>Brand</label>\n                                        <div class=\"typeahead\">\n                                            <input \n                                                class=\"form-control\" \n                                                type=\"text\" dir=\"ltr\" \n                                                placeholder=\"Competitor brand\" \n                                                id=\"txt_comp_brand\" \n                                                v-model=\"cur_competitor_brand\" \n                                            />\n                                        </div> \n                                    </div>\n                                    <div class=\"col-lg-4\">\n                                        <label>Model</label>\n                                      <!--   <div class=\"input-group\"> -->\n                                            <div class=\"typeahead\">\n                                                <input \n                                                    class=\"form-control\" \n                                                    type=\"text\" \n                                                    dir=\"ltr\" \n                                                    placeholder=\"Competitor Model\" \n                                                    id=\"txt_comp_model\" \n                                                    v-model=\"cur_competitor_model\" \n                                                />\n                                            </div> \n                                          <!--   <div class=\"input-group-append\">\n                                                <button class=\"btn btn-primary\" type=\"button\" @click=\"addCompetitor\">Add</button>\n                                            </div> -->\n                                       <!--  </div> -->\n                                    </div>\n                                    <div class=\"col-lg-4\">\n                                        <label>Isuzu Model</label>\n                                        <div class=\"input-group\">\n                                            <select class=\"form-control\" v-model=\"competitor_model\" id=\"sel_competitor_model\">\n                                                <optgroup v-for=\"(vehicleGroup,index) in Object.keys(vehicleRequirement)\" :label=\"vehicleGroup\" v-if=\"vehicleRequirement[vehicleGroup].length > 0\">\n                                                    <option \n                                                        v-for=\"(model,index) in vehicleRequirement[vehicleGroup]\" \n                                                        :value=\"model.inventory_item_id\" \n                                                        :data-model=\"model.model\"\n                                                        :data-color=\"model.color\"\n                                                    >@{{ model.model }} - @{{ model.color}}</option>\n                                                </optgroup>\n                                            </select>\n\n                                            <div class=\"input-group-append\">\n                                                <button class=\"btn btn-primary\" type=\"button\" @click=\"addCompetitor\">Add</button>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                 \n                                <div class=\"row\" v-if=\"competitor_flag == 'Y'\">\n                                    <div class=\"col-md-12\">\n                                        \n                                        <div class=\"table-responsive\">\n                                            <table class=\"table\">\n                                                <thead>\n                                                    <tr>\n                                                        <th></th>\n                                                        <th>Brand</th>\n                                                        <th>Model</th>\n                                                        <th>Price</th>\n                                                        <th>Isuzu Model</th>\n                                                    </tr>\n                                                </thead>\n                                                <tbody>\n                                                    <tr v-for=\"(row,index) in competitors\">\n                                                        <td style=\"width:10%;\">\n                                                            <a href=\"#\" @click.prevent=\"removeCompetitor(index)\">\n                                                                <i class=\"flaticon flaticon-delete kt-font-danger\"></i>\n                                                            </a>\n                                                        </td>\n                                                        <td style=\"width:30%;\">@{{ row.brand }}</td>\n                                                        <td style=\"width:20%;\">@{{ row.model }}</td>\n                                                        <td><input type=\"text\" v-model.lazy=\"row.price\" class=\"form-control form-control-sm\"/></td>\n                                                        <td>\n                                                            @{{ row.ipc_model }}\n                                                            <span class=\"kt-badge kt-badge--brand kt-badge--inline\">@{{ row.ipc_color}}</span>\n                                                        </td>\n                                                    </tr>\n                                                </tbody>\n                                            </table>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n\n                        </div>\n                    </div>\n                    <!--end: Form Wizard Step 3-->\n\n                    <!--begin: Form Actions -->\n                    <div class=\"kt-form__actions\">\n                        <button id=\"vue_submit\" @click=\"callVueSubmitForm\" v-show=\"false\">Vue submit</button>\n                        <div class=\"btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u\" data-ktwizard-type=\"action-prev\">\n                            Previous\n                        </div>\n                        <div class=\"btn btn-success btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u\" data-ktwizard-type=\"action-submit\">\n                            Submit\n                        </div>\n                        <div class=\"btn btn-brand btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u\" data-ktwizard-type=\"action-next\">\n                            Next Step\n                        </div>\n                    </div>\n                    <!--end: Form Actions -->\n                </form>\n\n                <!--end: Form Wizard Form-->\n            </div>\n        </div>\n    </div>\n</div>\n\n\n@include('projects/modal/mp_delivery_additional_details')\n\n<!--begin::Modal-->\n<div class=\"modal fade\" id=\"rejectModal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n    <div class=\"modal-dialog\" role=\"document\">\n        <div class=\"modal-content\">\n            <div class=\"modal-header\">\n                <h5 class=\"modal-title\" id=\"exampleModalLabel\">Reject Project</h5>\n                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n                </button>\n            </div>\n            <div class=\"modal-body\">          \n                <div class=\"form-group\">\n                    <label>Are you sure to cancel this project? Kindly state your reason.</label>\n                    <textarea class=\"form-control\"></textarea>\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <button type=\"button\" @click=\"confirmReject\" class=\"btn btn-primary\">Confirm</button>\n                <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>\n            </div>\n        </div>\n    </div>\n</div>\n<!--end::Modal-->\n\n</div>\n<!-- end app -->\n\n@stop\n\n@push('scripts')\n<script>\n\nvar Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){\n\n    var initSelProjectSource = function(projectSourceOptions){\n        $('#sel_project_source').select2({\n            placeholder: \"Select a project source\",\n            data: projectSourceOptions\n        });\n    }\n\n   var intSelOrg = function(organizationOptions){\n    \n        $('#sel_org_type').select2({\n            placeholder: \"Select an organization type\",\n            data: organizationOptions\n        });\n    }\n\n    var initPaymentTerm = function(paymentTermOptions){\n        $('#sel_payment_term').select2({\n            placeholder: \"Select a payment term\",\n            data: paymentTermOptions\n        });\n    }\n\n    var affiliates = function(afiliateOptions){\n        $('#sel_affiliates').select2({\n            placeholder: \"Select affiliates\",\n            data : afiliateOptions,\n            allowClear: true\n        });\n\n\n        $('#sel_affiliates').on('select2:unselecting', function (e) {\n                $(\"#sel_affiliates\").trigger('change');//    alert('You clicked on X');\n        });\n    }\n\n    var initSalesPersons = function(salesPersonOptions){\n        $('#sel_sales_persons').select2({\n            placeholder: {\n                id: '-1', // the value of the option\n                text: 'Select a sales person'\n            },\n            data: salesPersonOptions\n        });\n    }\n\n    return {\n        init : function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){\n            initSelProjectSource(projectSourceOptions);\n            intSelOrg(organizationOptions);\n            initPaymentTerm(paymentTermOptions);\n          //  initSelScope();\n            affiliates(afiliateOptions);\n            initSalesPersons(salesPersonOptions);\n        }\n    };\n}();\n\n// Class definition\n\nvar KTInputmask = function () {\n    \n    // Private functions\n    var demos = function () {\n        // date format\n       /* $(\"#txt_date_of_establishment\").inputmask(\"99/99/9999\", {\n            \"placeholder\": \"mm/dd/yyyy\",\n            autoUnmask: true\n        });*/\n\n        // custom placeholder        \n        $(\"#kt_inputmask_2\").inputmask(\"99/99/9999\", {\n            \"placeholder\": \"mm/dd/yyyy\",\n        });\n        \n        // phone number format\n        $(\"#kt_inputmask_3\").inputmask(\"mask\", {\n            \"mask\": \"(999) 999-9999\"\n        }); \n\n        // empty placeholder\n        $(\"#txt_tin\").inputmask({\n            \"mask\": \"999-999-99999\",\n            placeholder: \"XXX-XXX-XXXXX\" // remove underscores from the input mask\n        });\n\n        // repeating mask\n        $(\"#kt_inputmask_5\").inputmask({\n            \"mask\": \"9\",\n            \"repeat\": 10,\n            \"greedy\": false\n        }); // ~ mask \"9\" or mask \"99\" or ... mask \"9999999999\"\n        \n        // decimal format\n        $(\"#kt_inputmask_6\").inputmask('decimal', {\n            rightAlignNumerics: false\n        }); \n        \n        // currency format\n        $(\"#kt_inputmask_7\").inputmask('â‚¬ 999.999.999,99', {\n            numericInput: true\n        }); //123456  =>  â‚¬ ___.__1.234,56\n\n        //ip address\n        $(\"#kt_inputmask_8\").inputmask({\n            \"mask\": \"999.999.999.999\"\n        });  \n\n        //email address\n        $(\"#txt_email\").inputmask({\n            mask: \"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]\",\n            greedy: false,\n            onBeforePaste: function (pastedValue, opts) {\n                pastedValue = pastedValue.toLowerCase();\n                return pastedValue.replace(\"mailto:\", \"\");\n            },\n            definitions: {\n                '*': {\n                    validator: \"[0-9A-Za-z!#$%&'*+/=?^_`{|}~\\-]\",\n                    cardinality: 1,\n                    casing: \"lower\"\n                }\n            }\n        });        \n    }\n\n    return {\n        // public functions\n        init: function() {\n            demos(); \n        }\n    };\n}();\n\njQuery(document).ready(function() { \n    KTInputmask.init();  \n});\n</script>\n\n<script>\n\n    function updateFunction (el, binding) {\n        // get options from binding value. \n        // v-select=\"THIS-IS-THE-BINDING-VALUE\"\n        let options = binding.value || {};\n\n        // set up select2\n        $(el).select2(options).on(\"select2:select\", (e) => {\n            // v-model looks for\n            //  - an event named \"change\"\n            //  - a value with property path \"$event.target.value\"\n            el.dispatchEvent(new Event('change', { target: e.target }));\n        });\n    }\n\n    Vue.directive('select', {\n        inserted: updateFunction ,\n        componentUpdated: updateFunction,\n    });\n\n    Vue.directive('mask', {\n        bind: function (el, binding) {\n            var maskOpts = binding.value;\n            maskOpts.showMaskOnHover = false;\n            maskOpts.autoUnmask = true;\n            maskOpts.clearIncomplete = true;\n            Inputmask(maskOpts).mask(el);\n        },\n        unbind: function(el) {\n            Inputmask.remove(el);\n        }\n    });\n\n    var vm =  new Vue({\n        el : \"#app\",\n        data: {\n            // option data\n            projectSourceOptions: {!! json_encode($project_sources) !!},\n            organizationOptions:  {!! json_encode($organizations) !!},\n            customerOptions:      {!! json_encode($customer_options) !!},\n            salesPersonOptions:   {!! json_encode($sales_persons) !!},\n            fleetCategories:      {!! json_encode($fleet_categories) !!},\n            baseUrl:              {!! json_encode($base_url) !!},\n            action : \n            competitor_model:     '',\n            // step 1 - account details\n            accountDetails : {\n                customer_id:             null,\n                selected_org_type:       2,\n                selected_project_source: 4,\n                others:                  null,\n                bid_ref_no:              null,\n                bid_docs_amount:         null,\n                pre_bid_sched:           null,\n                bid_date_sched:          null,\n                bidding_venue:           null,\n                approved_budget_cost:    null,\n                account_name:            null,\n                tin:                     null,\n                address:                 null,\n                establishment_date:      null,\n                products:                null,\n                company_overview:        null,\n                business_style:          null,\n                affiliates:              [],\n                fleet_category : -1\n            },\n            // step 2 - contact information\n            // temp variables\n            selected_sales_person:   -1,\n            contactNumber:           null,\n            contactDetails : {\n                custContacts:            [],\n                email_address:           null,\n                website_url:             null,\n                facebook_url:            null,\n                contactPersons:          [],\n                salesPersons:            []\n            },\n            // step 3 - requirement\n            // temp variables\n            vehicle_details_flag:    true,\n            vehicle_models:           {!! json_encode($vehicle_models) !!},\n            vehicle_types:           {!! json_encode($vehicle_types) !!},\n            vehicle_lead_times:           {!! json_encode($vehicle_lead_times) !!},\n            selected_row_index:      null,\n            selected_vehicle_group : '',\n            selected_model:          -1,\n            vehicleColors:           [],\n            selected_color:          -1,\n            // needed to to submit in form\n            //selected_vehicle_type:   null,\n            vehicleRequirement:      {\n                'LCV' : [],\n                'CV' : [] \n            },\n            // temporary variables \n            cur_body_builder:        null,\n            cur_addtl_items:         null,\n            cur_rear_body:           null,\n            cur_delivery_sched:      [],\n            cur_model:               null,\n            cur_color:               null,\n            cur_quantity:            null,\n            cur_competitor_brand:    null,\n            cur_competitor_model:    null,\n            cur_variant : null,\n            cur_lead_time_desc : null,\n            // step 4 - competitors\n            competitors:             [],\n            no_competitor_reason:    \"\",\n            competitor_flag:         null,\n            attachments:             [],\n            competitor_attachments:  [],\n            file_label               : 'Choose file',\n            file_label2              : 'Choose file',\n            is_exist                 : false\n        },\n        methods : {\n            callVueSubmitForm(){\n                var self = this;\n                \n                Swal.fire({\n                    title: 'Are you sure?',\n                    text: \"You won't be able to revert this!\",\n                    type: 'warning',\n                    showCancelButton: true,\n                    confirmButtonColor: '#3085d6',\n                    cancelButtonColor: '#d33',\n                    confirmButtonText: 'Yes, submit it!'\n                }).then((result) => {\n                    if (result.value) {\n                          \n                        KTApp.blockPage({\n                            overlayColor: '#000000',\n                            type: 'v2',\n                            state: 'success',\n                            message: 'Please wait...'\n                        });\n                    \n                        // update values of affiliates select2 since remove event is not firing\n                        self.accountDetails.affiliates = $('#sel_affiliates').val();\n\n                        axios.post('/save-project', {\n                            accountDetails : self.accountDetails,\n                            contactDetails : self.contactDetails,\n                            requirement : self.vehicleRequirement,\n                            competitors : self.competitors,\n                            no_competitor_reason : self.no_competitor_reason,\n                            competitor_flag : self.competitor_flag\n                        })\n                        .then(function (response) {\n                            self.processFileUpload(\n                                response.data.customer_id,\n                                response.data.project_id\n                            );\n                        })\n                        .catch(function (error) {\n                            console.log(error);\n                        });\n                    }\n                });  \n            },\n            processFileUpload(customer_id,project_id){\n                let data = new FormData();\n                var self = this;\n                data.append('customer_id',customer_id);\n                data.append('project_id',project_id);\n\n                $.each($(\"#attachment\")[0].files, function(i, file) {\n                    data.append('attachment[]', file);\n                });\n\n                $.each($(\"#competitor_attachments\")[0].files, function(i, file) {\n                    data.append('competitor_attachments[]', file);\n                });\n\n                axios.post('/upload-project-attachment',data, {\n                    headers: {\n                        'Content-Type': 'multipart/form-data'\n                    }\n                }).then(function (response) {\n                    KTApp.unblockPage();\n                    if(response.data.status == \"success\"){\n                        Swal.fire({\n                            type: 'success',\n                            title: 'Project has been created!',\n                            showConfirmButton: false,\n                            timer: 1500,\n                            onClose : function(){\n                                var link = self.baseUrl + '/project-overview/view/' + project_id;\n                                window.location.href = link;\n                            }\n                        });\n                    }\n                    else {\n                        Swal.fire({\n                            type: 'error',\n                            title: 'Unexpected error encountered during the transaction, please contact the system administrator.',\n                            showConfirmButton: true\n                        });\n                    }\n                });\n            },\n            validateFileSize(attachment_type){\n                var self = this;\n                var total_size = 0;\n                var total_files = 0;\n                \n                self.attachments = [];\n                self.competitor_attachments = [];\n\n                if(attachment_type == \"customer\"){\n\n                    $.each($(\"#attachment\")[0].files, function(i, file) {\n                        total_size += file.size;  \n                        self.attachments.push({\n                            directory : null,\n                            filename : file.name,\n                            orig_filename : file.name\n                        });\n                        total_files++;\n                    });\n                }\n                else if(attachment_type == \"competitor\"){\n                    $.each($(\"#competitor_attachments\")[0].files, function(i, file) {\n                        total_size += file.size;  \n                        self.competitor_attachments.push({\n                            directory : null,\n                            filename : file.name,\n                            orig_filename : file.name\n                        });\n                        total_files++;\n                    });\n                }\n                \n\n                var total_size_mb = total_size / 1024 / 1024;\n                if(total_size_mb >= 10){\n                    Swal.fire({\n                        type: 'error',\n                        title: 'Attachment must be less than 10mb.',\n                        showConfirmButton: true\n                    });\n\n                    if(attachment_type == \"customer\"){\n                        $(\"#attachment\").val(\"\");\n                        self.attachments = [];\n                    }\n                    else if(attachment_type == \"competitor\"){\n                        $(\"#competitor_attachments\").val(\"\");\n                        self.competitor_attachments = [];\n                    }\n                    \n                }\n                else {\n                   if(attachment_type == \"customer\"){\n                        self.file_label = total_files + \" file\" + (total_files > 1 ? \"s\" : \"\") + \" selected\" ;\n                   }\n                   else if(attachment_type == \"competitor\"){\n                        self.file_label2 = total_files + \" file\" + (total_files > 1 ? \"s\" : \"\") + \" selected\" ;\n                   }\n                }\n            },\n            addContactRow(){\n                this.contactDetails.contactPersons.push(\n                    {\n                        name : \"\",\n                        position : \"\",\n                        department : \"\",\n                        contact_number : \"\",\n                        email : \"\"\n                    }\n                );\n            },\n            showDeliveryDetail(vehicle_group,index){\n                // delivery details\n                this.selected_row_index     = index;\n                this.selected_vehicle_group = vehicle_group;\n                this.cur_model              = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].model;\n                this.cur_color              = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].color;\n                this.cur_quantity           = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].quantity;\n                this.cur_delivery_sched     = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;\n                this.cur_variant            = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].variant;\n                \n                // additional details\n                this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;\n                this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;\n                this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;\n\n                let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];  \n                this.cur_lead_time_desc = vehicle_lead_time == 1 ? vehicle_lead_time + \" month\" : vehicle_lead_time + \" months\";\n     \n\n                if(this.cur_quantity > 0){\n                    $(\"#deliveryScheduleModal\").modal('show');\n                }\n                else {\n                    Swal.fire({\n                        type: 'error',\n                        title: 'Please enter value for the quantity',\n                        showConfirmButton: false,\n                        timer: 1500\n                    });\n                }\n            },\n            /*showAdditionalDetails(vehicle_group,index){\n                this.selected_row_index     = index;\n                this.selected_vehicle_group = vehicle_group;\n                this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;\n                this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;\n                this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;\n                $(\"#additionalDetailsModal\").modal('show');\n            },*/\n            confirmReject(){\n                Swal.fire({\n                    type: 'error',\n                    title: 'Project has been rejected.',\n                    showConfirmButton: false,\n                    timer: 1500,\n                    onClose : function(){\n                        window.location.href = \"{{ url('all-projects')}}\";\n                    }\n                });\n            },\n            rejectProject(){\n                $(\"#rejectModal\").modal('show');\n            },\n            approveProject(){\n                Swal.fire({\n                    type: 'success',\n                    title: 'Project has been approved!',\n                    showConfirmButton: false,\n                    timer: 1500,\n                    onClose : function(){\n                        window.location.href = \"{{ url('all-projects')}}\";\n                    }\n                });\n            },\n            addCustContact(){\n                if(this.contactNumber != \"\" && this.contactNumber != null){\n                    this.contactDetails.custContacts.push({\n                        contact_number : this.contactNumber\n                    });\n                    this.contactNumber = null;\n                }\n                else {\n                   Swal.fire({\n                        type: 'error',\n                        title: 'Please enter value on the contact no.',\n                        showConfirmButton: true,\n                        timer: 1500\n                    }); \n                }\n            },\n            deleteContact(index){\n                this.contactDetails.custContacts.splice(index,1);\n            },\n            removeContactPerson(index){\n                this.contactDetails.contactPersons.splice(index,1);\n            },\n            removeSalesPersons(index){\n                this.contactDetails.salesPersons.splice(index,1);\n            },\n            addSalesPerson(){\n                let self = this;\n                if(this.selected_sales_person == null || this.selected_sales_person == -1){\n                    Swal.fire({\n                        type: 'error',\n                        title: 'Please select a sales person.',\n                        showConfirmButton: true,\n                        timer: 1500\n                    }); \n                }\n                else {\n                 \n                    var isExist = self.contactDetails.salesPersons.filter(function(elem){\n                        if(elem.sales_person_id === self.selected_sales_person) {\n                            return elem.sales_person_id;\n                        }\n                    });\n                    if(isExist == 0 ){\n                        $('#se_wrapper').block({ \n                            message: '<h1>Processing</h1>'\n                        }); \n                        axios.get('/get-sales-person-detail/' + this.selected_sales_person)\n                            .then(function (response) {\n                                var data = response.data.data;\n                                // handle success\n                                self.contactDetails.salesPersons.push({\n                                    sales_person_id : self.selected_sales_person,\n                                    position_title : data.description,\n                                    name : data.fname + \" \" + data.lname,\n                                    mobile_no : data.mobile_1,\n                                    email : data.email_1\n                                });\n                                $('#se_wrapper').unblock(); \n                                self.selected_sales_person = -1;\n                            })\n                            .catch(function (error) {\n                                // handle error\n                            console.log(error);\n                            })\n                            .finally(function () {\n                                // always executed\n                            });\n                    }\n                    else {\n                        Swal.fire({\n                            type: 'error',\n                            title: 'Sales person has been added already.',\n                            showConfirmButton: true,\n                            timer: 1500\n                        }); \n                    }\n                }\n            },\n            \n            addVehicle(){\n                let self = this;\n                let color = $(\"#sel_vehicle_colors option:selected\").text();\n                var vehicle_type = $(\"#sel_vehicle_models option:selected\").data('vehicle_type');\n                var variant = $(\"#sel_vehicle_models option:selected\").data('variant');\n\n                if(self.selected_model != -1 && self.selected_color != -1){\n\n                    var isExist = self.vehicleRequirement[vehicle_type].filter(function(elem){\n                        if(elem.inventory_item_id === self.selected_color) {\n                            return elem.inventory_item_id;\n                        }\n                    });\n\n                    if(isExist == 0){\n                        var newObj = {\n                                inventory_item_id : self.selected_color,\n                                variant : variant,\n                                model : self.selected_model,\n                                color : color,\n                                quantity : 0,\n                                suggested_price : 0,\n                                body_builder : null,\n                                rear_body_type : null,\n                                additional_details : null,\n                                delivery_schedule : []\n                        }\n                        self.vehicleRequirement[vehicle_type].push(newObj);\n                \n                    }\n                    else {\n                        Swal.fire({\n                            type: 'error',\n                            title: 'Model already exists.',\n                            showConfirmButton: true,\n                            timer: 1500\n                        });\n                    }\n                }\n                else {\n                    Swal.fire({\n                        type: 'error',\n                        title: 'You must select a model and a color.',\n                        showConfirmButton: true,\n                        timer: 1500\n                    });\n                }\n            },\n            removeVehicle(vehicle_group,index){\n                this.vehicleRequirement[vehicle_group].splice(index,1);\n            },\n            addDeliverySched(){\n                let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];\n                let min_delivery_date =  moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD');\n                let default_delivery_date = moment().add(vehicle_lead_time, 'months').format('YYYY-MM-DD')\n                \n                this.cur_delivery_sched.push({\n                    quantity : 0,\n                    delivery_date : default_delivery_date,\n                    min_delivery_date : min_delivery_date\n                });\n            },\n            deleteDeliveryDate(index){\n                this.cur_delivery_sched.splice(index,1);\n            },\n            saveDeliverySched(){\n                var delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;\n                var is_error = 0;\n    \n                if(this.selected_vehicle_group == \"CV\" || this.cur_model.includes('Cab')){\n                    if(this.cur_rear_body == null || this.cur_body_builder == null){\n                        Swal.fire({\n                            type: 'error',\n                            title: \"Body builder name and Rear body type is required for CV models\",\n                            showConfirmButton: true,\n                            timer: 1500\n                        });\n                        is_error++;\n                        return false;\n                    }\n                }\n\n                for(data in delivery_sched){\n                    if(delivery_sched[data].delivery_date == null || delivery_sched[data].quantity == null || delivery_sched[data].quantity == 0){\n                        is_error++;\n                    }\n                }\n                if(is_error <= 0){\n                    if(this.computeDeliveryQuantity == this.cur_quantity){\n                        this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule = this.cur_delivery_sched;\n                        $(\"#deliveryScheduleModal\").modal('hide');\n                    }\n                    else {\n                        Swal.fire({\n                            type: 'error',\n                            title: \"Total delivery quantity must be equal to the requirement's quantity.\",\n                            showConfirmButton: true,\n                            timer: 1500\n                        });\n                    }\n                }\n                else {\n\n                    Swal.fire({\n                        type: 'error',\n                        title: \"Please enter value for delivery date and quantity.\",\n                        showConfirmButton: true,\n                        timer: 1500\n                    });\n                }\n            },\n            addCompetitor(){\n                var self = this;\n                if(\n                    self.cur_competitor_brand != \"\" && \n                    self.cur_competitor_brand != null && \n                    self.cur_competitor_model != \"\" &&\n                    self.cur_competitor_model != null\n                ){\n\n                    var ipc_model = $(\"#sel_competitor_model option:selected\").data('model'); \n                    var ipc_color = $(\"#sel_competitor_model option:selected\").data('color');\n\n                    self.competitors.push({\n                        brand : self.cur_competitor_brand, \n                        model : self.cur_competitor_model,\n                        price : 0,\n                        ipc_model : ipc_model,\n                        ipc_color : ipc_color,\n                        ipc_item_id : self.competitor_model\n                    });\n\n                    self.cur_competitor_brand = null;\n                    self.cur_competitor_model = null;\n                }\n                else {\n                    Swal.fire({\n                        type: 'error',\n                        title: 'You must enter the brand and model.',\n                        showConfirmButton: true,\n                        timer: 1500\n                    });\n                }\n            },\n            removeCompetitor(index){\n                this.competitors.splice(index,1);\n            },\n            formatPrice(value) {\n                return (parseFloat(value).toFixed(2).replace(/(\\d)(?=(\\d{3})+\\.)/g, '$1,'));\n            }\n        },\n        created: function () {\n      \n        },\n        mounted : function () {\n\n\n            var self = this;\n        \n            Select2.init(\n                this.customerOptions, \n                this.projectSourceOptions, \n                this.organizationOptions,\n                this.paymentTermsOptions,\n                this.salesPersonOptions\n            );\n            \n            $(\"#sel_vehicle_colors,#sel_vehicle_models\").select2();\n            $(\"#txt_tin\").on(\"change\",function(){\n                self.accountDetails.tin = $(this).val();\n            });\n            $(\"#deliveryScheduleModal\").on(\"hidden.bs.modal\", this.saveDeliverySched);\n\n            // Business Style typeahead\n            $('#txt_business_style').typeahead({\n                hint: true,\n                highlight: true,\n                minLength: 1\n            },\n            {\n                limit: 12,\n                async: true,\n                source: function (query, processSync, processAsync) {\n                    //processSync(['Searching...']);\n                    return $.ajax({\n                        url: \"{{ url('/ajax_get_scope') }}\", \n                        type: 'GET',\n                        data: {query: $.trim(query)},\n                        dataType: 'json',\n                        success: function (json) {\n                            // in this example, json is simply an array of strings\n                            return processAsync(json);\n                        }\n                    });\n                }\n            }).on('typeahead:selected', function(evt, item) {\n                self.accountDetails.business_style = item;\n            });\n\n            // Customer name typeahead\n            $('#txt_account_name').typeahead({\n                hint: true,\n                highlight: true,\n                minLength: 3\n            },\n            {\n                limit: 10,\n                async: true,\n                source: function (query, processSync, processAsync) {\n                   // processSync(['Searching...']);\n                    return $.ajax({\n                        url: \"{{ url('/ajax-get-customers') }}\", \n                        type: 'GET',\n                        data: {query: $.trim(query)},\n                        dataType: 'json',\n                        success: function (json) {\n                            // in this example, json is simply an array of strings\n                            return processAsync(json);\n                        }\n                    });\n                }\n            }).on('typeahead:selected', function(evt, item) {\n                // do what you want with the item here\n                KTApp.blockPage({\n                    overlayColor: '#000000',\n                    type: 'v2',\n                    state: 'success',\n                    message: 'Please wait...'\n                });\n             \n                axios.get('/ajax-get-customer-data/' + item)\n                    .then(function (response) {\n                     \n                        var data = response.data.details;\n                        self.attachments = response.data.attachments;\n            \n                        self.accountDetails.affiliates = response.data.affiliates;\n                        self.accountDetails.customer_id = data.customer_id;\n                        self.accountDetails.selected_org_type = data.organization_type_id;\n\n                        self.accountDetails.account_name = data.customer_name;\n                        self.accountDetails.tin = data.tin;\n                        $(\"#txt_tin\").val(self.accountDetails.tin);\n                        self.accountDetails.address = data.address;\n                        self.accountDetails.business_style = data.business_style;\n                        self.accountDetails.company_overview = data.company_overview;\n            \n                        self.accountDetails.products = data.products;\n                        self.accountDetails.establishment_date = data.establishment_date;\n\n                        KTApp.unblockPage();\n                    })\n                    .catch(function (error) {\n                        // handle error\n                        KTApp.unblockPage();\n                        console.log(error);\n                    })\n                    .finally(function () {\n                        // always executed\n                        KTApp.unblockPage();\n                    });                        \n            }); \n\n            $('#txt_comp_brand').typeahead({\n                hint: true,\n                highlight: true,\n                minLength: 3\n            },\n            {\n                limit: 10,\n                async: true,\n                source: function (query, processSync, processAsync) {\n                   // processSync(['Searching...']);\n                    return $.ajax({\n                        url: \"{{ url('/ajax-get-competitor-brands') }}\", \n                        type: 'GET',\n                        data: {query: $.trim(query)},\n                        dataType: 'json',\n                        success: function (json) {\n                            // in this example, json is simply an array of strings\n                            return processAsync(json);\n                        }\n                    });\n                }\n            });\n\n            $('#txt_comp_model').typeahead({\n                hint: true,\n                highlight: true,\n                minLength: 3\n            },\n            {\n                limit: 10,\n                async: true,\n                source: function (query, processSync, processAsync) {\n                   // processSync(['Searching...']);\n                    return $.ajax({\n                        url: \"{{ url('/ajax-get-competitor-models') }}\", \n                        type: 'GET',\n                        data: {\n                            query: $.trim(query),\n                            brand : $(\"#txt_comp_brand\").val()\n                        },\n                        dataType: 'json',\n                        success: function (json) {\n                            // in this example, json is simply an array of strings\n                            return processAsync(json);\n                        }\n                    });\n                }\n            });\n\n\n            // Class definition\n            var KTWizard1 = function () {\n                // Base elements\n                var wizardEl;\n                var formEl;\n                var validator;\n                var wizard;\n                \n                // Private functions\n                var initWizard = function () {\n                    // Initialize form wizard\n                    wizard = new KTWizard('kt_wizard_v1', {\n                        startStep: 1\n                    });\n\n                    // Validation before going to next page\n                    wizard.on('beforeNext', function(wizardObj) {\n                        if (validator.form() !== true) {\n                            wizardObj.stop();  // don't go to the next step     \n                        }\n\n                        if(wizardObj.currentStep == 2){\n                            if(self.contactDetails.custContacts.length <= 0){\n                                Swal.fire({\n                                    type: 'error',\n                                    title: 'Please enter alteast one contact number.',\n                                    showConfirmButton: true,\n                                    timer: 1500\n                                });   \n                                wizardObj.stop();\n                                return false;\n                            }\n                            if(self.contactDetails.contactPersons.length <= 0){\n                                Swal.fire({\n                                    type: 'error',\n                                    title: 'Please enter alteast one contact person.',\n                                    showConfirmButton: true,\n                                    timer: 1500\n                                });   \n                                wizardObj.stop();\n                                return false;\n                            }\n                            if(self.contactDetails.salesPersons.length <= 0){\n                                Swal.fire({\n                                    type: 'error',\n                                    title: 'Please select atleast one sales person.',\n                                    showConfirmButton: true,\n                                    timer: 1500\n                                });   \n                                wizardObj.stop();\n                                return false;\n                            }\n                        }\n                        else if (wizardObj.currentStep == 3){\n                            if( (self.computeCVQty + self.computeLCVQty) < 3)  {\n                                Swal.fire({\n                                    type: 'error',\n                                    title: 'Requirement must have quantities 3 or above.',\n                                    showConfirmButton: true,\n                                    timer: 1500\n                                });   \n                                wizardObj.stop();\n                                return false;\n                            }\n                            else {\n                                var lcv_total = 0;\n                                var cv_total = 0;\n                                for(model of self.vehicleRequirement['LCV']){\n                                    lcv_total += model.delivery_schedule.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);\n                                }\n                                for(model of self.vehicleRequirement['CV']){\n                                    cv_total += model.delivery_schedule.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);\n                                }\n\n                                if( (lcv_total + cv_total) != (self.computeLCVQty + self.computeCVQty) ){\n                                    Swal.fire({\n                                        type: 'error',\n                                        title: 'Please check values of delivery schedule',\n                                        showConfirmButton: true,\n                                        timer: 1500\n                                    });   \n                                    wizardObj.stop();\n                                    return false;\n                                }\n                            }\n                        }\n                    });\n\n                    // Change event\n                    wizard.on('change', function(wizard) {\n                        setTimeout(function() {\n                            KTUtil.scrollTop(); \n                        }, 500);\n                    });\n                }   \n\n                var initValidation = function() {\n                    validator = formEl.validate({\n                        // Validate only visible fields\n                        ignore: \":hidden\",\n\n                        // Validation rules\n                       rules: {    \n                            //= Step 1\n                            account_name: {\n                                required: true \n                            },\n                            tin: {\n                                required: true \n                            },\n                            establishment_date: {\n                                required: true \n                            },\n                            products: {\n                                required: true \n                            },\n                            address: {\n                                required: true \n                            },\n                            \n                            bid_ref_no : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;  \n                                }\n                            },\n                            bid_docs_amount : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;  \n                                }\n                            },\n                            pre_bid_sched : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;   \n                                }\n                            },\n                            business_style: {\n                                required: true\n                            }, \n                            bid_date_sched : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;    \n                                }\n                            },\n                            bidding_venue : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;   \n                                }\n                            },\n                            approved_budget_cost : {\n                                required: function(element){\n                                    return $(\"#sel_org_type\").val() == 1;   \n                                }\n                            },\n\n                            // Step 2\n                            email_address: {\n                                required: true \n                            },\n                            website_url: {\n                                required: true \n                            },\n                            facebook_url: {\n                                required: true \n                            }\n                        },\n                       \n                        // Display error  \n                        invalidHandler: function(event, validator) {     \n                            KTUtil.scrollTop();\n                            swal.fire({\n                                \"title\": \"\", \n                                \"text\": \"There are some errors in your submission. Please correct them.\", \n                                \"type\": \"error\",\n                                \"confirmButtonClass\": \"btn btn-primary\"\n                            });\n                        },\n\n                        // Submit valid form\n                        submitHandler: function (form) {\n                        \n                        }\n                    });   \n                }\n\n                var initSubmit = function() {\n                    var btn = formEl.find('[data-ktwizard-type=\"action-submit\"]');\n\n                    btn.on('click', function(e) {\n\n                        if(self.competitor_flag == null)  {\n\n                            Swal.fire({\n                                type: 'error',\n                                title: 'Please select competitor',\n                                showConfirmButton: true,\n                                timer: 1500\n                            });   \n                            wizardObj.stop();\n                            return false;\n                        }\n                        else {\n                            if(self.competitor_flag == 'Y'){\n                                if(self.competitors.length <= 0){\n                                    Swal.fire({\n                                        type: 'error',\n                                        title: 'Please enter atleast one competitor',\n                                        showConfirmButton: true,\n                                        timer: 1500\n                                    });   \n                                    wizardObj.stop();\n                                    return false;   \n                                }\n                                else {\n                                    e.preventDefault();\n                                    if (validator.form()) {\n                                        $(\"#vue_submit\").click();\n                                    } \n                                }\n                            }\n                            else if(self.competitor_flag == 'N'){\n                                if(self.no_competitor_reason == \"\"){\n                                     Swal.fire({\n                                        type: 'error',\n                                        title: 'Please state your reason for not having a competitor',\n                                        showConfirmButton: true,\n                                        timer: 1500\n                                    });   \n                                    wizardObj.stop();\n                                    return false;  \n                                }\n                                else {\n                                    e.preventDefault();\n                                    if (validator.form()) {\n                                        $(\"#vue_submit\").click();\n                                    } \n\n                                }\n                            }\n                        }\n                    });\n                }\n\n                return {\n                    // public functions\n                    init: function() {\n                        wizardEl = KTUtil.get('kt_wizard_v1');\n                        formEl = $('#kt_form');\n\n                        initWizard(); \n                        initValidation();\n                        initSubmit();\n                    }\n                };\n            }();\n\n            KTWizard1.init();\n        },\n        watch: {\n            selected_model : function(val){\n                let self = this;\n                KTApp.blockPage({\n                    overlayColor: '#000000',\n                    type: 'v2',\n                    state: 'success',\n                    message: 'Please wait...'\n                });\n                axios.get('/get-vehicle-colors/' + val)\n                    .then(function (response) {\n                        self.vehicleColors = response.data;\n                        $(\"#sel_vehicle_colors\").select2();\n                        self.selected_color = -1;\n                        KTApp.unblockPage();\n                    })\n                    .catch(function (error) {\n                        Swal.fire({\n                            type: 'error',\n                            title: 'Unexpected error occurred, could not add this model.',\n                            showConfirmButton: true,\n                            timer: 1500\n                        });\n                        console.log(error);\n                    })\n                    .finally(function () {\n                        // always executed\n                    });\n            },\n            cur_body_builder : function(val){\n                let self = this;\n                self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].body_builder = val;\n            },\n            cur_rear_body : function(val){\n                let self = this;\n                self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].rear_body_type = val;\n            },\n            cur_addtl_items : function(val){\n                let self = this;\n                self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].additional_details = val;\n            }\n        },\n        computed : {\n            computeCVQty : function(){\n                return this.vehicleRequirement['CV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);\n            },\n            computeLCVQty : function(){\n                return this.vehicleRequirement['LCV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);\n            },\n            computeCVPrice : function(){\n                return this.vehicleRequirement['CV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);\n            },\n            computeLCVPrice : function(){\n                return this.vehicleRequirement['LCV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);\n            },\n            computeDeliveryQuantity : function(){\n                return this.cur_delivery_sched.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);\n            }\n        }\n    });\n\n  \n</script>\n@endpush",
+			"file": "resources/views/projects/manage_project.blade.php",
+			"file_size": 99991,
+			"file_write_time": 132121348466729155,
+			"settings":
+			{
+				"buffer_size": 98092,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -623,22 +626,49 @@
 	"expanded_folders":
 	[
 		"/C/wamp64/www/fleet_ordering_app/resources/views",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers"
+		"/C/wamp64/www/fleet_ordering_app/resources/views/projects",
+		"/C/wamp64/www/fleet_ordering_app/routes"
 	],
 	"file_history":
 	[
+		"/C/wamp64/www/fleet_ordering_app/app/Models/OracleUser.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PriceConfirmationController.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/FPCItemFreebies.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Project.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fpc_conflict.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/price_confirmation_details.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Item.php",
+		"/C/Users/paul-alcabasa/Desktop/cashflow/composer.json",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesPersonsOra.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/header_menu.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/metronic.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/quick_actions.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/subheader.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/routes/web.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Helpers/FPCHelper.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/price_details.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/Attachment.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/approval.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/DeliveryScheduleController.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/ProjectDeliverySchedule.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/price_confirmation.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/additional_details.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/all_price_confirmation.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/UserController.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/manage_project.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/Vehicle.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/Customer.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/ProjectController.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/contact.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/fwpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/fwpc_list.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/submit_po.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/delivery_schedule.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/price_confirmation.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/fpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/project_overview.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/po_overview.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/manage_project.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/approval_list.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/all_projects.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/users/users_list.blade.php",
@@ -647,30 +677,21 @@
 		"/C/wamp64/www/fleet_ordering_app/resources/views/customer/all_customer.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/all_po.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/competitors.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/all_price_confirmation.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/fpc_overview.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/metronic.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/view_fpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/project_approval.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/UserController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/Auth/LoginController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/RedirectController.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/OracleUser.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/UserLog.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/DashboardController.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/users/modal/approver.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Approver.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/ProjectController.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/Customer.php",
 		"/C/wamp64/www/fleet_ordering_app/config/app.php",
-		"/C/wamp64/www/fleet_ordering_app/routes/web.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/aside.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FWPC.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/FWPCController.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PriceConfirmationController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PurchaseOrderController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/POHeaders.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Project.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/CustomerController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Dealer.php",
@@ -686,19 +707,11 @@
 		"/C/wamp64/www/fleet_ordering_app/app/Models/RequirementHeader.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/account.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Helpers/VehicleTypeIdentification.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Item.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fpc.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Project.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/Attachment.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/view_fwpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fwpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesOrderHeader.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesOrderLines.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/FPCItemFreebies.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/mp_delivery_additional_details.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/Vehicle.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/ProjectDeliverySchedule.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/DeliveryScheduleController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/EmailController.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/mail/notification.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/sample.blade.php",
@@ -711,7 +724,6 @@
 		"/C/wamp64/www/fleet_ordering_app/app/Models/OraSalesOrder.php",
 		"/C/wamp64/www/fleet_ordering_app/public/storage/po/15644480540.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/dealer_fpc_list.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Helpers/FPCHelper.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FleetCategories.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Helpers/UserTypeIdentification.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/PaymentTerms.php",
@@ -725,7 +737,6 @@
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/fpc_approval.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/ContactPersons.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesPersons.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesPersonsOra.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/ProjectSources.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/CustomerContact.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/CustomerAffiliates.php",
@@ -747,15 +758,7 @@
 		"/C/wamp64/www/fleet_ordering_app/.env",
 		"/C/wamp64/www/fleet_ordering_app/app/Competitor.php",
 		"/C/wamp64/www/fleet_ordering_app/app/ProjectDeliverySchedule.php",
-		"/C/wamp64/www/fleet_ordering_app/app/ProjectRequirement.php",
-		"/C/wamp64/www/fleet_ordering_app/app/SalesPersons.php",
-		"/C/wamp64/www/fleet_ordering_app/app/ContactPersons.php",
-		"/C/wamp64/www/fleet_ordering_app/app/SalesPersonsOra.php",
-		"/C/wamp64/www/fleet_ordering_app/app/ProjectSources.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Project.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Customer.php",
-		"/C/wamp64/www/fleet_ordering_app/app/CustomerAffiliates.php",
-		"/C/wamp64/www/fleet_ordering_app/app/CustomerContact.php"
+		"/C/wamp64/www/fleet_ordering_app/app/ProjectRequirement.php"
 	],
 	"find":
 	{
@@ -773,6 +776,34 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"accountDetails\naccountDetails",
+			"save_approval",
+			"validateProject",
+			"endif",
+			"fpc_item",
+			"rl",
+			"rl.quantity,\n                        nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,\n                        nvl(rl.rear_body_type,'-') rear_body_type,\n                        nvl(rl.additional_items,'-') additional_items,\n                        sum(NVL(freebie.amount,0)) freebies,\n                        rl.suggested_price,\n                        fpc_item.suggested_retail_price,\n                        fpc_item.wholesale_price,\n                        fpc_item.dealers_margin,\n                        fpc_item.lto_registration,\n                        fpc_item.fleet_price,\n                        rl.requirement_line_id,\n                        fpc_item.fpc_item_id",
+			"fpc_item",
+			"fleet_price",
+			"editable",
+			"priceConfirmation",
+			"print",
+			"approve",
+			"fpc_attachment",
+			"file",
+			"priceConfirmation",
+			"delivery-schedule",
+			"                        <div class=\"row\">\ndeleteDeliveryDate",
+			"update_suggested_date",
+			"update-suggested-date",
+			"update_suggested_date",
+			"update-suggested-dat",
+			"curDeliveryDetails",
+			"deliveryScheduleModal",
+			"cur_lead_time_desc",
+			"suggested delivery schedule",
+			"suggested",
+			"ajax_get_delivery_detail",
 			"payment_terms",
 			"txt_account_name",
 			"txt_account",
@@ -872,35 +903,7 @@
 			"showDeliveryDetail\n",
 			"vehicleRequirement",
 			"manage-project",
-			"project.requirement.push",
-			"addRequirement",
-			"project.requirements",
-			"validate",
-			"ajax-get-delivery-detail",
-			"curDeliveryDetails",
-			"carbon",
-			"activity_logs",
-			"submit_po",
-			"ajax_approve_fpc",
-			"$m_activity",
-			"activity_log",
-			"confirmApproval",
-			"FS",
-			"FS_FPC",
-			"mail_recepient",
-			"insert_project_approval",
-			"create_project_requirement",
-			"insert_project_approval",
-			"insert_module_approval",
-			"insert_project_approval",
-			"create_project_activity_log",
-			"insert_project_approval",
-			"save_approval",
-			"submitApproval",
-			"validateProject",
-			" >{{",
-			"td",
-			"print_fpc"
+			"project.requirement.push"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -921,24 +924,24 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "app/Models/Vehicle.php",
+					"file": "resources/views/projects/project_overview.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1888,
+						"buffer_size": 31063,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1579,
-								1579
+								9830,
+								9830
 							]
 						],
 						"settings":
@@ -949,10 +952,83 @@
 							{
 								"close":
 								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
 									"1":
 									[
-										1857,
-										1858
+										9937,
+										9938
 									]
 								},
 								"icon":
@@ -967,96 +1043,8 @@
 								{
 									"1":
 									[
-										106,
-										107
-									]
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.clone_regions":
-							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
-							],
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-									"1":
-									[
-										1774,
-										1775
-									]
-								},
-								"icon":
-								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/double_quote.png",
-										"region.greenish"
-									]
-								},
-								"open":
-								{
-									"1":
-									[
-										1472,
-										1473
+										9701,
+										9702
 									]
 								},
 								"unmatched":
@@ -1065,41 +1053,11 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1110,11 +1068,41 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1123,30 +1111,32 @@
 							],
 							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 608.0,
+						"translation.y": 3749.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "resources/views/projects/manage_project.blade.php",
+					"file": "routes/web.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 98070,
+						"buffer_size": 7847,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								79572,
-								79554
+								2459,
+								2472
 							]
 						],
 						"settings":
@@ -1166,50 +1156,15 @@
 								},
 								"unmatched":
 								{
-									"1":
-									[
-										84341,
-										84342
-									]
 								}
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1220,11 +1175,41 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1237,8 +1222,129 @@
 								{
 									"1":
 									[
-										79573,
-										79574
+										2472,
+										2473
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/single_quote.png",
+										"region.greenish"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										2440,
+										2441
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 591.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/Http/Controllers/ProjectController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 45437,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1180,
+								1180
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										2345,
+										2346
 									]
 								},
 								"icon":
@@ -1253,116 +1359,9 @@
 								{
 									"1":
 									[
-										79551,
-										79552
+										2256,
+										2257
 									]
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
-							],
-							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"word_wrap": false
-						},
-						"translation.x": 8.0,
-						"translation.y": 26357.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "app/Models/Customer.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8951,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2747,
-								2747
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": -1,
-							"bracket_highlighter.clone_locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
 								},
 								"unmatched":
 								{
@@ -1370,41 +1369,11 @@
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1415,11 +1384,41 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1432,8 +1431,8 @@
 								{
 									"1":
 									[
-										3089,
-										3090
+										3254,
+										3255
 									]
 								},
 								"icon":
@@ -1448,8 +1447,8 @@
 								{
 									"1":
 									[
-										2746,
-										2747
+										1170,
+										1171
 									]
 								},
 								"unmatched":
@@ -1458,41 +1457,11 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1503,67 +1472,16 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
-							],
-							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1454.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "resources/views/price_confirmation/price_confirmation_details.blade.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 50421,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								11163,
-								11176
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": -1,
-							"bracket_highlighter.clone_locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.clone_regions":
-							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
@@ -1574,134 +1492,21 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
-							],
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-									"1":
-									[
-										11176,
-										11177
-									]
-								},
-								"icon":
-								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/double_quote.png",
-										"region.greenish"
-									]
-								},
-								"open":
-								{
-									"1":
-									[
-										11154,
-										11155
-									]
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1714,28 +1519,208 @@
 							"translate_tabs_to_spaces": true,
 							"word_wrap": false
 						},
-						"translation.x": 107.0,
-						"translation.y": 3389.0,
+						"translation.x": 0.0,
+						"translation.y": 1517.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "app/Http/Controllers/ProjectController.php",
+					"buffer": 3,
+					"file": "resources/views/projects/all_projects.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 45284,
+						"buffer_size": 15045,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19657,
-								19657
+								6859,
+								6859
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2088.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "resources/views/projects/manage_project.blade.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 98092,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								54088,
+								54088
 							]
 						],
 						"settings":
@@ -1748,24 +1733,24 @@
 								{
 									"1":
 									[
-										12571,
-										12572
+										11521,
+										11526
 									]
 								},
 								"icon":
 								{
 									"1":
 									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
+										"Packages/BracketHighlighter/icons/tag.png",
+										"region.orangish"
 									]
 								},
 								"open":
 								{
 									"1":
 									[
-										10356,
-										10357
+										11500,
+										11505
 									]
 								},
 								"unmatched":
@@ -1774,41 +1759,11 @@
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1819,11 +1774,41 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1834,69 +1819,29 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										19903,
-										19904
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/square_bracket.png",
-										"region.bluish"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										19273,
-										19274
-									]
 								},
 								"unmatched":
 								{
+									"1":
+									[
+										53609,
+										53610
+									]
 								}
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1907,11 +1852,41 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
@@ -1924,10 +1899,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 6603.0,
+						"translation.y": 18550.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]

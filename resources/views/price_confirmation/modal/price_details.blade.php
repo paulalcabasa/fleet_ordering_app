@@ -94,12 +94,14 @@
                                             <th>No.</th>
                                             <th>Item</th>
                                             <th>Amount</th>
+                                            <th>Cost To</th>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(freebie, index) in curFreebies" v-show="freebie.deleted != 'Y'">
                                                 <td>@{{ index + 1 }}</td>
                                                 <td>@{{ freebie.description }}</td>
                                                 <td>@{{ formatPrice(freebie.amount) }}</td>
+                                                <td>@{{ freebie.owner_name }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

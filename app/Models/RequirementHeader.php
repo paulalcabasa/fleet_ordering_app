@@ -23,11 +23,13 @@ class RequirementHeader extends Model
                         rh.vehicle_type,
                         vehicle.sales_model,
                         vehicle.color,
+                        vehicle.model_variant,
                         rl.quantity,
                         rl.suggested_price,
                         rl.body_builder_name,
                         rl.rear_body_type,
                         rl.additional_items,
+                        rl.inventory_item_id,
                         nvl(
                             SUM( 
                                 CASE 
@@ -55,7 +57,9 @@ class RequirementHeader extends Model
                         rl.suggested_price,
                         rl.body_builder_name,
                         rl.rear_body_type,
-                        rl.additional_items";
+                        rl.additional_items,
+                        vehicle.model_variant,
+                        rl.inventory_item_id";
 
         $params = [
             'project_id' => $project_id
