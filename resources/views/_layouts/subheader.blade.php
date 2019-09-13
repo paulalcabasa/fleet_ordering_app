@@ -5,7 +5,7 @@
         </h3>
         <span class="kt-subheader__separator kt-hidden"></span>
     </div>
-    <div class="kt-subheader__toolbar">
+    <!-- <div class="kt-subheader__toolbar">
         <div class="kt-subheader__wrapper">
             <div class="dropdown dropdown-inline" data-toggle="kt-tooltip" title="Quick actions" data-placement="left">
                 <a href="#" class="btn btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -17,7 +17,7 @@
                         </g>
                     </svg>
 
-                    <!--<i class="flaticon2-plus"></i>-->
+                
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <ul class="kt-nav">
@@ -58,5 +58,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>

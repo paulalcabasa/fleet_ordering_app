@@ -181,22 +181,20 @@
                         </div>  
                     </div>
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card kt-margin-b-10">
                             <div class="card-header">Delivery Details</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Suggested Date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched">
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
                                             <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
-                                            <td><abbr title="MM/DD/YYYY">@{{ row.suggested_delivery_date_disp}}</abbr></td>
                                             <td><input type="date" :min="curMinDate" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
                                             <td><input type="text" size="3" class="form-control form-control-sm" v-model="row.quantity" /></td>
                                         </tr>
@@ -205,7 +203,33 @@
                                         <tr class="kt-font-bold">
                                             <td></td>
                                             <td>Total</td>
-                                            <td>@{{ totalDeliveryQty }}</td>
+                                            <td>@{{ totalDeliveryQty(6) }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table> 
+                            </div>
+                        </div> 
+                        <div class="card">
+                            <div class="card-header">Suggested Delivery</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 5">
+                                            <td>@{{ row.delivery_date_disp }}</td>
+                                            <td>@{{ row.quantity }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="kt-font-bold">
+                                          
+                                            <td>Total</td>
+                                            <td>@{{ totalDeliveryQty(5) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table> 
@@ -272,7 +296,8 @@
             addRowSched(){
                 this.curDeliverySched.push({
                     delivery_date : '',
-                    quantity : 0
+                    quantity : 0,
+                    owner_id : 6
                 });
             },
             setDeliverySched(vehicle_type,line_index){
@@ -409,6 +434,9 @@
                     self.file_label = total_files + " file" + (total_files > 1 ? "s" : "") + " selected" ;
                 }
             },
+            totalDeliveryQty(owner_id){
+                return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
+            }
         },
         computed : {
             totalQty(){
@@ -434,9 +462,6 @@
                     total_po += self.sumPOQty(vehicle_type);
                 }
                 return total_po;
-            },
-            totalDeliveryQty(){
-                return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
             }
         },
         mounted : function () {

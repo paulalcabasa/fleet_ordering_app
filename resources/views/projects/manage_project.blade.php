@@ -1,17 +1,22 @@
 @extends('_layouts.metronic')
 
-@section('page-title', 'New Project')
+@section('page-title', $page_title)
 
 @section('content')
 
 
 <div id="app">
 
-<div class="kt-portlet">
+    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected'">
+        <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+        <div class="alert-text">Project # @{{ project_id }} could not be edited since it is already <strong>@{{ project_status }}</strong>.</div>
+    </div>
+
+<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected'">
      <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                Project
+                Project <span v-if="action == 'edit'"># @{{ project_id }}</span>
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
@@ -22,10 +27,6 @@
                 </a>
                 <a href="#" @click="rejectProject()" class="btn btn-danger">
                     <span class="kt-hidden-mobile">Reject</span>
-                </a>
-                @elseif ($action == "edit")
-                <a href="#" class="btn btn-success">
-                    <span class="kt-hidden-mobile">Save Changes</span>
                 </a>
                 @elseif ($action == "cancel")
                 <a href="#" class="btn btn-danger">
@@ -217,7 +218,7 @@
                                             <label class="custom-file-label" for="attachment">@{{ file_label }}</label>
                                             <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
                                                 <li v-for="(row,index) in attachments">
-                                                    <a target="_blank" :href="baseUrl + '/' + row.directory + '/' + row.filename" download v-if="row.directory != null">@{{ row.orig_filename }}</a>
+                                                    <a target="_blank" :href="baseUrl + '/' + row.symlink_dir + '/' + row.filename" download v-if="row.directory != null">@{{ row.orig_filename }}</a>
                                                     <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
                                                 </li>
                                             </ul>
@@ -297,7 +298,7 @@
                                             </div>
                                         </div>
                                         <ul class="contact-list">
-                                            <li class="kt-font-bold" v-for="(row,index) in contactDetails.custContacts">
+                                            <li class="kt-font-bold" v-for="(row,index) in contactDetails.custContacts" v-show="row.delete_flag == 'N'">
                                                 <a href="#" @click.prevent="deleteContact(index)">
                                                     <i class="flaticon flaticon-delete kt-margin-r-10 kt-font-danger"></i>
                                                 </a>
@@ -308,7 +309,6 @@
                                     <div class="col-lg-6">
                                         <label>Email</label>
                                         <input type="text" class="form-control" v-model.lazy="contactDetails.email_address" name="email_address"  placeholder="Email"  aria-describedby="fname-error">
-                                        <!-- <span class="form-text text-muted">Please enter the email address</span> -->
                                     </div>
                                 </div>
                                 
@@ -316,7 +316,6 @@
                                     <div class="col-lg-6">
                                        <label>Website</label>
                                         <input type="text" class="form-control" v-model.lazy="contactDetails.website_url" name="website_url" placeholder="Website" aria-describedby="fname-error">
-                                        <!-- <span class="form-text text-muted">Please enter the website url</span>  -->
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Facebook</label>
@@ -344,7 +343,7 @@
                                                 </tr>
                                             </thead> 
                                             <tbody>
-                                                <tr v-for="(row, index) in contactDetails.contactPersons">
+                                                <tr v-for="(row, index) in contactDetails.contactPersons" v-show="row.delete_flag == 'N'">
                                                     <td>
                                                         <a href="#" @click.prevent="removeContactPerson(index)">
                                                             <i class="flaticon flaticon-delete kt-font-danger"></i>
@@ -389,7 +388,7 @@
                                                 </tr>
                                             </thead> 
                                             <tbody>
-                                                <tr v-for="(row, index) in contactDetails.salesPersons">
+                                                <tr v-for="(row, index) in contactDetails.salesPersons" v-show="row.delete_flag == 'N'">
                                                     <td>
                                                         <a href="#" @click.prevent="removeSalesPersons(index)">
                                                             <i class="flaticon flaticon-delete kt-font-danger"></i>
@@ -563,7 +562,7 @@
                                             <label class="custom-file-label" for="competitor_attachments">@{{ file_label2 }}</label>
                                             <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
                                                 <li v-for="(row,index) in competitor_attachments">
-                                                    <a target="_blank" :href="baseUrl + '/' + row.directory + '/' + row.filename" download v-if="row.directory != null">@{{ row.orig_filename }}</a>
+                                                    <a target="_blank" :href="baseUrl + '/' + row.symlink_dir + '/' + row.filename" download v-if="row.directory != null">@{{ row.orig_filename }}</a>
                                                     <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
                                                 </li>
                                             </ul>
@@ -638,7 +637,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(row,index) in competitors">
+                                                    <tr v-for="(row,index) in competitors" v-show="row.delete_flag == 'N'">
                                                         <td style="width:10%;">
                                                             <a href="#" @click.prevent="removeCompetitor(index)">
                                                                 <i class="flaticon flaticon-delete kt-font-danger"></i>
@@ -684,7 +683,6 @@
         </div>
     </div>
 </div>
-
 
 @include('projects/modal/mp_delivery_additional_details')
 
@@ -904,6 +902,8 @@ jQuery(document).ready(function() {
             salesPersonOptions:   {!! json_encode($sales_persons) !!},
             fleetCategories:      {!! json_encode($fleet_categories) !!},
             baseUrl:              {!! json_encode($base_url) !!},
+            action:               {!! json_encode($action) !!},
+            project_id:           {!! json_encode($project_id) !!},
             competitor_model:     '',
             // step 1 - account details
             accountDetails : {
@@ -972,11 +972,12 @@ jQuery(document).ready(function() {
             competitors:             [],
             no_competitor_reason:    "",
             competitor_flag:         null,
-            attachments:             [],
+            attachments: [],
             competitor_attachments:  [],
             file_label               : 'Choose file',
             file_label2              : 'Choose file',
-            is_exist                 : false
+            is_exist                 : false,
+            project_status : 'New' // default is 3 for NEW
         },
         methods : {
             callVueSubmitForm(){
@@ -1003,23 +1004,50 @@ jQuery(document).ready(function() {
                         // update values of affiliates select2 since remove event is not firing
                         self.accountDetails.affiliates = $('#sel_affiliates').val();
 
-                        axios.post('/save-project', {
-                            accountDetails : self.accountDetails,
-                            contactDetails : self.contactDetails,
-                            requirement : self.vehicleRequirement,
-                            competitors : self.competitors,
-                            no_competitor_reason : self.no_competitor_reason,
-                            competitor_flag : self.competitor_flag
-                        })
-                        .then(function (response) {
-                            self.processFileUpload(
-                                response.data.customer_id,
-                                response.data.project_id
-                            );
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                        if(self.action == "create"){
+                            axios.post('/save-project', {
+                                accountDetails:       self.accountDetails,
+                                contactDetails:       self.contactDetails,
+                                requirement:          self.vehicleRequirement,
+                                competitors:          self.competitors,
+                                no_competitor_reason: self.no_competitor_reason,
+                                competitor_flag:      self.competitor_flag
+                            })
+                            .then(function (response) {
+                                self.processFileUpload(
+                                    response.data.customer_id,
+                                    response.data.project_id
+                                );
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        }
+                        else if(self.action == "edit") {
+                            axios.post('/update-project', {
+                                project_id:           self.project_id,
+                                accountDetails:       self.accountDetails,
+                                contactDetails:       self.contactDetails,
+                                requirement:          self.vehicleRequirement,
+                                competitors:          self.competitors,
+                                no_competitor_reason: self.no_competitor_reason,
+                                competitor_flag:      self.competitor_flag,
+                                requirements:          self.vehicleRequirement,
+                            })
+                            .then(function (response) {
+                                self.processFileUpload(
+                                    response.data.customer_id,
+                                    response.data.project_id
+                                );
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            })
+                            .finally( (response) => {
+
+                            });
+                        }
+                        
                     }
                 });  
             },
@@ -1042,11 +1070,19 @@ jQuery(document).ready(function() {
                         'Content-Type': 'multipart/form-data'
                     }
                 }).then(function (response) {
-                    KTApp.unblockPage();
+                    
                     if(response.data.status == "success"){
+                        var message = "";
+
+                        if(self.action == "create"){
+                            message = "Project has been created!";
+                        }
+                        else if(self.action =="edit"){
+                            message = "Project has been updated!";   
+                        }
                         Swal.fire({
                             type: 'success',
-                            title: 'Project has been created!',
+                            title: message,
                             showConfirmButton: false,
                             timer: 1500,
                             onClose : function(){
@@ -1062,6 +1098,16 @@ jQuery(document).ready(function() {
                             showConfirmButton: true
                         });
                     }
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Unexpected error encountered during the transaction, please contact the system administrator. Error : ' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
                 });
             },
             validateFileSize(attachment_type){
@@ -1131,7 +1177,8 @@ jQuery(document).ready(function() {
                         position : "",
                         department : "",
                         contact_number : "",
-                        email : ""
+                        email : "",
+                        delete_flag : 'N'
                     }
                 );
             },
@@ -1166,14 +1213,6 @@ jQuery(document).ready(function() {
                     });
                 }
             },
-            /*showAdditionalDetails(vehicle_group,index){
-                this.selected_row_index     = index;
-                this.selected_vehicle_group = vehicle_group;
-                this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;
-                this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;
-                this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;
-                $("#additionalDetailsModal").modal('show');
-            },*/
             confirmReject(){
                 Swal.fire({
                     type: 'error',
@@ -1202,7 +1241,8 @@ jQuery(document).ready(function() {
             addCustContact(){
                 if(this.contactNumber != "" && this.contactNumber != null){
                     this.contactDetails.custContacts.push({
-                        contact_number : this.contactNumber
+                        contact_number : this.contactNumber,
+                        delete_flag : 'N'
                     });
                     this.contactNumber = null;
                 }
@@ -1216,13 +1256,29 @@ jQuery(document).ready(function() {
                 }
             },
             deleteContact(index){
-                this.contactDetails.custContacts.splice(index,1);
+                if(this.contactDetails.custContacts[index].hasOwnProperty('contact_id')){
+                    this.contactDetails.custContacts[index].delete_flag = 'Y';
+                }
+                else {
+                    this.contactDetails.custContacts.splice(index,1);
+                }
+                
             },
             removeContactPerson(index){
-                this.contactDetails.contactPersons.splice(index,1);
+                if(this.contactDetails.contactPersons[index].hasOwnProperty('contact_person_id')){
+                    this.contactDetails.contactPersons[index].delete_flag = 'Y';
+                }
+                else {
+                    this.contactDetails.contactPersons.splice(index,1);
+                }
             },
             removeSalesPersons(index){
-                this.contactDetails.salesPersons.splice(index,1);
+                if(this.contactDetails.salesPersons[index].hasOwnProperty('creation_date')){
+                    this.contactDetails.salesPersons[index].delete_flag = 'Y'; 
+                }
+                else {
+                    this.contactDetails.salesPersons.splice(index,1);
+                }
             },
             addSalesPerson(){
                 let self = this;
@@ -1254,7 +1310,8 @@ jQuery(document).ready(function() {
                                     position_title : data.description,
                                     name : data.fname + " " + data.lname,
                                     mobile_no : data.mobile_1,
-                                    email : data.email_1
+                                    email : data.email_1,
+                                    delete_flag : 'N'
                                 });
                                 $('#se_wrapper').unblock(); 
                                 self.selected_sales_person = -1;
@@ -1327,7 +1384,41 @@ jQuery(document).ready(function() {
                 }
             },
             removeVehicle(vehicle_group,index){
-                this.vehicleRequirement[vehicle_group].splice(index,1);
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        var vehicle = self.vehicleRequirement[vehicle_group][index];
+                        if(vehicle.hasOwnProperty('requirement_line_id')){
+                            axios.delete('delete-requirement/' + vehicle.requirement_line_id)
+                            .then( (response) => {
+                                self.vehicleRequirement[vehicle_group].splice(index,1);
+                            });
+                        }
+                        else {
+                            self.vehicleRequirement[vehicle_group].splice(index,1);
+                        }
+
+                        KTApp.unblockPage();
+
+                    }
+
+                });
             },
             addDeliverySched(){
                 let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];
@@ -1337,17 +1428,52 @@ jQuery(document).ready(function() {
                 this.cur_delivery_sched.push({
                     quantity : 0,
                     delivery_date : default_delivery_date,
-                    min_delivery_date : min_delivery_date
+                    min_delivery_date : min_delivery_date,
+                    delivery_schedule_id : 0
                 });
             },
             deleteDeliveryDate(index){
-                this.cur_delivery_sched.splice(index,1);
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        
+                        var sched = self.cur_delivery_sched[index];
+                        if(sched.hasOwnProperty('delivery_schedule_id') && self.action == "edit" && sched.delivery_schedule_id != 0){
+                            axios.delete('delivery-schedule/' + sched.delivery_schedule_id)
+                            .then( (response) => {
+                                self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].delivery_schedule = self.cur_delivery_sched;
+                            });
+                        }
+                     
+                        self.cur_delivery_sched.splice(index,1);
+                        
+                        KTApp.unblockPage();
+        
+                    }
+                });
+                
             },
             saveDeliverySched(){
                 var delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
                 var is_error = 0;
-    
-                if(this.selected_vehicle_group == "CV"){
+                var self = this;
+                if(this.selected_vehicle_group == "CV" || this.cur_model.includes('Cab')){
                     if(this.cur_rear_body == null || this.cur_body_builder == null){
                         Swal.fire({
                             type: 'error',
@@ -1366,9 +1492,29 @@ jQuery(document).ready(function() {
                     }
                 }
                 if(is_error <= 0){
-                    if(this.computeDeliveryQuantity == this.cur_quantity){
-                        this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule = this.cur_delivery_sched;
+                    if(this.computeDeliveryQuantity == this.cur_quantity){ 
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        var vehicle = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index];
+                        if(vehicle.hasOwnProperty('requirement_line_id') && self.action == "edit"){
+                            axios.post('save-schedule',{
+                                delivery_details:    self.cur_delivery_sched,
+                                requirement_line_id: vehicle.requirement_line_id,
+                                vehicle_details:     vehicle
+                            }).then( (response) => {
+                                self.cur_delivery_sched   = response.data;
+                                vehicle.delivery_schedule = self.cur_delivery_sched;
+                            });
+                        }
+                        vehicle.delivery_schedule = self.cur_delivery_sched;
                         $("#deliveryScheduleModal").modal('hide');
+                        KTApp.unblockPage();
+
                     }
                     else {
                         Swal.fire({
@@ -1407,7 +1553,8 @@ jQuery(document).ready(function() {
                         price : 0,
                         ipc_model : ipc_model,
                         ipc_color : ipc_color,
-                        ipc_item_id : self.competitor_model
+                        ipc_item_id : self.competitor_model,
+                        delete_flag : 'N'
                     });
 
                     self.cur_competitor_brand = null;
@@ -1423,17 +1570,57 @@ jQuery(document).ready(function() {
                 }
             },
             removeCompetitor(index){
-                this.competitors.splice(index,1);
+                var self = this;
+                let comp = self.competitors[index];
+                if(comp.hasOwnProperty('competitor_id')){
+                    comp.delete_flag = 'Y';
+                }
+                else {
+                    this.competitors.splice(index,1);
+                }
             },
             formatPrice(value) {
                 return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            },
+            loadCustomerData(customer_name){
+                var self = this;
+                 axios.get('/ajax-get-customer-data/' + customer_name)
+                    .then(function (response) {
+                     
+                        var data = response.data.details;
+                        self.attachments = response.data.attachments;
+            
+                        self.accountDetails.affiliates = response.data.affiliates;
+                        self.accountDetails.customer_id = data.customer_id;
+                        self.accountDetails.selected_org_type = data.organization_type_id;
+
+                        self.accountDetails.account_name = data.customer_name;
+                        self.accountDetails.tin = data.tin;
+                        $("#txt_tin").val(self.accountDetails.tin);
+                        self.accountDetails.address = data.address;
+                        self.accountDetails.business_style = data.business_style;
+                        self.accountDetails.company_overview = data.company_overview;
+            
+                        self.accountDetails.products = data.products;
+                        self.accountDetails.establishment_date = data.establishment_date;
+
+                        KTApp.unblockPage();
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        KTApp.unblockPage();
+                        console.log(error);
+                    })
+                    .finally(function () {
+                        // always executed
+                        KTApp.unblockPage();
+                    });      
             }
         },
         created: function () {
       
         },
         mounted : function () {
-
 
             var self = this;
         
@@ -1449,7 +1636,12 @@ jQuery(document).ready(function() {
             $("#txt_tin").on("change",function(){
                 self.accountDetails.tin = $(this).val();
             });
-            $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
+
+            if(this.action == "edit"){
+                $("#txt_tin").val(self.accountDetails.tin);
+            }
+
+        //    $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
 
             // Business Style typeahead
             $('#txt_business_style').typeahead({
@@ -1484,7 +1676,7 @@ jQuery(document).ready(function() {
                 minLength: 3
             },
             {
-                limit: 5,
+                limit: 10,
                 async: true,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);
@@ -1508,37 +1700,7 @@ jQuery(document).ready(function() {
                     message: 'Please wait...'
                 });
              
-                axios.get('/ajax-get-customer-data/' + item)
-                    .then(function (response) {
-                     
-                        var data = response.data.details;
-                        self.attachments = response.data.attachments;
-            
-                        self.accountDetails.affiliates = response.data.affiliates;
-                        self.accountDetails.customer_id = data.customer_id;
-                        self.accountDetails.selected_org_type = data.organization_type_id;
-
-                        self.accountDetails.account_name = data.customer_name;
-                        self.accountDetails.tin = data.tin;
-                        $("#txt_tin").val(self.accountDetails.tin);
-                        self.accountDetails.address = data.address;
-                        self.accountDetails.business_style = data.business_style;
-                        self.accountDetails.company_overview = data.company_overview;
-            
-                        self.accountDetails.products = data.products;
-                        self.accountDetails.establishment_date = data.establishment_date;
-
-                        KTApp.unblockPage();
-                    })
-                    .catch(function (error) {
-                        // handle error
-                        KTApp.unblockPage();
-                        console.log(error);
-                    })
-                    .finally(function () {
-                        // always executed
-                        KTApp.unblockPage();
-                    });                        
+                self.loadCustomerData(item);                  
             }); 
 
             $('#txt_comp_brand').typeahead({
@@ -1590,6 +1752,75 @@ jQuery(document).ready(function() {
                 }
             });
 
+            if(self.action == "edit"){
+                // load project details
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                var project_data = [];
+                axios.get('get-project-details/' + self.project_id)
+                .then((response) => {
+                    // Load account details
+                    project_data = response.data;
+                    self.project_status = project_data.project_details.status_name;
+                    if(self.project_status != 'New'){
+                        return false;
+                    }
+                    self.accountDetails.fleet_category       = project_data.project_details.fleet_category;
+                    self.accountDetails.approved_budget_cost = project_data.project_details.approved_budget_cost;
+                    self.accountDetails.bid_date_sched       = project_data.project_details.bid_date_sched;
+                    self.accountDetails.bid_docs_amount      = project_data.project_details.bid_docs_amount;
+                    self.accountDetails.bid_ref_no           = project_data.project_details.bid_ref_no;
+                    self.accountDetails.bidding_venue        = project_data.project_details.bidding_venue;
+                })
+                .then( (response) => {
+                    // Load Account Details and auto fill inputs
+                    self.loadCustomerData(project_data.project_details.fleet_account_name);
+                })
+                .then( (response) => {
+                    // Load contact information and auto fill inputs
+                    self.contactDetails.email_address  = project_data.project_details.email;
+                    self.contactDetails.facebook_url   = project_data.project_details.facebook_url;
+                    self.contactDetails.website_url    = project_data.project_details.website_url;
+                    self.contactDetails.custContacts   = project_data.contacts;
+                    self.contactDetails.contactPersons = project_data.contact_persons;
+                    self.contactDetails.salesPersons   = project_data.sales_persons;
+                })
+                .then( (response) => {
+                    // Load requirements
+                    for(var i = 0; i < project_data.requirement.length; i++){
+                        var req_line = project_data.requirement[i];
+                        let newObj = {
+                            inventory_item_id:  req_line.inventory_item_id,
+                            variant:            req_line.variant,
+                            model:              req_line.sales_model,
+                            color:              req_line.color,
+                            quantity:           req_line.quantity,
+                            suggested_price:    req_line.suggested_price,
+                            body_builder:       req_line.body_builder_name,
+                            rear_body_type:     req_line.rear_body_type,
+                            additional_details: req_line.additional_items,
+                            delivery_schedule:  req_line.delivery_schedule,
+                            requirement_line_id : req_line.requirement_line_id
+                        }
+                        self.vehicleRequirement[req_line.vehicle_type].push(newObj);
+                    }
+                })
+                .then( (response) => {
+                    // Load competitors
+                    self.competitor_flag        = project_data.project_details.competitor_flag;
+                    self.no_competitor_reason   = project_data.project_details.competitor_remarks;
+                    self.competitors            = project_data.competitors;
+                    self.competitor_attachments = project_data.competitor_attachments;
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
+                });
+
+            }
 
             // Class definition
             var KTWizard1 = function () {

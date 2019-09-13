@@ -31,7 +31,8 @@ return [
         'AQUA BLUE'          => "kt-badge kt-badge--aqua-blue kt-badge--md kt-badge--rounded",
         'VENETIAN RED'       => "kt-badge kt-badge--venetian-red kt-badge--md kt-badge--rounded",
         'HAVANA BROWN'       => "kt-badge kt-badge--havana-brown kt-badge--md kt-badge--rounded",
-        'NO COLOR'           => "kt-badge kt-badge--no-color kt-badge--md kt-badge--rounded"
+        'NO COLOR'           => "kt-badge kt-badge--no-color kt-badge--md kt-badge--rounded",
+        'YELLOW'           => "kt-badge kt-badge--no-color kt-badge--md kt-badge--rounded"
     ],
     'status_colors' => [
         'New'          => "kt-badge kt-badge--brand kt-badge--inline",

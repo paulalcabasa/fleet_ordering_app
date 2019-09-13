@@ -88,7 +88,6 @@
                 <thead>
                     <tr>
                         <th>Actions</th>
-                        <th>Project No.</th>
                         <th>FPC No.</th>
                         <th>Account Name</th>
                         <th>Date</th>
@@ -117,7 +116,6 @@
                                 <i class="la la-eye"></i>
                             </a> 
                         </td>
-                        <td>@{{ row.project_id }}</td>
                         <td>@{{ row.fpc_id }}</td>
                         <td>@{{ row.customer_name }}</td>
                         <td>@{{ row.date_created }}</td>

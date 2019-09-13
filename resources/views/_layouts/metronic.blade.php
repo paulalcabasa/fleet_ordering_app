@@ -61,7 +61,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- begin:: Header Mobile -->
         <div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
             <div class="kt-header-mobile__logo">
-                <a href="index.html">
+                <a href="{{ url('dashboard')}}">
                     <img alt="Logo" src="{{ asset('public/img/isuzu_logo.png') }}" />
                 </a>
             </div>
@@ -83,7 +83,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <!-- begin:: Aside -->
                     <div class="kt-aside__brand kt-grid__item " id="kt_aside_brand">
                         <div class="kt-aside__brand-logo">
-                            <a href="index.html">
+                            <a  href="{{ url('dashboard')}}">
                                 <img alt="Log" src="{{ asset('public/img/isuzu_logo.png') }}" />
                             </a>
                         </div>

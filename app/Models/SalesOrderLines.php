@@ -45,7 +45,7 @@ class SalesOrderLines extends Model
                         (fpc_item.fleet_price - nvl(sum(freebies.amount),0) ) * (fpc_item.dealers_margin/100) dealer_margin,
                         fs_term.term_name,
                         fpc_item.lto_registration,
-                        sum(freebies.amount) freebies,
+                        sum(case when freebies.cost_to_owner_id = 5 then freebies.amount else 0 end) freebies,
                         vehicle.color
                 FROM ipc_dms.fs_fpc_items fpc_item
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl

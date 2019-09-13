@@ -22,4 +22,22 @@ class FPCHelper
 
         return $flag;
     }
+
+    public function getArrayCommonValues($raw_array){
+        $dupes = array();
+        natcasesort($raw_array);
+        reset($raw_array);
+        $old_key   = NULL;
+        $old_value = NULL;
+        foreach ($raw_array as $key => $value) {
+            if ($value === NULL) { continue; }
+            if (strcasecmp($old_value, $value) === 0) {
+                $dupes[$old_key] = $old_value;
+                $dupes[$key]     = $value;
+            }
+            $old_value = $value;
+            $old_key   = $key;
+        }
+        return $dupes;
+    }
 }

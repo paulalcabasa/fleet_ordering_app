@@ -32,6 +32,8 @@ class Vehicle extends Model
 	}
 
 	public function get_vehicles(){
+		// ipc_vehicles_with_price_v - with price
+		// no price
 		$sql = "SELECT DISTINCT
 			            vm.model_variant,
 			            vm.sales_model,
@@ -48,6 +50,7 @@ class Vehicle extends Model
 	}
 
 	public function get_model_colors($sales_model){
+		/* ipc_vehicles_with_price_v */
 		$sql = "SELECT 
 			        vm.inventory_item_id id,
 			        vm.color text

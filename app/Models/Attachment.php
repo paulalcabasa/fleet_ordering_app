@@ -40,6 +40,15 @@ class Attachment extends Model
 		])->delete();
 	}
 
+	public function delete_competitor_attachment($project_id){
+		$this->where([
+			[ 'reference_id', '=', $project_id ],
+			[ 'reference_table', '=', 'fs_projects' ],
+			[ 'reference_column', '=', 'project_id' ],
+			[ 'owner_id', '=', 1 ],
+		])->delete();
+	}
+
 	public function get_competitor_attachments($project_id){
 		$query = $this
 					->where([
@@ -59,6 +68,18 @@ class Attachment extends Model
 						[ 'reference_table', '=', 'fs_fpc' ],
 						[ 'reference_column', '=', 'fpc_id' ],
 						[ 'owner_id' , '=' , 3]
+					])
+					->get();
+		return $query;
+	}
+
+	public function get_fpc_project_attachments($fpc_project_id){
+		$query = $this
+					->where([
+						[ 'reference_id', '=', $fpc_project_id ],
+						[ 'reference_table', '=', 'fs_fpc_projects' ],
+						[ 'reference_column', '=', 'fpc_project_id' ],
+						[ 'owner_id' , '=' , 7]
 					])
 					->get();
 		return $query;

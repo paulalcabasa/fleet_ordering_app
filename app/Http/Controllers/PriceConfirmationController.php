@@ -24,6 +24,7 @@ use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
+use App\Models\OracleUser;
 
 class PriceConfirmationController extends Controller
 {   
@@ -43,7 +44,7 @@ class PriceConfirmationController extends Controller
         else {
             $dealers = Dealer::find(session('user')['customer_id']);
         }
-
+        
         $page_data = [
             'base_url'      => url('/'),
             'dealers'       => $dealers,
@@ -96,23 +97,25 @@ class PriceConfirmationController extends Controller
             $requirements = $m_fpc_item->get_item_requirements($project->fpc_project_id);
             $competitors = $m_competitor->get_competitors($project->project_id);
             $competitor_attachments = $m_attachment->get_competitor_attachments($project->project_id);
+            $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
             $temp_arr = [
-                'project_id'             => $project->project_id,
-                'payment_terms'          => $project->payment_terms,
-                'validity'               => $project->validity,
-                'availability'           => $project->availability,
-                'note'                   => $project->note,
-                'dealer_name'            => $project->dealer_name,
-                'dealer_account'         => $project->dealer_account,
-                'project_status'         => $project->project_status,
-                'fpc_project_id'         => $project->fpc_project_id,
-                'requirements'           => $requirements,
-                'competitors'            => $competitors,
-                'competitor_attachments' => $competitor_attachments,
-                'term_name'              => $project->term_name,
-                'validity_disp'          => $project->validity_disp,
-                'competitor_flag'        => $project->competitor_flag,
-                'competitor_remarks'     => $project->competitor_remarks
+                'project_id'              => $project->project_id,
+                'payment_terms'           => $project->payment_terms,
+                'validity'                => $project->validity,
+                'availability'            => $project->availability,
+                'note'                    => $project->note,
+                'dealer_name'             => $project->dealer_name,
+                'dealer_account'          => $project->dealer_account,
+                'project_status'          => $project->project_status,
+                'fpc_project_id'          => $project->fpc_project_id,
+                'requirements'            => $requirements,
+                'competitors'             => $competitors,
+                'competitor_attachments'  => $competitor_attachments,
+                'term_name'               => $project->term_name,
+                'validity_disp'           => $project->validity_disp,
+                'competitor_flag'         => $project->competitor_flag,
+                'competitor_remarks'      => $project->competitor_remarks,
+                'fpc_project_attachments' => $fpc_project_attachments
             ];
             array_push($projects,$temp_arr);
         }
@@ -121,14 +124,16 @@ class PriceConfirmationController extends Controller
     
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
-            'action'           => $action,
-            'fpc_details'      => $fpc_details,
-            'customer_details' => $customer_details,
-            'projects'         => $projects,
-            'payment_terms'    => $payment_terms,
-            'base_url'         => url('/'),
-            'editable'         => $editable,
-            'fpc_attachments'  => $fpc_attachments
+            'action'            => $action,
+            'fpc_details'       => $fpc_details,
+            'customer_details'  => $customer_details,
+            'projects'          => $projects,
+            'payment_terms'     => $payment_terms,
+            'base_url'          => url('/'),
+            'editable'          => $editable,
+            'fpc_attachments'   => $fpc_attachments,
+            'status_colors'     => config('app.status_colors'),
+            'vehicle_lead_time' => config('app.vehicle_lead_time')
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -265,6 +270,7 @@ class PriceConfirmationController extends Controller
                     $freebie['fpc_item_id'],
                     $freebie['description'], 
                     $freebie['amount'], 
+                    $freebie['cost_to'], 
                     session('user')['user_id'],
                     session('user')['source_id'],
                     Carbon::now()
@@ -317,38 +323,42 @@ class PriceConfirmationController extends Controller
         $attachment        = $request->fpc_attachment;
         $fpc_id            = $request->fpc_id;
         $remarks           = $request->remarks;
+        $fpc_project_id    = $request->fpc_project_id;
+        $action            = $request->action;
         $attachment_params = [];
         $file_index        = 0;
-        //$destinationPath   = 'storage/app/attachments';
+        //$destinationPath = 'storage/app/attachments';
         
-        // approve fpc
-        $m_fpc->update_status(
-            $fpc_id, 
-            $remarks, 
-            session('user')['user_id'],
-            session('user')['source_id'],
-            4 // approved
-        );
+        if($action == "approve"){
+            // approve fpc
+            $m_fpc->update_status(
+                $fpc_id, 
+                $remarks, 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                4 // approved
+            );
 
-        $fpc_projects = $m_fpc_project->get_projects($fpc_id);
-        foreach($fpc_projects as $row){
-            /* activity logs */
-            $activity_log_params = [
-                'module_id'             => 1, // Fleet Project
-                'module_code'           => 'PRJ',
-                'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created an FPC for Project No. <strong>'. $row->project_id .'</strong>',
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id'],
-                'reference_id'          => $row->project_id,
-                'reference_column'      => 'project_id',
-                'reference_table'       => 'fs_projects',
-                'mail_flag'             => 'Y',
-                'is_sent_flag'          => 'N',
-                'timeline_flag'         => 'Y',
-                'mail_recipient'        => $row->requestor_email
-            ];
-            $m_activity_logs->insert_log($activity_log_params);
+            $fpc_projects = $m_fpc_project->get_projects($fpc_id);
+            foreach($fpc_projects as $row){
+                /* activity logs */
+                $activity_log_params = [
+                    'module_id'             => 1, // Fleet Project
+                    'module_code'           => 'PRJ',
+                    'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created an FPC for Project No. <strong>'. $row->project_id .'</strong>',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'reference_id'          => $row->project_id,
+                    'reference_column'      => 'project_id',
+                    'reference_table'       => 'fs_projects',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $row->requestor_email
+                ];
+                $m_activity_logs->insert_log($activity_log_params);
+            }
         }
     
         if(!empty($_FILES)){
@@ -362,18 +372,39 @@ class PriceConfirmationController extends Controller
                         'public/fpc', $file, $filename
                     );  
 
+                    $reference_table = "";
+                    $reference_column = "";
+                    $reference_id = "";
+                    $owner_id = 0;
+                    $module_id = 0;
+
+                    if($action == "approve"){
+                        $reference_table = 'fs_fpc';
+                        $reference_column = 'fpc_id';
+                        $reference_id = $fpc_id;
+                        $owner_id = 3;
+                        $module_id = 3;
+                    }
+                    else if($action == "attach"){
+                        $reference_table = 'fs_fpc_projects';
+                        $reference_column = 'fpc_project_id';
+                        $reference_id = $fpc_project_id;
+                        $owner_id = 7;
+                        $module_id = 5;
+                    }
+
                     $temp = [
                         'filename'              => $filename,
                         'directory'             => $fpcPath,
-                        'module_id'             => 3, // Fleet Price Confirmation
-                        'reference_id'          => $fpc_id,
-                        'reference_table'       => 'fs_fpc',
-                        'reference_column'      => 'fpc_id',
+                        'module_id'             => $module_id, // Fleet Price Confirmation
+                        'reference_id'          => $reference_id,
+                        'reference_table'       => $reference_table,
+                        'reference_column'      => $reference_column,
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id'],
                         'orig_filename'         => $orig_filename,
-                        'owner_id'              => 3, // customer as owner
+                        'owner_id'              => $owner_id, // customer as owner
                         'symlink_dir'           => 'public/storage/fpc/'
                     ];         
                     array_push($attachment_params,$temp);
@@ -384,11 +415,21 @@ class PriceConfirmationController extends Controller
                 $m_attachment->insert_attachment($attachment_params);
             }
         }
- 
-        $editable = $fpc_helper->editable('Approved');
+        
+        
+        $status = "";
+        if($action == "approve"){
+            $editable = $fpc_helper->editable('Approved');
+            $status = "Approved";
+        }
+        else {
+            $editable = false;
+            $status = "Updated";
+        }
+
 
         return [
-            'status' => "Approved",
+            'status' => $status,
             'editable' => $editable
         ];
 
@@ -568,5 +609,100 @@ class PriceConfirmationController extends Controller
 
         return $fpc;
 
+    }
+
+    public function print_fpc_conflict(
+        Request $request,
+        FPC_Item $m_fpc_item,
+        FPCHelper $fpc_helper,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        Approver $m_approver,
+        FPC $m_fpc,
+        FPCItemFreebies $m_freebies,
+        OracleUser $m_ora_user
+    ){
+
+        $fpc_id = $request->fpc_id;
+        $vehicle_type = "";
+        
+
+        $inventory_items = $m_fpc_item->get_items_by_fpc($fpc_id);
+        $inventory_items = array_pluck($inventory_items, 'inventory_item_id');
+        $common_items = $fpc_helper->getArrayCommonValues($inventory_items);
+        
+        if(!empty($common_items)){
+
+
+            $user_details = $m_ora_user->get_user_details(
+                session('user')['user_id'],            
+                session('user')['source_id']            
+            );
+
+            $fpc_details = $m_fpc->get_details($fpc_id);
+            $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type);
+            $signatories = collect($signatories)->groupBy('user_type');
+
+            $common_inventory_item_id = array_unique($common_items);
+
+            $projects  = [];
+            $attention = [];
+            $terms     = [];
+
+            $fpc_projects = $m_fpc_project->get_projects_with_conflict($fpc_id,$common_inventory_item_id);
+            foreach ($fpc_projects as $project) {
+                $header_data = $m_fpc_project->get_fpc_project_details($project->fpc_project_id);
+                $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
+                array_push($projects, $header_data);
+                array_push($attention, $sales_persons);
+                array_push(
+                    $terms,
+                    [
+                        $header_data->note,
+                        $header_data->availability,
+                        $header_data->validity,
+                        $header_data->term_name,
+                    ]
+                );
+            }
+
+            $terms = array_unique($terms,SORT_REGULAR);
+        
+
+            $requirements = $m_fpc_item->get_conflict_item_requirement($fpc_id, $common_inventory_item_id);
+            
+            $detailed_price = $m_fpc_item->get_item_requirement_by_fpc_id($fpc_id,$common_inventory_item_id);
+            $items_arr = [];
+
+            foreach($detailed_price as $row){
+                $arr = [
+                    'header' => $row,
+                    'other_items' => $m_freebies->get_item_freebies($row->fpc_item_id)
+                ];
+
+                array_push($items_arr, $arr);
+            }
+
+        
+            $data = [
+                'projects'       => $projects,
+                'attention'      => $attention,
+                'requirements'   => $requirements,
+                'detailed_price' => $items_arr,
+                'signatories'    => $signatories,
+                'fpc_details'    => $fpc_details,
+                'terms'          => $terms,
+                'user_details'   => $user_details
+            ];
+
+     
+            $pdf = PDF::loadView('pdf.print_fpc_conflict', $data);
+            return $pdf->setPaper('a4','portrait')->stream();
+
+        }
+        else {
+            return 'No conflicting models';
+        }
+        
     }
 }

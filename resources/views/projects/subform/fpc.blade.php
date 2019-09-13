@@ -54,7 +54,7 @@
                             <span class="col-md-8">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in row['attachments']">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                        <a :href="base_url + '/' + row.symlink_dir +row.filename " download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>    
                             </span>
@@ -104,7 +104,7 @@
                         <td colspan="3" align="right">Total</td>
                         <td> @{{ sumQty(index) }}</td>
                         <td></td>
-                        <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
+                        <td colspan="4" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
                     </tr>
                 </tfoot>
             </table>

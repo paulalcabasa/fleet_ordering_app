@@ -10,7 +10,8 @@ class RequirementLine extends Model
     //
     protected $table = "IPC_DMS.FS_PRJ_REQUIREMENT_LINES";
 	protected $connection = "oracle";
-
+    const UPDATED_AT = 'update_date';
+    const CREATED_AT = 'creation_date';
 	public function insert_requirement_line($params){
 		$id = $this->insertGetId($params,'requirement_line_id');
     	return $id;
@@ -86,6 +87,26 @@ class RequirementLine extends Model
 
         $query = DB::select($sql,$params);
         return $query;
+    }
+
+    public function deleteRequirement($requirement_line_id){
+        $this->where([
+            [ 'requirement_line_id', '=', $requirement_line_id ]
+        ])->delete();
+    }
+
+    public function updateRequirement($params){
+        $this
+            ->where([
+                [ 'requirement_line_id', '=' , $params['requirement_line_id'] ]
+            ])
+            ->update([
+                'quantity'          => $params['quantity'],
+                'suggested_price'   => $params['suggested_price'],
+                'body_builder_name' => $params['body_builder'],
+                'rear_body_type'    => $params['rear_body_type'],
+                'additional_items'  => $params['additional_details']
+            ]);
     }
 
 }

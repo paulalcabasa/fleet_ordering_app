@@ -31,7 +31,7 @@
                         <!-- <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-eye"></i>
                         </a> -->
-                        <a v-show="row.user_type_id == 27" href="#" @click.prevent="loadApprover(row.user_id,row.user_source_id, row.customer_id)" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Set approver">
+                        <a v-show="row.user_type_name == 'Dealer Staff'" href="#" @click.prevent="loadApprover(row.user_id,row.user_source_id, row.customer_id)" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Set approver">
                           <i class="la la-cog"></i>
                         </a>
                     </td>

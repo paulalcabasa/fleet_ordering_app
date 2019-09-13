@@ -35,12 +35,14 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	/* Projects */
 	Route::get('manage-project/{action}', 'ProjectController@manage_project');
-	Route::get('manage-project/{action}/{price_confirmation_id}', 'ProjectController@manage_project');
+	Route::get('manage-project/{action}/{project_id}', 'ProjectController@manage_project');
+	Route::get('get-project-details/{project_id}', 'ProjectController@get_project_details');
 	Route::get('all-projects', 'ProjectController@all_projects');
 	Route::get('project-overview/{action}/{project_id}', 'ProjectController@project_overview');
 	Route::get('project-overview/{action}/{project_id}/{approval_id}', 'ProjectController@project_overview');
 	Route::get('get-sales-person-detail/{sales_person_id}', 'SalesPersonController@get_sales_person_detail');
 	Route::post('save-project', 'ProjectController@save_project');
+	Route::post('update-project', 'ProjectController@update_project');
 	Route::post('upload-project-attachment', 'ProjectController@upload_project_attachment');
 	Route::post('upload-competitor-attachment', 'ProjectController@upload_competitor_attachment');
 	Route::get('project-approval', 'ProjectController@project_approval');
@@ -70,12 +72,13 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
 	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
-	Route::patch('update-suggested-date', 'DeliveryScheduleController@update_suggested_date');
+	Route::post('update-suggested-date', 'DeliveryScheduleController@update_suggested_date');
 	Route::get('ajax-get-filtered-projects', 'ProjectController@ajax_get_filtered_projects');
 	/* FPC */
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
 	Route::get('ajax-get-fpc-details/{fpc_item_id}/{requirement_line_id}', 'PriceConfirmationController@ajax_get_fpc_details');
 	Route::get('print-fpc-dealer/{print_type}/{project_id}/{fpc_id}/', 'PriceConfirmationController@print_fpc_dealer');
+	Route::get('print-fpc-conflict/{fpc_id}/', 'PriceConfirmationController@print_fpc_conflict');
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 
 	/* Purchase Order */
@@ -120,6 +123,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('ajax-get-user-approver' , 'UserController@ajax_get_approver');
 	Route::delete('user-approver/{approver_id}' , 'UserController@delete_approver');
 	Route::post('save-user-approver' , 'UserController@save_user_approver');
+	Route::delete('delivery-schedule/{delivery_schedule_id}' , 'DeliveryScheduleController@deleteSchedule');
+	Route::post('save-schedule' , 'DeliveryScheduleController@saveSchedule');
+	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

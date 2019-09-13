@@ -24,7 +24,8 @@ class Competitor extends Model
                         fpc.price,
                         vehicle.sales_model,
                         vehicle.color,
-                        rl.suggested_price
+                        rl.suggested_price,
+                        fpc.ipc_item_id
                 FROM ipc_dms.fs_project_competitors fpc
                     LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
                         ON vehicle.inventory_item_id = fpc.ipc_item_id
@@ -83,5 +84,26 @@ class Competitor extends Model
                     'update_user_source_id' => $user_source_id
                 ]
             );
+    }
+
+
+    public function delete_competitor($competitor_id){
+        $this->where([
+            [ 'competitor_id', '=', $competitor_id ]
+        ])->delete();
+    }
+
+    public function update_competitor($params){
+        $this
+            ->where([
+                [ 'competitor_id', '=' , $params['competitor_id'] ]
+            ])
+            ->update([
+                'brand'       => $params['brand'],
+                'model'       => $params['model'],
+                'price'       => $params['price'],
+                'ipc_item_id' => $params['ipc_item_id'],
+            ]);
+    
     }
 }

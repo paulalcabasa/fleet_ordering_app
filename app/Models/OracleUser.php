@@ -274,4 +274,71 @@ class OracleUser extends Authenticatable
         return $query;
     }
 
+    /**
+     * Fetch User from Oracle or IPC Portal
+     * 
+     * @param int $user_id
+     * @return array \Illuminate\Http\Response
+     */
+    public function get_user_details($user_id,$source_id)
+    {
+        $sql = "SELECT 
+                    tab.user_id,
+                    tab.user_name,
+                    tab.first_name,
+                    tab.middle_name,
+                    tab.last_name,
+                    tab.division,
+                    tab.department,
+                    tab.section,
+                    tab.customer_id,
+                    tab.source_id,
+                    tab.email
+                FROM 
+                    (SELECT
+                        usr.user_id,
+                        usr.user_name,
+                        ppf.first_name,
+                        ppf.middle_names middle_name,
+                        ppf.last_name,
+                        ppf.attribute2 division,
+                        ppf.attribute3 department,
+                        ppf.attribute4 section,
+                        usr.email_address email,
+                        NULL customer_id,
+                        1 source_id
+                    FROM fnd_user usr 
+                    LEFT JOIN per_all_people_f ppf
+                        ON usr.employee_id = ppf.person_id
+                    WHERE usr.user_id = :user_id
+                        AND usr.end_date IS NULL
+                    UNION
+                    SELECT 
+                        u.user_id,
+                        u.user_name,
+                        ud.first_name,
+                        ud.middle_name,
+                        ud.last_name,
+                        ud.division,
+                        ud.department,
+                        ud.section,
+                        ud.email,
+                        u.customer_id,
+                        2 source_id
+                    FROM ipc_portal.users u
+                    LEFT JOIN ipc_portal.user_details ud 
+                        ON u.user_id = ud.user_id
+                    WHERE u.status_id = 1 
+                        AND ud.status_id = 1
+                        AND ud.user_id = :user_id) tab
+                WHERE source_id = :source_id";
+        $query = DB::connection('oracle')
+            ->select($sql, [
+                'user_id' => $user_id,
+                'source_id' => $source_id
+            ]);
+
+        return $query[0];
+    }
+
 }

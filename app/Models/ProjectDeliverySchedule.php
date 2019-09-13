@@ -11,6 +11,18 @@ class ProjectDeliverySchedule extends Model
     protected $connection = "oracle";
     const CREATED_AT = 'CREATION_DATE';
     const UPDATED_AT = 'UPDATE_DATE';
+    protected $fillable = [
+        'requirement_line_id',
+        'quantity',
+        'delivery_date',
+        'created_by',
+        'create_user_source_id',
+        'creation_date',
+        'module_id',
+        'owner_id'
+    ];
+   
+    protected $primaryKey = 'delivery_schedule_id';
 
     public function insert_delivery_schedule($params){
 		$this->insert($params);
@@ -21,7 +33,8 @@ class ProjectDeliverySchedule extends Model
                 requirement_line_id,
                 quantity,
                 to_char(suggested_delivery_date,'MM/DD/YYYY') suggested_delivery_date,
-                to_char(delivery_date,'MM/DD/YYYY') delivery_date";
+                to_char(delivery_date,'MM/DD/YYYY') delivery_date,
+                owner_id";
 
         $params = [
             ['requirement_line_id' ,'=', $requirement_line_id],
@@ -43,7 +56,8 @@ class ProjectDeliverySchedule extends Model
                 to_char(delivery_date,'YYYY-MM-DD') delivery_date,
                 to_char(delivery_date,'MM/DD/YYYY') delivery_date_disp,
                 to_char(suggested_delivery_date,'YYYY-MM-DD') suggested_delivery_date,
-                to_char(suggested_delivery_date,'MM/DD/YYYY') suggested_delivery_date_disp";
+                to_char(suggested_delivery_date,'MM/DD/YYYY') suggested_delivery_date_disp,
+                owner_id";
 
         $params = [
             ['requirement_line_id' ,'=', $requirement_line_id],
@@ -72,6 +86,22 @@ class ProjectDeliverySchedule extends Model
                 'updated_by'              => $updated_by,
                 'update_user_source_id'   => $update_user_source_id
             ]);
+    }
+
+    public function insertSched($attrs,$values){
+        Model::updateOrCreate($attrs,$values);
+    }
+
+    public function deleteSchedule($delivery_schedule_id){
+        $this->where([
+            [ 'delivery_schedule_id', '=', $delivery_schedule_id ]
+        ])->delete();
+    }
+
+    public function deleteSchedByRequirement($requirement_line_id){
+        $this->where([
+            [ 'requirement_line_id', '=', $requirement_line_id ]
+        ])->delete();
     }
 
 }

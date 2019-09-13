@@ -20,4 +20,10 @@ class CustomerContact extends Model
 			->get();
 		return $query;
 	}
+
+	public function delete_contact($contact_id){
+        $this->where([
+            [ 'contact_id', '=', $contact_id ]
+        ])->delete();
+    }
 }
