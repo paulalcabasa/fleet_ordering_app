@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProjectDeliverySchedule;
+use App\Models\RequirementLine;
 use Carbon\Carbon;
 class DeliveryScheduleController extends Controller
 {
@@ -45,12 +46,6 @@ class DeliveryScheduleController extends Controller
                 ];
                 $m_delivery_sched->insertSched($attrs,$values); 
             }
-            /*$m_delivery_sched->update_delivery_schedule(
-                $row['suggested_delivery_date'],
-                session('user')['user_id'],
-                session('user')['source_id'],
-                $row['requirement_line_id']
-            );*/
         }
 
     }
@@ -61,6 +56,39 @@ class DeliveryScheduleController extends Controller
     ){
         $delivery_schedule_id = $request->delivery_schedule_id;
         $m_delivery_sched->deleteSchedule($delivery_schedule_id);
+    }
+
+    public function saveSchedule(
+        Request $request,
+        ProjectDeliverySchedule $m_delivery_sched,
+        RequirementLine $m_rl
+    ){
+        $delivery_details = $request->delivery_details;
+        $requirement_line_id = $request->requirement_line_id;
+        $vehicle_details = $request->vehicle_details;
+
+        foreach($delivery_details as $row){
+            $attrs = 
+            // this will used for insert
+            [
+                'delivery_schedule_id' => $row['delivery_schedule_id']
+            ];
+            $values = 
+            // this will be used for other parameters to insert
+            [
+                'delivery_date'         => $row['delivery_date'],
+                'owner_id'              => 6,
+                'quantity'              => $row['quantity'],
+                'requirement_line_id'   => $requirement_line_id,
+                'created_by'            => session('user')['user_id'],
+                'create_user_source_id' => session('user')['source_id'],
+                'module_id'             => 1
+            ];
+            $m_delivery_sched->insertSched($attrs,$values); 
+        }
+
+        $m_rl->updateRequirement($vehicle_details);
+        return $m_delivery_sched->get_project_delivery_schedule($requirement_line_id);
     }
 
 

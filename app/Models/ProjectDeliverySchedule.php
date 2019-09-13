@@ -97,4 +97,10 @@ class ProjectDeliverySchedule extends Model
         ])->delete();
     }
 
+    public function deleteSchedByRequirement($requirement_line_id){
+        $this->where([
+            [ 'requirement_line_id', '=', $requirement_line_id ]
+        ])->delete();
+    }
+
 }

@@ -40,6 +40,15 @@ class Attachment extends Model
 		])->delete();
 	}
 
+	public function delete_competitor_attachment($project_id){
+		$this->where([
+			[ 'reference_id', '=', $project_id ],
+			[ 'reference_table', '=', 'fs_projects' ],
+			[ 'reference_column', '=', 'project_id' ],
+			[ 'owner_id', '=', 1 ],
+		])->delete();
+	}
+
 	public function get_competitor_attachments($project_id){
 		$query = $this
 					->where([

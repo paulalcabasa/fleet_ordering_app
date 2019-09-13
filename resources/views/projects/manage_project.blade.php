@@ -7,7 +7,12 @@
 
 <div id="app">
 
-<div class="kt-portlet">
+    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected'">
+        <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
+        <div class="alert-text">Project # @{{ project_id }} could not be edited since it is already <strong>@{{ project_status }}</strong>.</div>
+    </div>
+
+<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected'">
      <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
@@ -632,7 +637,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(row,index) in competitors">
+                                                    <tr v-for="(row,index) in competitors" v-show="row.delete_flag == 'N'">
                                                         <td style="width:10%;">
                                                             <a href="#" @click.prevent="removeCompetitor(index)">
                                                                 <i class="flaticon flaticon-delete kt-font-danger"></i>
@@ -972,7 +977,7 @@ jQuery(document).ready(function() {
             file_label               : 'Choose file',
             file_label2              : 'Choose file',
             is_exist                 : false,
-            project_details : []
+            project_status : 'New' // default is 3 for NEW
         },
         methods : {
             callVueSubmitForm(){
@@ -1026,18 +1031,20 @@ jQuery(document).ready(function() {
                                 requirement:          self.vehicleRequirement,
                                 competitors:          self.competitors,
                                 no_competitor_reason: self.no_competitor_reason,
-                                competitor_flag:      self.competitor_flag
+                                competitor_flag:      self.competitor_flag,
+                                requirements:          self.vehicleRequirement,
                             })
                             .then(function (response) {
-
-                                /*self.processFileUpload(
+                                self.processFileUpload(
                                     response.data.customer_id,
                                     response.data.project_id
-                                );*/
-                                KTApp.unblockPage();
+                                );
                             })
                             .catch(function (error) {
                                 console.log(error);
+                            })
+                            .finally( (response) => {
+
                             });
                         }
                         
@@ -1063,11 +1070,19 @@ jQuery(document).ready(function() {
                         'Content-Type': 'multipart/form-data'
                     }
                 }).then(function (response) {
-                    KTApp.unblockPage();
+                    
                     if(response.data.status == "success"){
+                        var message = "";
+
+                        if(self.action == "create"){
+                            message = "Project has been created!";
+                        }
+                        else if(self.action =="edit"){
+                            message = "Project has been updated!";   
+                        }
                         Swal.fire({
                             type: 'success',
-                            title: 'Project has been created!',
+                            title: message,
                             showConfirmButton: false,
                             timer: 1500,
                             onClose : function(){
@@ -1083,6 +1098,16 @@ jQuery(document).ready(function() {
                             showConfirmButton: true
                         });
                     }
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Unexpected error encountered during the transaction, please contact the system administrator. Error : ' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
                 });
             },
             validateFileSize(attachment_type){
@@ -1188,14 +1213,6 @@ jQuery(document).ready(function() {
                     });
                 }
             },
-            /*showAdditionalDetails(vehicle_group,index){
-                this.selected_row_index     = index;
-                this.selected_vehicle_group = vehicle_group;
-                this.cur_rear_body          = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].rear_body_type;
-                this.cur_addtl_items        = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].additional_details;
-                this.cur_body_builder       = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].body_builder;
-                $("#additionalDetailsModal").modal('show');
-            },*/
             confirmReject(){
                 Swal.fire({
                     type: 'error',
@@ -1367,7 +1384,41 @@ jQuery(document).ready(function() {
                 }
             },
             removeVehicle(vehicle_group,index){
-                this.vehicleRequirement[vehicle_group].splice(index,1);
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        var vehicle = self.vehicleRequirement[vehicle_group][index];
+                        if(vehicle.hasOwnProperty('requirement_line_id')){
+                            axios.delete('delete-requirement/' + vehicle.requirement_line_id)
+                            .then( (response) => {
+                                self.vehicleRequirement[vehicle_group].splice(index,1);
+                            });
+                        }
+                        else {
+                            self.vehicleRequirement[vehicle_group].splice(index,1);
+                        }
+
+                        KTApp.unblockPage();
+
+                    }
+
+                });
             },
             addDeliverySched(){
                 let vehicle_lead_time = this.vehicle_lead_times[this.cur_variant];
@@ -1377,16 +1428,51 @@ jQuery(document).ready(function() {
                 this.cur_delivery_sched.push({
                     quantity : 0,
                     delivery_date : default_delivery_date,
-                    min_delivery_date : min_delivery_date
+                    min_delivery_date : min_delivery_date,
+                    delivery_schedule_id : 0
                 });
             },
             deleteDeliveryDate(index){
-                this.cur_delivery_sched.splice(index,1);
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        
+                        var sched = self.cur_delivery_sched[index];
+                        if(sched.hasOwnProperty('delivery_schedule_id') && self.action == "edit" && sched.delivery_schedule_id != 0){
+                            axios.delete('delivery-schedule/' + sched.delivery_schedule_id)
+                            .then( (response) => {
+                                self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].delivery_schedule = self.cur_delivery_sched;
+                            });
+                        }
+                     
+                        self.cur_delivery_sched.splice(index,1);
+                        
+                        KTApp.unblockPage();
+        
+                    }
+                });
+                
             },
             saveDeliverySched(){
                 var delivery_sched = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule;
                 var is_error = 0;
-    
+                var self = this;
                 if(this.selected_vehicle_group == "CV" || this.cur_model.includes('Cab')){
                     if(this.cur_rear_body == null || this.cur_body_builder == null){
                         Swal.fire({
@@ -1406,9 +1492,29 @@ jQuery(document).ready(function() {
                     }
                 }
                 if(is_error <= 0){
-                    if(this.computeDeliveryQuantity == this.cur_quantity){
-                        this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index].delivery_schedule = this.cur_delivery_sched;
+                    if(this.computeDeliveryQuantity == this.cur_quantity){ 
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        var vehicle = this.vehicleRequirement[this.selected_vehicle_group][this.selected_row_index];
+                        if(vehicle.hasOwnProperty('requirement_line_id') && self.action == "edit"){
+                            axios.post('save-schedule',{
+                                delivery_details:    self.cur_delivery_sched,
+                                requirement_line_id: vehicle.requirement_line_id,
+                                vehicle_details:     vehicle
+                            }).then( (response) => {
+                                self.cur_delivery_sched   = response.data;
+                                vehicle.delivery_schedule = self.cur_delivery_sched;
+                            });
+                        }
+                        vehicle.delivery_schedule = self.cur_delivery_sched;
                         $("#deliveryScheduleModal").modal('hide');
+                        KTApp.unblockPage();
+
                     }
                     else {
                         Swal.fire({
@@ -1447,7 +1553,8 @@ jQuery(document).ready(function() {
                         price : 0,
                         ipc_model : ipc_model,
                         ipc_color : ipc_color,
-                        ipc_item_id : self.competitor_model
+                        ipc_item_id : self.competitor_model,
+                        delete_flag : 'N'
                     });
 
                     self.cur_competitor_brand = null;
@@ -1463,7 +1570,14 @@ jQuery(document).ready(function() {
                 }
             },
             removeCompetitor(index){
-                this.competitors.splice(index,1);
+                var self = this;
+                let comp = self.competitors[index];
+                if(comp.hasOwnProperty('competitor_id')){
+                    comp.delete_flag = 'Y';
+                }
+                else {
+                    this.competitors.splice(index,1);
+                }
             },
             formatPrice(value) {
                 return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
@@ -1527,7 +1641,7 @@ jQuery(document).ready(function() {
                 $("#txt_tin").val(self.accountDetails.tin);
             }
 
-            $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
+        //    $("#deliveryScheduleModal").on("hidden.bs.modal", this.saveDeliverySched);
 
             // Business Style typeahead
             $('#txt_business_style').typeahead({
@@ -1651,6 +1765,10 @@ jQuery(document).ready(function() {
                 .then((response) => {
                     // Load account details
                     project_data = response.data;
+                    self.project_status = project_data.project_details.status_name;
+                    if(self.project_status != 'New'){
+                        return false;
+                    }
                     self.accountDetails.fleet_category       = project_data.project_details.fleet_category;
                     self.accountDetails.approved_budget_cost = project_data.project_details.approved_budget_cost;
                     self.accountDetails.bid_date_sched       = project_data.project_details.bid_date_sched;
@@ -1685,7 +1803,8 @@ jQuery(document).ready(function() {
                             body_builder:       req_line.body_builder_name,
                             rear_body_type:     req_line.rear_body_type,
                             additional_details: req_line.additional_items,
-                            delivery_schedule:  req_line.delivery_schedule
+                            delivery_schedule:  req_line.delivery_schedule,
+                            requirement_line_id : req_line.requirement_line_id
                         }
                         self.vehicleRequirement[req_line.vehicle_type].push(newObj);
                     }

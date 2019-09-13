@@ -146,6 +146,7 @@ class Project extends Model
                         dlr.customer_name dealer_name,
                         dlr.account_name dealer_account,
                         st.status_name,
+                        st.status_id,
                         usr.first_name || ' ' || usr.last_name created_by,
                         to_char(fs.creation_date,'mm/dd/yyyy') date_created,
                         fs.dealer_id,

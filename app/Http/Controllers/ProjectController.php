@@ -399,14 +399,14 @@ class ProjectController extends Controller
             $lcv_requirement_id = $m_requirement_header->insert_requirement_header($params);
 
             // APPROVAL HERE
-            $this->insert_project_approval(
+            /*$this->insert_project_approval(
                 $m_module_approval,
                 $m_approver,
                 'IPC_STAFF',
                 'LCV',
                 $project_id,
                 $m_activity_logs
-            );
+            );*/
 
             foreach($lcv_requirement as $row){
                 $line_params = [
@@ -450,14 +450,14 @@ class ProjectController extends Controller
             ];
             $cv_requirement_id = $m_requirement_header->insert_requirement_header($params);
 
-            $this->insert_project_approval(
+            /*$this->insert_project_approval(
                 $m_module_approval,
                 $m_approver,
                 'IPC_STAFF',
                 'CV',
                 $project_id,
                 $m_activity_logs
-            );
+            );*/
 
             foreach($cv_requirement as $row){
                 $line_params = [
@@ -494,16 +494,37 @@ class ProjectController extends Controller
     public function create_project_competitor($m_competitor, $competitors, $project_id){
         $competitor_params = [];
         foreach ($competitors as $row) {
-            $temp = [
-                'project_id'            => $project_id,
-                'brand'                 => $row['brand'],
-                'model'                 => $row['model'],
-                'price'                 => $row['price'],
-                'ipc_item_id'           => $row['ipc_item_id'],
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id'],
-            ];
+            if(!isset($row['competitor_id']) && $row['delete_flag'] == 'N'){
+                $temp = [
+                    'project_id'            => $project_id,
+                    'brand'                 => $row['brand'],
+                    'model'                 => $row['model'],
+                    'price'                 => $row['price'],
+                    'ipc_item_id'           => $row['ipc_item_id'],
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                ];
+            
+                array_push($competitor_params,$temp);
+            }
+
+            if(isset($row['competitor_id'])){
+                if($row['delete_flag'] == 'Y'){
+                    $m_competitor->delete_competitor($row['competitor_id']);
+                }
+                else if($row['delete_flag'] == 'N'){
+                    $m_competitor->update_competitor(
+                        [
+                            'competitor_id' => $row['competitor_id'],
+                            'brand'         => $row['brand'],
+                            'model'         => $row['model'],
+                            'price'         => $row['price'],
+                            'ipc_item_id'   => $row['ipc_item_id']
+                        ]
+                    );
+                }
+            }
 
             // create or update competitor master file
             $m_competitor->create_competitor(
@@ -513,9 +534,7 @@ class ProjectController extends Controller
                 session('user')['source_id'],
                 Carbon::now()
             );
-            
-            array_push($competitor_params,$temp);
-        }
+        }   
         $m_competitor->insert_competitor($competitor_params);
     }
 
@@ -549,7 +568,7 @@ class ProjectController extends Controller
     public function create_project_sales_persons($m_sales_persons, $sales_persons, $project_id){
         $sales_persons_params = [];
         foreach ($sales_persons as $row) {
-            if($row['delete_flag'] == 'N'){
+            if($row['delete_flag'] == 'N' && !isset($row['creation_date'])){
                 $temp = [
                     'project_id'            => $project_id,
                     'name'                  => $row['name'],
@@ -562,7 +581,7 @@ class ProjectController extends Controller
                 ];
                 array_push($sales_persons_params, $temp);
             }
-            else if($row['delete_flag'] == 'Y') {
+            else if(isset($row['creation_date']) && $row['delete_flag'] == 'Y') {
                 $m_sales_persons->delete_sales_person($row['sales_person_id']);
             }
         }
@@ -714,12 +733,10 @@ class ProjectController extends Controller
             array_push($approval_params,$temp_arr);
             $mail_flag = 'Y';
 
-            if($row->user_type == 'IPC_STAFF') {
+            /*if($row->user_type == 'IPC_STAFF') {
                 $mail_flag = 'N';
-            }
-            // BY DEFAULT, DO NOT FIRST ALLOW SENDING NOTIFICATION TO IPC APPROVER
-            // IT NEED TO BE APPROVED BY DEALER MANAGER FIRST
-
+            }*/
+            
             $log_arr = [
                 'module_id'             => 1, // Fleet Project
                 'module_code'           => 'PRJ',
@@ -766,7 +783,8 @@ class ProjectController extends Controller
         $attachment_params      = [];
         $competitor_params      = [];
         $file_index             = 0;
-          
+        
+
         if(!empty($_FILES)){
 
             if(!empty($attachment)){
@@ -806,7 +824,16 @@ class ProjectController extends Controller
             }
 
             if(!empty($competitor_attachments)){
+                 // delete previous files
+                $attachments = $m_attachment->get_competitor_attachments($project_id);  
+                foreach($attachments as $row){
+                $file_path = storage_path('app/public/competitor/'.$row['filename']); 
+                    unlink($file_path);
+                }
+                // if new attachment has been placed, delete the old data.
+                $m_attachment->delete_competitor_attachment($project_id);
                 foreach($competitor_attachments as $file){
+                   
                     //Move Uploaded File 
                     $filename = Carbon::now()->timestamp . $file_index . '.' . $file->getClientOriginalExtension();
                     $orig_filename = $file->getClientOriginalName();
@@ -837,7 +864,8 @@ class ProjectController extends Controller
         return response()->json(
             [
                 'status' => "success",
-                'project_id' => $project_id
+                'project_id' => $project_id,
+                'customer_id' => $customer_id
             ]
         );
     }
@@ -865,7 +893,8 @@ class ProjectController extends Controller
         ModuleApproval $m_approval, 
         Project $m_project,
         ActivityLogs $m_activity_logs,
-        RequirementHeader $m_rh
+        RequirementHeader $m_rh,
+        Approver $m_approver
     ){
         $project_id      = $request->projectId;
         $approval_id     = $request->approvalId;
@@ -881,10 +910,7 @@ class ProjectController extends Controller
             $status_id = 5; // reject
         }
         else if($status == "revise"){
-            $status_id = 7;
-            
-            // only update all approvers all dealer to pending
-
+            $status_id = 7; // pending
         }
         
         // save status for ipc_dms.fs_module_approval table
@@ -948,50 +974,41 @@ class ProjectController extends Controller
         // count pending approval for dealers
         $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
         
-        // this will sending email to IPC
-        // if there is no pending approval for dealers, set project status to Open
-        if(count($pending_approval) == 0 && $status == "approve"){
-            $project_status = 11; // open
-
-            // send notification to IPC 
-            $m_activity_logs->update_mail_flag(
-                'Y', // mail flag
-                $project_id,
-                session('user')['user_id'],
-                session('user')['source_id']
-            );
+        // if no pending approval for dealers INSERT IPC approvers by getting requirements
+        // set project status as PENDING
+        if(
+            count($pending_approval)           == 0 &&  // if no pending approval from other dealer approver
+            $status                            == "approve"  // if approve
+            && session('user')['user_type_id'] == 31 // dealer manager
+        ){
             
             // update status of project to open in ipc_dms.fs_projects
             $m_project->update_status(
                 $project_id,
-                $project_status, 
+                7, // set project status AS PENDING 
                 session('user')['user_id'],
                 session('user')['source_id']
             );
 
-            if($project_status == 11 && session('user')['user_type_id'] == 31){
-                $activity_log_params = [
-                    'module_id'             => 1, // Fleet Project
-                    'module_code'           => 'PRJ',
-                    'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>opened.</strong>',
-                    'created_by'            => session('user')['user_id'],
-                    'creation_date'         => Carbon::now(),
-                    'create_user_source_id' => session('user')['source_id'],
-                    'reference_id'          => $project_id,
-                    'reference_column'      => 'project_id',
-                    'reference_table'       => 'fs_projects',
-                    'mail_flag'             => 'Y',
-                    'is_sent_flag'          => 'N',
-                    'timeline_flag'         => 'Y',
-                    'mail_recipient'        => $project_details->requestor_email
-                ];
-                $m_activity_logs->insert_log($activity_log_params);
+            //$project_details = $m_project->get_details($project_id)
+            // get vehicle type requirement
+            $requirement_headers = $m_rh->get_headers($project_id);
+            foreach($requirement_headers as $row){
+               $this->insert_project_approval(
+                    $m_approval,
+                    $m_approver,
+                    'IPC_STAFF',
+                    $row->vehicle_type,
+                    $project_id,
+                    $m_activity_logs
+                ); 
             }
+    
         }
         else {
           
             // if user is Dealer Manager, once reject by other approvers, project already rejected
-            if(session('user')['user_type_id'] == 31){
+            if(session('user')['user_type_id'] == 31 && $status == 'reject'){
                
                 $m_project->update_status(
                     $project_id,
@@ -1000,30 +1017,65 @@ class ProjectController extends Controller
                     session('user')['source_id']
                 );
             }
-            // if user is LCV is CV user, project will only be rejected in All of the approvers rejected the project
+            // DEPRECATED : if user is LCV is CV user, project will only be rejected in All of the approvers rejected the project
+            // if user has REJECTED , entire project is reject           
             else if(in_array(session('user')['user_type_id'],array(32,33))){
                 $approval = $m_approval->get_project_approval_workflow($project_id);
+                 
                 $total_approvers = 0;
-                $total_reject = 0;
+                $total_approve = 0;
 
                 foreach ($approval as $row) {
                     if($row->user_type == 'IPC_STAFF'){
-                        if($row->status == 5){
-                            $total_reject++;
+                        if($row->status == 4){
+                            $total_approve++;
                         }
                         $total_approvers++;
                     }
                 }
+
+                if($total_approvers == $total_approve){
+                    $m_project->update_status(
+                        $project_id,
+                        11, // open 
+                        session('user')['user_id'],
+                        session('user')['source_id']
+                    ); 
+                    /*if($project_status == 11 && session('user')['user_type_id'] == 31){*/
+                    $activity_log_params = [
+                        'module_id'             => 1, // Fleet Project
+                        'module_code'           => 'PRJ',
+                        'content'               => 'Your Project No. <strong>' . $project_id . '</strong> has been <strong>opened.</strong>',
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id'],
+                        'reference_id'          => $project_id,
+                        'reference_column'      => 'project_id',
+                        'reference_table'       => 'fs_projects',
+                        'mail_flag'             => 'Y',
+                        'is_sent_flag'          => 'N',
+                        'timeline_flag'         => 'Y',
+                        'mail_recipient'        => $project_details->requestor_email
+                    ];
+                    $m_activity_logs->insert_log($activity_log_params);
+                    /*} */                  
+                }
                 
-                if($total_approvers == $total_reject){
+                if($status == "reject"){
                     $m_project->update_status(
                         $project_id,
                         5, // rejected 
                         session('user')['user_id'],
                         session('user')['source_id']
                     );
+                
+                   foreach ($approval as $row) {
+                        if($row->user_type == 'IPC_STAFF'){
+                            $m_approval->delete_approval($row->approval_id);
+                        }
+                    }
                 }
-
+                
             }
         }
 
@@ -1235,12 +1287,14 @@ class ProjectController extends Controller
             array_push(
                 $competitors_arr,
                 [
-                    'brand'       => $comp->brand,
-                    'ipc_color'   => $comp->color,
-                    'ipc_item_id' => $comp->ipc_item_id,
-                    'ipc_model'   => $comp->sales_model,
-                    'model'       => $comp->model,
-                    'price'       => $comp->price
+                    'brand'         => $comp->brand,
+                    'ipc_color'     => $comp->color,
+                    'ipc_item_id'   => $comp->ipc_item_id,
+                    'ipc_model'     => $comp->sales_model,
+                    'model'         => $comp->model,
+                    'price'         => $comp->price,
+                    'competitor_id' => $comp->competitor_id,
+                    'delete_flag'   => 'N'
 
                 ]
             );
@@ -1285,7 +1339,7 @@ class ProjectController extends Controller
     
         // create or update customer data
         $customer_id = $this->insert_project_customer($m_customer,$m_affiliates,$account_details);
-    
+        
         // update project header
         $project_params = [
             'customer_id'           => $customer_id,
@@ -1303,12 +1357,70 @@ class ProjectController extends Controller
             'approved_budget_cost'  => $account_details['approved_budget_cost'],
             'fleet_category'        => $account_details['fleet_category'],
             'competitor_flag'       => $request->competitor_flag, 
-            'competitor_remarks'    => $request->competitor_reason, 
+            'competitor_remarks'    => $request->no_competitor_reason, 
             'status'                => 3, // new
             'project_id'            => $project_id
         ];
 
         $m_project->update_project($project_params);
+
+        
+        $project_details = $m_project->get_details($project_id);
+        $activity_log = [];
+        array_push(
+            $activity_log,
+            [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Project No. <strong>'. $project_id.'</strong> with account name <strong>' . $account_details['account_name'] . '</strong> has been <strong>updated</strong>.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        => $project_details->requestor_email
+            ]
+        );
+        
+        $approval_workflow = $m_module_approval->get_project_approval_workflow($project_id);
+        foreach($approval_workflow as $row){
+            // update approval status to pending  
+            $m_module_approval->save_approval(
+                $row->approval_id, 
+                $row->project_id, // module_reference_id, 
+                'fs_projects', 
+                'project_id', 
+                7, // set to pending again 
+                $row->remarks,
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+
+            // 
+            $log_arr = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Project No. <strong>' . $project_id . '</strong> has been updated and waiting for your approval.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'N',
+                'mail_recipient'        => $row->email_address
+            ];
+            array_push($activity_log,$log_arr);
+        }
+        // insert logs
+        $m_activity_logs->insert_log($activity_log);
+
 
          // project contact number 
         $this->create_project_contacts(
@@ -1317,7 +1429,6 @@ class ProjectController extends Controller
             $project_id
         );
   
-
         // project contact persons
         $this->create_contact_persons(
             $m_contact_person, 
@@ -1332,7 +1443,164 @@ class ProjectController extends Controller
             $project_id
         );
 
+        // updating of requirements
+        $requirements = $request['requirements'];
+        $this->updateRequirement(
+            $requirements,
+            $m_requirement_header,
+            $m_requirement_line,
+            $m_delivery_sched,
+            $project_id
+        );
+        
+        // project competitor
+        $this->create_project_competitor($m_competitor, $request['competitors'], $project_id);
+        
+        return response()->json(
+            [
+                'status' => "success",
+                'project_id' => $project_id,
+                'customer_id' => $customer_id
+            ]
+        );
      
+    }
+
+    public function updateRequirement(
+        $requirements,
+        $m_requirement_header,
+        $m_requirement_line,
+        $m_delivery_sched,
+        $project_id
+    ){
+
+        $lcv_requirement = $requirements['LCV'];
+        $cv_requirement = $requirements['CV'];
+
+        $requirement_headers = $m_requirement_header->get_headers($project_id);
+        $requirement_headers = collect($requirement_headers)->groupBy('vehicle_type');
+
+
+        // delete LCV requirement header and approvers if no lcv requirement is left
+        if(empty($lcv_requirement)){
+            if(!empty($requirement_headers['LCV'])){
+                $m_requirement_header->delete_header($requirement_headers['LCV'][0]->requirement_header_id);
+            }
+        }
+
+        // delete CV requirement header and approvers if no cv requirement is left
+        if(empty($cv_requirement)){
+            if(!empty($requirement_headers['CV'])){
+                $m_requirement_header->delete_header($requirement_headers['CV'][0]->requirement_header_id);
+            }
+        }
+  
+       if(!empty($lcv_requirement)){
+
+            if(!empty($requirement_headers['LCV'])){
+                $lcv_requirement_id = $requirement_headers['LCV'][0]->requirement_header_id;
+            }
+            else {
+                $params = [
+                    'vehicle_type'          => 'LCV',
+                    'project_id'            => $project_id,
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'status'                => 7 // Pending
+                ];
+                $lcv_requirement_id = $m_requirement_header->insert_requirement_header($params);
+            }
+            foreach($lcv_requirement as $row){
+                // this is new records to be inserted
+                if(!isset($row['requirement_line_id'])){
+                    $line_params = [
+                        'requirement_header_id' => $lcv_requirement_id,
+                        'inventory_item_id'     => $row['inventory_item_id'],
+                        'quantity'              => $row['quantity'],
+                        'suggested_price'       => $row['suggested_price'],
+                        'body_builder_name'     => $row['body_builder'],
+                        'rear_body_type'        => $row['rear_body_type'],
+                        'additional_items'      => $row['additional_details'],
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id']
+                    ];
+                    $requirement_line_id = $m_requirement_line->insert_requirement_line($line_params);
+                    foreach($row['delivery_schedule'] as $sched){
+                        $sched_params = [
+                            'requirement_line_id'   => $requirement_line_id,
+                            'quantity'              => $sched['quantity'],
+                            'delivery_date'         => $sched['delivery_date'],
+                            'module_id'             => 1, // Fleet Project module
+                            'owner_id'              => 6, // dealer is the default owner
+                            'created_by'            => session('user')['user_id'],
+                            'creation_date'         => Carbon::now(),
+                            'create_user_source_id' => session('user')['source_id']
+                        ];
+                        $m_delivery_sched->insert_delivery_schedule($sched_params);
+                    }
+                }
+                // to only update records
+                else {
+                    $m_requirement_line->updateRequirement($row);
+                }
+            }
+        }
+
+        if(!empty($cv_requirement)){
+            if(!empty($requirement_headers['CV'])){
+                $cv_requirement_id = $requirement_headers['CV'][0]->requirement_header_id;
+            }
+            else {
+                $params = [
+                    'vehicle_type'          => 'CV',
+                    'project_id'            => $project_id,
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'status'                => 7 // Pending
+                ];
+                $cv_requirement_id = $m_requirement_header->insert_requirement_header($params);
+            }
+            foreach($cv_requirement as $row){
+                // this is new records to be inserted
+                if(!isset($row['requirement_line_id'])){
+                    $line_params = [
+                        'requirement_header_id' => $cv_requirement_id,
+                        'inventory_item_id'     => $row['inventory_item_id'],
+                        'quantity'              => $row['quantity'],
+                        'suggested_price'       => $row['suggested_price'],
+                        'body_builder_name'     => $row['body_builder'],
+                        'rear_body_type'        => $row['rear_body_type'],
+                        'additional_items'      => $row['additional_details'],
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id']
+                    ];
+                    $requirement_line_id = $m_requirement_line->insert_requirement_line($line_params);
+
+                    foreach($row['delivery_schedule'] as $sched){
+                        $sched_params = [
+                            'requirement_line_id'   => $requirement_line_id,
+                            'quantity'              => $sched['quantity'],
+                            'delivery_date'         => $sched['delivery_date'],
+                            'module_id'             => 1, // Fleet Project module
+                            'owner_id'              => 6, // dealer is the default owner
+                            'created_by'            => session('user')['user_id'],
+                            'creation_date'         => Carbon::now(),
+                            'create_user_source_id' => session('user')['source_id']
+                        ];
+                        $m_delivery_sched->insert_delivery_schedule($sched_params);
+                    }
+                }
+                // to only update records
+                else {
+                    $m_requirement_line->updateRequirement($row);
+                }
+            }
+        }
+        
     }
  
 }

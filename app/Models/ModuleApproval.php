@@ -72,7 +72,7 @@ class ModuleApproval extends Model
     	}
     	else if($user_type == 32 || $user_type == 33){ // Fleet CV and LCV user	
             $approval_status = 7;
-            $project_status = 11;
+            $project_status = 7;
             $sql = "SELECT  ma.approval_id,
                             ma.module_reference_id,
                             'Project' type,
@@ -141,11 +141,10 @@ class ModuleApproval extends Model
             	[ 'column_reference' , '=' , $column_reference ]
             ])
             ->update([
-            	'status' => $status,
-            	'remarks' => $remarks,
-            	'updated_by' => $update_user,
+            	'status'                => $status,
+            	'remarks'               => $remarks,
+            	'updated_by'            => $update_user,
             	'update_user_source_id' => $update_user_source
-            	//'update_date' => Carbon::now()
             ]);
     }
 
@@ -193,6 +192,51 @@ class ModuleApproval extends Model
     	return $query;
     }
 
+    public function get_per_project($project_id,$user_type, $vehicle_type) {
+        $sql = "SELECT ma.approval_id,
+                    fp.project_id,
+                    fc.customer_name account_name,
+                    to_char(ma.creation_date,'mm/dd/yyyy HH:MI:SS AM') date_submitted,
+                    fs.status_name,
+                    usr.first_name || ' ' || usr.last_name created_by,
+                    ma.approver_id,
+                    fa.approver_user_id,
+                    fa.approver_source_id,
+                    usr_app.first_name || ' ' || usr_app.last_name approver_name,
+                    fa.user_type
+                FROM ipc_dms.fs_module_approval ma
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON ma.module_reference_id = fp.project_id
+                        AND ma.column_reference = 'project_id'
+                        AND ma.table_reference = 'fs_projects'
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fp.customer_id = fc.customer_id
+                    LEFT JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = ma.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fp.created_by 
+                        AND usr.user_source_id = fp.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr_app
+                        ON usr_app.user_id = fa.approver_user_id
+                        AND usr_app.user_source_id = fa.approver_source_id  
+                WHERE 1 = 1
+                    AND fp.project_id = :project_id
+                    AND fa.user_type = :user_type
+                    AND fa.vehicle_type = :vehicle_type";
+        
+        $params = [
+            'project_id'  => $project_id,
+            'vehicle_type'  => $vehicle_type,
+       
+            'user_type'   => $user_type
+        ];
+        $query = DB::select($sql,$params);
+    
+        return $query;
+    }
+
     public function get_project_approval_workflow($project_id){
         $sql = "SELECT ma.approval_id,
                         fp.project_id,
@@ -203,7 +247,10 @@ class ModuleApproval extends Model
                         usr_app.first_name || ' ' || usr_app.last_name approver_name,
                         to_char(ma.update_date,'mm/dd/yyyy HH:MI:SS AM') date_approved,
                         ma.status,
-                        fa.user_type
+                        fa.user_type,
+                        fa.vehicle_type,
+                        usr_app.email_address,
+                        ma.remarks
                 FROM ipc_dms.fs_module_approval ma
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON ma.module_reference_id = fp.project_id
@@ -293,6 +340,12 @@ class ModuleApproval extends Model
         $query = DB::select($sql,$params);
     
         return $query[0]->ctr;
+    }
+
+    public function delete_approval($approval_id){
+        $this->where([
+            [ 'approval_id', '=', $approval_id ]
+        ])->delete();
     }
 
 

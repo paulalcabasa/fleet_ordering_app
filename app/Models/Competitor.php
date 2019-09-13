@@ -85,4 +85,25 @@ class Competitor extends Model
                 ]
             );
     }
+
+
+    public function delete_competitor($competitor_id){
+        $this->where([
+            [ 'competitor_id', '=', $competitor_id ]
+        ])->delete();
+    }
+
+    public function update_competitor($params){
+        $this
+            ->where([
+                [ 'competitor_id', '=' , $params['competitor_id'] ]
+            ])
+            ->update([
+                'brand'       => $params['brand'],
+                'model'       => $params['model'],
+                'price'       => $params['price'],
+                'ipc_item_id' => $params['ipc_item_id'],
+            ]);
+    
+    }
 }

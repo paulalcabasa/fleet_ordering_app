@@ -98,4 +98,10 @@ class RequirementHeader extends Model
                 'update_user_source_id' => $update_user_source
             ]);
     }
+
+    public function delete_header($requirement_header_id){
+        $this->where([
+            [ 'requirement_header_id', '=', $requirement_header_id ]
+        ])->delete();
+    }
 }
