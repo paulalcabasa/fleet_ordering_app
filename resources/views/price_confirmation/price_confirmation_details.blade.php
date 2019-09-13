@@ -674,7 +674,7 @@
         },
         computed: {
             sumFreebies(){
-                return this.curFreebies.reduce((acc,item) => parseFloat(acc) + parseFloat(item.amount),0);
+                return this.curFreebies.reduce((acc,item) => parseFloat(acc) + (item.cost_to == 5 ? parseFloat(item.amount) : 0),0);
             },
             calculateCost(){
                 return (parseFloat(this.curModel.suggested_retail_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies));

@@ -10,20 +10,37 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card">
+                        <div class="card kt-margin-b-10">
                             <div class="card-header">Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Suggested date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.suggested_delivery_date }}</td> 
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6"> 
+                                            <td>@{{ row.delivery_date }}</td> 
+                                            <td>@{{ row.quantity }}</td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Suggested Schedule</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 5"> 
                                             <td>@{{ row.delivery_date }}</td> 
                                             <td>@{{ row.quantity }}</td> 
                                         </tr>
@@ -40,23 +57,24 @@
                                     <thead>
                                         <tr>
                                             <th>Item</th>
+                                            <th>Cost to</th>
                                             <th>Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(row,index) in curFreebies">
                                             <td>@{{ row.description}}</td> 
+                                            <td>@{{ row.owner_name }}</td> 
                                             <td>@{{ row.amount | formatPeso }}</td> 
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th>Total</th>
+                                            <th colspan="2">Total</th>
                                             <th align="right">P @{{ sumFreebies | formatPeso }}</th>
                                         </tr> 
                                     </tfoot>
                                 </table>
-
                             </div>
                         </div>
                     </div>

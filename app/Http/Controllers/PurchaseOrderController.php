@@ -230,6 +230,7 @@ class PurchaseOrderController extends Controller
                         'quantity'              => $sched['quantity'],
                         'delivery_date'         => $sched['delivery_date'],
                         'module_id'             => 2, // purchase order module
+                        'owner_id'              => $sched['owner_id'],
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
                         'create_user_source_id' => session('user')['source_id']

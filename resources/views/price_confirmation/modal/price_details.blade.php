@@ -129,6 +129,12 @@
                                                 :value="formatPrice(curModel.suggested_retail_price)"
                                                 disabled="disabled" 
                                             />
+                                            <!-- <input 
+                                                type="text" 
+                                                class="form-control form-control-sm" 
+                                                v-model="curModel.suggested_retail_price"
+                                            
+                                            /> -->
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">

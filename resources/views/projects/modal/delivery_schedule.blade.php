@@ -30,14 +30,14 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td>Suggested date</td>
+                           
                                     <td>Date</td>
                                     <td>Quantity</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(row,index) in curDeliveryDetails">
-                                    <td>@{{ row.suggested_delivery_date_disp }}</td>
+                             
                                     <td>@{{ row.delivery_date_disp }}</td>
                                     <td>@{{ row.quantity }}</td>
                                 </tr>

@@ -44,7 +44,7 @@ class PriceConfirmationController extends Controller
         else {
             $dealers = Dealer::find(session('user')['customer_id']);
         }
-
+        
         $page_data = [
             'base_url'      => url('/'),
             'dealers'       => $dealers,
@@ -671,8 +671,6 @@ class PriceConfirmationController extends Controller
 
             $requirements = $m_fpc_item->get_conflict_item_requirement($fpc_id, $common_inventory_item_id);
             
-            
-
             $detailed_price = $m_fpc_item->get_item_requirement_by_fpc_id($fpc_id,$common_inventory_item_id);
             $items_arr = [];
 

@@ -38,7 +38,7 @@ class Vehicle extends Model
 			            vm.model_variant,
 			            vm.sales_model,
 			            fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicle_models_v vm 
+				FROM ipc_dms.ipc_vehicles_with_price_v vm 
 				    INNER JOIN ipc_dms.fs_vehicle_groups fvg
 				        ON fvg.model = vm.model_variant
 				WHERE 1 = 1
@@ -54,7 +54,7 @@ class Vehicle extends Model
 		$sql = "SELECT 
 			        vm.inventory_item_id id,
 			        vm.color text
-				FROM ipc_dms.ipc_vehicle_models_v vm
+				FROM ipc_dms.ipc_vehicles_with_price_v vm
 				WHERE 1 = 1
 					AND vm.sales_model = :sales_model
 					AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)

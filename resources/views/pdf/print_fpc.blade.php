@@ -374,7 +374,7 @@
                         <tr>
                             <td>
                                 <table style="width:100%;">
-                                     <tr style="background-color:#ccc;">
+                                    <tr style="background-color:#ccc;">
                                         <td colspan="2" class="text-bold text-center">Vehicle Details</td>
                                     </tr>
                                     <tr>
@@ -399,14 +399,15 @@
                         @if(count($item['other_items']) > 0)
                         <tr>
                             <td>
-                                <table style="width:100%;" style="display:none;">
+                                <table style="width:100%;">
                                     <thead>
                                         <tr style="background-color:#ccc;">
-                                            <th  colspan="3" class="text-bold text-center">Other Items</th>
+                                            <th  colspan="4" class="text-bold text-center">Other Items</th>
                                         </tr>
                                         <tr>
                                             <th>No.</th>
                                             <th>Item</th>
+                                            <th>Cost to</th>
                                             <th align="right">Amount</th>
                                         </tr>
                                     </thead>
@@ -414,23 +415,27 @@
                                         <?php 
                                             $index = 1;
                                             $total_items = count($item['other_items']);
-
+                                            $total_amount = 0;
                                         ?>
                              
                                         @foreach($item['other_items'] as $freebie)
                                         <tr>
                                             <td>{{ $index }}</td>
                                             <td>{{ $freebie->description }}</td>
+                                            <td>{{ $freebie->owner_name }}</td>
                                             <td align="right">{{ number_format($freebie->amount,2) }}</td>
                                         </tr> 
-                                        <?php $index++; ?>
+                                        <?php 
+                                            $index++; 
+                                            $total_amount += $freebie->amount;
+                                        ?>
                                         @endforeach
                                         
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2" align="right"> Total</th>
-                                            <th align="right" >{{ number_format($item['header']->freebies,2) }}</th>
+                                            <th colspan="3" align="right"> Total</th>
+                                            <th align="right" >{{ number_format($total_amount,2) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -439,7 +444,7 @@
                         @endif
                     </table>
                 </td>
-                <td width="50%">
+                <td width="50%" valign="top">
                     <table style="width:100%;">
                         <tr style="background-color:#ccc;">
                             <td colspan="2" class="text-bold text-center">Pricing</td>

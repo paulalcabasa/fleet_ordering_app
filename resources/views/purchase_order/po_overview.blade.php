@@ -162,20 +162,18 @@
                         </div>  
                     </div>
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card kt-margin-b-10">
                             <div class="card-header">Delivery Details</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Suggested Date</th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched">
-                                            <td>@{{ row.suggested_delivery_date_disp }}</td>
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
                                             <td>@{{ row.delivery_date_disp }}</td>
                                             <td>@{{ row.quantity }}</td>
                                         </tr>
@@ -183,8 +181,32 @@
                                     <tfoot>
                                         <tr class="kt-font-bold">
                                             <td>Total</td>
-                                            <td></td>
-                                            <td >@{{ totalDeliveryQty }}</td>
+                                            <td >@{{ totalDeliveryQty(6) }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table> 
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Suggested Delivery</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 5">
+                                            <td>@{{ row.delivery_date_disp }}</td>
+                                            <td>@{{ row.quantity }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="kt-font-bold">
+                                            <td>Total</td>
+                                            <td >@{{ totalDeliveryQty(5) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table> 
@@ -306,6 +328,9 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            totalDeliveryQty(owner_id){
+                return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
             }
         },
         computed : {
@@ -332,9 +357,6 @@
                     total_po += self.sumPOQty(vehicle_type);
                 }
                 return total_po;
-            },
-            totalDeliveryQty(){
-                return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
             }
         },
         mounted : function () {

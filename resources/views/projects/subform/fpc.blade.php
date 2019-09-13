@@ -104,7 +104,7 @@
                         <td colspan="3" align="right">Total</td>
                         <td> @{{ sumQty(index) }}</td>
                         <td></td>
-                        <td colspan="2" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
+                        <td colspan="4" align="right">P @{{ sumPrice(index) | formatPeso }}</td>
                     </tr>
                 </tfoot>
             </table>

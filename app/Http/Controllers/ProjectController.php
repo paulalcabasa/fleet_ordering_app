@@ -174,7 +174,7 @@ class ProjectController extends Controller
 
         foreach($fpc_headers as $fpc){
             $items = $m_fpc_item->get_item_requirements($fpc->fpc_project_id);
-            $attachments  = $m_attachment->get_fpc_attachments($fpc->fpc_id);
+            $attachments  = $m_attachment->get_fpc_project_attachments($fpc->fpc_project_id);
             $temp_array = [
                 'fpc_header' => $fpc,
                 'fpc_lines'  => $items,
@@ -908,9 +908,6 @@ class ProjectController extends Controller
         }
         else if($status == "reject"){
             $status_id = 5; // reject
-        }
-        else if($status == "revise"){
-            $status_id = 7; // pending
         }
         
         // save status for ipc_dms.fs_module_approval table

@@ -259,7 +259,6 @@ class FPC extends Model
         }
 
         $sql = "SELECT fpc.fpc_id,
-                        fpc_prj.project_id,
                         fc.customer_name,
                         fpc.vehicle_type,
                         fs.status_name,
@@ -278,7 +277,14 @@ class FPC extends Model
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON fp.project_id = fpc_prj.project_id
                 WHERE 1 = 1
-                    {$where}";
+                {$where}
+                GROUP BY fpc.fpc_id,
+                        fc.customer_name,
+                        fpc.vehicle_type,
+                        fs.status_name,
+                        usr.first_name, 
+                        usr.last_name,
+                        fpc.creation_date";
       
         $query = DB::select($sql);
         return $query;

@@ -50,7 +50,7 @@ class FPC_Item extends Model
                         nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,
                         nvl(rl.rear_body_type,'-') rear_body_type,
                         nvl(rl.additional_items,'-') additional_items,
-                        sum(NVL(freebie.amount,0)) freebies,
+                        sum(CASE WHEN freebie.cost_to_owner_id = 5 THEN NVL(freebie.amount,0) ELSE 0 END) freebies,
                         rl.suggested_price,
                         fpc_item.suggested_retail_price,
                         fpc_item.wholesale_price,
@@ -103,7 +103,14 @@ class FPC_Item extends Model
     	return $query;
 	}
 
-    public function updateFPCItem($dealers_margin, $lto_registration, $fleet_price, $updated_by, $user_source_id, $fpc_item_id){
+    public function updateFPCItem(
+        $dealers_margin, 
+        $lto_registration, 
+        $fleet_price, 
+        $updated_by, 
+        $user_source_id, 
+        $fpc_item_id
+    ){
         $this
             ->where([
                 [ 'fpc_item_id', '=' , $fpc_item_id ]
@@ -147,7 +154,7 @@ class FPC_Item extends Model
                          nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,
                          nvl(rl.rear_body_type,'-') rear_body_type,
                          nvl(rl.additional_items,'-') additional_items,
-                         sum(NVL(fr.amount,0)) freebies,
+                         sum(CASE WHEN fr.cost_to_owner_id = 5 THEN NVL(fr.amount,0) ELSE 0 END) freebies,
                          fpc_item.wholesale_price,
                          fpc_item.dealers_margin,
                          fpc_item.lto_registration,
@@ -170,6 +177,7 @@ class FPC_Item extends Model
     }
 
     public function get_item_requirement_by_fpc_id($fpc_id,$item_ids){
+       
         $query = DB::table('IPC_DMS.FS_FPC_ITEMS AS fpc_item')
             ->leftJoin('ipc_dms.fs_prj_requirement_lines AS rl', 'rl.requirement_line_id', '=', 'fpc_item.requirement_line_id')
             ->leftJoin('ipc_dms.fs_fpc_projects AS fpc_prj', 'fpc_prj.fpc_project_id', '=', 'fpc_item.fpc_project_id')
@@ -183,7 +191,7 @@ class FPC_Item extends Model
                          nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,
                          nvl(rl.rear_body_type,'-') rear_body_type,
                          nvl(rl.additional_items,'-') additional_items,
-                         sum(NVL(fr.amount,0)) freebies,
+                         sum(CASE WHEN fr.cost_to_owner_id = 5 THEN NVL(fr.amount,0) ELSE 0 END) freebies,
                          fpc_item.wholesale_price,
                          fpc_item.dealers_margin,
                          fpc_item.lto_registration,
@@ -210,6 +218,9 @@ class FPC_Item extends Model
                         'dlr.account_name',
                         'rl.quantity' )
             ->get();
+
+     
+       
         return $query;
     }
 

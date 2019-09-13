@@ -371,12 +371,13 @@
         
         <table style="font-size:11px;" width="100%">
             <tr>
-                <td valign="top" width="50%">
-                    <table style="width:100%;">
+                <td valign="top" width="50%" style="margin:0;">
+                    <table style="width:100%;" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td>
+                            <td valign="top">
                                 <table style="width:100%;">
-                                     <tr style="background-color:#ccc;">
+                                    <tbody>
+                                    <tr style="background-color:#ccc;">
                                         <td colspan="2" class="text-bold text-center">Details</td>
                                     </tr>
                                     <tr>
@@ -399,13 +400,16 @@
                                         <td class="text-bold">Suggested Price</td>
                                         <td>{{ number_format($item['header']->suggested_retail_price,2) }}</td>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                         </tr>
                         
+                        @if(count($item['other_items']) > 0 )
+                        
                         <tr>
                             <td>
-                                <table style="width:100%;" style="display:none;" valign="top">
+                                <table style="width:100%;" valign="top">
                                     <thead>
                                         <tr style="background-color:#ccc;">
                                             <th  colspan="4" class="text-bold text-center">Other Items</th>
@@ -446,7 +450,7 @@
                                 </table>
                             </td>
                         </tr>
-                       
+                       @endif
                     </table>
                 </td>
                 <td width="50%" valign="top">

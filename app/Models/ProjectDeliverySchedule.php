@@ -33,7 +33,8 @@ class ProjectDeliverySchedule extends Model
                 requirement_line_id,
                 quantity,
                 to_char(suggested_delivery_date,'MM/DD/YYYY') suggested_delivery_date,
-                to_char(delivery_date,'MM/DD/YYYY') delivery_date";
+                to_char(delivery_date,'MM/DD/YYYY') delivery_date,
+                owner_id";
 
         $params = [
             ['requirement_line_id' ,'=', $requirement_line_id],
