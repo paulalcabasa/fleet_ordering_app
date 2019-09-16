@@ -1766,9 +1766,9 @@ jQuery(document).ready(function() {
                     // Load account details
                     project_data = response.data;
                     self.project_status = project_data.project_details.status_name;
-                    if(self.project_status != 'New'){
-                        return false;
-                    }
+                    // if(self.project_status != 'New'){
+                    //     return false;
+                    // }
                     self.accountDetails.fleet_category       = project_data.project_details.fleet_category;
                     self.accountDetails.approved_budget_cost = project_data.project_details.approved_budget_cost;
                     self.accountDetails.bid_date_sched       = project_data.project_details.bid_date_sched;
