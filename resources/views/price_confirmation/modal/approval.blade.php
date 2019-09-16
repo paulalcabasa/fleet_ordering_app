@@ -21,7 +21,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="form-group" v-show="action == 'approve'">
+                <div class="form-group" v-show="action == 'approve' || action == 'cancel'">
                     <label>
                         <span v-if="action == 'approve'">Remarks</span>
                         <span v-if="action == 'cancel'">Are you sure to cancel the FPC? Please state your reason.</span>
