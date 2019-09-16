@@ -124,8 +124,8 @@ class Project extends Model
             	[ 'project_id', '=' , $project_id ]
             ])
             ->update([
-            	'status' => $status_id,
-            	'updated_by' => $update_user,
+            	'status'                => $status_id,
+            	'updated_by'            => $update_user,
             	'update_user_source_id' => $update_user_source
             ]);
     }

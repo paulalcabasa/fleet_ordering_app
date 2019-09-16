@@ -14,8 +14,8 @@
         <tbody v-for="(vehicles,vehicle_type) in requirement">
             <tr v-for="(row,index) in vehicles">
                 <td nowrap="nowrap">
-                    <a href="#"  title="Additional details" @click="showAdditionalDetails(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
-                    <a href="#"  title="Delivery schedule" @click="showDeliveryDetail(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-calendar"></i></a>
+<!--                     <a href="#"  title="Additional details" @click="showAdditionalDetails(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a>  -->
+                    <a href="#"  title="Delivery schedule" @click="showDeliveryDetail(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a>
                 </td>
                 <td>@{{ row.sales_model }}</td>
                 <td><span :class="vehicle_colors[row.color]">&nbsp</span> @{{ row.color }}</td>

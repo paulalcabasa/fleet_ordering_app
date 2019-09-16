@@ -147,4 +147,21 @@ class FPC_Project extends Model
         
         return $query;
     }
+
+    public function update_fpc_status(
+        $fpc_project_id, 
+        $status,
+        $user_id,
+        $user_source_id
+    ){
+        $this
+            ->where([
+                [ 'fpc_project_id', '=' , $fpc_project_id ],
+            ])
+            ->update([
+                'status'                => $status,
+                'updated_by'            => $user_id,
+                'update_user_source_id' => $user_source_id
+            ]);
+    }
 }

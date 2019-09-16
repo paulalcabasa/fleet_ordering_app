@@ -171,7 +171,9 @@
         methods : {
             showDeliveryDetail(data){
                 var self = this;
-
+                self.curBodyBuilder = data.body_builder_name;
+                self.curRearBody = data.rear_body_type;
+                self.curAdditionalItems = data.additional_items;
                 self.curModel = data.sales_model;
                 self.curColor = data.color;
                 self.curQuantity = data.quantity;
@@ -636,6 +638,9 @@
                 else {
                     window.open(this.base_url +'/print-fpc-dealer/single/' + project_id + '/' + fpc_id);
                 }
+            },
+            totalDeliveryQty(owner_id){
+                return this.curDeliveryDetails.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
             }
         },
         created: function () {

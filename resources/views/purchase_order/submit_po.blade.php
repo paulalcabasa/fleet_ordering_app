@@ -182,26 +182,30 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card kt-margin-b-10">
-                            <div class="card-header">Delivery Details</div>
+                            <div class="card-header">Requested Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th></th>
+                                        <!--     <th></th> -->
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
+                                        <!-- <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
                                             <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
                                             <td><input type="date" :min="curMinDate" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
                                             <td><input type="text" size="3" class="form-control form-control-sm" v-model="row.quantity" /></td>
+                                        </tr> -->
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
+                                            <td>@{{ row.delivery_date_disp }}</td>
+                                            <td>@{{ row.quantity }}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr class="kt-font-bold">
-                                            <td></td>
+                                         
                                             <td>Total</td>
                                             <td>@{{ totalDeliveryQty(6) }}</td>
                                         </tr>
@@ -210,7 +214,7 @@
                             </div>
                         </div> 
                         <div class="card">
-                            <div class="card-header">Suggested Delivery</div>
+                            <div class="card-header">Recommended Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
@@ -238,10 +242,10 @@
                     </div>
                 </div>      
             </div>
-            <div class="modal-footer">
+          <!--   <div class="modal-footer">
                 <button type="button" @click="addRowSched" class="btn btn-primary">Add</button>
                 <button type="button" @click="saveDeliverySched" class="btn btn-primary">Save</button>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

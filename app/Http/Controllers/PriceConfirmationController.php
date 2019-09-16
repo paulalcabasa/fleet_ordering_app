@@ -705,4 +705,27 @@ class PriceConfirmationController extends Controller
         }
         
     }
+
+    public function cancelFPCProject(
+        Request $request, 
+        Project $m_project, 
+        FPC_Project $m_fpc_project
+    ){
+        $project_id     = $request->project_id;
+        // update project details
+        $m_project->update_status(
+            $project_id,
+            6,
+            session('user')['user_id'],            
+            session('user')['source_id'] 
+        );
+        // update fpc project
+        $fpc_project_id = $request->fpc_project_id;
+        $m_fpc_project->update_fpc_status(
+            $fpc_project_id, 
+            6,
+            session('user')['user_id'],            
+            session('user')['source_id'] 
+        );
+    }
 }
