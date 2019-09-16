@@ -81,7 +81,7 @@
                             <div class="card-header">Suggested Delivery Schedule</div>
                             <div class="card-body">
                                 <!-- <div class="table-responsive"> -->
-                                     <table class="table table-condensed">
+                                     <table class="table table-condensed" v-if="fpc_details.status_name == 'In progress'">
                                         <thead>
                                             <tr>
                                                 <th></th>
@@ -101,6 +101,21 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <table class="table table-condensed" v-if="fpc_details.status_name != 'In progress'">
+                                        <thead>
+                                            <tr>
+                                                <td>Date</td>
+                                                <td>Quantity</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row,index) in curDeliveryDetails" v-if="row.owner_id == 5">
+                                                <td>@{{ row.delivery_date_disp }}</td>
+                                                <td>@{{ row.quantity }}</td>
+                                               
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 <!-- </div>  -->
                             </div>
                         </div>
@@ -108,8 +123,8 @@
                 </div>  
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="addDeliveryDate">Add</button>
-                <button type="button" class="btn btn-success" @click="saveDeliveryDate">Save</button>
+                <button type="button" class="btn btn-primary" @click="addDeliveryDate" v-if="fpc_details.status_name == 'In progress'">Add</button>
+                <button type="button" class="btn btn-success" @click="saveDeliveryDate" v-if="fpc_details.status_name == 'In progress'">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

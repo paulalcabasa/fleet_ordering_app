@@ -126,6 +126,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::delete('delivery-schedule/{delivery_schedule_id}' , 'DeliveryScheduleController@deleteSchedule');
 	Route::post('save-schedule' , 'DeliveryScheduleController@saveSchedule');
 	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
+	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

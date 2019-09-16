@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card kt-margin-b-10">
-                            <div class="card-header">Delivery Schedule</div>
+                            <div class="card-header">Requested Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Suggested Schedule</div>
+                            <div class="card-header">Recommended Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>

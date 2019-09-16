@@ -308,6 +308,7 @@
     <div class="kt-portlet__foot">
          <div class="row  kt-pull-right">
             <div class="col-lg-12">
+                <button type="button" class="btn btn-danger btn-sm" @click="cancelProject(index)" v-if="project.project_status != 'Cancelled'">Cancel</button>
                 <button type="button" class="btn btn-secondary btn-sm" @click="printFPC(index)">Print</button>
                 <button type="button" class="btn btn-primary btn-sm" @click="showAttachmentModal(index)" v-if="editable">Attach files</button>
                 <button type="button" class="btn btn-success btn-sm" @click="saveTerms(index)" v-if="editable">Save</button>
@@ -662,6 +663,40 @@
                 self.cur_fpc_project_id = self.projects[index].fpc_project_id;
                 this.action = "attach";
                 $("#fpcApprovalModal").modal('show');
+            },
+            cancelProject(index){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        axios.post('cancel-fpc-project',{
+                            project_id:     self.projects[index].project_id,
+                            fpc_project_id: self.projects[index].fpc_project_id,
+                        }).then( (response) => {
+                            self.toast('error','Project has been cancelled.');
+                        });
+        
+                        KTApp.unblockPage();
+        
+                    }
+        
+                });
+                
             }
         },
         created: function () {
