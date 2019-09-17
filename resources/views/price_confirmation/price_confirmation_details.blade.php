@@ -728,6 +728,12 @@
             },
             calculateWSP(){
                 return parseFloat(this.curModel.suggested_retail_price) - (parseFloat(this.curModel.suggested_retail_price) * (this.curModel.dealers_margin/100));
+            },
+            calculateSRP(){
+                return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.calculateVAT);
+            },
+            calculateVAT(){
+                return (parseFloat(this.curModel.suggested_retail_price) / 1.12) * 0.01;
             }
         }
     });

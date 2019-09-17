@@ -282,6 +282,7 @@ class PriceConfirmationController extends Controller
             $model_data['dealers_margin'], 
             $model_data['lto_registration'], 
             $model_data['fleet_price'],
+            $model_data['wholesale_price'],
             session('user')['user_id'],
             session('user')['source_id'], 
             $model_data['fpc_item_id']

@@ -107,6 +107,7 @@ class FPC_Item extends Model
         $dealers_margin, 
         $lto_registration, 
         $fleet_price, 
+        $wholesale_price, 
         $updated_by, 
         $user_source_id, 
         $fpc_item_id
@@ -119,6 +120,7 @@ class FPC_Item extends Model
                 'dealers_margin'        => $dealers_margin,
                 'lto_registration'      => $lto_registration,
                 'fleet_price'           => $fleet_price,
+                'wholesale_price'           => $wholesale_price,
                 'updated_by'            => $updated_by,
                 'update_user_source_id' => $user_source_id,
                 'fpc_item_id'           => $fpc_item_id

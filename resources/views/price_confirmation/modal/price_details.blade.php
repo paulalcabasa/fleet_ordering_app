@@ -121,29 +121,28 @@
                                 <!-- form for entering pricing details -->
                                 <form class="form-horizontal" v-if="editable">
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
+                                        <label class="col-lg-3 col-form-label">WSP</label>
+                                        <div class="col-lg-9">
+                                            <!-- <input 
+                                                type="text" 
+                                                class="form-control form-control-sm" 
+                                                :value="formatPrice(curModel.wholesale_price)"
+                                                disabled="disabled" 
+                                            /> -->
+                                            <input 
+                                                type="text" 
+                                                class="form-control form-control-sm" 
+                                                v-model="curModel.wholesale_price"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">SRP</label>
                                         <div class="col-lg-9">
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-sm" 
-                                                :value="formatPrice(curModel.suggested_retail_price)"
-                                                disabled="disabled" 
-                                            />
-                                            <!-- <input 
-                                                type="text" 
-                                                class="form-control form-control-sm" 
-                                                v-model="curModel.suggested_retail_price"
-                                            
-                                            /> -->
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Wholesale Price</label>
-                                        <div class="col-lg-9">
-                                            <input 
-                                                type="text" 
-                                                class="form-control form-control-sm" 
-                                                :value="formatPrice(calculateWSP)" 
+                                                :value="formatPrice(calculateSRP)" 
                                                 disabled="disabled" 
                                             />
                                         </div>
@@ -218,13 +217,14 @@
 
                                <!-- Viewing of pricing details -->
                                <div v-if="!editable">
-                                    <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">SRP</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.suggested_retail_price)}}</span>
-                                    </div>
+                                    
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Wholesale Price</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(calculateWSP) }}</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.wholesale_price) }}</span>
+                                    </div>
+                                    <div class="row kt-margin-b-5">
+                                        <span class="col-md-4 kt-font-bold">SRP</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(calculateSRP)}}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Dealer's Margin</span>
