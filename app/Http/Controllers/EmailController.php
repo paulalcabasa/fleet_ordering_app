@@ -22,9 +22,9 @@ class EmailController extends Controller
         $mail->Host       = "smtp.office365.com";
         $mail->Port       = 587; // or 587
         $mail->IsSMTP();
-        $mail->Username = "notification2@isuzuphil.com";
-        $mail->Password = "KuBT0749mtXa";
-        $mail->SetFrom("notification2@isuzuphil.com", 'Notification');
+        $mail->Username = "interface-notification@isuzuphil.com";
+        $mail->Password = "NJI99ijn";
+        $mail->SetFrom("interface-notification@isuzuphil.com", 'Notification');
 
         $mail->Subject = 'Fleet Ordering System';
 
