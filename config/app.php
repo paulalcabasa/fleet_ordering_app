@@ -60,6 +60,8 @@ return [
         'F-SERIES'       => 2,
         'BUS'            => 2
     ],
+    'mail_user_name' => env('MAIL_USERNAME', null),
+    'mail_password' => env('MAIL_PASSWORD', null),
     /*
     |--------------------------------------------------------------------------
     | Application Name
