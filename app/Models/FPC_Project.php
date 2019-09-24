@@ -129,7 +129,7 @@ class FPC_Project extends Model
         ];
 
         $query = DB::select($sql,$params);
-        return $query[0];
+        return !empty($query[0]) ? $query[0] : $query ;
     }
 
     public function get_projects_with_conflict($fpc_id,$item_ids){
