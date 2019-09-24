@@ -1876,6 +1876,10 @@ jQuery(document).ready(function() {
                             }
                         }
                         else if (wizardObj.currentStep == 3){
+                            /*
+                            Descriptipon : Remove validation of minimum order quantity suggested by DSA
+                            Date: September 24, 2019
+                            
                             if( (self.computeCVQty + self.computeLCVQty) < 3)  {
                                 Swal.fire({
                                     type: 'error',
@@ -1887,6 +1891,7 @@ jQuery(document).ready(function() {
                                 return false;
                             }
                             else {
+                            */
                                 var lcv_total = 0;
                                 var cv_total = 0;
                                 for(model of self.vehicleRequirement['LCV']){
@@ -1906,7 +1911,7 @@ jQuery(document).ready(function() {
                                     wizardObj.stop();
                                     return false;
                                 }
-                            }
+                            //}
                         }
                     });
 

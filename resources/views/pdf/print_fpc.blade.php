@@ -174,10 +174,10 @@
                     <th rowspan="2">QTY</th>
                     <th rowspan="2">UNIT PRICE</th>
                     <th rowspan="2">BODY TYPE</th>
-                    <th colspan="2">INCLUSIONS</th>
+                    <th>INCLUSIONS</th>
                 </tr>
                 <tr>
-                    <th>STD</th>
+                  <!--   <th>STD</th> -->
                     <th>ADD'L</th>
                 </tr>
             </thead>
@@ -191,7 +191,7 @@
                     <td class="item-data-style2">{{ $item['header']->quantity }}</td>
                     <td class="item-data-style2">P {{ number_format($item['header']->fleet_price,2,'.',',') }}</td>
                     <td class="item-data-style2">{{ $item['header']->rear_body_type }}</td>
-                    <td class="item-data-style2">
+                    <!-- <td class="item-data-style2">
                         <?php 
                             $index = 1;
                             $total_items = count($item['other_items'])
@@ -204,7 +204,7 @@
                             @endif
                             <?php $index++; ?>
                         @endforeach
-                    </td>
+                    </td> -->
                     <td class="item-data-style2">{{ $item['header']->lto_registration != 0 ? "Complete 3 Years LTO Registration" : "" }}</td>
                 </tr>
                 {{ $ctr++ }}
@@ -212,7 +212,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="7">****** <span style="margin:0 1em 0 1em;font-style:italic;">Nothing Follows</span> ******</td>
+                    <td colspan="6">****** <span style="margin:0 1em 0 1em;font-style:italic;">Nothing Follows</span> ******</td>
                 </tr>
             </tfoot>
         </table>
@@ -253,7 +253,7 @@
         <div class="signatories" style="margin-top:3em;">
             <table>
                 <tr>
-                    <td>
+                    <td valign="top">
                         <table style="font-size:11px;">
                             <tr>
                                 <td><strong>Prepared by:</strong><br/><br/></td>
