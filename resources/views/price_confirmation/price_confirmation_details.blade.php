@@ -407,12 +407,45 @@
                 let data = new FormData();
                 var self = this;
                 var action = self.action;
+                var errors = [];
+                for(var prj of self.projects){
+                    if(prj.payment_terms == "" || prj.payment_terms == null){
+                        errors.push("Select a payment term for " + prj.dealer_account + ".");
+                    }
+
+                    if(prj.validity == "" || prj.payment_terms == null){
+                        errors.push("Select validity date for " + prj.dealer_account + ".");
+                    }
+
+                    if(prj.availability == "" || prj.availability == null){
+                        errors.push('Please enter availability for ' + prj.dealer_account);
+                    }
+
+                    if(prj.note == "" || prj.note == null){
+                        errors.push('Please enter note for ' + prj.dealer_account);
+                    }
+                }
+
+                if(errors.length > 0){
+                    var message = "<ul>";
+                    for(var msg of errors){
+                        message += "<li>" + msg + "</li>";
+                    }
+                    message += "<ul>";
+                    Swal.fire({
+                        type: 'error',
+                        title: message,
+                        showConfirmButton: true
+                    });
+                    $("#fpcApprovalModal").modal('hide');
+                    return false;
+                }
+
                 data.append('fpc_id',self.fpc_details.fpc_id);
                 data.append('remarks',self.remarks);
                 data.append('fpc_project_id',self.cur_fpc_project_id);
                 data.append('action',self.action);
 
-             
                 $.each($("#fpc_attachment")[0].files, function(i, file) {
                     data.append('fpc_attachment[]', file);
                 });
@@ -446,6 +479,42 @@
             saveTerms(index){
                 var self = this;
                 var project = self.projects[index];
+                var errors = [];
+
+                if(project.payment_terms == "" || project.payment_terms == null){
+                    errors.push('Select payment term for ' + project.dealer_account);
+                }
+
+                if(project.validity == "" || project.validity == null){
+                    errors.push('Select validity for ' + project.dealer_account);
+                }
+
+                if(project.validity == "" || project.validity == null){
+                    errors.push('Select validity for ' + project.dealer_account);
+                }
+
+                if(project.availability == "" || project.availability == null){
+                    errors.push('Please enter availability for ' + project.dealer_account);
+                }
+
+                if(project.note == "" || project.note == null){
+                    errors.push('Please enter note for ' + project.dealer_account);
+                }
+
+
+                if(errors.length > 0){
+                    var message = "<ul>";
+                    for(msg of errors){
+                        message += "<li>" + msg + "</li>";
+                    }
+                    message += "</ul>";
+                    Swal.fire({
+                        type: 'error',
+                        title: message,
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
 
                 KTApp.blockPage({
                     overlayColor: '#000000',

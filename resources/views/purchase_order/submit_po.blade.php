@@ -54,7 +54,7 @@
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-                
+                Details 
             </h3>
         </div>
       
@@ -327,6 +327,54 @@
             submitPO(){
                 var self = this;
                 
+                var errors = [];
+
+                var total_po_qty = 0;
+
+                if(self.requirement_lines['CV']){
+                    for(var req of self.requirement_lines['CV']){
+                        total_po_qty += req.po_qty;
+                    }
+                }
+
+                if(self.requirement_lines['LCV']){
+                    for(var req of self.requirement_lines['LCV']){
+                        total_po_qty += req.po_qty;
+                    }
+                }
+
+             
+
+                if(self.attachments.length == 0){
+                    errors.push('Please add attachment for the PO document.');
+                }
+                
+                if(self.poNumber == "" || self.poNumber == null){
+                    errors.push('Please enter value for PO Number.');
+                }
+
+                if(total_po_qty == 0){
+                    errors.push('Please check PO Quantities.');   
+                }
+
+
+
+                if(errors.length > 0){
+                    var message = "<ul>";
+                    for(var msg of errors){
+                        message += "<li>" + msg + "</li>";
+                    }
+                    message += "<ul>"; 
+
+                    Swal.fire({
+                        type: 'error',
+                        title: message,
+                        showConfirmButton: true
+                    });
+
+                    return false;                
+                }
+
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
