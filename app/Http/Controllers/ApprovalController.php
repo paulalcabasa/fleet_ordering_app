@@ -15,6 +15,11 @@ class ApprovalController extends Controller
     }
 
     public function approval_list(ModuleApproval $m_approval){
+
+        if(in_array(session('user')['user_type_id'], array(27)) ){
+            return view('errors.404');
+        }
+
         $project_approval_list = $m_approval->get_projects_approval(
             session('user')['customer_id'],
             session('user')['user_id'],
@@ -22,15 +27,12 @@ class ApprovalController extends Controller
             session('user')['user_type_id']
         );
 
-
         $po_approval_list = $m_approval->get_po_approval(
             session('user')['user_id'],
             session('user')['source_id']
         );
 
         $approval_list = array_merge($project_approval_list, $po_approval_list);
-
-
 
         $page_data = [
             'approval_list' => $approval_list,
