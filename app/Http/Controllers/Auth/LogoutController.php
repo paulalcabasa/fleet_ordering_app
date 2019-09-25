@@ -19,6 +19,6 @@ class LogoutController extends Controller
     {
         Auth::logout();
         $request->session()->flush();
-        return redirect()->intended($this->host.'/webapps/login/logout');
+        return redirect()->intended($this->host.'/webapps_uat/login/logout');
     }
 }
