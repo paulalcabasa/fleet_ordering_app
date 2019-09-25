@@ -81,6 +81,7 @@
                 self.cur_requestor_id = user_id;
                 self.cur_requestor_source_id = user_source_id;
                 self.cur_customer_id = customer_id;
+               
                 axios.get('ajax-get-user-approver', {
                     params : {
                         user_id : user_id,

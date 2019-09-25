@@ -26,6 +26,9 @@ class UserController extends Controller
                 'dealer_account' => $row->dealer_account,
                 'user_type_name' => $row->user_type_name,
                 'status_name' => $row->status_name,
+                'customer_id' => $row->customer_id,
+                'user_id' => $row->user_id,
+                'user_source_id' => $row->user_source_id
             ];
             array_push($user_list,$arr);
         }

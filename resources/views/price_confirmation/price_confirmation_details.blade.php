@@ -489,10 +489,6 @@
                     errors.push('Select validity for ' + project.dealer_account);
                 }
 
-                if(project.validity == "" || project.validity == null){
-                    errors.push('Select validity for ' + project.dealer_account);
-                }
-
                 if(project.availability == "" || project.availability == null){
                     errors.push('Please enter availability for ' + project.dealer_account);
                 }
