@@ -1020,7 +1020,14 @@ jQuery(document).ready(function() {
                                 );
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Unexpected error encountered during the transaction, click OK then try saving again.' + error,
+                                    showConfirmButton: true
+                                });
+                            })
+                            .finally( (response) => {
+                                KTApp.unblockPage();
                             });
                         }
                         else if(self.action == "edit") {
@@ -1041,10 +1048,14 @@ jQuery(document).ready(function() {
                                 );
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Unexpected error encountered during the transaction, click OK then try saving again.',
+                                    showConfirmButton: true
+                                });
                             })
                             .finally( (response) => {
-
+                                KTApp.unblockPage();
                             });
                         }
                         
