@@ -74,10 +74,10 @@
                         <td rowspan="2">Body Type</td>
                         <td rowspan="2">Unit Price</td>
                         <td rowspan="2">Freebies</td>
-                        <td colspan="2">Inclusion</td>
+                        <td>Inclusions</td>
                     </tr>
                     <tr>
-                        <td>STD</td>
+                    <!--     <td>STD</td> -->
                         <td>ADD'L</td>
                     </tr>
                 </thead>
@@ -95,7 +95,7 @@
                         <td>@{{ item.rear_body_type }}</td>
                         <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
                         <td align="right">@{{ item.freebies | formatPeso }}</td>
-                        <td>N/A</td>
+                        <!-- <td>N/A</td> -->
                         <td>@{{ item.additional_items }}</td>
                     </tr>
                 </tbody>
@@ -126,7 +126,7 @@
                 href="#"
                 
                 class="btn btn-primary btn-sm"
-                @click.prevent="printFPC(projectDetails.project_id,row['fpc_header'].fpc_id)"
+                @click.prevent="printFPC(projectDetails.project_id,row['fpc_header'].fpc_id,row['fpc_header'].fpc_project_id)"
             >
                 <span class="kt-hidden-mobile">Print</span>
             </a>

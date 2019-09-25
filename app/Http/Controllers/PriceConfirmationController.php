@@ -42,7 +42,8 @@ class PriceConfirmationController extends Controller
             $dealers = Dealer::all();
         }
         else {
-            $dealers = Dealer::find(session('user')['customer_id']);
+            //$dealers = Dealer::find(session('user')['customer_id']);
+            return view('errors.404');
         }
         
         $page_data = [
@@ -57,12 +58,16 @@ class PriceConfirmationController extends Controller
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
+       
+        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        }
+
         $customers = $m_customer->get_project_customers(
             $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
         );
 
-        //$test_data = $m_customer->test_query();
-        //dd($test_data);
+  
         $page_data = [
             'customers'    => $customers,
             'base_url'     => url('/'),
@@ -83,6 +88,10 @@ class PriceConfirmationController extends Controller
         Attachment $m_attachment
     ){
 
+        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        }
+
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
         $fpc_details      = $m_fpc->get_details($price_confirmation_id);
@@ -94,11 +103,11 @@ class PriceConfirmationController extends Controller
 
         foreach($project_headers as $project){
 
-            $requirements = $m_fpc_item->get_item_requirements($project->fpc_project_id);
-            $competitors = $m_competitor->get_competitors($project->project_id);
-            $competitor_attachments = $m_attachment->get_competitor_attachments($project->project_id);
+            $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
+            $competitors             = $m_competitor->get_competitors($project->project_id);
+            $competitor_attachments  = $m_attachment->get_competitor_attachments($project->project_id);
             $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
-            $temp_arr = [
+            $temp_arr                = [
                 'project_id'              => $project->project_id,
                 'payment_terms'           => $project->payment_terms,
                 'validity'                => $project->validity,
@@ -464,6 +473,11 @@ class PriceConfirmationController extends Controller
         FPCItemFreebies $m_freebies
 
     ){
+
+        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        }
+
         $fpc_project_id = $request->fpc_project_id;
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
         $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
@@ -624,6 +638,10 @@ class PriceConfirmationController extends Controller
         OracleUser $m_ora_user
     ){
 
+        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        }
+        
         $fpc_id = $request->fpc_id;
         $vehicle_type = "";
         

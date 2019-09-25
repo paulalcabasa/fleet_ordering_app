@@ -48,7 +48,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <link rel="stylesheet" href="{{ asset('public/metronic/assets/demo/default/base/style.bundle.css') }} ">
         <!--end::Global Theme Styles -->
         <link rel="stylesheet" href="{{ asset('public/css/app.css') }} ">
-        <link rel="shortcut icon" href="{{ asset('public/metronic/assets/media/logos/favicon.ico') }} ">
+        <link rel="shortcut icon" href="{{ asset('public/img/favicon.ico') }}">
     </head>
 
     <!-- end::Head -->

@@ -217,10 +217,10 @@
                     <th rowspan="2">UNIT PRICE</th>
                     <th rowspan="2">FREEBIES</th>
                     <th rowspan="2">BODY TYPE</th>
-                    <th colspan="2">INCLUSIONS</th>
+                    <th>INCLUSIONS</th>
                 </tr>
                 <tr>
-                    <th>STD</th>
+                    <!-- <th>STD</th> -->
                     <th>ADD'L</th>
                 </tr>
             </thead>
@@ -237,7 +237,7 @@
                     <td align="right">{{ number_format($item->fleet_price,2,',','.')  }}</td>
                     <td align="right">{{ number_format($item->freebies,2,',','.')  }}</td>
                     <td>{{ $item->rear_body_type }}</td>
-                    <td>N/A</td>
+                    <!-- <td>N/A</td> -->
                     <td>{{ $item->additional_items }}</td>
                 </tr>
                 {{ $qty_total += $item->quantity }}
@@ -250,7 +250,7 @@
                     <td colspan="3" align="right">Total</td>
                     <td align="right">{{ $qty_total }}</td>
                     <td colspan="2" align="right">{{ number_format($price_total,2,',','.') }}</td>
-                    <td colspan="3"></td>
+                    <td colspan="2"></td>
                 </tr>
             </tfoot>
         </table>

@@ -72,7 +72,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__item {{ request()->is('all-price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-price-confirmation') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon2-crisp-icons"></i>
