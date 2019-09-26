@@ -60,7 +60,7 @@
                     <span class="col-md-8">
                         <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
                             <li v-for="(row,index) in attachments">
-                                <a :href="base_url + '/' + row.directory" download>@{{ row.orig_filename }}</a>
+                                <a :href="base_url + '/' + row.symlink_dir + row.filename" download>@{{ row.orig_filename }}</a>
                             </li>
                         </ul>
                     </span>
