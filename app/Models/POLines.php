@@ -11,17 +11,21 @@ class POLines extends Model
     protected $connection = "oracle";
 
     public function insert_po_lines($params){
-        $this->insert($params);
+        //$this->insert($params);
+        $id = $this->insertGetId($params,'po_line_id');
+        return $id;
     }
 
     public function get_po_lines($po_header_id){
         $sql = "SELECT vehicle.sales_model,
-                            vehicle.color,
-                            fpc_item.fleet_price,
-                            rl.quantity,
-                            pl.po_quantity,
-                            rh.vehicle_type,
-                            rl.requirement_line_id
+                        vehicle.color,
+                        fpc_item.fleet_price,
+                        rl.quantity,
+                        pl.po_quantity,
+                        rh.vehicle_type,
+                        rl.requirement_line_id,
+                        pl.po_line_id,
+                        vehicle.model_variant
                 FROM ipc_dms.fs_po_lines pl
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rl.requirement_line_id = pl.requirement_line_id

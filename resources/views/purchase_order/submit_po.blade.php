@@ -150,69 +150,85 @@
                 </button>
             </div>
             <div class="modal-body">     
-                <div class="row">
-                    <div class="col-md-4">
+                <div class="row kt-margin-b-10">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">Order Details</div>
                             <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Model</span>
-                                    <span class="details-subtext">
-                                        @{{ curModel }}
-                                        <span 
-                                            data-toggle="kt-popover" 
-                                            title="" 
-                                            :data-content="cur_lead_time_desc" 
-                                            data-original-title="Delivery lead time"
-                                            v-show="cur_vehicle_lead_time > 0">
-                                            <i class="fa fa-info-circle kt-font-primary"></i>    
-                                        </span>
-                                    </span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Color</span>
-                                    <span class="details-subtext">@{{ curColor }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">@{{ curQuantity }}</span>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="details-item">
+                                            <span class="details-label">Model</span>
+                                            <span class="details-subtext">
+                                                @{{ curModel }}
+                                                <span 
+                                                    data-toggle="kt-popover" 
+                                                    title="" 
+                                                    :data-content="cur_lead_time_desc" 
+                                                    data-original-title="Delivery lead time"
+                                                    v-show="cur_vehicle_lead_time > 0">
+                                                    <i class="fa fa-info-circle kt-font-primary"></i>    
+                                                </span>
+                                            </span>
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-4">
+                                         <div class="details-item">
+                                            <span class="details-label">Color</span>
+                                            <span class="details-subtext">@{{ curColor }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="details-item">
+                                            <span class="details-label">Quantity</span>
+                                            <span class="details-subtext">@{{ curQuantity }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>  
                     </div>
-                    <div class="col-md-8">
-                        <div class="card kt-margin-b-10">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
                             <div class="card-header">Requested Delivery Schedule</div>
                             <div class="card-body">
-                                <table class="table">
+                                <table class="table table-condensed">
                                     <thead>
                                         <tr>
-                                        <!--     <th></th> -->
+                                            <th></th>
                                             <th>Date</th>
                                             <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
                                             <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
                                             <td><input type="date" :min="curMinDate" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
                                             <td><input type="text" size="3" class="form-control form-control-sm" v-model="row.quantity" /></td>
-                                        </tr> -->
-                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
+                                        </tr>
+                                        <!-- <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 6">
                                             <td>@{{ row.delivery_date_disp }}</td>
                                             <td>@{{ row.quantity }}</td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                     <tfoot>
                                         <tr class="kt-font-bold">
-                                         
-                                            <td>Total</td>
+                                            <td colspan="2">Total</td>
                                             <td>@{{ totalDeliveryQty(6) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table> 
                             </div>
-                        </div> 
+                            <div class="card-footer">
+                                <button type="button" @click="addRowSched" class="btn btn-primary btn-sm">Add</button>
+                                <button type="button" @click="saveDeliverySched" class="btn btn-primary btn-sm">Save</button>
+                            </div>
+                        </div>      
+                    </div>
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">Recommended Delivery Schedule</div>
                             <div class="card-body">
@@ -239,13 +255,9 @@
                                 </table> 
                             </div>
                         </div> 
-                    </div>
-                </div>      
+                    </div>        
+                </div>
             </div>
-          <!--   <div class="modal-footer">
-                <button type="button" @click="addRowSched" class="btn btn-primary">Add</button>
-                <button type="button" @click="saveDeliverySched" class="btn btn-primary">Save</button>
-            </div> -->
         </div>
     </div>
 </div>
@@ -299,7 +311,7 @@
             },
             addRowSched(){
                 this.curDeliverySched.push({
-                    delivery_date : '',
+                    delivery_date : this.curMinDate,
                     quantity : 0,
                     owner_id : 6
                 });
@@ -342,8 +354,6 @@
                         total_po_qty += req.po_qty;
                     }
                 }
-
-             
 
                 if(self.attachments.length == 0){
                     errors.push('Please add attachment for the PO document.');
@@ -404,7 +414,14 @@
                             );
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            Swal.fire({
+                                type: 'error',
+                                title: 'System encountered unexpected error.' + error,
+                                showConfirmButton: true
+                            });
+                            KTApp.unblockPage();
+                        }).finally( (response) => {
+
                         });
                     }
                 });
@@ -442,6 +459,14 @@
                             showConfirmButton: true
                         });
                     }
+                })
+                .catch(function(error){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Unexpected error encountered during the transaction, please contact the system administrator.',
+                        showConfirmButton: true
+                    });
+                    KTApp.unblockPage();
                 });
             },
             sumQty(vehicle_type){

@@ -125,6 +125,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('save-user-approver' , 'UserController@save_user_approver');
 	Route::delete('delivery-schedule/{delivery_schedule_id}' , 'DeliveryScheduleController@deleteSchedule');
 	Route::post('save-schedule' , 'DeliveryScheduleController@saveSchedule');
+	Route::post('save-po-schedule' , 'DeliveryScheduleController@savePOSchedule');
 	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
 	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
 });

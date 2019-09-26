@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"kt-mar",
+				"kt-margin-b-10"
+			],
+			[
+				"table",
+				"table-bordered"
+			],
+			[
 				"total_o",
 				"total_po_qty"
 			],
@@ -26,10 +34,6 @@
 			[
 				"pro",
 				"project_id"
-			],
-			[
-				"kt-mar",
-				"kt-margin-t-10"
 			],
 			[
 				"cel",
@@ -94,10 +98,6 @@
 			[
 				"delivery_",
 				"delivery_schedule_id"
-			],
-			[
-				"table",
-				"table-responsive"
 			],
 			[
 				"cur",
@@ -520,20 +520,28 @@
 	"buffers":
 	[
 		{
-			"file": "resources/views/price_confirmation/price_confirmation_details.blade.php",
+			"file": "resources/views/purchase_order/po_overview.blade.php",
 			"settings":
 			{
-				"buffer_size": 37453,
+				"buffer_size": 19302,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "app/Http/Controllers/Auth/LogoutController.php",
+			"file": "app/Http/Controllers/PurchaseOrderController.php",
 			"settings":
 			{
-				"buffer_size": 516,
+				"buffer_size": 17488,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "resources/views/purchase_order/submit_po.blade.php",
+			"settings":
+			{
+				"buffer_size": 24866,
 				"line_ending": "Windows"
 			}
 		}
@@ -608,11 +616,19 @@
 	"expanded_folders":
 	[
 		"/C/wamp64/www/fleet_ordering_app/resources/views",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/Auth"
+		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers"
 	],
 	"file_history":
 	[
+		"/C/Users/paul-alcabasa/AppData/Roaming/Sublime Text 3/Packages/User/swal-error.sublime-snippet",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/price_confirmation_details.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/submit_po.blade.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PurchaseOrderController.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/POLines.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Models/ProjectDeliverySchedule.php",
+		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/Auth/LogoutController.php",
+		"/C/wamp64/www/fleet_ordering_app/config/app.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/manage_project.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/_layouts/aside.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PriceConfirmationController.php",
@@ -623,16 +639,13 @@
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fpc_dealer.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Project.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/submit_po.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/price_details.blade.php",
 		"/C/Users/paul-alcabasa/AppData/Roaming/Sublime Text 3/Packages/User/error-message-js.sublime.snippet",
 		"/C/Users/paul-alcabasa/AppData/Roaming/Sublime Text 3/Packages/User/swal-basic.sublime-snippet",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/pdf/print_fpc.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/additional_details.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/price_confirmation_details.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FPC_Item.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/EmailController.php",
-		"/C/wamp64/www/fleet_ordering_app/config/app.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/delivery_schedule.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/price_confirmation.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/requirement.blade.php",
@@ -641,10 +654,8 @@
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/ProjectController.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/price_confirmation/modal/approval.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Attachment.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/PurchaseOrderController.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/purchase_order/po_overview.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/SalesOrderLines.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/ProjectDeliverySchedule.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/FPCItemFreebies.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/VehicleController.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Vehicle.php",
@@ -700,7 +711,6 @@
 		"/C/wamp64/www/fleet_ordering_app/resources/js/bootstrap.js",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/po.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/modal/add_fwpc.blade.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/POLines.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/timeline.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/resources/views/projects/subform/account.blade.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Helpers/VehicleTypeIdentification.php",
@@ -738,9 +748,7 @@
 		"/C/wamp64/www/fleet_ordering_app/app/Models/Status.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/SystemUserType.php",
 		"/C/wamp64/www/fleet_ordering_app/app/Models/User.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Models/UserSystemAccess.php",
-		"/C/wamp64/www/fleet_ordering_app/config/auth.php",
-		"/C/wamp64/www/fleet_ordering_app/app/Http/Controllers/Auth/RegisterController.php"
+		"/C/wamp64/www/fleet_ordering_app/app/Models/UserSystemAccess.php"
 	],
 	"find":
 	{
@@ -758,6 +766,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"setDeliverySched",
+			"logout",
 			"std",
 			"printFPC",
 			"message",
@@ -883,9 +893,7 @@
 			"get_project_details",
 			"vue",
 			"loadCustomerData",
-			"attachments",
-			":",
-			"project_id"
+			"attachments"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -908,24 +916,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "resources/views/price_confirmation/price_confirmation_details.blade.php",
+					"file": "resources/views/purchase_order/po_overview.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 37453,
+						"buffer_size": 19302,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								24621,
-								24621
+								15540,
+								16066
 							]
 						],
 						"settings":
@@ -936,27 +944,12 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										24623,
-										24624
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										24513,
-										24514
-									]
 								},
 								"unmatched":
 								{
@@ -964,21 +957,6 @@
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -989,16 +967,31 @@
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1009,16 +1002,16 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"bracket_highlighter.locations":
 							{
@@ -1026,8 +1019,8 @@
 								{
 									"1":
 									[
-										24623,
-										24624
+										16138,
+										16139
 									]
 								},
 								"icon":
@@ -1042,8 +1035,8 @@
 								{
 									"1":
 									[
-										24513,
-										24514
+										14957,
+										14958
 									]
 								},
 								"unmatched":
@@ -1052,21 +1045,6 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1077,16 +1055,31 @@
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1097,16 +1090,211 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5503.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "app/Http/Controllers/PurchaseOrderController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17488,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1657,
+								1657
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
-								"bh_tag_content"
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1738,
+										1739
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/square_bracket.png",
+										"region.bluish"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1197,
+										1198
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
@@ -1114,27 +1302,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 9195.0,
+						"translation.y": 324.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "app/Http/Controllers/Auth/LogoutController.php",
-					"semi_transient": false,
+					"buffer": 2,
+					"file": "resources/views/purchase_order/submit_po.blade.php",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 516,
+						"buffer_size": 24866,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								316,
-								316
+								16266,
+								15345
 							]
 						],
 						"settings":
@@ -1145,12 +1333,27 @@
 							{
 								"close":
 								{
+									"1":
+									[
+										10379,
+										10381
+									]
 								},
 								"icon":
 								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/tag.png",
+										"region.orangish"
+									]
 								},
 								"open":
 								{
+									"1":
+									[
+										9815,
+										9817
+									]
 								},
 								"unmatched":
 								{
@@ -1158,21 +1361,6 @@
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1183,16 +1371,31 @@
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1203,16 +1406,16 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"bracket_highlighter.locations":
 							{
@@ -1220,8 +1423,8 @@
 								{
 									"1":
 									[
-										514,
-										515
+										16335,
+										16336
 									]
 								},
 								"icon":
@@ -1236,8 +1439,8 @@
 								{
 									"1":
 									[
-										191,
-										192
+										15222,
+										15223
 									]
 								},
 								"unmatched":
@@ -1246,21 +1449,6 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
@@ -1271,16 +1459,31 @@
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1291,27 +1494,28 @@
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content"
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"git_savvy.repo_path": "C:\\wamp64\\www\\fleet_ordering_app",
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
 							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"translate_tabs_to_spaces": true,
+							"word_wrap": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 5508.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]

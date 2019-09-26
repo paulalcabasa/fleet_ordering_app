@@ -34,18 +34,22 @@ class PurchaseOrderController extends Controller
         $attachments  = $m_attachment->get_po_attachments($po_header_id);
         $po_lines     = $m_pol->get_po_lines($po_header_id);
         $po_line_data = [];
-        
+
         foreach ($po_lines as $row) {
-            $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
+
+            $delivery_sched = $m_delivery_sched->get_po_delivery_schedule($row->po_line_id); 
             $arr = [
                 'requirement_line_id' => $row->requirement_line_id,
+                'po_line_id'          => $row->po_line_id,
                 'fleet_price'         => $row->fleet_price,
                 'sales_model'         => $row->sales_model,
                 'color'               => $row->color,
                 'quantity'            => $row->quantity,
                 'po_quantity'         => $row->po_quantity,
                 'vehicle_type'        => $row->vehicle_type,
+                'variant'             => $row->model_variant,
                 'delivery_sched'      => $delivery_sched
+              
             ];   
             array_push($po_line_data, $arr);
         }
@@ -214,7 +218,7 @@ class PurchaseOrderController extends Controller
             }
 
             foreach ($models as $model) {
-                $temp_arr = [
+                $po_line_arr = [
                     'po_header_id'          => $po_header_id,
                     'requirement_line_id'   => $model['requirement_line_id'],
                     'po_quantity'           => $model['po_qty'],
@@ -222,7 +226,8 @@ class PurchaseOrderController extends Controller
                     'creation_date'         => Carbon::now(),
                     'create_user_source_id' => session('user')['source_id'],
                 ];
-                array_push($po_lines_arr, $temp_arr);
+                $po_line_id = $m_po_lines->insert_po_lines($po_line_arr);
+                //array_push($po_lines_arr, $temp_arr);
             
                 foreach($model['delivery_sched'] as $sched){
                     $sched_params = [
@@ -233,15 +238,25 @@ class PurchaseOrderController extends Controller
                         'owner_id'              => $sched['owner_id'],
                         'created_by'            => session('user')['user_id'],
                         'creation_date'         => Carbon::now(),
-                        'create_user_source_id' => session('user')['source_id']
+                        'create_user_source_id' => session('user')['source_id'],
+                        'po_line_id'            => $po_line_id
                     ];
                     array_push($delivery_sched_params, $sched_params);
+                    
+                    /*if($sched['owner_id'] == 6 && in_array(session('user')['user_type_id'], array(27,31)) ){
+                        array_push($delivery_sched_params, $sched_params);
+                    }
+                    else if($sched['owner_id'] == 5 && in_array(session('user')['user_type_id'], array(32,33)) ){
+                        array_push($delivery_sched_params, $sched_params);
+                    }*/
+                    
+                    
                 }
             }
         }
 
         // insert po lines
-        $m_po_lines->insert_po_lines($po_lines_arr);
+        //$m_po_lines->insert_po_lines($po_lines_arr);
         // insert delivery schedule
         $m_delivery_sched->insert_delivery_schedule($delivery_sched_params);
         // insert po approval
@@ -356,7 +371,6 @@ class PurchaseOrderController extends Controller
             'mail_recipient'        => $project_details->requestor_email
         ];
         $m_activity_logs->insert_log($activity_log);
-
 
         $pending = $m_approval->get_pending_per_po($po_header_id);
 

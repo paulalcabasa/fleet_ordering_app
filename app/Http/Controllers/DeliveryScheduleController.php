@@ -91,5 +91,57 @@ class DeliveryScheduleController extends Controller
         return $m_delivery_sched->get_project_delivery_schedule($requirement_line_id);
     }
 
+    public function savePOSchedule(
+        Request $request,
+        ProjectDeliverySchedule $m_delivery_sched
+    ){
+        $delivery_details      = $request->delivery_details;
+        $po_line_id            = $request->po_line_id;
+        $requirement_line_id   = $request->requirement_line_id;
+        $delivery_sched_params = [];
+        foreach($delivery_details as $row){
+            
+            // INSERT
+            if(!isset($row['delivery_schedule_id']) && $row['delete_flag'] == 'N'){
+                // insert
+                $sched_params = [
+                    'requirement_line_id'   => $requirement_line_id,
+                    'quantity'              => $row['quantity'],
+                    'delivery_date'         => $row['delivery_date'],
+                    'module_id'             => 2, // purchase order module
+                    'owner_id'              => $row['owner_id'],
+                    'created_by'            => session('user')['user_id'],
+                    'create_user_source_id' => session('user')['source_id'],
+                    'creation_date'         => Carbon::now(),
+                    'po_line_id'            => $po_line_id
+                ];
+                array_push($delivery_sched_params, $sched_params);
+            }
+
+            // DELETE
+            if(isset($row['delivery_schedule_id']) && $row['delete_flag'] == 'Y'){
+                $m_delivery_sched->deleteSchedule($row['delivery_schedule_id']);
+            }
+
+            // UPDATE
+            if(isset($row['delivery_schedule_id']) && $row['delete_flag'] == 'N'){
+                $m_delivery_sched->update_delivery_sched([
+                    'delivery_schedule_id'  => $row['delivery_schedule_id'],
+                    'quantity'              => $row['quantity'],
+                    'delivery_date'         => $row['delivery_date'],
+                    'updated_by'            => session('user')['user_id'],
+                    'update_user_source_id' => session('user')['source_id']
+                ]);
+            }
+
+        }
+
+        // insert not existing
+        $m_delivery_sched->insert_delivery_schedule($delivery_sched_params);   
+        return $m_delivery_sched->get_po_delivery_schedule($po_line_id);
+    }
+
+    
+
 
 }
