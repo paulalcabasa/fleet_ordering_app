@@ -136,34 +136,38 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delivery Schedule</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Delivery Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
-            <div class="modal-body">     
-                <div class="row">
-                    <div class="col-md-4">
+            <div class="modal-body">   
+                <div class="row kt-margin-b-10">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">Order Details</div>
                             <div class="card-body">
-                                <div class="details-item">
-                                    <span class="details-label">Model</span>
-                                    <span class="details-subtext">@{{ curModel }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Color</span>
-                                    <span class="details-subtext">@{{ curColor }}</span>
-                                </div>
-                                <div class="details-item">
-                                    <span class="details-label">Quantity</span>
-                                    <span class="details-subtext">@{{ curQuantity }}</span>
+                                <div class="row">
+                                    <div class="details-item col-md-4">
+                                        <span class="details-label">Model</span>
+                                        <span class="details-subtext">@{{ curModel }}</span>
+                                    </div>
+                                    <div class="details-item col-md-4">
+                                        <span class="details-label">Color</span>
+                                        <span class="details-subtext">@{{ curColor }}</span>
+                                    </div>
+                                    <div class="details-item col-md-4">
+                                        <span class="details-label">Quantity</span>
+                                        <span class="details-subtext">@{{ curQuantity }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>  
                     </div>
-                    <div class="col-md-8">
+                </div>  
+                <div class="row">
+                    <div class="col-md-6">
                         <div class="card kt-margin-b-10">
-                            <div class="card-header">Delivery Details</div>
+                            <div class="card-header">Requested Delivery Schedule</div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
@@ -186,11 +190,13 @@
                                     </tfoot>
                                 </table> 
                             </div>
-                        </div>
+                        </div> 
+                    </div>
+                    <div class="col-md-6">
                         <div class="card">
-                            <div class="card-header">Suggested Delivery</div>
+                            <div class="card-header">Recommended Delivery Schedule</div>
                             <div class="card-body">
-                                <table class="table">
+                                <table class="table" v-if="action == 'view'">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
@@ -210,6 +216,35 @@
                                         </tr>
                                     </tfoot>
                                 </table> 
+
+                                <table class="table" v-if="action == 'validate'">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                     
+                                        <tr v-for="(row,index) in curDeliverySched" v-if="row.owner_id == 5 && row.delete_flag == 'N'">
+                                            <td><a href="#" @click.prevent="deleteRowSched(index)"><i class="fa fa-trash kt-font-danger"></i></a></td>
+                                            <td><input type="date" class="form-control form-control-sm" v-model="row.delivery_date" /></td>
+                                            <td><input type="text" size="3" class="form-control form-control-sm" v-model="row.quantity" /></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="kt-font-bold">
+                                            <td colspan="2">Total</td>
+                                            <td>@{{ totalDeliveryQty(5) }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table> 
+
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" @click="addRowSched" class="btn btn-primary btn-sm">Add</button>
+                                <button type="button" @click="saveDeliverySched" class="btn btn-primary btn-sm">Save</button>
                             </div>
                         </div> 
                     </div>
@@ -269,12 +304,14 @@
             curModel:         '',
             curColor:         '',
             curQuantity:      '',
+            curVariant:       '',
             validate_status:  '',
             vm_title:         '',
             vm_message:       '',
             remarks:          '',
             po_header_id:     {!! json_encode($po_header_id) !!},
             approval_id:      {!! json_encode($approval_id) !!},
+            action:           {!! json_encode($action) !!},
         },
         created: function () {
             this.po_lines = _.groupBy(this.po_lines, 'vehicle_type');
@@ -282,12 +319,21 @@
         methods : {
             setDeliverySched(vehicle_type,line_index){
                 this.curDeliverySched = this.po_lines[vehicle_type][line_index].delivery_sched;
-                this.curModel = this.po_lines[vehicle_type][line_index].sales_model;
-                this.curColor = this.po_lines[vehicle_type][line_index].color;
-                this.curQuantity = this.po_lines[vehicle_type][line_index].quantity;
-                this.curVehicleType = vehicle_type;
-                this.curLineIndex = line_index;
+                this.curModel         = this.po_lines[vehicle_type][line_index].sales_model;
+                this.curColor         = this.po_lines[vehicle_type][line_index].color;
+                this.curQuantity      = this.po_lines[vehicle_type][line_index].quantity;
+                this.curVehicleType   = vehicle_type;
+                this.curLineIndex     = line_index;
+                this.curVariant       = this.po_lines[vehicle_type][line_index].variant;
                 $("#deliverySchedModal").modal('show');
+            },
+            deleteRowSched(index){
+                if(this.curDeliverySched[index].hasOwnProperty('delivery_schedule_id')){
+                    this.curDeliverySched[index].delete_flag = 'Y';
+                }
+                else {
+                    this.curDeliverySched.splice(index,1);
+                }
             },
             sumQty(vehicle_type){
                return this.po_lines[vehicle_type].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
@@ -309,7 +355,6 @@
                     self.vm_title = 'Reject PO';
                     self.vm_message = 'Are you sure you want to Reject the PO?';
                 }
-          
                 $("#validateModal").modal('show')
             },
             confirmValidate(){
@@ -326,12 +371,67 @@
                     window.location.href = self.base_url +  "/all-po";
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    Swal.fire({
+                        type: 'error',
+                        title: 'System encountered unexpected error.' + error,
+                        showConfirmButton: true
+                    });
+                    KTApp.unblockPage();
+                }).finally( (response) => {
+            
                 });
             },
             totalDeliveryQty(owner_id){
                 return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
-            }
+            },
+            addRowSched(){
+                this.curDeliverySched.push({
+                    delivery_date : '',
+                    quantity : 0,
+                    owner_id : 5,
+                    delete_flag : 'N'
+                });
+            },
+            saveDeliverySched(){
+                var self = this;
+                 
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+
+                axios.post('/save-po-schedule', {
+                    delivery_details:    self.curDeliverySched,
+                    po_line_id:          self.po_lines[self.curVehicleType][self.curLineIndex].po_line_id,
+                    requirement_line_id: self.po_lines[self.curVehicleType][self.curLineIndex].requirement_line_id,
+                })
+                .then(function (response) {
+                    self.po_lines[self.curVehicleType][self.curLineIndex].delivery_sched = response.data;
+             
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Recommended delivery schedule has been updated!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    KTApp.unblockPage();
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'System encountered unexpected error.' + error,
+                        showConfirmButton: true
+                    });
+                    KTApp.unblockPage();
+                }).finally( (response) => {
+            
+                });
+
+
+                $("#deliverySchedModal").modal('hide');
+            },
         },
         computed : {
             totalQty(){

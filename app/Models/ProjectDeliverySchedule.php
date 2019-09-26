@@ -71,6 +71,31 @@ class ProjectDeliverySchedule extends Model
         return $data;
     }
 
+    public function get_po_delivery_schedule($po_line_id){
+
+        $sql = "delivery_schedule_id,
+                requirement_line_id,
+                quantity,
+                to_char(delivery_date,'YYYY-MM-DD') delivery_date,
+                to_char(delivery_date,'MM/DD/YYYY') delivery_date_disp,
+                to_char(suggested_delivery_date,'YYYY-MM-DD') suggested_delivery_date,
+                to_char(suggested_delivery_date,'MM/DD/YYYY') suggested_delivery_date_disp,
+                owner_id,
+                po_line_id,
+                'N' delete_flag";
+
+        $params = [
+            ['po_line_id' ,'=', $po_line_id],
+            ['module_id' ,'=', 2]
+        ];
+        
+        $data = $this
+                    ->selectRaw($sql)
+                    ->where($params)
+                    ->get();
+        return $data;
+    }
+
     public function update_delivery_schedule(
         $suggested_delivery_date,
         $updated_by,
@@ -102,6 +127,19 @@ class ProjectDeliverySchedule extends Model
         $this->where([
             [ 'requirement_line_id', '=', $requirement_line_id ]
         ])->delete();
+    }
+
+    public function update_delivery_sched($params){
+        $this
+            ->where([
+                [ 'delivery_schedule_id', '=' , $params['delivery_schedule_id'] ]
+            ])
+            ->update([
+                'quantity'              => $params['quantity'],
+                'delivery_date'         => $params['delivery_date'],
+                'updated_by'            => $params['updated_by'],
+                'update_user_source_id' => $params['update_user_source_id']
+            ]);
     }
 
 }
