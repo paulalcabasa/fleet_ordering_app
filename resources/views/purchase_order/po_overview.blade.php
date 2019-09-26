@@ -242,7 +242,7 @@
                                 </table> 
 
                             </div> 
-                            <div class="card-footer" v-if="action == 'validate'">>
+                            <div class="card-footer" v-if="action == 'validate'">
                                 <button type="button" @click="addRowSched" class="btn btn-primary btn-sm">Add</button>
                                 <button type="button" @click="saveDeliverySched" class="btn btn-primary btn-sm">Save</button>
                             </div>

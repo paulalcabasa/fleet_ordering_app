@@ -26,9 +26,15 @@ class PurchaseOrderController extends Controller
         POLines $m_pol,
         ProjectDeliverySchedule $m_delivery_sched
     ){
-       
+        
+
         $po_header_id = $request->po_header_id;
         $action       = $request->action;
+
+        if($action == "validate" && !in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        }
+
         $approval_id  = $request->approval_id;
         $po_details   = $m_poh->get_po_details($po_header_id);
         $attachments  = $m_attachment->get_po_attachments($po_header_id);
