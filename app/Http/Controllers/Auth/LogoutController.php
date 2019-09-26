@@ -12,13 +12,13 @@ class LogoutController extends Controller
 
     public function __construct()
     { 
-        $this->host = config('app.hostname');    
+        $this->host = config('app.hostname') . '/' . config('app.webapps_url');    
     }
     
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->flush();
-        return redirect()->intended($this->host.'/webapps_uat/login/logout');
+        return redirect()->intended($this->host.'/login/logout');
     }
 }
