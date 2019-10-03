@@ -167,12 +167,13 @@ class Approver extends Model
                     AND fs_app.vehicle_type = :vehicle_type
                     AND fs_app.user_type    = :user_type 
                     AND fs_app.status_id    = :status_id
-                    AND fs_app.module_code  = :module_code";
+                    ";
+                    // AND fs_app.module_code  = :module_code
         $params = [
             'vehicle_type' => $vehicle_type,
             'user_type'    => 'IPC_STAFF',
             'status_id'    => 1,
-            'module_code'  => 'PO',
+            //'module_code'  => 'PO',
         ];
         
         $query = DB::select($sql,$params);

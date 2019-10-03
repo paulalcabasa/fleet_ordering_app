@@ -1019,19 +1019,35 @@ class ProjectController extends Controller
             else if(in_array(session('user')['user_type_id'],array(32,33))){
                 $approval = $m_approval->get_project_approval_workflow($project_id);
                  
-                $total_approvers = 0;
-                $total_approve = 0;
-
+                $lcv_approve = false;
+                $cv_approve = false;
+                $total_lcv = 0;
+                $total_cv = 0;
                 foreach ($approval as $row) {
-                    if($row->user_type == 'IPC_STAFF'){
+                    if($row->user_type == 'IPC_STAFF' && $row->vehicle_type == 'LCV'){
                         if($row->status == 4){
-                            $total_approve++;
+                            $lcv_approve = true;
                         }
-                        $total_approvers++;
+                        $total_lcv++;
+                    }
+
+                    if($row->user_type == 'IPC_STAFF' && $row->vehicle_type == 'CV'){
+                        if($row->status == 4){
+                            $cv_approve = true;
+                        }
+                        $total_cv++;
                     }
                 }
 
-                if($total_approvers == $total_approve){
+                if($total_lcv == 0){ // if there are no approvers from LCV set approved to TRUE
+                    $lcv_approve = true;
+                }
+                if($total_cv == 0){ // if there are no approvers from CV set approved to TRUE
+                    $cv_approve = true;
+                }
+
+               // if($total_approvers == $total_approve){
+                if($lcv_approve && $cv_approve) {
                     $m_project->update_status(
                         $project_id,
                         11, // open 

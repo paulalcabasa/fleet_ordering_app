@@ -242,7 +242,7 @@
                                 </table> 
 
                             </div> 
-                            <div class="card-footer" v-if="action == 'validate'">>
+                            <div class="card-footer" v-if="action == 'validate'">
                                 <button type="button" @click="addRowSched" class="btn btn-primary btn-sm">Add</button>
                                 <button type="button" @click="saveDeliverySched" class="btn btn-primary btn-sm">Save</button>
                             </div>
@@ -368,7 +368,7 @@
                     project_id:   self.po_details.project_id
                 })
                 .then(function (response) {
-                    window.location.href = self.base_url +  "/all-po";
+                  //  window.location.href = self.base_url +  "/all-po";
                 })
                 .catch(function (error) {
                     Swal.fire({
@@ -376,7 +376,7 @@
                         title: 'System encountered unexpected error.' + error,
                         showConfirmButton: true
                     });
-                    KTApp.unblockPage();
+                    KTApp.unblock("#validateModal .modal-content",{});
                 }).finally( (response) => {
             
                 });

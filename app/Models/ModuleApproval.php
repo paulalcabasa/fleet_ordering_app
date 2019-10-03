@@ -252,15 +252,15 @@ class ModuleApproval extends Model
                         usr_app.email_address,
                         ma.remarks
                 FROM ipc_dms.fs_module_approval ma
-                    LEFT JOIN ipc_dms.fs_projects fp
+                    INNER JOIN ipc_dms.fs_projects fp
                         ON ma.module_reference_id = fp.project_id
                         AND ma.column_reference = 'project_id'
                         AND ma.table_reference = 'fs_projects'
-                    LEFT JOIN ipc_dms.fs_status fs
+                    INNER JOIN ipc_dms.fs_status fs
                         ON fs.status_id = ma.status
-                    LEFT JOIN ipc_dms.fs_approvers fa
+                    INNER JOIN ipc_dms.fs_approvers fa
                         ON fa.approver_id = ma.approver_id
-                    LEFT JOIN ipc_dms.ipc_portal_users_v usr_app
+                    INNER JOIN ipc_dms.ipc_portal_users_v usr_app
                         ON usr_app.user_id = fa.approver_user_id
                         AND usr_app.user_source_id = fa.approver_source_id  
                 WHERE 1 = 1
@@ -340,6 +340,45 @@ class ModuleApproval extends Model
         $query = DB::select($sql,$params);
     
         return $query[0]->ctr;
+    }
+
+
+    public function get_po_approval_workflow($po_header_id){
+        $sql = "SELECT ma.approval_id,
+                        poh.po_header_id,
+                        fs.status_name,
+                        ma.approver_id,
+                        fa.approver_user_id,
+                        fa.approver_source_id,
+                        usr_app.first_name || ' ' || usr_app.last_name approver_name,
+                        to_char(ma.update_date,'mm/dd/yyyy HH:MI:SS AM') date_approved,
+                        ma.status,
+                        fa.user_type,
+                        fa.vehicle_type,
+                        usr_app.email_address,
+                        ma.remarks
+                FROM ipc_dms.fs_module_approval ma
+                    INNER JOIN ipc_dms.fs_po_headers poh
+                        ON ma.module_reference_id = poh.po_header_id
+                        AND ma.column_reference = 'po_header_id'
+                        AND ma.table_reference = 'fs_po_headers'
+                    INNER JOIN ipc_dms.fs_status fs
+                        ON fs.status_id = ma.status
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v usr_app
+                        ON usr_app.user_id = fa.approver_user_id
+                        AND usr_app.user_source_id = fa.approver_source_id  
+                WHERE 1 = 1
+                    AND ma.module_reference_id = :po_header_id
+                ORDER BY ma.hierarchy";
+        
+        $params = [
+            'po_header_id' => $po_header_id
+        ];
+        $query = DB::select($sql,$params);
+    
+        return $query;
     }
 
     public function delete_approval($approval_id){
