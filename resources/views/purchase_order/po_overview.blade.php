@@ -368,7 +368,7 @@
                     project_id:   self.po_details.project_id
                 })
                 .then(function (response) {
-                  //  window.location.href = self.base_url +  "/all-po";
+                    window.location.href = self.base_url +  "/all-po";
                 })
                 .catch(function (error) {
                     Swal.fire({
