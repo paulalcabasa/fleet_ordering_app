@@ -378,10 +378,37 @@ class PurchaseOrderController extends Controller
         ];
         $m_activity_logs->insert_log($activity_log);
 
-        $pending = $m_approval->get_pending_per_po($po_header_id);
+        $pending = $m_approval->get_po_approval_workflow($po_header_id);
+        
+        $lcv_approve = false;
+        $cv_approve = false;
+        $total_lcv = 0;
+        $total_cv = 0;
+        foreach ($pending as $row) {
+            if($row->user_type == 'IPC_STAFF' && $row->vehicle_type == 'LCV'){
+                if($row->status == 4){
+                    $lcv_approve = true;
+                }
+                $total_lcv++;
+            }
 
+            if($row->user_type == 'IPC_STAFF' && $row->vehicle_type == 'CV'){
+                if($row->status == 4){
+                    $cv_approve = true;
+                }
+                $total_cv++;
+            }
+        }
+
+        if($total_lcv == 0){
+            $lcv_approve = true;
+        }
+        if($total_cv == 0){
+            $cv_approve = true;
+        }
         // if no more approvals are pending
-        if($pending == 0){
+        //if($pending == 0){
+        if($lcv_approve && $cv_approve){
             $m_poh->update_status(
                 $po_header_id,
                 $status_id, ///approve or reject
