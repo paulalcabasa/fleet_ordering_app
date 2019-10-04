@@ -23,9 +23,9 @@
                                         <div class="kt-user-card__name">
                                             {{ session('user.first_name') }} {{ session('user.last_name') }}
                                         </div>
-                                        <div class="kt-user-card__badge">
+                                       <!--  <div class="kt-user-card__badge">
                                             <span class="btn btn-success btn-sm btn-bold btn-font-md">23 messages</span>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                     <!--end: Head -->
@@ -45,7 +45,7 @@
                                                 </div>
                                             </div>
                                         </a>
-                                        <a href="#" class="kt-notification__item">
+                                        <!-- <a href="#" class="kt-notification__item">
                                             <div class="kt-notification__item-icon">
                                                 <i class="flaticon2-mail kt-font-warning"></i>
                                             </div>
@@ -57,8 +57,8 @@
                                                     Inbox and tasks
                                                 </div>
                                             </div>
-                                        </a>
-                                        <a href="#" class="kt-notification__item">
+                                        </a> -->
+                                        <!-- <a href="#" class="kt-notification__item">
                                             <div class="kt-notification__item-icon">
                                                 <i class="flaticon2-rocket-1 kt-font-danger"></i>
                                             </div>
@@ -83,7 +83,7 @@
                                                     latest tasks and projects
                                                 </div>
                                             </div>
-                                        </a>
+                                        </a> -->
                                         <div class="kt-notification__custom">
                                             <a href="{{ route('api_logout') }}"  class="btn btn-label-brand btn-sm btn-bold">Sign Out</a>
                                         </div>

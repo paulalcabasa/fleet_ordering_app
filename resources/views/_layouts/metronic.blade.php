@@ -54,7 +54,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- end::Head -->
 
     <!-- begin::Body -->
-    <body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
+    <body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading" id="kt_body_class">
+    <!-- kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-aside--minimize -->
 
         <!-- begin:: Page -->
 
@@ -66,7 +67,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 </a>
             </div>
             <div class="kt-header-mobile__toolbar">
-                <button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"><span></span></button>
+                <button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"><span>1</span></button>
                 <button class="kt-header-mobile__toggler" id="kt_header_mobile_toggler"><span></span></button>
                 <button class="kt-header-mobile__topbar-toggler" id="kt_header_mobile_topbar_toggler"><i class="flaticon-more"></i></button>
             </div>
@@ -237,6 +238,9 @@ License: You must have a valid license purchased only from themeforest(the above
                     }
                 }
             };
+            
+          
+
         </script>
 
         <!-- end::Global Config -->
@@ -246,6 +250,32 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{{ asset('public/js/metronic.bundle.js') }}"></script> 
         <script src="{{ asset('public/metronic/assets/vendors/general/autosize/dist/autosize.js') }}" type="text/javascript"></script>
         @stack('scripts')
+        <script>
+            var btn = document.getElementById('kt_aside_toggler');
+            var body = document.getElementById('kt_body_class');
+
+            if(localStorage.getItem('kt_body_class')){
+                body.className = localStorage.getItem('kt_body_class');
+            }
+
+            btn.addEventListener("click", function(){
+                var new_class = "";
+                
+                // if current class has minimize then remove it
+                if(body.classList.contains('kt-aside--minimize')){
+                    new_class = "kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading kt-aside--minimize";
+                }
+                else {
+                    new_class = "kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading";
+                }
+
+                localStorage.setItem('kt_body_class' , new_class);
+                
+                // set class name of body
+                body.className = new_class;
+
+            }); 
+        </script>
     </body>
     <!-- end::Body -->
 </html>
