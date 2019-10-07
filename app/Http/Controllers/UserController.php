@@ -20,14 +20,14 @@ class UserController extends Controller
         foreach($users as $row){
             $last_login = $row->last_login != "" ? Carbon::parse($row->last_login)->diffForHumans() : "";
             $arr = [
-                'last_login' => $last_login,
-                'first_name' => $row->first_name,
-                'last_name' => $row->last_name,
+                'last_login'     => $last_login,
+                'first_name'     => $row->first_name,
+                'last_name'      => $row->last_name,
                 'dealer_account' => $row->dealer_account,
                 'user_type_name' => $row->user_type_name,
-                'status_name' => $row->status_name,
-                'customer_id' => $row->customer_id,
-                'user_id' => $row->user_id,
+                'status_name'    => $row->status_name,
+                'customer_id'    => $row->customer_id,
+                'user_id'        => $row->user_id,
                 'user_source_id' => $row->user_source_id
             ];
             array_push($user_list,$arr);

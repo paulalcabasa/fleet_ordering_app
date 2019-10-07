@@ -128,6 +128,11 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('save-po-schedule' , 'DeliveryScheduleController@savePOSchedule');
 	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
 	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
+
+	// APPROVERS
+	
+	Route::get('approver-list' , 'ApproverController@approver_list');
+	Route::post('add-approver' , 'ApproverController@add_approver');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

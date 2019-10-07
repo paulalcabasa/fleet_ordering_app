@@ -194,6 +194,31 @@ class Approver extends Model
         Model::updateOrCreate($attrs,$values);
     }
 
+    public function add_approver($params){
+        $this->insert($params);
+    }
+
+    public function get_approvers(){
+        $sql = "SELECT fs_app.approver_id,
+                        usr.first_name || ' ' || usr.last_name approver_name,
+                        fs_app.user_type,
+                        fs_app.vehicle_type,
+                        fs_app.requestor_user_id,
+                        fs_app.approver_user_id,
+                        fs_app.hierarchy,
+                        fs_app.approver_source_id,
+                        usr.email_address,
+                        fs_app.module_code,
+                        fs_app.status_id
+                FROM ipc_dms.fs_approvers fs_app
+                LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                    ON usr.user_id = fs_app.approver_user_id
+                    AND usr.user_source_id = fs_app.approver_source_id
+                WHERE 1 = 1";
+        $query = DB::select($sql);
+        return $query;
+    }
+
     
 
 
