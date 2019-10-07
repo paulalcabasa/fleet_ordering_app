@@ -101,23 +101,13 @@
                     <span class="kt-menu__link-text">Users</span>
                 </a>
             </li>
-            @endif
-           <!--  @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__item {{ request()->is('approvers') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/fwpc-list') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-user-settings"></i>
+                <a href="{{ url('/approver-list') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-users-1"></i>
                     <span class="kt-menu__link-text">Approvers</span>
                 </a>
             </li>
-            @endif  -->
-           <!--  @if(in_array(session('user')['user_type_id'], array(32,33)))
-            <li class="kt-menu__item {{ request()->is('signatories') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
-                <a href="{{ url('/fwpc-list') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-edit-1"></i>
-                    <span class="kt-menu__link-text">Signatories</span>
-                </a>
-            </li>
-            @endif -->     
+            @endif 
         </ul>
     </div>
 </div>

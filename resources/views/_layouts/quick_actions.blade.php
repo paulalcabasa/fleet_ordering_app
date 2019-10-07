@@ -1,5 +1,5 @@
 <div class="kt-header__topbar-item dropdown">
-    <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px,0px" aria-expanded="true">
+   <!--  <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="30px,0px" aria-expanded="true">
         <span class="kt-header__topbar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -11,7 +11,7 @@
                 </g>
             </svg> 
         </span>
-    </div>
+    </div> -->
     <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
         <form>
 
