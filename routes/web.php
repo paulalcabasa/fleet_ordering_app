@@ -133,6 +133,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	
 	Route::get('approver-list' , 'ApproverController@approver_list');
 	Route::post('add-approver' , 'ApproverController@add_approver');
+	Route::post('update-approver-status' , 'ApproverController@update_approver_status');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

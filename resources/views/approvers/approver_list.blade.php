@@ -44,7 +44,7 @@
                     <td nowrap>
                         <span class="kt-switch kt-switch--sm kt-switch--icon">
                             <label>
-                                <input type="checkbox" v-model="row.status" :checked="row.status"/>
+                                <input type="checkbox" @click="updateStatus(row)" :value="row.status" v-model="row.status" :checked="row.status"/>
                                 <span></span>
                             </label>
                         </span>
@@ -169,7 +169,45 @@
                 .finally( (response) => {
 
                 });
-            }
+            },
+            updateStatus(row){
+                var self = this;
+                axios.post('update-approver-status',{
+                    approver_id: row.approver_id,
+                    status     : row.status
+                })
+                .then( (response) => {
+                    if(row.status){
+                        self.toast('success', row.approver_name + ' has been activated!');
+                    }
+                    else {
+                        self.toast('error', row.approver_name + ' has been deactivated');
+                    }
+                })
+                .catch( (error) => {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'System encountered unexpected error.' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+
+                });
+            },
+            toast(type,message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000
+                });
+
+                Toast.fire({
+                    type: type,
+                    title: message
+                });
+            },
         },
         created: function () {
             // `this` points to the vm instance
@@ -180,7 +218,9 @@
             var table = $("#datatable").DataTable({
                 responsive:true
             });
-        }
+        },
+
+        
     });
 </script>
 @endpush
