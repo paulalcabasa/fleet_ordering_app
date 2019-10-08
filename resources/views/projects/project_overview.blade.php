@@ -75,7 +75,7 @@
                 <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="projectDetails.status_name != 'Cancelled'">Cancel</button>
                 <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name == 'Open'">Close</button>
                 <button type="button" class="btn btn-success btn-sm" @click="reopenProject()" v-if="projectDetails.status_name == 'Closed'">Re-open</button>
-                <!-- <button type="button" class="btn btn-primary btn-sm" @click="closeProject()">Print</button> -->
+                <a :href="base_url + '/print-project/' + projectDetails.project_id" target="_blank"  class="btn btn-primary btn-sm">Print</a>
                 @endif
             </div>
         </div>

@@ -152,6 +152,7 @@ class Customer extends Model
                 FROM ipc_dms.fs_customers fc 
                     LEFT JOIN ipc_dms.fs_organization_types fot
                         ON fc.organization_type_id = fot.organization_type_id
+                    
                 WHERE 1 = 1
                     AND fc.customer_id = :customer_id";
 

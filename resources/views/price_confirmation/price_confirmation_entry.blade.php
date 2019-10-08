@@ -64,7 +64,7 @@
                 </div>
                 <div class="details-item">
                     <span class="details-label">Address</span>
-                    <span class="details-subtext">@{{ customerDetails.address }}</span>
+                    <span>@{{ customerDetails.address }}</span>
                 </div>
             </div>
         </div>

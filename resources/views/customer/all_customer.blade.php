@@ -88,11 +88,8 @@
                     <td>@{{ row.tin }}</td>
                     <td>@{{ row.status_id }}</td>
                     <td nowrap>
-                        <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                        <a :href="base_url + '/customer-overview/' + row.customer_id " class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                           <i class="la la-eye"></i>
-                        </a>
-                        <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
-                          <i class="la la-edit"></i>
                         </a>
                     </td>
                 </tr>              
@@ -122,7 +119,7 @@ var KTDatatablesBasicScrollable = function() {
                     'excelHtml5'
                 ],
 
-                        responsive:true,
+                responsive:true,
             columnDefs: [
                 {
                     targets: 5,
@@ -169,7 +166,8 @@ jQuery(document).ready(function() {
         el : "#app",
         data: {
          
-            allCustomers : {!! json_encode($all_customers) !!}
+            allCustomers : {!! json_encode($all_customers) !!},
+            base_url : {!! json_encode($base_url) !!}
         },
         created: function () {
             // `this` points to the vm instance

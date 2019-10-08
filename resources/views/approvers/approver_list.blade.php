@@ -85,10 +85,11 @@
                         <label>Approver Type</label>
                         <select class="form-control" v-model="cur_approver_type" v-select style="width:100%;">
                             <option value="">Choose approver type</option>
-                            <option value="DLR_MANAGER">DLR_MANAGER</option>
-                            <option value="IPC_STAFF">IPC_STAFF</option>
-                            <option value="IPC_EXPAT">IPC_EXPAT</option>
-                            <option value="IPC_SUPERVISOR">IPC_SUPERVISOR</option>
+                            <option value="DLR_MANAGER">Dealer Manager</option>
+                            <option value="IPC_MANAGER">IPC Manager</option>
+                            <option value="IPC_STAFF">Fleet Staff</option>
+                            <option value="IPC_EXPAT">Expat</option>
+                            <option value="IPC_SUPERVISOR">Supervisor</option>
                         </select>
                     </div>
                 </form>

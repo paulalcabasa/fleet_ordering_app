@@ -24,8 +24,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	/* Customers */
 	Route::get('all-customers', 'CustomerController@all_customers');
-	Route::get('manage-customer/{action}', 'CustomerController@manage_customer');
+	Route::get('customer-overview/{customer_id}', 'CustomerController@customer_overview');
 	Route::get('manage-customer/{action}/{customer_id}', 'CustomerController@manage_customer');
+
+
 	Route::get('/ajax_get_scope/', 'CustomerController@ajax_get_scope');
 	Route::get('/ajax-get-customer-data/{customer_name}', 'CustomerController@ajax_get_customer_data');
 	Route::get('/ajax-get-customers/', 'CustomerController@ajax_get_customers');
@@ -74,6 +76,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('print-fpc/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
 	Route::post('update-suggested-date', 'DeliveryScheduleController@update_suggested_date');
 	Route::get('ajax-get-filtered-projects', 'ProjectController@ajax_get_filtered_projects');
+	Route::get('print-project/{project_id}', 'ProjectController@print_project');
+
+
 	/* FPC */
 	Route::get('fpc-overview/{project_id}', 'PriceConfirmationController@fpc_overview');
 	Route::get('ajax-get-fpc-details/{fpc_item_id}/{requirement_line_id}', 'PriceConfirmationController@ajax_get_fpc_details');
