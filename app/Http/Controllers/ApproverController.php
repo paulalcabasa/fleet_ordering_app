@@ -61,4 +61,19 @@ class ApproverController extends Controller
         ];
         $this->approver->add_approver($params);    
     }
+
+    public function update_approver_status(Request $request){
+
+        $status_id = $request->status ? 1 : 2;
+  
+        $params = [
+            'approver_id'           => $request->approver_id,
+            'status_id'             => $status_id,
+            'updated_by'            => session('user')['user_id'],
+            'update_user_source_id' => session('user')['source_id']
+        ];       
+
+        $this->approver->update_status($params);
+        
+    }
 }

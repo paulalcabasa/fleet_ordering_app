@@ -219,10 +219,16 @@ class Approver extends Model
         return $query;
     }
 
-    
-
-
-
-    
+    public function update_status($params){
+        $this
+            ->where([
+            	[ 'approver_id', '=' , $params['approver_id'] ],
+            ])
+            ->update([
+            	'status_id'             => $params['status_id'],
+            	'updated_by'            => $params['updated_by'],
+            	'update_user_source_id' => $params['update_user_source_id']
+            ]);
+    }    
 
 }

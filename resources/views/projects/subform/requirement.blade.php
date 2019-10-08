@@ -25,20 +25,20 @@
             </tr>
 
             <tr class="kt-font-bold bg-light-gray-1">
-               <th colspan="2">@{{ vehicle_type }}</th>
+               <th colspan="3">@{{ vehicle_type }}</th>
                <th>@{{ sumOrderQty(vehicle_type) }}</th> 
                <th>@{{ sumPOQty(vehicle_type) }}</th> 
-               <th colspan="3">@{{ formatPrice(sumSuggestedPrice(vehicle_type)) }}</th> 
+               <th>@{{ formatPrice(sumSuggestedPrice(vehicle_type)) }}</th> 
             </tr>
        
         </tbody>
 
         <tfoot>
             <tr class="bg-light-gray-2">
-                <th colspan="2">Grand Total</th>
+                <th colspan="3">Grand Total</th>
                 <th>@{{ totalQty }}</th>
                 <th>@{{ totalPOQty }}</th>
-                <th colspan="3">@{{ formatPrice(totalSuggestedPrice) }}</th>
+                <th>@{{ formatPrice(totalSuggestedPrice) }}</th>
             </tr>
         </tfoot>
     </table>

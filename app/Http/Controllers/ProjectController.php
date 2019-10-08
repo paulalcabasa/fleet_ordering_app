@@ -30,11 +30,14 @@ use App\Models\FPC_Item;
 use App\Models\POHeaders;
 use App\Models\FWPC;
 use App\Models\Dealer;
-
+use PDF;
 
 class ProjectController extends Controller
 {
     
+
+
+
     public function manage_project(
         Request $request, 
         OrganizationTypes $org_types, 
@@ -1614,6 +1617,33 @@ class ProjectController extends Controller
             }
         }
         
+    }
+
+
+    public function print_project(
+        Request $request,
+        Project $m_project,
+        CustomerContact $m_contact,
+        ContactPersons $m_contact_person,
+        RequirementHeader  $m_requirement,
+        Competitor  $m_competitor
+    ){
+        $project_id      = $request->project_id;
+        $project_details = $m_project->get_details($project_id);
+        $contacts        = $m_contact->get_contacts($project_details->project_id);
+        $contact_persons = $m_contact_person->get_contact_persons($project_details->project_id);
+        $requirement     = $m_requirement->get_requirements($project_details->project_id);
+        $requirement     = collect($requirement)->groupBy('vehicle_type');
+        $competitors     = $m_competitor->get_competitors($project_details->project_id);
+        $data = [
+            'project_details' => $project_details,
+            'contacts'        => $contacts,
+            'contact_persons' => $contact_persons,
+            'requirement'     => $requirement,
+            'competitors'     => $competitors,
+        ];
+        $pdf = PDF::loadView('pdf.print_project', $data);
+        return $pdf->setPaper('a4','portrait')->stream();
     }
  
 }

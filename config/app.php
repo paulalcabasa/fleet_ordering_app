@@ -74,7 +74,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Fleet Ordering System'),
+    'name' => 'Fleet Ordering System',
 
     /*
     |--------------------------------------------------------------------------

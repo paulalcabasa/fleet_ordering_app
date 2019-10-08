@@ -11,12 +11,22 @@ class CustomerController extends Controller
 {
     //
 
+    private $customer;
+    private $affiliate;
+    private $attachment;
+
+    public function __construct(){
+        $this->customer = new Customer();
+        $this->affiliate = new CustomerAffiliates();
+        $this->attachment = new Attachment();
+    }
     public function all_customers(Customer $m_customer){
         $dealer_id = session('user')['customer_id'];
         $user_type = session('user')['user_type_name'];
         $all_customers = $m_customer->get_all_customers($user_type,$dealer_id);
         $page_data = [
-            'all_customers' => $all_customers
+            'all_customers' => $all_customers,
+            'base_url' => url('/')
         ];
     	return view('customer.all_customer', $page_data);
     }
@@ -104,6 +114,22 @@ class CustomerController extends Controller
         $query = $request->all();
         $customers = $m_customer->get_customers_by_project($query['term']);
         return json_encode($customers);
+    }
+    
+    public function customer_overview(Request $request){
+        $customer_id      = $request->customer_id;
+        $affiliates       = $this->affiliate->get_customer_affiliates($customer_id);
+        $attachments      = $this->attachment->get_attachments($customer_id);
+        $customer_details = $this->customer->get_customer_details_by_id($customer_id);
+
+        $page_data = array(
+            'customer_details' => $customer_details,
+            'attachments'      => $attachments,
+            'affiliates'       => $affiliates,
+            'baseUrl'          => url('/')
+        );
+
+        return view('customer.customer_overview',$page_data);
     }
 
 }

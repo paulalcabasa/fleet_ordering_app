@@ -44,7 +44,7 @@
                     <td nowrap>
                         <span class="kt-switch kt-switch--sm kt-switch--icon">
                             <label>
-                                <input type="checkbox" v-model="row.status" :checked="row.status"/>
+                                <input type="checkbox" @click="updateStatus(row)" :value="row.status" v-model="row.status" :checked="row.status"/>
                                 <span></span>
                             </label>
                         </span>
@@ -85,10 +85,11 @@
                         <label>Approver Type</label>
                         <select class="form-control" v-model="cur_approver_type" v-select style="width:100%;">
                             <option value="">Choose approver type</option>
-                            <option value="DLR_MANAGER">DLR_MANAGER</option>
-                            <option value="IPC_STAFF">IPC_STAFF</option>
-                            <option value="IPC_EXPAT">IPC_EXPAT</option>
-                            <option value="IPC_SUPERVISOR">IPC_SUPERVISOR</option>
+                            <option value="DLR_MANAGER">Dealer Manager</option>
+                            <option value="IPC_MANAGER">IPC Manager</option>
+                            <option value="IPC_STAFF">Fleet Staff</option>
+                            <option value="IPC_EXPAT">Expat</option>
+                            <option value="IPC_SUPERVISOR">Supervisor</option>
                         </select>
                     </div>
                 </form>
@@ -169,7 +170,45 @@
                 .finally( (response) => {
 
                 });
-            }
+            },
+            updateStatus(row){
+                var self = this;
+                axios.post('update-approver-status',{
+                    approver_id: row.approver_id,
+                    status     : row.status
+                })
+                .then( (response) => {
+                    if(row.status){
+                        self.toast('success', row.approver_name + ' has been activated!');
+                    }
+                    else {
+                        self.toast('error', row.approver_name + ' has been deactivated');
+                    }
+                })
+                .catch( (error) => {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'System encountered unexpected error.' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+
+                });
+            },
+            toast(type,message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000
+                });
+
+                Toast.fire({
+                    type: type,
+                    title: message
+                });
+            },
         },
         created: function () {
             // `this` points to the vm instance
@@ -180,7 +219,9 @@
             var table = $("#datatable").DataTable({
                 responsive:true
             });
-        }
+        },
+
+        
     });
 </script>
 @endpush
