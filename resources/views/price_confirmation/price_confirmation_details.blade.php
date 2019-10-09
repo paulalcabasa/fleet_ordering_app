@@ -152,11 +152,6 @@
                                     <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
                                     <a href="#"  title="Show details"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
                                 </td>
-                                <!--     
-                                <td nowrap>
-                                    <a href="#" @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-primary btn-sm btn-icon btn-circle"><i class="fas fa-money-bill-wave"></i></a>
-                                    <a href="#" @click="showAdditionalDetails(order)" class="btn btn-success btn-sm btn-icon btn-circle"><i class="la la-info-circle"></i></a> 
-                                </td> -->
                                 <td> @{{ order.sales_model }} </td>
                                 <td> @{{ order.color }} </td>
                                 <td> @{{ order.quantity }} </td>
@@ -777,7 +772,7 @@
                 return this.curFreebies.reduce((acc,item) => parseFloat(acc) + (item.cost_to == 5 ? parseFloat(item.amount) : 0),0);
             },
             calculateCost(){
-                return (parseFloat(this.curModel.suggested_retail_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies));
+                return (parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies));
             },
             calculateMargin(){
                 return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
@@ -798,7 +793,8 @@
                 return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.calculateVAT);
             },
             calculateVAT(){
-                return (parseFloat(this.curModel.suggested_retail_price) / 1.12) * 0.01;
+             //   return (parseFloat(this.curModel.wholesale_price) / 1.12) * 0.01;
+                return parseFloat(this.curModel.wholesale_price * 0.12);
             }
         }
     });

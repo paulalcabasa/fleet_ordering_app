@@ -137,6 +137,18 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
+                                        <label class="col-lg-3 col-form-label">VAT</label>
+                                        <div class="col-lg-9">
+                                            <input 
+                                                type="text" 
+                                                class="form-control form-control-sm" 
+                                                :value="formatPrice(calculateVAT)" 
+                                                disabled="disabled" 
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">SRP</label>
                                         <div class="col-lg-9">
                                             <input 
