@@ -196,7 +196,6 @@
                             $index = 1;
                             $total_items = count($item['other_items'])
                         ?>
-                 
                         @foreach($item['other_items'] as $freebie)
                         <span>{{ $freebie->description }}</span>
                             @if($index != $total_items)
