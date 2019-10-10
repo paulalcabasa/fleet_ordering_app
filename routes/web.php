@@ -135,10 +135,16 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
 
 	// APPROVERS
-	
 	Route::get('approver-list' , 'ApproverController@approver_list');
 	Route::post('add-approver' , 'ApproverController@add_approver');
 	Route::post('update-approver-status' , 'ApproverController@update_approver_status');
+
+	// PRICELIST
+	Route::get('all-pricelist' , 'PriceListController@all_pricelist');
+	Route::post('add-pricelist' , 'PriceListController@add_pricelist');
+	Route::get('pricelist-details/{pricelist_header_id}' , 'PriceListController@pricelist_details');
+	Route::post('add-vehicle-price' , 'PriceListController@add_pricelist_line');
+	Route::get('get-pricelist-lines/{pricelist_header_id}' , 'PriceListController@get_pricelist_lines');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

@@ -36,7 +36,6 @@
                                 <input type="date" class="form-control" name="" v-model="end_date">
                             </div>
                         </div>
-
                         <div class="form-group row" style="margin-bottom:1em !important;">
                             <label class="col-2  col-form-label"></label>
                             <div class="col-10">

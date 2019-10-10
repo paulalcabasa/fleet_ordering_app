@@ -97,6 +97,7 @@ class FWPCController extends Controller
         $fwpc_id = $request->fwpc_id;
         $fwpc_details = $m_fwpc->get_fwpc_by_id($fwpc_id);
         $sales_persons = $m_sales_persons->get_sales_persons($fwpc_details->project_id);
+        
         $so_lines = $m_sol->get_fwpc_lines($fwpc_details->fpc_project_id);
 
         $wht_tax = 0;

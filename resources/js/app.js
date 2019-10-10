@@ -8,3 +8,6 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+const VueInputMask = require('vue-inputmask').default
+
+Vue.use(VueInputMask)

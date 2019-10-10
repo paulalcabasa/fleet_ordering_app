@@ -237,11 +237,11 @@ class PriceConfirmationController extends Controller
             $arr = [
                 'fpc_project_id'         => $item->fpc_project_id,
                 'requirement_line_id'    => $item->requirement_line_id,
-                'suggested_retail_price' => $item->price,
-                'wholesale_price'        => $item->price,
-                'fleet_price'            => $item->price,
-                'dealers_margin'         => 6, // default to 6 but should be from lookup,
-                'lto_registration'       => 10500, // default to 10500 but should be from lookup
+                'suggested_retail_price' => 0, //$item->price,
+                'wholesale_price'        => 0, //$item->price,
+                'fleet_price'            => 0, //$item->price,
+                'dealers_margin'         => 0, // default to 6 but should be from lookup,
+                'lto_registration'       => 0, // default to 10500 but should be from lookup
                 'created_by'             => session('user')['user_id'],
                 'create_user_source_id'  => session('user')['source_id'],
                 'creation_date'          => Carbon::now()
@@ -436,7 +436,6 @@ class PriceConfirmationController extends Controller
             $editable = false;
             $status = "Updated";
         }
-
 
         return [
             'status' => $status,
