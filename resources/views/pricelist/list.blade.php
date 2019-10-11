@@ -13,7 +13,7 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="#" data-target="#newModal" data-toggle="modal" class="btn btn-primary btn-sm">
+            <a href="#" @click.prevent="newPriceList" class="btn btn-primary btn-sm">
                 <span class="kt-hidden-mobile">New Price List</span>
             </a>
         </div>
@@ -37,6 +37,9 @@
                             <a :href="base_url + '/pricelist-details/' + row.pricelist_header_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" >
                                 <i class="la la-eye"></i>
                             </a>
+                            <a href="#" @click.prevent="editData(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md" >
+                                <i class="la la-edit"></i>
+                            </a>
                         </td>
                         <td>@{{ row.name }}</td>
                         <td>@{{ row.description }}</td>
@@ -56,7 +59,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Pricelist</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Pricelist</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -64,11 +67,23 @@
                 <form class="form">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" v-model='pricelist_name' />
+                        <input type="text" v-if="action == 'add'" class="form-control" v-model='pricelist_name' />
+                        <input type="text" v-if="action == 'edit'" readonly="readonly" class="form-control" :value="pricelist_name" />
                     </div>
                     <div class="form-group">
                         <label>Description</label>
                         <textarea class="form-control" v-model='description'></textarea>
+                    </div>
+                    <div class="form-group" v-if="action == 'edit'">
+                        <label class="col-form-label">Status</label>
+                        <div>
+                            <span class="kt-switch kt-switch--sm kt-switch--icon">
+                                <label>
+                                    <input type="checkbox" v-model="status" :checked="status" />
+                                    <span></span>
+                                </label>
+                            </span>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -112,21 +127,57 @@
         data: {
             pricelist_name: '',
             description   : '',
+            status        : '',
+            action        : '',
+            pricelist_header_id : '',
             headers       : {!! json_encode($headers) !!},
             status_colors : {!! json_encode($status_colors) !!},
             base_url      : {!! json_encode($base_url) !!}
         },
         methods :{
+            newPriceList(){
+                this.action = "add";
+                this.pricelist_name = "";
+                this.description = "";
+                this.description = "";
+                $("#newModal").modal('show');
+            },
             addPriceList(){
                 var self = this;
+                var errors = [];
+                if(self.action == "add"){
+                    if(self.pricelist_name == ""){
+                        errors.push('Kindly enter the pricelist name.');                    
+                    }
+                }
+
+                if(errors.length > 0){
+                    var message = "<ul>";
+                    for(var msg of errors){
+                        message += "<li>" + msg + "</li>";
+                    }
+                    message += "<ul>";
+                    Swal.fire({
+                        type: 'error',
+                        title: message,
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+
                 axios.post('add-pricelist',{
                     pricelist_name : self.pricelist_name,
-                    description : self.description
+                    description : self.description,
+                    status : self.status,
+                    action : self.action,
+                    pricelist_header_id : self.pricelist_header_id
                 })
                 .then( (response) => {
+                
                     if(response.data.status == 500){
                         Swal.fire({
-                            type: 'success',
+                            type: 'error',
                             title: response.data.msg,
                             showConfirmButton: true,
                             timer: 1500
@@ -134,7 +185,31 @@
                         return false;
                     }
 
-                    window.location.href = base_url + "pricelist-details/" + response.data.pricelist_header_id;
+                    if(self.action == "add"){
+                        var msg = response.data.msg;
+                        var pricelist_header_id = response.data.pricelist_header_id;
+                        Swal.fire({
+                            type: 'success',
+                            title: msg,
+                            showConfirmButton: true,
+                            timer: 1500,
+                            onClose : function(data){
+                                window.location.href = self.base_url + "/pricelist-details/" + pricelist_header_id;
+                            }
+                        });
+                    }
+
+                    else if(self.action == "edit"){
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Successfully updated pricelist!',
+                            showConfirmButton: true,
+                            timer: 1500,
+                            onClose : function(data){
+                                window.location.reload();
+                            }
+                        });
+                    }
                 })
                 .catch( (error) => {
 
@@ -142,6 +217,14 @@
                 .finally( (response) => {
 
                 });
+            },
+            editData(row){
+                this.action              = "edit";
+                this.pricelist_header_id = row.pricelist_header_id;
+                this.pricelist_name      = row.name;
+                this.description         = row.description;
+                this.status              = row.status == 1 ? true : false;
+                $("#newModal").modal('show');
             },
             toast(type,message) {
                 const Toast = Swal.mixin({

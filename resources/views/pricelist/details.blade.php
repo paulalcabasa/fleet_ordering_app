@@ -80,16 +80,16 @@
                 <tbody>
                      <tr v-for="(row,index) in pricelist_lines">
                             <td>
-                                <a href="#" v-if="row.status == 1" @click.prevent="updateLine(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Edit">
+                                <a href="#" @click.prevent="updateLine(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Edit">
                                 <i class="la la-edit"></i>
                                 </a>
                             </td>
                             <td>@{{ row.sales_model }}</td>
                             <td>@{{ row.color }}</td>
-                            <td>@{{ row.srp }}</td>
-                            <td>@{{ row.wsp }}</td>
-                            <td>@{{ row.promo }}</td>
-                            <td>@{{ row.lto_registration }}</td>    
+                            <td>@{{ formatPrice(row.srp) }}</td>
+                            <td>@{{ formatPrice(row.wsp) }}</td>
+                            <td>@{{ formatPrice(row.promo) }}</td>
+                            <td>@{{ formatPrice(row.lto_registration) }}</td>    
                             <td>
                                 <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
                             </td>    
@@ -342,17 +342,7 @@
                         showConfirmButton: true,
                         timer: 1500
                     });
-
-                    $("#newModal").modal('hide');
-                    /* self.curModel.wsp               = 0;
-                    self.curModel.srp               = 0;
-                    self.curModel.inventory_item_id = 0;
-                    self.curModel.lto_registration  = 0;
-                    self.curModel.promo             = 0;
-                    self.selected_model             = -1;
-                    self.selected_color             = -1;
-                    self.curModel.status            = 1;
-                    self.curModel.pricelist_line_id = 0; */
+                    $("#newModal").modal('hide')
                     this.getPriceListLines();
                 })
                 .catch( (error) => {
@@ -425,6 +415,9 @@
                 self.curModel.pricelist_line_id = row.pricelist_line_id;
                 self.curModel.status_flag       = self.curModel.status == 1 ? true : false;
                 $("#newModal").modal('show');
+            },
+            formatPrice(value){
+                return (parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
             }
         },
         created: function () {

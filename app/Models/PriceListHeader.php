@@ -9,7 +9,7 @@ class PriceListHeader extends Model
     protected $table = "IPC_DMS.FS_PRICELIST_HEADER";
 	protected $connection = "oracle";
 	const CREATED_AT = 'CREATION_DATE';
-    const UPDATED_AT = 'UPDATE_DATE';
+    const UPDATED_AT = 'DATE_UPDATED';
 
     public function insert_header($params){
     	$id = $this->insertGetId($params,'pricelist_header_id');
@@ -40,11 +40,12 @@ class PriceListHeader extends Model
 
     public function get_headers(){
         $sql = "SELECT fph.name,
-                        nvl(fph.description,'-') description,
+                        fph.description,
                         fst.status_name,
                         usr.first_name ||  ' ' || usr.last_name created_by,
                         fph.creation_date,
-                        fph.pricelist_header_id
+                        fph.pricelist_header_id,
+                        fph.status
                 FROM ipc_dms.fs_pricelist_header fph
                     LEFT JOIN ipc_dms.fs_status fst
                         ON fst.status_id = fph.status
@@ -53,6 +54,19 @@ class PriceListHeader extends Model
                         AND USR.USER_SOURCE_ID = fph.create_user_source_id";
         $query = DB::select($sql);
         return $query;
+    }
+
+    public function update_header($params){
+        $this
+            ->where([
+                [ 'pricelist_header_id', '=' , $params['pricelist_header_id'] ],
+            ])
+            ->update([
+                'description'           => $params['description'],
+                'status'                => $params['status'],
+                'updated_by'            => $params['updated_by'],
+                'update_user_source_id' => $params['update_user_source_id']
+            ]);
     }
 
 }

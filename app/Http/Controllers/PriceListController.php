@@ -33,36 +33,56 @@ class PriceListController extends Controller
     }
 
     public function add_pricelist(Request $request){
-        $name = $request->pricelist_name;
+        $name        = $request->pricelist_name;
         $description = $request->description;
-        
-        $header = PriceListHeader::where(
-               [
-                   ['name', $vehicle_details['name'] ]
-               ]
-            )->first();
-        
-        if(!empty($header)){
+        $action      = $request->action;
+
+        if($action == "add"){
+            $header = PriceListHeader::where(
+                [
+                    ['name', $name ]
+                ]
+                )->first();
+            
+            if(!empty($header)){
+                return [
+                    'status' => 500,
+                    'msg' => $name . ' already exists, please enter a unique name.'
+                ];
+            }
+
+            $pricelist_header_id = $this->pl_header->insert_header(
+                [
+                    'name' => $name,
+                    'description' => $description,
+                    'status'                => 1, 
+                    'created_by'            => session('user')['user_id'],
+                    'create_user_source_id' => session('user')['source_id'],
+                    'creation_date'         => Carbon::now()
+                ]
+            );
+
             return [
-                'status' => 500,
-                'msg' => $name . ' already exists, please enter a unique name.'
+                'pricelist_header_id' => $pricelist_header_id,
+                'msg' => $name . ' has been successfully added!'
             ];
         }
 
-        $pricelist_header_id = $this->pl_header->insert_header(
-            [
-                'name' => $name,
-                'description' => $description,
-                'status'                => 1, 
-                'created_by'            => session('user')['user_id'],
-                'create_user_source_id' => session('user')['source_id'],
-                'creation_date'         => Carbon::now()
-            ]
-        );
-
-        return [
-            'pricelist_header_id' => $pricelist_header_id
-        ];
+        else if ($action == "edit"){
+            $pricelist_header_id = $request->pricelist_header_id;
+            $status = $request->status ? 1 : 2;
+            $params = [
+                'pricelist_header_id'   => $pricelist_header_id,
+                'pricelist_name'        => $name,
+                'description'           => $description,
+                'status'                => $status,
+                'updated_by'            => session('user')['user_id'],
+                'update_user_source_id' => session('user')['source_id']
+            ];
+            
+            $this->pl_header->update_header($params);
+            
+        }
     }
 
     public function pricelist_details(Request $request){
@@ -152,6 +172,25 @@ class PriceListController extends Controller
         }
         else if($action == "edit"){
             $status = $vehicle_details['status_flag'] ? 1 : 2;
+
+            // if a deactivated model has been reactivated, check first if there are existing active models
+            if($vehicle_details['status'] == 2 && $status == 1){
+                $line = PriceListLine::where(
+                [
+                    ['inventory_item_id', $vehicle_details['inventory_item_id'] ],
+                    ['status' , 1]
+                ]
+                )->first();
+                
+                if(!empty($line)){
+                    return [
+                        'status' => 500,
+                        'msg' => 'There is an active pricelist for this model.'
+                    ];
+                }
+            }
+
+
             $params = [
                 'pricelist_line_id'   => $vehicle_details['pricelist_line_id'],
                 'srp'                   => $srp,
