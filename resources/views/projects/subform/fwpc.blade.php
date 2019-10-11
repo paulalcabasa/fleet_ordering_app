@@ -34,8 +34,8 @@
                             <div class="dropdown-menu dropdown-menu-left" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-149px, 33px, 0px);">
                                 <a class="dropdown-item" href="#" @click.prevent="viewFwpc(index)"><i class="la la-eye"></i> View details</a>
                                 <a class="dropdown-item" :href="base_url + '/print-fwpc/' + row.fwpc_id" target="_blank"><i class="la la-print"></i> Print</a>
-                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index)" v-if="row.status_name != 'Approved' && (user_type == 27 || user_type == 31)"><i class="la la-cloud-upload"></i> Upload signed document</a>
-                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index)" v-if="row.status_name != 'Approved' && vehicle_user_type == row.vehicle_type"><i class="la la-cloud-upload"></i> Upload signed document</a>
+                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index,5)" v-if="row.status_name != 'Approved' && vehicle_user_type == row.vehicle_type"><i class="la la-cloud-upload"></i> Upload signed IPC Doc</a>
+                                <a class="dropdown-item" href="#" @click.prevent="triggerFileUpload(index,6)" v-if="row.status_name != 'Approved' && row.ipc_file_orig != null"><i class="la la-cloud-upload"></i> Upload signed Dealer Doc</a>
                                 
                              <!--    <div class="dropdown-divider" 
                                     v-if="(user_type == 32 || user_type == 33) && row.dlr_file_orig != null && row.status_name != 'Approved'"

@@ -103,8 +103,14 @@
             </li>
             <li class="kt-menu__item {{ request()->is('approvers') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/approver-list') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-users-1"></i>
+                    <i class="kt-menu__link-icon flaticon-network"></i>
                     <span class="kt-menu__link-text">Approvers</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('approvers') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/all-pricelist') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-price-tag"></i>
+                    <span class="kt-menu__link-text">Price List</span>
                 </a>
             </li>
             @endif 

@@ -368,7 +368,10 @@
             cur_lead_time_desc:   '',
             cur_variant:          '',
             cur_fpc_project_id:   '',
-            status_colors:        {!! json_encode($status_colors) !!}
+            status_colors:        {!! json_encode($status_colors) !!},
+            pricelist_headers:        {!! json_encode($pricelist_headers) !!},
+            selected_pricelist : '',
+            cur_pricelist_line_id : ''
         },
         methods : {
             cancelFPC(){
@@ -382,7 +385,7 @@
                     type: 'v2',
                     state: 'success',
                     message: 'Please wait...'
-                })
+                });
                 axios.post('ajax-cancel-fpc',{
                     fpc_id : self.fpc_details.fpc_id
                 }).then( (response) => {
@@ -520,15 +523,26 @@
                     validity:       project.validity,
                     availability:   project.availability,
                     note:           project.note
-                }).then((response) => {
+                })
+                .then((response) => {
                     KTApp.unblockPage();
                     self.toast('success','Saved data.'); 
+                })
+                .catch( (error) => {
+                    KTApp.unblockPage();
+                    self.toast('error','Unexpected error ocurred, please try again.');
+                    console.log(error);
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
                 });
             },  
             priceConfirmation(order,dealerAccount){
                 var self = this;
                 self.curModel = order;
                 self.curDealerAccount = dealerAccount;
+                self.selected_pricelist = order.pricelist_header_id;
+                self.cur_pricelist_line_id = order.pricelist_line_id;
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
                     .then( (response) => {
                         self.curFreebies = response.data;
@@ -588,8 +602,10 @@
             saveFPCItem(){
                 var self = this;
                 axios.post('ajax-save-fpc-item', {
-                    modelData : self.curModel,
-                    freebies : self.curFreebies
+                    modelData          : self.curModel,
+                    freebies           : self.curFreebies,
+                    pricelist_header_id: self.selected_pricelist,
+                    pricelist_line_id  : self.cur_pricelist_line_id
                 }).then((response) => {
                     $("#priceConfirmationModal").modal('hide');
                     self.toast('success','Saved data.');
@@ -772,13 +788,14 @@
                 return this.curFreebies.reduce((acc,item) => parseFloat(acc) + (item.cost_to == 5 ? parseFloat(item.amount) : 0),0);
             },
             calculateCost(){
-                return (parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies));
+                return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies) + parseFloat(this.curModel.lto_registration);
             },
             calculateMargin(){
-                return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
+                //return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
+                return parseFloat(this.curModel.fleet_price) * parseFloat(this.curModel.dealers_margin/100);
             },
             calculateNetCost(){
-                return (parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.curModel.lto_registration));
+                return parseFloat(this.calculateCost) + parseFloat(this.curModel.promo);
             },
             calculateSubsidy(){
                 return (parseFloat(this.calculateNetCost) - parseFloat(this.curModel.fleet_price));
@@ -793,8 +810,35 @@
                 return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.calculateVAT);
             },
             calculateVAT(){
-             //   return (parseFloat(this.curModel.wholesale_price) / 1.12) * 0.01;
                 return parseFloat(this.curModel.wholesale_price * 0.12);
+            }
+        },
+        watch : {
+            selected_pricelist : function(val){
+                var self = this;
+                if(val == ""){
+                    return false;
+                }
+                if(self.curModel.suggested_retail_price == ""){
+                    axios.get('get-vehicle-price',{
+                        params : {
+                            pricelist_header_id : val,
+                            inventory_item_id : self.curModel.inventory_item_id
+                        }
+                    })
+                    .then( (response) => {  
+                        if(response.data.status == 404){
+                            self.toast('error','Price not found!');
+                            return false;
+                        }
+
+                        self.curModel.suggested_retail_price = response.data.price.srp;
+                        self.curModel.wholesale_price        = response.data.price.wsp;
+                        self.curModel.lto_registration       = response.data.price.lto_registration;
+                        self.curModel.promo                  = response.data.price.promo;
+                        self.cur_pricelist_line_id           = response.data.price.pricelist_line_id;
+                    });
+                }
             }
         }
     });

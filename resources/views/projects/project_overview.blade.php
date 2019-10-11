@@ -86,7 +86,9 @@
 @if($action == "view")
     @include('projects.subform.fpc')
     @include('projects.subform.po')
-    @include('projects.subform.fwpc')
+    @if($user_type == 32 || $user_type == 33)
+        @include('projects.subform.fwpc')
+    @endif
 @endif
 
 <!-- delivery schedule modal -->
@@ -166,7 +168,8 @@
                 status_name : ''
             },
             signed_fwpc : '',
-            cur_fwpc_id : ''
+            cur_fwpc_id : '',
+            cur_owner_id : ''
         },
         methods : {
             showDeliveryDetail(data){
@@ -504,9 +507,10 @@
                         KTApp.unblock("#viewFWPC .modal-content",{});
                     });
             },
-            triggerFileUpload(index){
+            triggerFileUpload(index,owner_id){
                 $("#signed_fwpc").click();
                 this.cur_fwpc_id = this.fwpc[index].fwpc_id;
+                this.cur_owner_id = owner_id;
             },
             uploadDocument(){
                 var self = this;
@@ -545,6 +549,7 @@
 
                             formData.append('file', self.signed_fwpc);
                             formData.append('fwpc_id', self.cur_fwpc_id);
+                            formData.append('owner_id', self.cur_owner_id);
 
                             axios.post('upload-fwpc-doc',
                                 formData,{

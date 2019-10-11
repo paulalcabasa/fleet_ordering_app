@@ -34,10 +34,6 @@ use PDF;
 
 class ProjectController extends Controller
 {
-    
-
-
-
     public function manage_project(
         Request $request, 
         OrganizationTypes $org_types, 
