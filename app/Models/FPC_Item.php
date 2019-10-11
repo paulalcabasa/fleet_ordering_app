@@ -58,7 +58,12 @@ class FPC_Item extends Model
                         fpc_item.lto_registration,
                         fpc_item.fleet_price,
                         rl.requirement_line_id,
-                        fpc_item.fpc_item_id
+                        fpc_item.fpc_item_id,
+                        rl.inventory_item_id,
+                        fpc_item.promo,
+                        fpc_item.promo_title,
+                        fpc_item.pricelist_header_id,
+                        fpc_item.pricelist_line_id
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     INNER JOIN IPC_DMS.fs_projects fp
                         ON fpc_prj.project_id = fp.project_id
@@ -94,7 +99,12 @@ class FPC_Item extends Model
                         fpc_item.fleet_price,
                         rl.requirement_line_id,
                         fpc_item.fpc_item_id,
-                        vehicle.model_variant";
+                        vehicle.model_variant,
+                        rl.inventory_item_id,
+                        fpc_item.promo,
+                        fpc_item.promo_title,
+                        fpc_item.pricelist_header_id,
+                        fpc_item.pricelist_line_id";
 
 		$params = [
 			'fpc_project_id' => $fpc_project_id
@@ -103,27 +113,23 @@ class FPC_Item extends Model
     	return $query;
 	}
 
-    public function updateFPCItem(
-        $dealers_margin, 
-        $lto_registration, 
-        $fleet_price, 
-        $wholesale_price, 
-        $updated_by, 
-        $user_source_id, 
-        $fpc_item_id
-    ){
+    public function updateFPCItem($params){
         $this
             ->where([
-                [ 'fpc_item_id', '=' , $fpc_item_id ]
+                [ 'fpc_item_id', '=' , $params['fpc_item_id'] ]
             ])
             ->update([
-                'dealers_margin'        => $dealers_margin,
-                'lto_registration'      => $lto_registration,
-                'fleet_price'           => $fleet_price,
-                'wholesale_price'           => $wholesale_price,
-                'updated_by'            => $updated_by,
-                'update_user_source_id' => $user_source_id,
-                'fpc_item_id'           => $fpc_item_id
+                'dealers_margin'         => $params['dealers_margin'],
+                'lto_registration'       => $params['lto_registration'],
+                'fleet_price'            => $params['fleet_price'],
+                'wholesale_price'        => $params['wholesale_price'],
+                'updated_by'             => $params['updated_by'],
+                'update_user_source_id'  => $params['update_user_source_id'],
+                'suggested_retail_price' => $params['suggested_retail_price'],
+                'promo'                  => $params['promo'],
+                'promo_title'            => $params['promo_title'],
+                'pricelist_header_id'    => $params['pricelist_header_id'],
+                'pricelist_line_id'      => $params['pricelist_line_id'],
             ]);
     }
 

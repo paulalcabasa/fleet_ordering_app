@@ -25,6 +25,7 @@ use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
 use App\Models\OracleUser;
+use App\Models\PriceListHeader;
 
 class PriceConfirmationController extends Controller
 {   
@@ -85,7 +86,8 @@ class PriceConfirmationController extends Controller
         Competitor $m_competitor,
         PaymentTerms $m_payment_terms,
         FPCHelper $fpc_helper,
-        Attachment $m_attachment
+        Attachment $m_attachment,
+        PriceListHeader $m_plh
     ){
 
         if(!in_array(session('user')['user_type_id'], array(32,33)) ){
@@ -100,7 +102,8 @@ class PriceConfirmationController extends Controller
         $project_headers  = $m_fpc_project->get_projects($price_confirmation_id);
         $fpc_attachments  = $m_attachment->get_fpc_attachments($price_confirmation_id);
         $projects         = [];
-
+        $pricelist_headers = $m_plh->get_active_headers();
+        
         foreach($project_headers as $project){
 
             $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
@@ -133,16 +136,17 @@ class PriceConfirmationController extends Controller
     
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
-            'action'            => $action,
-            'fpc_details'       => $fpc_details,
-            'customer_details'  => $customer_details,
-            'projects'          => $projects,
-            'payment_terms'     => $payment_terms,
-            'base_url'          => url('/'),
-            'editable'          => $editable,
-            'fpc_attachments'   => $fpc_attachments,
-            'status_colors'     => config('app.status_colors'),
-            'vehicle_lead_time' => config('app.vehicle_lead_time')
+    		'action'                => $action,
+    		'fpc_details'           => $fpc_details,
+    		'customer_details'      => $customer_details,
+    		'projects'              => $projects,
+    		'payment_terms'         => $payment_terms,
+    		'base_url'              => url('/'),
+    		'editable'              => $editable,
+    		'fpc_attachments'       => $fpc_attachments,
+    		'pricelist_headers'     => $pricelist_headers,
+    		'status_colors'         => config('app.status_colors'),
+    		'vehicle_lead_time'     => config('app.vehicle_lead_time')
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -265,11 +269,12 @@ class PriceConfirmationController extends Controller
     }
 
     public function ajax_save_fpc_item(Request $request, FPC_Item $m_fpc_item, FPCItemFreebies $m_freebies){
-        $model_data = $request->modelData;
-        $freebies = $request->freebies;
-
-        $del_freebie = [];
-        $add_freebie = [];
+        $model_data          = $request->modelData;
+        $freebies            = $request->freebies;
+        $pricelist_header_id = $request->pricelist_header_id;
+        $pricelist_line_id   = $request->pricelist_line_id;
+        $del_freebie         = [];
+        $add_freebie         = [];
         foreach($freebies as $freebie){
             if(isset($freebie['deleted'])){
                 $m_freebies->delete_freebie($freebie['freebie_id']);        
@@ -286,15 +291,22 @@ class PriceConfirmationController extends Controller
                 );
             }
         }
-
+        
         $m_fpc_item->updateFPCItem(
-            $model_data['dealers_margin'], 
-            $model_data['lto_registration'], 
-            $model_data['fleet_price'],
-            $model_data['wholesale_price'],
-            session('user')['user_id'],
-            session('user')['source_id'], 
-            $model_data['fpc_item_id']
+            [
+                'dealers_margin'         => $model_data['dealers_margin'],
+                'lto_registration'       => $model_data['lto_registration'],
+                'fleet_price'            => $model_data['fleet_price'],
+                'wholesale_price'        => $model_data['wholesale_price'],
+                'suggested_retail_price' => $model_data['suggested_retail_price'],
+                'promo'                  => $model_data['promo'],
+                'promo_title'            => $model_data['promo_title'],
+                'updated_by'             => session('user')['user_id'],
+                'update_user_source_id'  => session('user')['source_id'],
+                'fpc_item_id'            => $model_data['fpc_item_id'],
+                'pricelist_header_id'    => $pricelist_header_id,
+                'pricelist_line_id'      => $pricelist_line_id,
+            ]
         );
 
         return [

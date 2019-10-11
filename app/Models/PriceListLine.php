@@ -60,4 +60,30 @@ class PriceListLine extends Model
                 'update_user_source_id' => $params['update_user_source_id']
             ]);
     }
+
+    public function get_vehicle_price($pricelist_header_id,$inventory_item_id){
+        $sql = "SELECT fpl.pricelist_line_id,
+                        fpl.srp,
+                        fpl.wsp,
+                        fpl.promo,
+                        fpl.lto_registration,
+                        fpl.pricelist_header_id
+                FROM ipc_dms.fs_pricelist_lines fpl
+                    LEFT JOIN ipc_dms.fs_pricelist_header fph
+                        ON fpl.pricelist_header_id = fpl.pricelist_header_id
+                WHERE 1 = 1
+                    AND fpl.inventory_item_id = :inventory_item_id
+                    AND fph.pricelist_header_id = :pricelist_header_id
+                    AND fph.status = 1
+                    AND fpl.status = 1";
+        $params = [
+            'inventory_item_id'   => $inventory_item_id,
+            'pricelist_header_id' => $pricelist_header_id,
+        ];
+
+        $query = DB::select($sql,$params);
+        
+        return !empty($query) ? $query[0] : [];
+        //return $query[0];
+    }
 }

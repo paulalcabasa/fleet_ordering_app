@@ -215,4 +215,19 @@ class PriceListController extends Controller
         $lines = $this->pl_line->get_lines($pricelist_header_id);
         return $lines;
     }
+
+    public function get_vehicle_price(Request $request){
+        $pricelist_header_id = $request->pricelist_header_id;
+        $inventory_item_id = $request->inventory_item_id;
+        $vehicle_price = $this->pl_line->get_vehicle_price($pricelist_header_id,$inventory_item_id);
+        if(empty($vehicle_price)){
+            return response()->json(['status' => 404]);
+        }
+        
+        return response()->json([
+            'status' => 200,
+            'price' => $vehicle_price
+        ]);
+            
+    }
 }

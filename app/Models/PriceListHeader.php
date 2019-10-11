@@ -56,6 +56,11 @@ class PriceListHeader extends Model
         return $query;
     }
 
+    public function get_active_headers(){
+        $query = $this->where('status',1)->get();
+        return $query;
+    }
+
     public function update_header($params){
         $this
             ->where([
