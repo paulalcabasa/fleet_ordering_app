@@ -523,9 +523,18 @@
                     validity:       project.validity,
                     availability:   project.availability,
                     note:           project.note
-                }).then((response) => {
+                })
+                .then((response) => {
                     KTApp.unblockPage();
                     self.toast('success','Saved data.'); 
+                })
+                .catch( (error) => {
+                    KTApp.unblockPage();
+                    self.toast('error','Unexpected error ocurred, please try again.');
+                    console.log(error);
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
                 });
             },  
             priceConfirmation(order,dealerAccount){

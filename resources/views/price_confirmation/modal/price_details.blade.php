@@ -236,14 +236,17 @@
 
                                <!-- Viewing of pricing details -->
                                <div v-if="!editable">
-                                    
+                                    <div class="row kt-margin-b-5">
+                                        <span class="col-md-4 kt-font-bold">SRP</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.suggested_retail_price)}}</span>
+                                    </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Wholesale Price</span>
                                         <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.wholesale_price) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">SRP</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(calculateSRP)}}</span>
+                                        <span class="col-md-4 kt-font-bold">Fleet Price</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.fleet_price) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Dealer's Margin</span>
@@ -262,12 +265,16 @@
                                         <span class="col-md-8 kt-font-bold kt-font-danger">@{{ formatPrice(calculateCost) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Net Cost</span>
-                                        <span class="col-md-8 kt-font-bold kt-font-primary">@{{ formatPrice(calculateNetCost) }}</span>
+                                        <span class="col-md-4 kt-font-bold">Promo Title</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ curModel.promo_title }}</span>
+                                    </div>
+                                      <div class="row kt-margin-b-5">
+                                        <span class="col-md-4 kt-font-bold">Promo</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.promo) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
-                                        <span class="col-md-4 kt-font-bold">Fleet Price</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.fleet_price) }}</span>
+                                        <span class="col-md-4 kt-font-bold">Net Cost</span>
+                                        <span class="col-md-8 kt-font-bold kt-font-primary">@{{ formatPrice(calculateNetCost) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Subsidy</span>

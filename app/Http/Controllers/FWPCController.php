@@ -132,11 +132,12 @@ class FWPCController extends Controller
         $file = $request->file('file');
         $fwpc_id = $request->fwpc_id;
         $fwpc_details = $m_fwpc->get_fwpc_by_id($fwpc_id);
-
-        $owner_id = 5;
+        $owner_id = $request->owner_id;
         $user_type = session('user')['user_type_id'];
-        
-        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+        //if(in_array($user_type,array(27,31))) {
+       //     $owner_id = 6;
+       // }
+        /*if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
             $owner_id = 6;
             $email_data = [];
             // send notification to approvers
@@ -163,11 +164,12 @@ class FWPCController extends Controller
             // insert activity logs for email
             $m_activity_logs->insert_log($email_data);
         }
-        else if(in_array($user_type,array(32,33))) { //  Fleet LCV User
-            $owner_id = 5;
+        */
+        //else if(in_array($user_type,array(32,33))) { //  Fleet LCV User
+            //$owner_id = 5;
             // send notification to Requestor
             // activity log insertion
-            $activity_log = [
+            /*$activity_log = [
                 'module_id'             => 1, // Fleet Project
                 'module_code'           => 'PRJ',
                 'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has uploaded a signed FPWC Document for FPWC No. <strong>'. $fwpc_details->fwpc_id .'</strong> with Sales Order No. <strong>'. $fwpc_details->order_number.'</strong> for Project No. <strong>'.$fwpc_details->project_id.'</strong>.',
@@ -183,8 +185,9 @@ class FWPCController extends Controller
                 'mail_recipient'        => $fwpc_details->email_address
             ];
             $m_activity_logs->insert_log($activity_log);
+            */
             // end of activity log
-        }
+        //}
 
         // delete previous file before uploading new
         $previous_files = $m_attachment->get_fwpc_attachments($fwpc_id, $owner_id);
@@ -224,7 +227,6 @@ class FWPCController extends Controller
             session('user')['user_id'], 
             session('user')['source_id']
         );
-
         
     }
 
