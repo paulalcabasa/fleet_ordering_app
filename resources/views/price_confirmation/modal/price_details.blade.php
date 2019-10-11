@@ -123,7 +123,7 @@
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">Price List</label>
                                         <div class="col-lg-9">
-                                            <select class="form-control" v-model="selected_pricelist" v-select>
+                                            <select class="form-control" v-model="selected_pricelist" v-select style="width:100%;">
                                                 <option value="">Select price list</option>
                                                 <option v-for="(row,index) in pricelist_headers" 
                                                     :value="row.pricelist_header_id" 
