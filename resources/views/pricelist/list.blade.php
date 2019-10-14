@@ -43,7 +43,7 @@
                         </td>
                         <td>@{{ row.name }}</td>
                         <td>@{{ row.description }}</td>
-                        <td>@{{ row.creation_date }}</td>
+                        <td>@{{ row.creation_date | formatDate }}</td>
                         <td>@{{ row.created_by }}</td>
                         <td>
                             <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
@@ -251,6 +251,11 @@
             });
         },
 
+        filters : {
+            formatDate(value){
+                return moment(String(value)).format('MM/DD/YYYY hh:mm');
+            }
+        }
         
     });
 </script>
