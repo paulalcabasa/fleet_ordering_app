@@ -320,7 +320,7 @@
                     <td align="center">{{ $ctr }}</td>
                     <td align="center">{{ $row->sales_model }}</td>
                     <td align="center">{{ $row->color }}</td>
-                    <td align="center">{{ number_format($dealers_margin,2) }}%</td>
+                    <td align="center">{{ number_format($dealers_margin,2) }}</td>
                     <td align="center">{{ number_format($row->lto_registration,2) }}</td>
                     <td align="center">{{ number_format($total_margin,2) }}</td>
                 </tr>
