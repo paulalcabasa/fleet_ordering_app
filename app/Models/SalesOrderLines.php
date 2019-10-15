@@ -14,8 +14,12 @@ class SalesOrderLines extends Model
         $sql = "SELECT 
                     msib.attribute9 sales_model,
                     msib.attribute8 color,
-                    oola.unit_list_price,
-                    sum(oola.ordered_quantity) quantity
+                    oola.unit_list_price + oola.tax_value fleet_price,
+                    sum(oola.ordered_quantity) quantity,
+                    fpc_item.dealers_margin,
+                    fpc_item.lto_registration,
+                    sum(case when freebies.cost_to_owner_id = 5 then freebies.amount else 0 end) freebies,
+                    fs_term.term_name
                 FROM oe_order_lines_all oola 
                     INNER JOIN oe_order_headers_all ooha
                         ON ooha.header_id = oola.header_id
@@ -24,12 +28,24 @@ class SalesOrderLines extends Model
                     INNER JOIN mtl_system_items_b msib
                         ON msib.inventory_item_id = oola.inventory_item_id
                         AND msib.organization_id = oola.ship_from_org_id
+                    INNER JOIN ipc_dms.fs_fpc_items fpc_item
+                        ON fpc_item.fpc_project_id = fwpc.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_fpc_item_freebies freebies
+                        ON freebies.fpc_item_id = fpc_item.fpc_item_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_project_id = fpc_item.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_payment_terms fs_term
+                        ON fs_term.term_id = fpc_prj.payment_terms
                 WHERE 1 = 1
-                   AND fwpc.fwpc_id = :fwpc_id
+                    AND fwpc.fwpc_id = :fwpc_id
                 GROUP BY 
+                    oola.tax_value,
                     msib.attribute9,
                     msib.attribute8,
-                    oola.unit_list_price";
+                    oola.unit_list_price,
+                    fpc_item.dealers_margin,
+                    fpc_item.lto_registration,
+                    fs_term.term_name";
         $params = [
             'fwpc_id' => $fwpc_id
         ];

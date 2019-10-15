@@ -98,12 +98,18 @@ class FWPCController extends Controller
         $fwpc_details = $m_fwpc->get_fwpc_by_id($fwpc_id);
         $sales_persons = $m_sales_persons->get_sales_persons($fwpc_details->project_id);
         
-        $so_lines = $m_sol->get_fwpc_lines($fwpc_details->fpc_project_id);
-
+        $so_lines = $m_sol->get_so_lines($fwpc_id);
+        
+        
         $wht_tax = 0;
         $grand_total = 0;
         foreach($so_lines as $row){
-            $grand_total += ($row->fleet_price - $row->dealer_margin - $row->lto_registration) * $row->quantity;
+            $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
+            $total_margin   = $dealers_margin + $row->lto_registration;
+            $unit_price     = $row->fleet_price - $total_margin;
+            $fwpu           = $unit_price + $row->freebies;
+            $total_fwpu     = $fwpu * $row->quantity;
+            $grand_total    += $total_fwpu;
         }
 
         $wht_tax = ($grand_total / 1.12) * 0.01;

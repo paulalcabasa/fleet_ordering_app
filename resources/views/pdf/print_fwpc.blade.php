@@ -141,12 +141,12 @@
                         <tr>
                             <td style="font-weight:bold;">Witholding Tax</td>
                             <td>:</td>
-                            <td>{{ number_format($wht_tax,2,'.',',') }}</td>
+                            <td align="right">{{ number_format($wht_tax,2,'.',',') }}</td>
                         </tr>
                         <tr>
                             <td style="font-weight:bold;">Total Check Payable to IPC</td>
                             <td>:</td>
-                            <td>{{ number_format($check_amount,2,'.',',') }}</td>
+                            <td align="right">{{ number_format($check_amount,2,'.',',') }}</td>
                         </tr>
                     </table>
                 </td>
@@ -259,11 +259,13 @@
             <tbody>
                 @foreach($so_lines as $row)
                 <?php 
-                    $ctr = 1; 
-                    $grand_total = 0;
-                    $unit_price = $row->fleet_price - $row->dealer_margin - $row->lto_registration;
-                    $fwpu = $unit_price + $row->freebies;
-                    $total_fwpu = $fwpu * $row->quantity;
+                    $ctr            = 1;
+                    $grand_total    = 0;
+                    $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
+                    $total_margin   = $dealers_margin + $row->lto_registration;
+                    $unit_price     = $row->fleet_price - $total_margin;
+                    $fwpu           = $unit_price + $row->freebies;
+                    $total_fwpu     = $fwpu * $row->quantity;
                 ?>
                 <tr>
                     <td>{{ $ctr }}</td>
@@ -309,14 +311,18 @@
             </thead>
             <tbody>
                 @foreach($so_lines as $row)
-                {{ $ctr = 1 }}
+                <?php 
+                    $ctr = 1;
+                    $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
+                    $total_margin   = $dealers_margin + $row->lto_registration;
+                ?>
                 <tr>
                     <td align="center">{{ $ctr }}</td>
                     <td align="center">{{ $row->sales_model }}</td>
                     <td align="center">{{ $row->color }}</td>
-                    <td align="center">{{ number_format($row->dealer_margin,2,'.',',') }}</td>
-                    <td align="center">{{ number_format($row->lto_registration,2,'.',',') }}</td>
-                    <td align="center">{{ number_format($row->lto_registration + $row->dealer_margin,2,'.',',') }}</td>
+                    <td align="center">{{ number_format($dealers_margin,2) }}%</td>
+                    <td align="center">{{ number_format($row->lto_registration,2) }}</td>
+                    <td align="center">{{ number_format($total_margin,2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
