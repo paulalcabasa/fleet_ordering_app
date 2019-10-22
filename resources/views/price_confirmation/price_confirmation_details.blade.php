@@ -371,7 +371,8 @@
             status_colors:        {!! json_encode($status_colors) !!},
             pricelist_headers:        {!! json_encode($pricelist_headers) !!},
             selected_pricelist : '',
-            cur_pricelist_line_id : ''
+            cur_pricelist_line_id : '',
+            curModelIndex : ''
         },
         methods : {
             cancelFPC(){
@@ -541,6 +542,7 @@
                 var self = this;
                 self.curModel = order;
                 self.curDealerAccount = dealerAccount;
+            //    self.curModelIndex = index;
                 self.selected_pricelist = order.pricelist_header_id;
                 self.cur_pricelist_line_id = order.pricelist_line_id;
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
@@ -607,8 +609,14 @@
                     pricelist_header_id: self.selected_pricelist,
                     pricelist_line_id  : self.cur_pricelist_line_id
                 }).then((response) => {
+                   // self.projects.requirements[self.curModelIndex].pricelist_header_id = self.selected_pricelist;
+                 //   self.projects.requirements[self.curModelIndex].pricelist_line_id = self.cur_pricelist_line_id;
                     $("#priceConfirmationModal").modal('hide');
                     self.toast('success','Saved data.');
+                    
+                })
+                .then( (response) => {
+                    window.location.reload();
                 });
             },
             updateActiveTab(tab_id){
@@ -852,6 +860,7 @@
                         self.curModel.lto_registration       = response.data.price.lto_registration;
                         self.curModel.promo                  = response.data.price.promo;
                         self.cur_pricelist_line_id           = response.data.price.pricelist_line_id;
+                        
                     })
                     .catch( (error) => {
                         self.toast('error',error);
