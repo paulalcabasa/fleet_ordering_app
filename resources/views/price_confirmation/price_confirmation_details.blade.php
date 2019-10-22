@@ -816,10 +816,18 @@
         watch : {
             selected_pricelist : function(val){
                 var self = this;
-                if(val == ""){
+            
+                if(val == "" || val == null){
                     return false;
                 }
-                if(self.curModel.suggested_retail_price == ""){
+
+                self.curModel.suggested_retail_price = 0;
+                self.curModel.wholesale_price        = 0;
+                self.curModel.lto_registration       = 0;
+                self.curModel.promo                  = 0;
+                self.cur_pricelist_line_id           = 0;
+                
+                //if(self.curModel.suggested_retail_price == 0){
                     axios.get('get-vehicle-price',{
                         params : {
                             pricelist_header_id : val,
@@ -839,7 +847,7 @@
                         self.cur_pricelist_line_id           = response.data.price.pricelist_line_id;
                     });
                 }
-            }
+            //}
         }
     });
 </script>
