@@ -139,7 +139,8 @@ class PriceListController extends Controller
             $line = PriceListLine::where(
                [
                    ['inventory_item_id', $vehicle_details['inventory_item_id'] ],
-                   ['status' , 1]
+                   ['status' , 1],
+                   ['pricelist_header_id', $pricelist_header_id ]
                ]
             )->first();
             
