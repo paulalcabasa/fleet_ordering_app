@@ -69,8 +69,8 @@ class PriceListLine extends Model
                         fpl.lto_registration,
                         fpl.pricelist_header_id
                 FROM ipc_dms.fs_pricelist_lines fpl
-                    LEFT JOIN ipc_dms.fs_pricelist_header fph
-                        ON fpl.pricelist_header_id = fpl.pricelist_header_id
+                    INNER JOIN ipc_dms.fs_pricelist_header fph
+                        ON fph.pricelist_header_id = fpl.pricelist_header_id
                 WHERE 1 = 1
                     AND fpl.inventory_item_id = :inventory_item_id
                     AND fph.pricelist_header_id = :pricelist_header_id
