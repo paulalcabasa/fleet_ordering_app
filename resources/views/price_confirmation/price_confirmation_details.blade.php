@@ -147,9 +147,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(order, index) in project.requirements">
+                            <tr v-for="(order, requirementIndex) in project.requirements">
                                 <td nowrap="nowrap">
-                                    <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
+                                    <a href="#"  title="View"  @click.prevent="priceConfirmation(order,project.dealer_account,index,requirementIndex)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="fas fa-money-bill-wave"></i></a> 
                                     <a href="#"  title="Show details"  @click="showAdditionalDetails(order)" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-info-circle"></i></a> 
                                 </td>
                                 <td> @{{ order.sales_model }} </td>
@@ -372,7 +372,8 @@
             pricelist_headers:        {!! json_encode($pricelist_headers) !!},
             selected_pricelist : '',
             cur_pricelist_line_id : '',
-            curModelIndex : ''
+            curModelIndex : '',
+            curProjectIndex : ''
         },
         methods : {
             cancelFPC(){
@@ -538,11 +539,12 @@
                     KTApp.unblockPage();
                 });
             },  
-            priceConfirmation(order,dealerAccount){
+            priceConfirmation(order,dealerAccount,projectIndex,requirementIndex){
                 var self = this;
                 self.curModel = order;
                 self.curDealerAccount = dealerAccount;
-            //    self.curModelIndex = index;
+                self.curModelIndex = requirementIndex;
+                self.curProjectIndex = projectIndex;
                 self.selected_pricelist = order.pricelist_header_id;
                 self.cur_pricelist_line_id = order.pricelist_line_id;
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
@@ -608,15 +610,17 @@
                     freebies           : self.curFreebies,
                     pricelist_header_id: self.selected_pricelist,
                     pricelist_line_id  : self.cur_pricelist_line_id
-                }).then((response) => {
-                   // self.projects.requirements[self.curModelIndex].pricelist_header_id = self.selected_pricelist;
-                 //   self.projects.requirements[self.curModelIndex].pricelist_line_id = self.cur_pricelist_line_id;
-                    $("#priceConfirmationModal").modal('hide');
-                    self.toast('success','Saved data.');
-                    
                 })
-                .then( (response) => {
-                    window.location.reload();
+                .then((response) => {
+                    self.projects[self.curProjectIndex].requirements[self.curModelIndex].pricelist_header_id = self.selected_pricelist;
+                    self.projects[self.curProjectIndex].requirements[self.curModelIndex].pricelist_line_id = self.cur_pricelist_line_id;
+                    self.toast('success','Saved data.');
+                })
+                .catch( (error) => {
+                    self.toast('error',error);
+                })
+                .finally( () => {
+                    $("#priceConfirmationModal").modal('hide');
                 });
             },
             updateActiveTab(tab_id){
