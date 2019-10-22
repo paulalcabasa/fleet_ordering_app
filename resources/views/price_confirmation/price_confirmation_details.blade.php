@@ -821,6 +821,13 @@
                     return false;
                 }
 
+                KTApp.block("#priceConfirmationModal .modal-content",{
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+
                 self.curModel.suggested_retail_price = 0;
                 self.curModel.wholesale_price        = 0;
                 self.curModel.lto_registration       = 0;
@@ -845,6 +852,12 @@
                         self.curModel.lto_registration       = response.data.price.lto_registration;
                         self.curModel.promo                  = response.data.price.promo;
                         self.cur_pricelist_line_id           = response.data.price.pricelist_line_id;
+                    })
+                    .catch( (error) => {
+                        self.toast('error',error);
+                    })
+                    .finally( () => {
+                        KTApp.unblock("#priceConfirmationModal .modal-content",{});
                     });
                 }
             //}
