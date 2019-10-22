@@ -138,6 +138,7 @@
                                                 type="text" 
                                                 class="form-control form-control-sm" 
                                                 v-model="curModel.suggested_retail_price"
+                                                disabled="disabled"
                                             />
                                         </div>
                                     </div>
@@ -148,6 +149,7 @@
                                                 type="text" 
                                                 class="form-control form-control-sm" 
                                                 v-model="curModel.wholesale_price"
+                                                disabled="disabled"
                                             />
                                         </div>
                                     </div>
@@ -179,7 +181,7 @@
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">3 Yrs LTO Registration</label>
                                         <div class="col-lg-9">
-                                            <input type="text" class="form-control form-control-sm" v-model="curModel.lto_registration" />
+                                            <input type="text" class="form-control form-control-sm"  disabled="disabled" v-model="curModel.lto_registration" />
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
@@ -206,7 +208,7 @@
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">Promo</label>
                                         <div class="col-lg-9">
-                                            <input type="text" class="form-control form-control-sm" v-model="curModel.promo" />
+                                            <input type="text" class="form-control form-control-sm" disabled="disabled" v-model="curModel.promo" />
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
