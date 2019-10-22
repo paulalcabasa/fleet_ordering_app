@@ -1681,14 +1681,15 @@ jQuery(document).ready(function() {
             });
 
             // Customer name typeahead
-            $('#txt_account_name').typeahead({
+            $('#txt_account_name').typeahead(
+            {
+                minLength: 3,
                 hint: true,
                 highlight: true,
-                minLength: 3
             },
             {
-                limit: 10,
                 async: true,
+                limit: 10,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);
                     return $.ajax({
