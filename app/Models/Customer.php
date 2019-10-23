@@ -89,7 +89,7 @@ class Customer extends Model
     public function get_customers($customer_name){
         $query = DB::connection('oracle')
                 ->table('ipc_dms.fs_customers')
-                ->selectRaw(DB::raw('distinct customer_name'))
+                ->selectRaw(DB::raw('customer_name'))
                 ->whereRaw("lower(customer_name) like '".strtolower($customer_name)."%' and status = '1'")
                 ->limit(5)
                 ->get();

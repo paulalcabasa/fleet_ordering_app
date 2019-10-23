@@ -122,8 +122,8 @@
                                             id="sel_fleet_category" 
                                             v-model.lazy="accountDetails.fleet_category" 
                                             v-select 
+                                            name="fleet_category"
                                             style="width:100%;">
-                                            <option value="-1">Choose fleet category</option>
                                             <option v-for="category in fleetCategories" :value="category.fleet_category_id">@{{ category.fleet_category_name}}</option>
                                         </select>
                                     </div>
@@ -925,7 +925,7 @@ jQuery(document).ready(function() {
                 company_overview:        null,
                 business_style:          null,
                 affiliates:              [],
-                fleet_category : -1
+                fleet_category : 1
             },
             // step 2 - contact information
             // temp variables
@@ -1689,7 +1689,7 @@ jQuery(document).ready(function() {
             },
             {
                 async: true,
-                limit: 6,
+                limit: 10,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);
                     return $.ajax({
@@ -1944,6 +1944,9 @@ jQuery(document).ready(function() {
                        rules: {    
                             //= Step 1
                             account_name: {
+                                required: true 
+                            },
+                            fleet_category: {
                                 required: true 
                             },
                             tin: {
