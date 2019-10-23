@@ -1689,7 +1689,7 @@ jQuery(document).ready(function() {
             },
             {
                 async: true,
-                limit: 5,
+                limit: 6,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);
                     return $.ajax({
