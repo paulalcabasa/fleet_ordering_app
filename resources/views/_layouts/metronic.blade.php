@@ -32,7 +32,11 @@ License: You must have a valid license purchased only from themeforest(the above
                 }
             });
         </script>
-
+        <style>
+            .amcharts-chart-div > a {
+                display: none !important;
+            }
+        </style>
         <!--end::Fonts -->
 
         <!--begin::Page Vendors Styles(used by this page) -->
@@ -249,6 +253,16 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{{ asset('public/js/app.js') }}"></script> 
         <script src="{{ asset('public/js/metronic.bundle.js') }}"></script> 
         <script src="{{ asset('public/metronic/assets/vendors/general/autosize/dist/autosize.js') }}" type="text/javascript"></script>
+        		<!--begin::Page Vendors(used by this page) -->
+	<!-- 	<script src="//www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/serial.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/radar.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/pie.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/plugins/tools/polarScatter/polarScatter.min.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/plugins/animate/animate.min.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/plugins/export/export.min.js" type="text/javascript"></script>
+		<script src="//www.amcharts.com/lib/3/themes/light.js" type="text/javascript"></script> -->
+
         @stack('scripts')
         <script>
             var btn = document.getElementById('kt_aside_toggler');

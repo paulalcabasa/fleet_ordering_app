@@ -101,6 +101,15 @@ mix.scripts([
 
 	'public/metronic/assets/vendors/general/morris.js/morris.js',
 	'public/metronic/assets/vendors/general/chart.js/dist/Chart.bundle.js',
+	'public/metronic/assets/vendors/general/raphael/raphael.min.js',
+	'public/metronic/plugins/amchart/amcharts.js',
+	'public/metronic/plugins/amchart/serial.js',
+	'public/metronic/plugins/amchart/radar.js',
+	'public/metronic/plugins/amchart/pie.js',
+	'public/metronic/plugins/amchart/polarscatter.js',
+	'public/metronic/plugins/amchart/animate.js',
+	'public/metronic/plugins/amchart/export.js',
+	'public/metronic/plugins/amchart/light.js',
 /*	'public/metronic/assets/vendors/global/vendors.bundle.js',*/
 /*	'public/metronic/assets/js/demo1/scripts.bundle.js',*/
 /*	'public/metronic/assets/vendors/custom/fullcalendar/fullcalendar.bundle.js',
