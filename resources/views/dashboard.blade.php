@@ -6,21 +6,22 @@
 
 <div id="app">
 <div class="row">
-    <div class="col-xl-4">
-        <!--begin:: Widgets/Activity-->
+
+    <div class="col-xl-6">
+    <!--STATISTICS-->
         <div class="kt-portlet kt-portlet--fit kt-portlet--head-lg kt-portlet--head-overlay kt-portlet--skin-solid kt-portlet--height-fluid">
             <div class="kt-portlet__head kt-portlet__head--noborder kt-portlet__space-x">
                 <div class="kt-portlet__head-label">
-                   <h3 class="kt-portlet__head-title">
-                        {{ $year }} Registrations
-                   </h3>
+                <h3 class="kt-portlet__head-title">
+                        Statistics
+                </h3>
                 </div>
             </div>
             <div class="kt-portlet__body kt-portlet__body--fit">
                 <div class="kt-widget17">
                     <div class="kt-widget17__visual kt-widget17__visual--chart kt-portlet-fit--top kt-portlet-fit--sides" style="background-color: #66b4e7">
-                        <div class="kt-widget17__chart" style="height:320px;">
-                            <div class="chartjs-size-monitor">
+                       <div class="kt-widget17__chart" style="height:120px;">
+                            <!-- <div class="chartjs-size-monitor">
                                 <div class="chartjs-size-monitor-expand">
                                     <div class=""></div>
                                 </div>
@@ -28,7 +29,7 @@
                                     <div class=""></div>
                                 </div>
                             </div>
-                            <canvas id="kt_chart_activities" style="display: block; width: 1034px; height: 216px;" width="1034" height="216" class="chartjs-render-monitor"></canvas>
+                            <canvas id="kt_chart_activities" style="display: block; width: 1034px; height: 216px;" width="1034" height="216" class="chartjs-render-monitor"></canvas> -->
                         </div>
                     </div>
                     <div class="kt-widget17__stats">
@@ -111,187 +112,132 @@
             </div>
         </div>
     </div>
-
-    <!--end:: Widgets/Activity-->   
-    <div class="col-xl-4">
-        <div class="kt-portlet kt-portlet--height-fluid">
-            <div class="kt-widget14">
-                <div class="kt-widget14__header kt-margin-b-30">
-                    <h3 class="kt-widget14__title">
-                        {{ $month_name }} {{ $year }}              
-                    </h3>
-                    <span class="kt-widget14__desc">
-                        Daily registrations for this month
+    
+    <div class="col-xl-6">
+        <div class="kt-portlet">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <span class="kt-portlet__head-icon kt-hidden">
+                        <i class="la la-gear"></i>
                     </span>
-                </div>
-                <div class="kt-widget14__chart" style="height:120px;"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                    <canvas id="kt_chart_daily_sales" style="display: block; width: 984px; height: 120px;" width="984" height="120" class="chartjs-render-monitor"></canvas>
+                    <h3 class="kt-portlet__head-title">
+                        {{ $year }} Fleet Registrations
+                    </h3>
                 </div>
             </div>
+            <div class="kt-portlet__body">
+                <div id="kt_amcharts_1" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>    
+
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-widget14">
+                        <div class="kt-widget14__header kt-margin-b-30">
+                            <h3 class="kt-widget14__title">
+                                {{ $month_name }} {{ $year }}              
+                            </h3>
+                            <span class="kt-widget14__desc">
+                                Daily registrations for this month
+                            </span>
+                        </div>
+                        <div class="kt-widget14__chart" style="height:120px;"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <canvas id="kt_chart_daily_sales" style="display: block; width: 984px; height: 120px;" width="984" height="120" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-6">
+                <div class="kt-portlet kt-portlet--height-fluid">
+                    <div class="kt-widget14">
+                        <div class="kt-widget14__header">
+                            <h3 class="kt-widget14__title">
+                                Transactions
+                            </h3>
+                            <span class="kt-widget14__desc">
+                                Summary of transactions
+                            </span>
+                        </div>
+                        <div class="kt-widget14__content">
+                            <div class="kt-widget14__chart">
+                                <div id="kt_chart_revenue_change" style="height: 150px; width: 150px;"></div>
+                            </div>
+                            <div class="kt-widget14__legends">
+                                <div class="kt-widget14__legend">
+                                    <span class="kt-widget14__bullet kt-bg-brand"></span>
+                                    <span class="kt-widget14__stats">Registration</span>
+                                </div>
+                                <div class="kt-widget14__legend">
+                                    <span class="kt-widget14__bullet kt-bg-warning"></span>
+                                    <span class="kt-widget14__stats">Fleet Price Confirmation</span>
+                                </div>
+                                <div class="kt-widget14__legend">
+                                    <span class="kt-widget14__bullet kt-bg-danger"></span>
+                                    <span class="kt-widget14__stats">Purchase Order</span>
+                                </div>
+                                <div class="kt-widget14__legend">
+                                    <span class="kt-widget14__bullet kt-bg-success"></span>
+                                    <span class="kt-widget14__stats">Fleet Wholesale Price Confirmation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
         </div>
     </div>
     
-
-    <div class="col-xl-4">
+    <div class="col-xl-6">  
         <!--begin:: Widgets/Notifications-->
-<div class="kt-portlet kt-portlet--height-fluid">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-                Recent activities
-            </h3>
-        </div>
-      <!--   <div class="kt-portlet__head-toolbar">
-            <ul class="nav nav-pills nav-pills-sm nav-pills-label nav-pills-bold" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kt_widget6_tab1_content" role="tab">
-                        Latest
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#kt_widget6_tab2_content" role="tab">
-                        Week
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#kt_widget6_tab3_content" role="tab">
-                        Month
-                    </a>
-                </li>
-            </ul>
-        </div> -->
-    </div>
-    <div class="kt-portlet__body">
-        <div class="tab-content">
-            <div class="tab-pane active" id="kt_widget6_tab1_content" aria-expanded="true">
-                <div class="kt-notification">
-                    @foreach($recent_activities as $activity)
-                    <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect id="bound" x="0" y="0" width="24" height="24"></rect>
-                                    <path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" id="Combined-Shape" fill="#000000"></path>
-                                    <rect id="Rectangle-Copy-2" fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519) " x="16.3255682" y="2.94551858" width="3" height="18" rx="1"></rect>
-                                </g>
-                            </svg>                        
-                        </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                <?php echo $activity->content; ?>
-                            </div>
-                            <div class="kt-notification__item-time">
-                                <?php echo $activity->creation_date?>
-                            </div>
-                        </div>
-                    </a>
-                    @endforeach
-                  <!--   <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect id="bound" x="0" y="0" width="24" height="24"></rect>
-                                    <path d="M12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.98630124,11 4.48466491,11.0516454 4,11.1500272 L4,7 C4,5.8954305 4.8954305,5 6,5 L20,5 C21.1045695,5 22,5.8954305 22,7 L22,16 C22,17.1045695 21.1045695,18 20,18 L12.9835977,18 Z M19.1444251,6.83964668 L13,10.1481833 L6.85557487,6.83964668 C6.4908718,6.6432681 6.03602525,6.77972206 5.83964668,7.14442513 C5.6432681,7.5091282 5.77972206,7.96397475 6.14442513,8.16035332 L12.6444251,11.6603533 C12.8664074,11.7798822 13.1335926,11.7798822 13.3555749,11.6603533 L19.8555749,8.16035332 C20.2202779,7.96397475 20.3567319,7.5091282 20.1603533,7.14442513 C19.9639747,6.77972206 19.5091282,6.6432681 19.1444251,6.83964668 Z" id="Combined-Shape" fill="#000000"></path>
-                                    <path d="M8.4472136,18.1055728 C8.94119209,18.3525621 9.14141644,18.9532351 8.89442719,19.4472136 C8.64743794,19.9411921 8.0467649,20.1414164 7.5527864,19.8944272 L5,18.618034 L5,14.5 C5,13.9477153 5.44771525,13.5 6,13.5 C6.55228475,13.5 7,13.9477153 7,14.5 L7,17.381966 L8.4472136,18.1055728 Z" id="Path-85" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
-                                </g>
-                            </svg>                        
-                        </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                New member is registered and pending for approval.
-                            </div>
-                            <div class="kt-notification__item-time">
-                                3 hrs ago
-                            </div>
-                        </div>
-                    </a> -->
-                <!--     <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect id="bound" x="0" y="0" width="24" height="24"></rect>
-                                <path d="M12,10.9996338 C12.8356605,10.3719448 13.8743941,10 15,10 C17.7614237,10 20,12.2385763 20,15 C20,17.7614237 17.7614237,20 15,20 C13.8743941,20 12.8356605,19.6280552 12,19.0003662 C11.1643395,19.6280552 10.1256059,20 9,20 C6.23857625,20 4,17.7614237 4,15 C4,12.2385763 6.23857625,10 9,10 C10.1256059,10 11.1643395,10.3719448 12,10.9996338 Z M13.3336047,12.504354 C13.757474,13.2388026 14,14.0910788 14,15 C14,15.9088933 13.7574889,16.761145 13.3336438,17.4955783 C13.8188886,17.8206693 14.3938466,18 15,18 C16.6568542,18 18,16.6568542 18,15 C18,13.3431458 16.6568542,12 15,12 C14.3930587,12 13.8175971,12.18044 13.3336047,12.504354 Z" id="Combined-Shape" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
-                                <circle id="Oval-14" fill="#000000" cx="12" cy="9" r="5"></circle>
-                            </g>
-                        </svg>                        
-                    </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                Membership application has been added.
-                            </div>
-                            <div class="kt-notification__item-time">
-                                3 hrs ago
-                            </div>
-                        </div>
-                    </a> -->
-                   <!--  <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon id="Bound" points="0 0 24 0 24 24 0 24"></polygon>
-                                    <path d="M18.5,8 C17.1192881,8 16,6.88071187 16,5.5 C16,4.11928813 17.1192881,3 18.5,3 C19.8807119,3 21,4.11928813 21,5.5 C21,6.88071187 19.8807119,8 18.5,8 Z M18.5,21 C17.1192881,21 16,19.8807119 16,18.5 C16,17.1192881 17.1192881,16 18.5,16 C19.8807119,16 21,17.1192881 21,18.5 C21,19.8807119 19.8807119,21 18.5,21 Z M5.5,21 C4.11928813,21 3,19.8807119 3,18.5 C3,17.1192881 4.11928813,16 5.5,16 C6.88071187,16 8,17.1192881 8,18.5 C8,19.8807119 6.88071187,21 5.5,21 Z" id="Combined-Shape" fill="#000000" opacity="0.3"></path>
-                                    <path d="M5.5,8 C4.11928813,8 3,6.88071187 3,5.5 C3,4.11928813 4.11928813,3 5.5,3 C6.88071187,3 8,4.11928813 8,5.5 C8,6.88071187 6.88071187,8 5.5,8 Z M11,4 L13,4 C13.5522847,4 14,4.44771525 14,5 C14,5.55228475 13.5522847,6 13,6 L11,6 C10.4477153,6 10,5.55228475 10,5 C10,4.44771525 10.4477153,4 11,4 Z M11,18 L13,18 C13.5522847,18 14,18.4477153 14,19 C14,19.5522847 13.5522847,20 13,20 L11,20 C10.4477153,20 10,19.5522847 10,19 C10,18.4477153 10.4477153,18 11,18 Z M5,10 C5.55228475,10 6,10.4477153 6,11 L6,13 C6,13.5522847 5.55228475,14 5,14 C4.44771525,14 4,13.5522847 4,13 L4,11 C4,10.4477153 4.44771525,10 5,10 Z M19,10 C19.5522847,10 20,10.4477153 20,11 L20,13 C20,13.5522847 19.5522847,14 19,14 C18.4477153,14 18,13.5522847 18,13 L18,11 C18,10.4477153 18.4477153,10 19,10 Z" id="Combined-Shape" fill="#000000"></path>
-                                </g>
-                            </svg>                        
-                        </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                New report file has been uploaded.
-                            </div>
-                            <div class="kt-notification__item-time">
-                                5 hrs ago
-                            </div>
-                        </div>
-                    </a> -->
-                 <!--    <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect id="Rectangle-10" x="0" y="0" width="24" height="24"></rect>
-                                    <path d="M16.3740377,19.9389434 L22.2226499,11.1660251 C22.4524142,10.8213786 22.3592838,10.3557266 22.0146373,10.1259623 C21.8914367,10.0438285 21.7466809,10 21.5986122,10 L17,10 L17,4.47708173 C17,4.06286817 16.6642136,3.72708173 16.25,3.72708173 C15.9992351,3.72708173 15.7650616,3.85240758 15.6259623,4.06105658 L9.7773501,12.8339749 C9.54758575,13.1786214 9.64071616,13.6442734 9.98536267,13.8740377 C10.1085633,13.9561715 10.2533191,14 10.4013878,14 L15,14 L15,19.5229183 C15,19.9371318 15.3357864,20.2729183 15.75,20.2729183 C16.0007649,20.2729183 16.2349384,20.1475924 16.3740377,19.9389434 Z" id="Path-3" fill="#000000"></path>
-                                    <path d="M4.5,5 L9.5,5 C10.3284271,5 11,5.67157288 11,6.5 C11,7.32842712 10.3284271,8 9.5,8 L4.5,8 C3.67157288,8 3,7.32842712 3,6.5 C3,5.67157288 3.67157288,5 4.5,5 Z M4.5,17 L9.5,17 C10.3284271,17 11,17.6715729 11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L4.5,20 C3.67157288,20 3,19.3284271 3,18.5 C3,17.6715729 3.67157288,17 4.5,17 Z M2.5,11 L6.5,11 C7.32842712,11 8,11.6715729 8,12.5 C8,13.3284271 7.32842712,14 6.5,14 L2.5,14 C1.67157288,14 1,13.3284271 1,12.5 C1,11.6715729 1.67157288,11 2.5,11 Z" id="Combined-Shape" fill="#000000" opacity="0.3"></path>
-                                </g>
-                            </svg>                        
-                        </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                New user feedback received and pending for review.
-                            </div>
-                            <div class="kt-notification__item-time">
-                                8 hrs ago
-                            </div>
-                        </div>
-                    </a> -->
-                   <!--  <a href="#" class="kt-notification__item">
-                        <div class="kt-notification__item-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect id="bound" x="0" y="0" width="24" height="24"></rect>
-                                    <path d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z" id="Combined-Shape" fill="#000000"></path>
-                                    <circle id="Oval" fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5"></circle>
-                                </g>
-                            </svg>                        
-                        </div>
-                        <div class="kt-notification__item-details">
-                            <div class="kt-notification__item-title">
-                                Database sever #2 has been fully restarted. 
-                            </div>
-                            <div class="kt-notification__item-time">
-                                23 hrs ago
-                            </div>
-                        </div>
-                    </a> -->
+        <div class="kt-portlet kt-portlet--height-fluid">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        Recent activities
+                    </h3>
                 </div>
             </div>
+            <div class="kt-portlet__body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="kt_widget6_tab1_content" aria-expanded="true">
+                        <div class="kt-notification">
+                            @foreach($recent_activities as $activity)
+                            <a href="#" class="kt-notification__item">
+                                <div class="kt-notification__item-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon kt-svg-icon--brand">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <rect id="bound" x="0" y="0" width="24" height="24"></rect>
+                                            <path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" id="Combined-Shape" fill="#000000"></path>
+                                            <rect id="Rectangle-Copy-2" fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519) " x="16.3255682" y="2.94551858" width="3" height="18" rx="1"></rect>
+                                        </g>
+                                    </svg>                        
+                                </div>
+                                <div class="kt-notification__item-details">
+                                    <div class="kt-notification__item-title">
+                                        <?php echo $activity->content; ?>
+                                    </div>
+                                    <div class="kt-notification__item-time">
+                                        <?php echo $activity->creation_date?>
+                                    </div>
+                                </div>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
 
-            
-           
+                    
+                
+                </div>
+            </div>
         </div>
+        <!--end:: Widgets/Notifications-->    
     </div>
-</div>
-<!--end:: Widgets/Notifications-->    
-</div>
-
 </div>
 
 </div>
@@ -308,112 +254,6 @@ var KTDashboard = function() {
     var project_ctr_year = {!! json_encode($project_ctr_year) !!};
     var last_day = {!! json_encode($last_day) !!};
     var monthly_projects = {!! json_encode($monthly_projects) !!};
-
-
-    // Activities Charts.
-    // Based on Chartjs plugin - http://www.chartjs.org/
-    var activitiesChart = function() {
-        if ($('#kt_chart_activities').length == 0) {
-            return;
-        }
-
-        var ctx = document.getElementById("kt_chart_activities").getContext("2d");
-
-        var gradient = ctx.createLinearGradient(0, 0, 0, 240);
-        gradient.addColorStop(0, Chart.helpers.color('#2395e1').alpha(1).rgbString());
-        gradient.addColorStop(1, Chart.helpers.color('#2395e1').alpha(0.3).rgbString());
-
-        var config = {
-            type: 'line',
-            data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                datasets: [{
-                    label: "Projects",
-                    backgroundColor: Chart.helpers.color('#2395e1').alpha(1).rgbString(),  //gradient
-                    borderColor: '#14689f',
-
-                    pointBackgroundColor: Chart.helpers.color('#000000').alpha(0).rgbString(),
-                    pointBorderColor: Chart.helpers.color('#000000').alpha(0).rgbString(),
-                    pointHoverBackgroundColor: KTApp.getStateColor('light'),
-                    pointHoverBorderColor: Chart.helpers.color('#ffffff').alpha(0.1).rgbString(),
-
-                    //fill: 'start',
-                    data: [
-                        project_ctr_year[0].jan, 
-                        project_ctr_year[0].feb, 
-                        project_ctr_year[0].mar, 
-                        project_ctr_year[0].apr, 
-                        project_ctr_year[0].may, 
-                        project_ctr_year[0].jun, 
-                        project_ctr_year[0].jul, 
-                        project_ctr_year[0].aug, 
-                        project_ctr_year[0].sep, 
-                        project_ctr_year[0].oct, 
-                        project_ctr_year[0].nov, 
-                        project_ctr_year[0].dec
-                    ]
-                }]
-            },
-            options: {
-                title: {
-                    display: false,
-                },
-                tooltips: {
-                    mode: 'nearest',
-                    intersect: false,
-                    position: 'nearest',
-                    xPadding: 10,
-                    yPadding: 10,
-                    caretPadding: 10
-                },
-                legend: {
-                    display: false
-                },
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    xAxes: [{
-                        display: false,
-                        gridLines: false,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Month'
-                        }
-                    }],
-                    yAxes: [{
-                        display: false,
-                        gridLines: false,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Value'
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                },
-                elements: {
-                    line: {
-                        tension: 0.0000001
-                    },
-                    point: {
-                        radius: 4,
-                        borderWidth: 12
-                    }
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 10,
-                        bottom: 0
-                    }
-                }
-            }
-        };
-
-        var chart = new Chart(ctx, config);
-    }
 
     // Daily Sales chart.
     // Based on Chartjs plugin - http://www.chartjs.org/
@@ -487,20 +327,49 @@ var KTDashboard = function() {
         });
     }
 
+    var revenueChange = function() {
+        if ($('#kt_chart_revenue_change').length == 0) {
+            return;
+        }
+
+        Morris.Donut({
+            element: 'kt_chart_revenue_change',
+            data: [ 
+                {
+                    label: "PO",
+                    value: 25
+                },
+                {
+                    label: "FPC",
+                    value: 30
+                },
+                {
+                    label: "Regs",
+                    value: 40
+                },
+                {
+                    label: "FWPC",
+                    value: 15
+                },
+                
+            ],
+            colors: [
+                KTApp.getStateColor('danger'),
+                KTApp.getStateColor('warning'),
+                KTApp.getStateColor('brand'),
+                KTApp.getStateColor('success'),
+            ],
+        });
+    }
+
+
     return {
         // Init demos
         init: function() {
             // init charts
             dailySales();
-            activitiesChart();
-         
-        /*    var loading = new KTDialog(
-                {'type': 'loader', 'placement': 'top center', 'message': 'Loading ...'});
-            loading.show();
-
-            setTimeout(function() {
-                loading.hide();
-            }, 3000);*/
+            revenueChange();
+     
         }
     };
 }();
@@ -512,11 +381,85 @@ jQuery(document).ready(function() {
     var vm =  new Vue({
         el : "#app",
         data: {
-
+            annual_fleet_reg : {!! json_encode($annual_fleet_reg) !!}
         },
         created: function () {
+            var self = this;
             // `this` points to the vm instance
-          
+            AmCharts.makeChart("kt_amcharts_1", {
+                "rtl": KTUtil.isRTL(),
+                "type": "serial",
+                "theme": "light",
+                "dataProvider": [
+                    {
+                        "month": "JAN",
+                        "registrations": self.annual_fleet_reg.jan
+                    }, {
+                        "month": "FEB",
+                        "registrations": self.annual_fleet_reg.feb
+                    }, {
+                        "month": "MAR",
+                        "registrations": self.annual_fleet_reg.mar
+                    }, {
+                        "month": "APR",
+                        "registrations": self.annual_fleet_reg.apr
+                    }, {
+                        "month": "MAY",
+                        "registrations": self.annual_fleet_reg.may
+                    }, {
+                        "month": "JUN",
+                        "registrations": self.annual_fleet_reg.jun
+                    }, {
+                        "month": "JUL",
+                        "registrations": self.annual_fleet_reg.jul
+                    }, {
+                        "month": "AUG",
+                        "registrations": self.annual_fleet_reg.aug
+                    }, {
+                        "month": "SEP",
+                        "registrations": self.annual_fleet_reg.sep
+                    }, {
+                        "month": "OCT",
+                        "registrations": self.annual_fleet_reg.oct
+                    }, {
+                        "month": "NOV",
+                        "registrations": self.annual_fleet_reg.nov
+                    }, {
+                        "month": "DEC",
+                        "registrations": self.annual_fleet_reg.dec
+                    }
+                ],
+                "valueAxes": [{
+                    "gridColor": "#FFFFFF",
+                    "gridAlpha": 0.2,
+                    "dashLength": 0
+                }],
+                "gridAboveGraphs": true,
+                "startDuration": 1,
+                "graphs": [{
+                    "balloonText": "[[category]]: <b>[[value]]</b>",
+                    "fillAlphas": 0.8,
+                    "lineAlpha": 0.2,
+                    "type": "column",
+                    "valueField": "registrations"
+                }],
+                "chartCursor": {
+                    "categoryBalloonEnabled": false,
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
+                "categoryField": "month",
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "gridAlpha": 0,
+                    "tickPosition": "start",
+                    "tickLength": 20
+                },
+                "export": {
+                    "enabled": false
+                }
+
+            });
         },
         mounted : function () {
        

@@ -76,10 +76,12 @@ class DashboardController extends Controller
         $month_name = date('F');
         $year = date('Y');
 
+      
         $page_data = [
             'project_ctr'          => $project_ctr,
             'recent_activities'    => $recent_activities,
             'project_ctr_year'     => $project_ctr_year,
+            'annual_fleet_reg'     => $project_ctr_year[0],
             'open_project_ctr'     => $open_project_ctr,
             'pending_fpc_projects' => $pending_fpc_projects,
             'purchase_orders'      => $purchase_orders,
