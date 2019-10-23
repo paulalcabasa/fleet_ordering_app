@@ -1683,13 +1683,13 @@ jQuery(document).ready(function() {
             // Customer name typeahead
             $('#txt_account_name').typeahead(
             {
-                minLength: 3,
+                minLength: 10,
                 hint: true,
                 highlight: true,
             },
             {
                 async: true,
-                limit: 10,
+                limit: 5,
                 source: function (query, processSync, processAsync) {
                    // processSync(['Searching...']);
                     return $.ajax({
