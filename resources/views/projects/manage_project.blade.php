@@ -1683,7 +1683,7 @@ jQuery(document).ready(function() {
             // Customer name typeahead
             $('#txt_account_name').typeahead(
             {
-                minLength: 10,
+                minLength: 5,
                 hint: true,
                 highlight: true,
             },

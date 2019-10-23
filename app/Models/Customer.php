@@ -91,7 +91,7 @@ class Customer extends Model
                 ->table('ipc_dms.fs_customers')
                 ->selectRaw(DB::raw('distinct customer_name'))
                 ->whereRaw("lower(customer_name) like '".strtolower($customer_name)."%' and status = '1'")
-                ->limit(20)
+                ->limit(5)
                 ->get();
         return $query;
     }
