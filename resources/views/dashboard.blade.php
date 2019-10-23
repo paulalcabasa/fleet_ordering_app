@@ -393,40 +393,52 @@ jQuery(document).ready(function() {
                 "dataProvider": [
                     {
                         "month": "JAN",
-                        "registrations": self.annual_fleet_reg.jan
+                    //    "registrations": self.annual_fleet_reg.jan,
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "FEB",
-                        "registrations": self.annual_fleet_reg.feb
+                    //    "registrations": self.annual_fleet_reg.feb
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "MAR",
-                        "registrations": self.annual_fleet_reg.mar
+                    //    "registrations": self.annual_fleet_reg.mar
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "APR",
-                        "registrations": self.annual_fleet_reg.apr
+                      //  "registrations": self.annual_fleet_reg.apr
+                       "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "MAY",
-                        "registrations": self.annual_fleet_reg.may
+                    //    "registrations": self.annual_fleet_reg.may
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "JUN",
-                        "registrations": self.annual_fleet_reg.jun
+                   //     "registrations": self.annual_fleet_reg.jun
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "JUL",
-                        "registrations": self.annual_fleet_reg.jul
+                    //    "registrations": self.annual_fleet_reg.jul
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "AUG",
-                        "registrations": self.annual_fleet_reg.aug
+                    //    "registrations": self.annual_fleet_reg.aug
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "SEP",
-                        "registrations": self.annual_fleet_reg.sep
+                    //    "registrations": self.annual_fleet_reg.sep
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "OCT",
-                        "registrations": self.annual_fleet_reg.oct
+                    //    "registrations": self.annual_fleet_reg.oct
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "NOV",
-                        "registrations": self.annual_fleet_reg.nov
+                    //    "registrations": self.annual_fleet_reg.nov
+                        "registrations": Math.floor(Math.random() * 200)
                     }, {
                         "month": "DEC",
-                        "registrations": self.annual_fleet_reg.dec
+                    //   "registrations": self.annual_fleet_reg.dec
+                        "registrations": Math.floor(Math.random() * 200)
                     }
                 ],
                 "valueAxes": [{
