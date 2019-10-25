@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PDF;
 use Illuminate\Support\Facades\Input;
 use App\Models\Customer;
 use App\Models\VehicleType;
@@ -19,13 +20,13 @@ use App\Models\FPCItemFreebies;
 use App\Models\Attachment;
 use App\Models\SalesPersonsOra;
 use App\Models\FleetCategories;
-use PDF;
 use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
 use App\Models\OracleUser;
 use App\Models\PriceListHeader;
+use App\Models\FPCValidityRequest;
 
 class PriceConfirmationController extends Controller
 {   
@@ -96,13 +97,13 @@ class PriceConfirmationController extends Controller
 
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
-        $fpc_details      = $m_fpc->get_details($price_confirmation_id);
-        $editable         = $fpc_helper->editable($fpc_details->status_name);
-        $customer_details = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
-        $project_headers  = $m_fpc_project->get_projects($price_confirmation_id);
-        $fpc_attachments  = $m_attachment->get_fpc_attachments($price_confirmation_id);
-        $projects         = [];
-        $pricelist_headers = $m_plh->get_active_headers();
+    	$fpc_details           = $m_fpc->get_details($price_confirmation_id);
+    	$editable              = $fpc_helper->editable($fpc_details->status_name);
+    	$customer_details      = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
+    	$project_headers       = $m_fpc_project->get_projects($price_confirmation_id);
+    	$fpc_attachments       = $m_attachment->get_fpc_attachments($price_confirmation_id);
+    	$projects              = [];
+    	$pricelist_headers     = $m_plh->get_active_headers();
         
         foreach($project_headers as $project){
 
@@ -757,5 +758,57 @@ class PriceConfirmationController extends Controller
             session('user')['user_id'],            
             session('user')['source_id'] 
         );
+    }
+
+    public function save_fpc_extension(
+        Request $request, 
+        FPCValidityRequest $m_validity_request, 
+        ActivityLogs $m_activity_logs
+    ){
+        $validity_request = $request->validity_request;
+        $pending = $m_validity_request->get_pending_request($validity_request['fpc_project_id']); 
+
+        if(!empty($pending)){
+            return [
+                'status'  => false,
+                'message' => 'Unable to submit request, extension has been already sent.'
+            ];
+        }
+
+        $params = [
+            'fpc_project_id'        => $validity_request['fpc_project_id'],
+            'request_date'          => $validity_request['request_date'],
+            'requestor_remarks'     => $validity_request['requestor_remarks'],
+            'status'                => 7,                                      // pending
+            'created_by'            => session('user')['user_id'],
+            'create_user_source_id' => session('user')['source_id'],
+            'creation_date'         => Carbon::now()
+        ];
+
+        $m_validity_request->insert_request($params);
+
+        /* activity logs */
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created a request for FPC validity extension.',
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $validity_request['project_id'],
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $validity_request['approver_email']
+        ];
+        $m_activity_logs->insert_log($activity_log_params);
+        
+        return [
+                'status' => true,
+                'message' => 'Successfully submitted request!'
+            ];
+
     }
 }

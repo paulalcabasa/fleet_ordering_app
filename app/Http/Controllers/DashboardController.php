@@ -14,7 +14,7 @@ class DashboardController extends Controller
         POHeaders $m_poh
     ){
         
-        if(!in_array(session('user')['user_type_id'], array(27,31,32,33,38)) ){
+        if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38)) ){
             return view('errors.404');
         }
 

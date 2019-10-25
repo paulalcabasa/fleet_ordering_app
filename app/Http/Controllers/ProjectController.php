@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PDF;
 use App\Models\OrganizationTypes;
 use App\Models\ProjectSources;
 use App\Models\Customer;
@@ -30,7 +31,8 @@ use App\Models\FPC_Item;
 use App\Models\POHeaders;
 use App\Models\FWPC;
 use App\Models\Dealer;
-use PDF;
+use App\Models\FPCValidityRequest;
+
 
 class ProjectController extends Controller
 {
@@ -137,7 +139,8 @@ class ProjectController extends Controller
         FPC_Item           $m_fpc_item,
         POHeaders          $m_poh,
         FWPC               $m_fwpc,
-        ActivityLogs       $m_activity_logs
+        ActivityLogs       $m_activity_logs,
+        FPCValidityRequest $m_validity_request 
     ){
         $project_id             = $request->project_id;
         $project_details        = $m_project->get_details($project_id);
@@ -177,7 +180,8 @@ class ProjectController extends Controller
             $temp_array = [
                 'fpc_header' => $fpc,
                 'fpc_lines'  => $items,
-                'attachments' => $attachments
+                'attachments' => $attachments,
+                'pending_fpc_validity' => $m_validity_request->get_pending_request($fpc->fpc_project_id)
             ];
             array_push($vehicle_types_fpc, $fpc->vehicle_type);
             array_push($fpc_data,$temp_array);

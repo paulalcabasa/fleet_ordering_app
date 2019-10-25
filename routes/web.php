@@ -146,6 +146,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('add-vehicle-price' , 'PriceListController@add_pricelist_line');
 	Route::get('get-pricelist-lines/{pricelist_header_id}' , 'PriceListController@get_pricelist_lines');
 	Route::get('get-vehicle-price' , 'PriceListController@get_vehicle_price');
+
+	// VALIDITY REQUEST
+	Route::post('save-fpc-extension-request' , 'PriceConfirmationController@save_fpc_extension');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

@@ -132,11 +132,12 @@ class FPC extends Model
                         trim(to_char(fpc.creation_date,'Month')) || ' ' || trim(to_char(fpc.creation_date,' DD, YYYY')) date_created,
                         usr.first_name || ' ' || usr.last_name prepared_by,
                         pt.term_name,
-                        fpc_prj.validity,
+                        fpc_prj.validity validity_date,
                         trim(to_char(fpc_prj.validity,'Month')) || ' ' || trim(to_char(fpc_prj.validity,' DD, YYYY')) validity,
                         fpc_prj.availability,
                         fpc_prj.note,
-                        flt_c.fleet_category_name
+                        flt_c.fleet_category_name,
+                        usr.email_address
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                         ON rh.requirement_header_id = fpc_prj.requirement_header_id
