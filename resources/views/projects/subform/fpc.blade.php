@@ -16,6 +16,21 @@
 
     <div class="kt-portlet__body">
         <div class="row">
+            <div class="col-md-12">
+
+                <div class="alert alert-info fade show" role="alert" v-for="data in row['pending_fpc_validity']">
+                    <div class="alert-icon"><i class="flaticon-info"></i></div>
+                    <div class="alert-text">Pending request for validity extension.</div>
+                    <div class="alert-close">
+                        <button type="button" class="btn btn-sm btn-primary" @click="viewRequestDetails(data,row['fpc_header'])">
+                           View details
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">Details</div>
@@ -114,19 +129,19 @@
     <div class="kt-portlet__foot">
         <div class="row  kt-pull-right">
         <div class="col-lg-12">
-            <!-- <button 
+            <button 
                 type="button" 
-                @click="addFWPCModal(row['fpc_header'].fpc_project_id)" 
                 class="btn btn-primary btn-sm"
-                v-if="row['fpc_header'].vehicle_type == vehicle_user_type"
+                @click="requestExtension(row['fpc_header'])"
+                v-if="user_type == 27 || user_type == 31"
             >
-                Add FWPC
-            </button>   -->
+                Request for extension
+            </button>  
             <a 
                 href="#"
-                
                 class="btn btn-primary btn-sm"
                 @click.prevent="printFPC(projectDetails.project_id,row['fpc_header'].fpc_id,row['fpc_header'].fpc_project_id)"
+                
             >
                 <span class="kt-hidden-mobile">Print</span>
             </a>

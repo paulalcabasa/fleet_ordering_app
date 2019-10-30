@@ -101,6 +101,7 @@
 @include('projects.modal.add_fwpc')
 <!-- view fwpc modal -->
 @include('projects.modal.view_fwpc')
+@include('projects.modal.fpc_validity')
 
 </div> 
 <!-- end of app wrapper -->
@@ -169,7 +170,22 @@
             },
             signed_fwpc : '',
             cur_fwpc_id : '',
-            cur_owner_id : ''
+            cur_owner_id : '',
+            validityRequest : {
+                'fpc_project_id'   : '',
+                'validity'         : '',
+                'validity_date'    : '',
+                'request_date'     : '',
+                'approved_date'    : '',
+                'requestor_remarks': '',
+                'approver_remarks' : '',
+                'approver_email'   : '',
+                'project_id'       : '',
+                'action'           : '',
+                'status'           : '',
+                'request_id'       : '',
+                'requestor_email'  : ''
+             }
         },
         methods : {
             showDeliveryDetail(data){
@@ -636,8 +652,6 @@
                 $("#addFWPC").modal('show');
             },
             printFPC(project_id,fpc_id,fpc_project_id){
-                //:href="base_url + '/print-fpc-dealer/single/' + projectDetails.project_id + '/' + row['fpc_header'].fpc_id" ";
-            
                 if(this.user_type == 32 || this.user_type == 33){
                     window.open(this.base_url + "/print-fpc/" + fpc_project_id); 
                 }
@@ -647,6 +661,69 @@
             },
             totalDeliveryQty(owner_id){
                 return this.curDeliveryDetails.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
+            },
+            requestExtension(fpc_details){
+                $("#validityModal").modal('show');
+                this.validityRequest.fpc_project_id = fpc_details.fpc_project_id;
+                this.validityRequest.validity       = fpc_details.validity;
+                this.validityRequest.validity_date  = fpc_details.validity_date;
+                this.validityRequest.approver_email = fpc_details.email_address;
+                this.validityRequest.project_id     = fpc_details.project_id;
+                this.validityRequest.action         = "create";
+                this.validityRequest.status         = 7;                           // pending
+            },
+            viewRequestDetails(row,fpc_details){
+                this.validityRequest.action = "view";
+                if(this.user_type == '33' || this.user_type == '32'){
+                    this.validityRequest.action = "approve";
+                }
+
+                this.validityRequest.fpc_project_id    = row.fpc_project_id;
+                this.validityRequest.validity          = row.original_validity_date;
+                this.validityRequest.validity_date     = row.original_validity_date;
+                this.validityRequest.request_date      = row.request_date;
+                this.validityRequest.requestor_remarks = row.requestor_remarks;
+                this.validityRequest.request_id        = row.request_id;
+                this.validityRequest.project_id        = row.project_id;
+                this.validityRequest.status            = row.status;
+                this.validityRequest.approver_email    = fpc_details.email_address;
+                this.validityRequest.requestor_email   = fpc_details.requestor_email;
+            
+                $("#validityModal").modal('show');
+            },
+            confirmRequest(){
+                var self = this;
+
+                axios.post('save-fpc-extension-request', {
+                    validity_request : self.validityRequest
+                })
+                .then( (response) => {
+
+                    if(!response.data.status){
+                        Swal.fire({
+                            type: 'error',
+                            title: response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                        return false;
+                    }
+                    
+                    Swal.fire({
+                        type: response.data.swal_type,
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        onClose : function(){
+                            $("#validityModal").modal("hide");
+                            window.location.reload();
+                        }
+                    });
+                });
+            },
+            rejectRequest(){
+                this.validityRequest.action = 'reject';
+                this.confirmRequest();
             }
         },
         created: function () {
@@ -662,6 +739,9 @@
         filters: {
             formatPeso: function (value) {
                  return `${parseFloat(value).toLocaleString()}`
+            },
+            formatShortDate(value){
+                return moment(String(value)).format('MM/DD/YYYY');
             }
         },
         computed : {

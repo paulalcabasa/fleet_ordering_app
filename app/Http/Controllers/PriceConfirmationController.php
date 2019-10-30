@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PDF;
 use Illuminate\Support\Facades\Input;
 use App\Models\Customer;
 use App\Models\VehicleType;
@@ -19,13 +20,13 @@ use App\Models\FPCItemFreebies;
 use App\Models\Attachment;
 use App\Models\SalesPersonsOra;
 use App\Models\FleetCategories;
-use PDF;
 use App\Models\Approver;
 use App\Models\ProjectDeliverySchedule;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
 use App\Models\OracleUser;
 use App\Models\PriceListHeader;
+use App\Models\FPCValidityRequest;
 
 class PriceConfirmationController extends Controller
 {   
@@ -96,13 +97,13 @@ class PriceConfirmationController extends Controller
 
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
-        $fpc_details      = $m_fpc->get_details($price_confirmation_id);
-        $editable         = $fpc_helper->editable($fpc_details->status_name);
-        $customer_details = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
-        $project_headers  = $m_fpc_project->get_projects($price_confirmation_id);
-        $fpc_attachments  = $m_attachment->get_fpc_attachments($price_confirmation_id);
-        $projects         = [];
-        $pricelist_headers = $m_plh->get_active_headers();
+    	$fpc_details           = $m_fpc->get_details($price_confirmation_id);
+    	$editable              = $fpc_helper->editable($fpc_details->status_name);
+    	$customer_details      = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
+    	$project_headers       = $m_fpc_project->get_projects($price_confirmation_id);
+    	$fpc_attachments       = $m_attachment->get_fpc_attachments($price_confirmation_id);
+    	$projects              = [];
+    	$pricelist_headers     = $m_plh->get_active_headers();
         
         foreach($project_headers as $project){
 
@@ -757,5 +758,117 @@ class PriceConfirmationController extends Controller
             session('user')['user_id'],            
             session('user')['source_id'] 
         );
+    }
+
+    public function save_fpc_extension(
+        Request $request, 
+        FPCValidityRequest $m_validity_request, 
+        ActivityLogs $m_activity_logs,
+        FPC_Project $m_fpc_project
+    ){
+        $validity_request = $request->validity_request;
+     
+        if($validity_request['action'] == "approve"){
+            
+            $m_validity_request->update_status(
+                [
+                    'request_id'            => $validity_request['request_id'],
+                    'approved_date'         => $validity_request['approved_date'],
+                    'status'                => 4,                                       // status
+                    'approver_remarks'      => $validity_request['approver_remarks'],
+                    'updated_by'            => session('user')['user_id'],
+                    'update_user_source_id' => session('user')['source_id']
+                ]
+            );
+            
+            $m_fpc_project->update_validity(
+                [
+                    'fpc_project_id'        => $validity_request['fpc_project_id'],
+                    'validity'              => $validity_request['approved_date'],
+                    'updated_by'            => session('user')['user_id'],
+                    'update_user_source_id' => session('user')['source_id']
+                ]
+            );
+
+            $log_content = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has approved FPC validity extension request from ' . Carbon::create($validity_request['validity'])->toFormattedDateString() . ' to ' . Carbon::create($validity_request['approved_date'])->toFormattedDateString() . '. Remarks : ' . $validity_request['approver_remarks'];
+            $mail_recipient = $validity_request['approver_email'];
+            $message =  'Successfully approved request!';
+            $swal_type = 'success';
+        }
+        else if($validity_request['action'] == "reject"){
+            $params = [
+                'request_id'            => $validity_request['request_id'],
+                'approved_date'         => $validity_request['approved_date'],
+                'status'                => 5,                                       // status
+                'approver_remarks'      => $validity_request['approver_remarks'],
+                'updated_by'            => session('user')['user_id'],
+                'update_user_source_id' => session('user')['source_id']
+            ];
+            $m_validity_request->update_status($params);
+            $log_content = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has rejected the FPC validity extension request.'. 'Remarks : ' . $validity_request['approver_remarks'];
+            $mail_recipient = $validity_request['approver_email'];
+            $message =  'Request has been rejected.';
+            $swal_type = 'error';
+        }
+        else if($validity_request['action'] == "create"){
+            $pending = $m_validity_request->get_pending_request($validity_request['fpc_project_id']); 
+            
+            if(count($pending) > 0){
+                return [
+                    'status'  => false,
+                    'message' => 'Unable to submit request, extension has been already sent.'
+                ];
+            }
+
+            $params = [
+                'fpc_project_id'        => $validity_request['fpc_project_id'],
+                'request_date'          => $validity_request['request_date'],
+                'requestor_remarks'     => $validity_request['requestor_remarks'],
+                'original_validity_date' => $validity_request['validity_date'],
+                'status'                => 7,                                      // pending
+                'created_by'            => session('user')['user_id'],
+                'create_user_source_id' => session('user')['source_id'],
+                'creation_date'         => Carbon::now()
+            ];
+
+            $m_validity_request->insert_request($params);
+            $log_content    = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has created a request for FPC validity extension from ' . $validity_request['validity'] . ' to ' . Carbon::create($validity_request['request_date'])->toFormattedDateString()  . '. Remarks : ' . $validity_request['requestor_remarks'];
+            $mail_recipient = $validity_request['approver_email'];
+            $message        = 'Successfully submitted request!';
+            $swal_type      = 'success';
+        }
+        else if($validity_request['action'] == "view"){
+            return [
+                    'status'  => false,
+                    'message' => 'Unable to submit request, extension has been already sent.'
+            ];
+        }
+
+        
+        /* activity logs */
+        $activity_log_params = [
+            'module_id'             => 1, // Fleet Project
+            'module_code'           => 'PRJ',
+            'content'               => $log_content,
+            'created_by'            => session('user')['user_id'],
+            'creation_date'         => Carbon::now(),
+            'create_user_source_id' => session('user')['source_id'],
+            'reference_id'          => $validity_request['project_id'],
+            'reference_column'      => 'project_id',
+            'reference_table'       => 'fs_projects',
+            'mail_flag'             => 'Y',
+            'is_sent_flag'          => 'N',
+            'timeline_flag'         => 'Y',
+            'mail_recipient'        => $mail_recipient
+        ];
+
+        $m_activity_logs->insert_log($activity_log_params);
+        
+        return [
+                'status'    => true,
+                'message'   => $message,
+                'swal_type' => $swal_type
+            ];
+
     }
 }

@@ -132,11 +132,14 @@ class FPC extends Model
                         trim(to_char(fpc.creation_date,'Month')) || ' ' || trim(to_char(fpc.creation_date,' DD, YYYY')) date_created,
                         usr.first_name || ' ' || usr.last_name prepared_by,
                         pt.term_name,
-                        fpc_prj.validity,
+                        fpc_prj.validity validity_date,
                         trim(to_char(fpc_prj.validity,'Month')) || ' ' || trim(to_char(fpc_prj.validity,' DD, YYYY')) validity,
                         fpc_prj.availability,
                         fpc_prj.note,
-                        flt_c.fleet_category_name
+                        flt_c.fleet_category_name,
+                        usr.email_address,
+                        usr_prj.email_address requestor_email,
+                        fpc_prj.project_id
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                         ON rh.requirement_header_id = fpc_prj.requirement_header_id
@@ -153,6 +156,9 @@ class FPC extends Model
                         ON fp.project_id = fpc_prj.project_id
                     LEFT JOIN ipc_dms.fs_fleet_categories flt_c
                         ON flt_c.fleet_category_id = fp.fleet_category
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr_prj
+                        ON usr_prj.user_id = fp.created_by
+                        AND usr_prj.user_source_id = fp.create_user_Source_id
                 WHERE 1 = 1
                     AND fpc_prj.project_id = :project_id
                     AND fpc.status = 4";
