@@ -18,11 +18,11 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="alert alert-warning fade show" role="alert" v-for="data in row['pending_fpc_validity']">
-                    <div class="alert-icon"><i class="flaticon-warning"></i></div>
+                <div class="alert alert-info fade show" role="alert" v-for="data in row['pending_fpc_validity']">
+                    <div class="alert-icon"><i class="flaticon-info"></i></div>
                     <div class="alert-text">Pending request for validity extension.</div>
                     <div class="alert-close">
-                        <button type="button" class="btn btn-link" @click="viewRequestDetails(data,row['fpc_header'])">
+                        <button type="button" class="btn btn-sm btn-primary" @click="viewRequestDetails(data,row['fpc_header'])">
                            View details
                         </button>
                     </div>
