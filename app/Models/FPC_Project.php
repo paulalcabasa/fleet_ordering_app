@@ -164,4 +164,16 @@ class FPC_Project extends Model
                 'update_user_source_id' => $user_source_id
             ]);
     }
+
+    public function update_validity($params){
+        $this
+            ->where([
+                [ 'fpc_project_id', '=' , $params['fpc_project_id'] ],
+            ])
+            ->update([
+                'validity'              => $params['validity'],
+                'updated_by'            => $params['updated_by'],
+                'update_user_source_id' => $params['update_user_source_id']
+            ]);
+    }
 }

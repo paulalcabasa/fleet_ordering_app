@@ -16,15 +16,15 @@
                     </div>    
                     <div class="col-md-6">
                         <label>Validity</label>
-                        <input type="text" class="form-control"  disabled="disabled" :value="validityRequest.validity"/>
+                        <input type="text" class="form-control"  disabled="disabled" :value="validityRequest.validity_date | formatShortDate"/>
                     </div> 
                 </div>
 
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label>Request Date</label>
-                        <input type="date" class="form-control" v-model="validityRequest.request_date" v-if="user_type == 27 || user_type == 31" />
-                        <input type="date" class="form-control" :value="validityRequest.request_date" disabled="disabled" v-if="user_type == 32 || user_type == 33" />
+                        <input type="date" class="form-control" v-model="validityRequest.request_date" v-if="(user_type == 27 || user_type == 31) && validityRequest.action == 'create'" />
+                        <input type="text" class="form-control" :value="validityRequest.request_date | formatShortDate" disabled="disabled" v-show="validityRequest.action == 'view' || validityRequest.action == 'approve'" />
                     </div>
                     <div class="col-md-6">
                         <label>Approved Date</label>
@@ -36,8 +36,8 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label>Reason</label>
-                        <textarea class="form-control" v-model="validityRequest.requestor_remarks" v-if="user_type == 27 || user_type == 31"></textarea>
-                        <textarea class="form-control" :value="validityRequest.requestor_remarks" disabled="disabled" v-if="user_type == 32 || user_type == 33" ></textarea>
+                        <textarea class="form-control" v-model="validityRequest.requestor_remarks" v-if="(user_type == 27 || user_type == 31) && validityRequest.action == 'create'"></textarea>
+                        <textarea class="form-control" :value="validityRequest.requestor_remarks" disabled="disabled"  v-if="validityRequest.action == 'view' || validityRequest.action == 'approve'"></textarea>
                     </div>
                     <div class="col-md-6">
                         <label>Approver Remarks</label>
@@ -49,6 +49,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button"  class="btn btn-success" @click="confirmRequest">Confirm</button>
+                <button type="button"  class="btn btn-danger" @click="rejectRequest" v-if="user_type == 32 || user_type == 33">Reject</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>

@@ -180,8 +180,12 @@
                 'requestor_remarks': '',
                 'approver_remarks' : '',
                 'approver_email'   : '',
-                'project_id'       : ''
-            }
+                'project_id'       : '',
+                'action'           : '',
+                'status'           : '',
+                'request_id'       : '',
+                'requestor_email'  : ''
+             }
         },
         methods : {
             showDeliveryDetail(data){
@@ -663,13 +667,33 @@
                 this.validityRequest.fpc_project_id = fpc_details.fpc_project_id;
                 this.validityRequest.validity       = fpc_details.validity;
                 this.validityRequest.validity_date  = fpc_details.validity_date;
-                this.validityRequest.approver_email  = fpc_details.email_address;
+                this.validityRequest.approver_email = fpc_details.email_address;
+                this.validityRequest.project_id     = fpc_details.project_id;
+                this.validityRequest.action         = "create";
+                this.validityRequest.status         = 7;                           // pending
             },
-            viewRequestDetails(){
+            viewRequestDetails(row,fpc_details){
+                this.validityRequest.action = "view";
+                if(this.user_type == '33' || this.user_type == '32'){
+                    this.validityRequest.action = "approve";
+                }
+
+                this.validityRequest.fpc_project_id    = row.fpc_project_id;
+                this.validityRequest.validity          = row.original_validity_date;
+                this.validityRequest.validity_date     = row.original_validity_date;
+                this.validityRequest.request_date      = row.request_date;
+                this.validityRequest.requestor_remarks = row.requestor_remarks;
+                this.validityRequest.request_id        = row.request_id;
+                this.validityRequest.project_id        = row.project_id;
+                this.validityRequest.status            = row.status;
+                this.validityRequest.approver_email    = fpc_details.email_address;
+                this.validityRequest.requestor_email   = fpc_details.requestor_email;
+            
                 $("#validityModal").modal('show');
             },
             confirmRequest(){
                 var self = this;
+
                 axios.post('save-fpc-extension-request', {
                     validity_request : self.validityRequest
                 })
@@ -686,15 +710,20 @@
                     }
                     
                     Swal.fire({
-                        type: 'success',
+                        type: response.data.swal_type,
                         title: response.data.message,
                         showConfirmButton: false,
                         timer: 1500,
                         onClose : function(){
                             $("#validityModal").modal("hide");
+                            window.location.reload();
                         }
                     });
                 });
+            },
+            rejectRequest(){
+                this.validityRequest.action = 'reject';
+                this.confirmRequest();
             }
         },
         created: function () {
@@ -710,6 +739,9 @@
         filters: {
             formatPeso: function (value) {
                  return `${parseFloat(value).toLocaleString()}`
+            },
+            formatShortDate(value){
+                return moment(String(value)).format('MM/DD/YYYY');
             }
         },
         computed : {
