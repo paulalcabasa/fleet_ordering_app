@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "resources\\js"
+		},
+		{
+			"path": "app\\Exports"
 		}
 	],
 	"settings": {}

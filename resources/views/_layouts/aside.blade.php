@@ -90,6 +90,20 @@
             @endif
             @if(in_array(session('user')['user_type_id'], array(32,33)))
             <li class="kt-menu__section ">
+                <h4 class="kt-menu__section-text">REPORTS</h4>
+                <i class="kt-menu__section-icon flaticon-more-v2"></i>
+            </li>
+            @endif  
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            <li class="kt-menu__item {{ request()->is('inquiry-history') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/inquiry-history') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-information"></i>
+                    <span class="kt-menu__link-text">Inquiry History</span>
+                </a>
+            </li>
+            @endif
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">SETTINGS</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
