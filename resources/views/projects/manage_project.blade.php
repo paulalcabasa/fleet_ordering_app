@@ -1949,9 +1949,9 @@ jQuery(document).ready(function() {
                             fleet_category: {
                                 required: true 
                             },
-                            tin: {
+                           /*  tin: {
                                 required: true 
-                            },
+                            }, */
                             establishment_date: {
                                 required: true 
                             },
