@@ -149,6 +149,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 	// VALIDITY REQUEST
 	Route::post('save-fpc-extension-request' , 'PriceConfirmationController@save_fpc_extension');
+
+	// REPORTS
+	Route::view('inquiry-history','reports.inquiry_history'); //->name('dashboard');
+	Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('export_inquiry');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
