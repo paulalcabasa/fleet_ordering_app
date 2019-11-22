@@ -11,7 +11,7 @@ class FPCValidityRequest extends Model
     const CREATED_AT = 'vr.CREATION_DATE';
     const UPDATED_AT = 'vr.UPDATE_DATE';
     public $timestamps = false;
-    
+
     public function insert_request($params){
         return $this->insertGetId($params,'request_id');
     }
@@ -44,7 +44,8 @@ class FPCValidityRequest extends Model
                 'vr.status'                => $params['status'],
                 'vr.approver_remarks'      => $params['approver_remarks'],
                 'vr.updated_by'            => $params['updated_by'],
-                'vr.update_user_source_id' => $params['update_user_source_id']
+                'vr.update_user_source_id' => $params['update_user_source_id'],
+                'vr.update_date'           => $params['update_date']
             ]);
     }
 }
