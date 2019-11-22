@@ -442,13 +442,13 @@ class Project extends Model
         $start_date,
         $end_date,
         $customer_id,
-        $status
+        $status,
+        $user_id,
+        $user_source_id
     ){
         $where = "";
         $addtl_table = "";
-       /* if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
-            $where = "AND fp.dealer_id = " . $dealer_id;
-        }*/
+     
         if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
             if($user_type == 32) {
                 $vehicle_type  = 'LCV';
@@ -475,6 +475,10 @@ class Project extends Model
 
         if($status != ""){
             $where .= "AND fp.status = " . $status;
+        }
+
+        if($user_type == 27) { // dealer staff
+            $where .= "AND fp.created_by = " . $user_id . " AND fp.create_user_source_id = " . $user_source_id;
         }
 
         $sql = "SELECT  fp.project_id,
