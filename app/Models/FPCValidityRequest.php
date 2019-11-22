@@ -10,7 +10,8 @@ class FPCValidityRequest extends Model
 	protected $connection = "oracle";
     const CREATED_AT = 'vr.CREATION_DATE';
     const UPDATED_AT = 'vr.UPDATE_DATE';
-
+    public $timestamps = false;
+    
     public function insert_request($params){
         return $this->insertGetId($params,'request_id');
     }
