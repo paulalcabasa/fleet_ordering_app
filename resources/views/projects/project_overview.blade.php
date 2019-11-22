@@ -688,7 +688,11 @@
                 this.validityRequest.status            = row.status;
                 this.validityRequest.approver_email    = fpc_details.email_address;
                 this.validityRequest.requestor_email   = fpc_details.requestor_email;
-            
+        
+                
+                if(this.validityRequest.approved_date == ''){
+                    this.validityRequest.approved_date = this.formatDate(this.validityRequest.request_date)
+                }
                 $("#validityModal").modal('show');
             },
             confirmRequest(){
@@ -724,6 +728,9 @@
             rejectRequest(){
                 this.validityRequest.action = 'reject';
                 this.confirmRequest();
+            },
+            formatDate(value){
+                return moment(String(value)).format('YYYY-MM-DD');
             }
         },
         created: function () {
