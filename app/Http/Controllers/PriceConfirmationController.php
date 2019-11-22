@@ -802,7 +802,8 @@ class PriceConfirmationController extends Controller
                 'status'                => 5,                                       // status
                 'approver_remarks'      => $validity_request['approver_remarks'],
                 'updated_by'            => session('user')['user_id'],
-                'update_user_source_id' => session('user')['source_id']
+                'update_user_source_id' => session('user')['source_id'],
+                'updated_date'          => Carbon::now()
             ];
             $m_validity_request->update_status($params);
             $log_content = session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has rejected the FPC validity extension request.'. 'Remarks : ' . $validity_request['approver_remarks'];
