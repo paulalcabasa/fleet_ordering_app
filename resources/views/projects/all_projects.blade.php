@@ -71,6 +71,20 @@
                             </div>
                         </div>
 
+                     <!--    <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-3  col-form-label">Created by</label>
+                            <div class="col-9">
+                                <select class="form-control" v-select id="sel_status" v-model="project_status">
+                                    <option selected value="">Select status</option>
+                                    <option value="3">New</option>
+                                    <option value="11">Open</option>
+                                    <option value="6">Cancelled</option>
+                                    <option value="5">Rejected</option>
+                                    <option value="13">Closed</option>
+                                </select>
+                            </div>
+                        </div> -->
+
                         <!-- <div class="form-group row" style="margin-bottom:1em !important;">
                             <label class="col-3"></label>
                             <div class="col-9">
