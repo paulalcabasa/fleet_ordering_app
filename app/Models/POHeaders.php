@@ -147,17 +147,17 @@ class POHeaders extends Model
         $start_date,
         $end_date,
         $customer_id,
-        $status
+        $status,
+        $user_id,
+        $user_source_id
     ){
 
         $where = "";
         
-        /*
-        if($user_type == 27 || $user_type == 30){ // Dealer staff or dealer manager
-            $where = "AND fp.dealer_id = " . $dealer_id;
+        if($user_type == 27){ // Dealer staff
+            $where .= "AND ph.created_by = " . $user_id;
+            $where .= "AND ph.create_user_source_id = " . $user_source_id;
         }
-        */
-
         if($start_date != "" && $end_date != ""){
             $where .= " AND trunc(ph.creation_date) BETWEEN '".$start_date."' AND '". $end_date."'";
         }
@@ -167,10 +167,10 @@ class POHeaders extends Model
         if($customer_id != ""){
             $where .= "AND fp.customer_id = " . $customer_id;
         }
-
         if($status != ""){
             $where .= "AND ph.status = " . $status;
         }
+
         $sql = "SELECT ph.po_header_id,
                         ph.po_number,
                         ph.project_id,

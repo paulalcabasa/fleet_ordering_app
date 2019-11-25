@@ -8,11 +8,13 @@ use App\Models\ActivityLogs;
 use App\Models\POHeaders;
 class DashboardController extends Controller
 {
+
     public function dashboard(
         Project $m_project,
         ActivityLogs $m_logs,
         POHeaders $m_poh
     ){
+        
         
         if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38)) ){
             return view('errors.404');
@@ -22,22 +24,77 @@ class DashboardController extends Controller
         if(session('user')['user_type_id'] == 38){
             return redirect()->route('fwpc_list');
         }
+    
+        switch(session('user')['user_type_id']){
+            case 27 : // dealer staff 
 
+                $project_ctr = $m_project->countProjects([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                ]);
 
-        $project_ctr = $m_project->count_all_projects(
+                $open_project_ctr = $m_project->countProjects([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                    ['fp.status', '<>', 13], // not closed
+                    ['fp.status', '<>', 6], // not cancelled
+                ]);
+
+                $pending_fpc_projects = 0;
+
+            break;
+            case 31 :  // dealer manager
+                $project_ctr = $m_project->countProjects([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                ]);   
+
+                $open_project_ctr = $m_project->countProjects([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.status', '<>', 13], // not closed
+                    ['fp.status', '<>', 6], // not cancelled
+                ]);  
+
+                $pending_fpc_projects = 0;
+
+            break;
+            case 32 :  // lcv user 
+                $project_ctr = $m_project->countProjects([
+                    ['rh.vehicle_type', 'LCV']
+                ]);
+                
+                $open_project_ctr = $m_project->countProjects([
+                    ['rh.vehicle_type', 'LCV'],
+                    ['fp.status', '<>', 13], // not closed
+                    ['fp.status', '<>', 6], // not cancelled
+                ]);
+
+                $pending_fpc_projects = 0;
+
+            break;
+            case 33 :  // cv user 
+                $project_ctr = $m_project->countProjects([
+                    ['rh.vehicle_type', 'CV']
+                ]);
+
+                $open_project_ctr = $m_project->countProjects([
+                    ['rh.vehicle_type', 'CV'],
+                    ['fp.status', '<>', 13], // not closed
+                    ['fp.status', '<>', 6], // not cancelled
+                ]);
+
+                $pending_fpc_projects = 0;
+
+            break;
+             
+        }
+    
+    
+        /* $pending_fpc_projects = $m_project->count_pending_fpc_projects(
             session('user')['user_type_id'],
             session('user')['customer_id']
-        );
-
-        $open_project_ctr = $m_project->count_open_projects(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        );
-
-        $pending_fpc_projects = $m_project->count_pending_fpc_projects(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        );
+        ); */
 
         $purchase_orders = $m_poh->count_all_po(
             session('user')['user_type_id'],

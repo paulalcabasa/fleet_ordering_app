@@ -327,7 +327,9 @@ class FWPCController extends Controller
             $fwpc_status,
             $uninvoiced_flag,
             $customer_id,
-            $dealer
+            $dealer,
+            session('user')['user_id'],
+            session('user')['source_id']
         );
 
 

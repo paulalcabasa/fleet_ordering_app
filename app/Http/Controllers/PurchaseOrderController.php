@@ -449,9 +449,11 @@ class PurchaseOrderController extends Controller
             $start_date,
             $end_date,
             $customer_id,
-            $status
+            $status,
+            session('user')['user_id'],
+            session('user')['source_id']
         );
-
+        
         return $po;
 
     }

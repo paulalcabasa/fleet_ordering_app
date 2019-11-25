@@ -268,14 +268,22 @@ class Project extends Model
         return $query;
     }
 
-    public function count_all_projects($user_type,$dealer_id){
-        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
+    public function count_all_projects(
+        $user_type,
+        $dealer_id,
+        $user_id,
+        $user_source_id    
+    ){
+        if(in_array($user_type,array(27))) { // 'Dealer Staff','Dealer Manager'
+    
             $sql = "SELECT count(project_id) ctr
                     FROM ipc_dms.fs_projects
                     WHERE dealer_id = :dealer_id";
+            
             $params = [
                 'dealer_id' => $dealer_id
             ];
+
             $query = DB::select($sql,$params);
             return $query[0]->ctr;
         }
@@ -587,4 +595,17 @@ class Project extends Model
                 'update_user_source_id' => $params['update_user_source_id']
             ]);
     }
+
+    public function countProjects($params){
+        //return $this->where($params)->count();
+        
+        return DB::table('ipc_dms.fs_projects fp')
+            ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
+            ->where($params)
+            ->distinct('fp.project_id')
+            ->count('fp.project_id');
+    }
+
+ 
+
 }
