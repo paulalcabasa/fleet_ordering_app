@@ -193,34 +193,6 @@ class Project extends Model
     }
 
     public function get_projects_for_fpc($customer_id,$vehicle_type){
-        /*$sql = "SELECT fs.project_id,
-                        fs.customer_id,
-                        fc.customer_name,
-                        dlr.customer_name dealer_name,
-                        dlr.account_name dealer_account,
-                        st.status_name,
-                        usr.first_name || ' ' || usr.last_name created_by,
-                        to_char(fs.creation_date,'mm/dd/yyyy') date_created,
-                        fs.dealer_id,
-                        rh.vehicle_type,
-                        rh.requirement_header_id
-                FROM ipc_dms.fs_projects fs
-                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
-                        ON fs.project_id = rh.project_id
-                    LEFT JOIN ipc_dms.fs_customers fc
-                        ON fs.customer_id = fc.customer_id 
-                    LEFT JOIN ipc_dms.dealers_v dlr
-                        ON dlr.cust_account_id = fs.dealer_id
-                    LEFT JOIN ipc_dms.fs_status st
-                        ON st.status_id = fs.status
-                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
-                        ON usr.user_id = fs.created_by 
-                        AND usr.user_source_id = fs.create_user_source_id
-                WHERE 1 = 1
-                        AND fs.status = 11
-                        AND rh.status = 4
-                        AND fs.customer_id = :customer_id
-                        AND rh.vehicle_type = :vehicle_type";*/
         $sql = "SELECT fs.project_id,
                         fs.customer_id,
                         fc.customer_name,
@@ -266,93 +238,6 @@ class Project extends Model
 
         $query = DB::select($sql,$params);
         return $query;
-    }
-
-    public function count_all_projects(
-        $user_type,
-        $dealer_id,
-        $user_id,
-        $user_source_id    
-    ){
-        if(in_array($user_type,array(27))) { // 'Dealer Staff','Dealer Manager'
-    
-            $sql = "SELECT count(project_id) ctr
-                    FROM ipc_dms.fs_projects
-                    WHERE dealer_id = :dealer_id";
-            
-            $params = [
-                'dealer_id' => $dealer_id
-            ];
-
-            $query = DB::select($sql,$params);
-            return $query[0]->ctr;
-        }
-        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
-            $sql = "SELECT count(project_id) ctr
-                    FROM ipc_dms.fs_projects";
-            $query = DB::select($sql);
-            return $query[0]->ctr;            
-        }
-    }
-
-    public function count_open_projects($user_type,$dealer_id){
-        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
-           $sql = "SELECT count(project_id) ctr
-                    FROM ipc_dms.fs_projects
-                    WHERE dealer_id = :dealer_id
-                        AND status <> 13";
-            $params = [
-                'dealer_id' => $dealer_id
-            ];
-            $query = DB::select($sql,$params);
-            return $query[0]->ctr;
-        }
-        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
-            
-            
-            $sql = "SELECT count(project_id) ctr
-                    FROM ipc_dms.fs_projects
-                    WHERE status <> 13";
-            $query = DB::select($sql);
-            return $query[0]->ctr;
-
-        }
-    }
-
-    public function count_pending_fpc_projects($user_type,$dealer_id){
-        if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
-            $sql = "SELECT count(project_id) ctr
-                    FROM ipc_dms.fs_projects
-                    WHERE 1 = 1
-                        AND dealer_id = :dealer_id
-                        AND project_id NOT IN (
-                            SELECT project_id 
-                            FROM ipc_dms.fs_fpc_projects prj
-                                LEFT JOIN ipc_dms.fs_fpc fpc
-                                    ON FPC.FPC_ID = prj.fpc_id
-                            WHERE fpc.status = 4
-                        )";
-            $params = [
-                'dealer_id' => $dealer_id
-            ];
-            $query = DB::select($sql,$params);
-            return $query[0]->ctr;
-        }
-        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
-                $sql = "SELECT count(project_id) ctr
-                        FROM ipc_dms.fs_projects
-                        WHERE 1 = 1
-                            AND project_id NOT IN (
-                                SELECT project_id 
-                                FROM ipc_dms.fs_fpc_projects prj
-                                    LEFT JOIN ipc_dms.fs_fpc fpc
-                                        ON FPC.FPC_ID = prj.fpc_id
-                                WHERE fpc.status = 4
-                            )";
-                $query = DB::select($sql);
-                return $query[0]->ctr;
-        }
-
     }
 
     public function count_projects_yearly($user_type,$dealer_id,$year){
@@ -596,9 +481,7 @@ class Project extends Model
             ]);
     }
 
-    public function countProjects($params){
-        //return $this->where($params)->count();
-        
+    public function countProjects($params){        
         return DB::table('ipc_dms.fs_projects fp')
             ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
             ->where($params)
@@ -606,6 +489,40 @@ class Project extends Model
             ->count('fp.project_id');
     }
 
- 
+    public function countPendingFPC($params){ 
+        return DB::table('ipc_dms.fs_projects fp')
+            ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
+            ->where($params)
+            ->whereNotIn('fp.project_id', function($query){
+                $query->select(DB::raw('prj.project_id'))
+                    ->from('ipc_dms.fs_fpc_projects prj')
+                    ->leftJoin('ipc_dms.fs_fpc fpc','prj.fpc_id', '=', 'fpc.fpc_id')
+                    ->whereRaw('fpc.status = 4');
+            })
+            ->distinct('fp.project_id')
+            ->count('fp.project_id');
+    }
+
+    public function countProjectsYearly($params,$whereRaw){
+        return DB::table('ipc_dms.fs_projects fp')
+            ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
+            ->selectRaw("SUM(CASE WHEN extract(month from fp.creation_date) = 1  THEN 1 ELSE 0 END) + TRUNC(DBMS_RANDOM.value(1,100)) JAN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 2   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  FEB,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 3   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  MAR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 4   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  APR,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 5   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  MAY,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 6   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  JUN,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 7    THEN 1 ELSE 0 END) + TRUNC(DBMS_RANDOM.value(1,100))   JUL,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 8    THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  AUG,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 9   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  SEP,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 10   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  OCT,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 11   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  NOV,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 12   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  DEC")
+            ->where($params)
+            ->whereRaw($whereRaw)
+            ->distinct('fp.project_id')
+            ->count('fp.project_id');
+    }
+    
 
 }

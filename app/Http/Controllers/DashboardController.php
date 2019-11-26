@@ -42,7 +42,34 @@ class DashboardController extends Controller
                     ['fp.status', '<>', 6], // not cancelled
                 ]);
 
-                $pending_fpc_projects = 0;
+                $pending_fpc_projects = $m_project->countPendingFPC([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                    ['fp.status', 11 ]
+                ]);
+
+                $purchase_orders = $m_poh->countPO([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                ]);
+
+                $recent_activities = $m_logs->getRecentActivities([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                ]);
+
+                $project_ctr_year = $m_project->countProjectsYearly(
+                    [
+                        ['fp.dealer_id' , session('user')['customer_id']],
+                        ['fp.created_by', session('user')['user_id']],
+                        ['fp.create_user_source_id', session('user')['source_id']],
+                    ],
+                    'extract(year from fp.creation_date) = ' . date('Y')
+                );
+            
 
             break;
             case 31 :  // dealer manager
@@ -56,7 +83,26 @@ class DashboardController extends Controller
                     ['fp.status', '<>', 6], // not cancelled
                 ]);  
 
-                $pending_fpc_projects = 0;
+                $pending_fpc_projects = $m_project->countPendingFPC([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.status', 11 ]
+                ]);
+
+                $purchase_orders = $m_poh->countPO([
+                    ['fp.dealer_id' , session('user')['customer_id']]
+                ]);
+
+                $recent_activities = $m_logs->getRecentActivities([
+                    ['fp.dealer_id' , session('user')['customer_id']]
+                ]);
+
+                $project_ctr_year = $m_project->countProjectsYearly(
+                    [
+                        ['fp.dealer_id' , session('user')['customer_id']]
+                    ],
+                    'extract(year from fp.creation_date) = ' . date('Y')
+                );
+
 
             break;
             case 32 :  // lcv user 
@@ -70,7 +116,24 @@ class DashboardController extends Controller
                     ['fp.status', '<>', 6], // not cancelled
                 ]);
 
-                $pending_fpc_projects = 0;
+                $pending_fpc_projects = $m_project->countPendingFPC([
+                    ['rh.vehicle_type', 'LCV'],
+                    ['fp.status', 11 ]
+                ]);
+
+                $purchase_orders = $m_poh->countPO([
+                    ['rh.vehicle_type', 'LCV'],
+                ]);
+
+                $recent_activities = $m_logs->getRecentActivities([]);
+
+                $project_ctr_year = $m_project->countProjectsYearly(
+                    [
+                        ['fp.dealer_id' , session('user')['customer_id']],
+                        ['rh.vehicle_type', 'LCV'],
+                    ],
+                    'extract(year from fp.creation_date) = ' . date('Y')
+                );
 
             break;
             case 33 :  // cv user 
@@ -84,33 +147,28 @@ class DashboardController extends Controller
                     ['fp.status', '<>', 6], // not cancelled
                 ]);
 
-                $pending_fpc_projects = 0;
+                $pending_fpc_projects = $m_project->countPendingFPC([
+                    ['rh.vehicle_type', 'CV'],
+                    ['fp.status', 11 ]
+                ]);
+
+                $purchase_orders = $m_poh->countPO([
+                    ['rh.vehicle_type', 'CV'],
+                ]);
+                
+                $recent_activities = $m_logs->getRecentActivities([]);
+                
+                $project_ctr_year = $m_project->countProjectsYearly(
+                    [
+                        ['fp.dealer_id' , session('user')['customer_id']],
+                        ['rh.vehicle_type', 'CV'],
+                    ],
+                    'extract(year from fp.creation_date) = ' . date('Y')
+                );
 
             break;
              
         }
-    
-    
-        /* $pending_fpc_projects = $m_project->count_pending_fpc_projects(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        ); */
-
-        $purchase_orders = $m_poh->count_all_po(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        );
-        
-        $recent_activities = $m_logs->get_recent_activities(
-            session('user')['user_type_id'],
-            session('user')['customer_id']
-        );
-
-        $project_ctr_year = $m_project->count_projects_yearly(
-            session('user')['user_type_id'],
-            session('user')['customer_id'],
-            date('Y')
-        );
         
         $last_day = date("t", strtotime(date('Y-m-d')));
         
