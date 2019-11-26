@@ -181,17 +181,22 @@ class FWPC extends Model
         $fwpc_status,
         $uninvoiced_flag,
         $customer_id,
-        $dealer
+        $dealer,
+        $user_id,
+        $user_source_id
     ){
 
         $where = "";
         if($user_type == 32){
             $where .= " AND fpc.vehicle_type = 'LCV'";
         }
-        else if($user_type == 33){
+        if($user_type == 33){
             $where .= " AND fpc.vehicle_type = 'CV'";
         }
-
+        if($user_type == 27){ // dealer staff
+            $where .= " AND fp.created_by = " . $user_id;
+            $where .= " AND fp.create_user_source_id = " . $user_source_id;
+        }
         if($start_date != "" && $end_date != ""){
             $where .= " AND trunc(ooha.ordered_date) BETWEEN '".$start_date."' AND '". $end_date."'";
         }

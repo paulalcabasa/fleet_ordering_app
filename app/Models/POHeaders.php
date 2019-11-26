@@ -122,7 +122,7 @@ class POHeaders extends Model
     public function count_all_po($user_type,$dealer_id){
         if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
             $sql = "SELECT count(po_header_id) ctr
-                    FROM ipc_Dms.fs_po_headers ph
+                    FROM ipc_dms.fs_po_headers ph
                         LEFT JOIN ipc_dms.fs_projects fp
                             ON fp.project_id = ph.project_id
                     WHERE 1 = 1
@@ -141,23 +141,32 @@ class POHeaders extends Model
         }
     }
 
+    public function countPO($params){
+        return DB::table('ipc_dms.fs_po_headers ph')
+            ->leftJoin('ipc_dms.fs_projects fp', 'fp.project_id', '=', 'ph.project_id')
+            ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
+            ->where($params)
+            ->distinct('ph.po_header_id')
+            ->count('ph.po_header_id');
+    }
+
     public function get_filtered_po(
         $user_type,
         $dealer_id,
         $start_date,
         $end_date,
         $customer_id,
-        $status
+        $status,
+        $user_id,
+        $user_source_id
     ){
 
         $where = "";
         
-        /*
-        if($user_type == 27 || $user_type == 30){ // Dealer staff or dealer manager
-            $where = "AND fp.dealer_id = " . $dealer_id;
+        if($user_type == 27){ // Dealer staff
+            $where .= "AND ph.created_by = " . $user_id;
+            $where .= "AND ph.create_user_source_id = " . $user_source_id;
         }
-        */
-
         if($start_date != "" && $end_date != ""){
             $where .= " AND trunc(ph.creation_date) BETWEEN '".$start_date."' AND '". $end_date."'";
         }
@@ -167,10 +176,10 @@ class POHeaders extends Model
         if($customer_id != ""){
             $where .= "AND fp.customer_id = " . $customer_id;
         }
-
         if($status != ""){
             $where .= "AND ph.status = " . $status;
         }
+
         $sql = "SELECT ph.po_header_id,
                         ph.po_number,
                         ph.project_id,

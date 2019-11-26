@@ -60,6 +60,20 @@ class ActivityLogs extends Model
         return $query;
     }
 
+    public function getRecentActivities($params){
+      //  dd($params);
+        return DB::table('ipc_dms.fs_activity_logs lg')
+            ->leftJoin('ipc_dms.fs_projects fp', 'fp.project_id','=','lg.reference_id')
+            ->selectRaw("lg.log_id,
+                            lg.content,
+                            to_char(lg.creation_date,'MM/DD/YYYY HH12:MI AM') creation_date,
+                            fp.dealer_id")
+            ->where($params)
+            ->whereRaw('rownum <= 10')
+            ->whereRaw("lg.timeline_flag = 'Y'")
+            ->get();
+    }
+
     public function get_recent_activities($user_type,$dealer_id){
         if(in_array($user_type,array(27,31))) { // 'Dealer Staff','Dealer Manager'
             $sql = "SELECT lg.log_id,
