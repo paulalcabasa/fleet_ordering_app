@@ -55,6 +55,7 @@ class ApproverController extends Controller
             'user_type'             => $request->approver_type,
             'hierarchy'             => 99,
             'status_id'             => 1,
+            'module_code'           => 'PRJ',
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
