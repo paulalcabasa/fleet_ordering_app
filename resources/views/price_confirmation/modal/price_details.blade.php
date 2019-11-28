@@ -188,8 +188,8 @@
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-sm text-right"  
-                                                disabled="disabled" 
-                                                :value="formatPrice(curModel.lto_registration)"
+                                                
+                                                v-model="curModel.lto_registration"
                                             />
                                         </div>
                                     </div>
