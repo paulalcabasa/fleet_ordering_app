@@ -167,7 +167,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Bid Docs Amount</label>
-                                        <input type="text" class="form-control" value="" v-model.lazy="accountDetails.bid_docs_amount" name="bid_docs_amount" placeholder="Bidding Docs Amount" />
+                                        <input type="number" class="form-control" value="" v-model.lazy="accountDetails.bid_docs_amount" name="bid_docs_amount" placeholder="Bidding Docs Amount" />
                                       <!--   <span class="form-text text-muted">Please enter bidding docs amount</span> -->
                                     </div>
                                 </div>
@@ -193,7 +193,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <label>Approved budget cost</label>
-                                        <input type="text" class="form-control" value="" v-model.lazy="accountDetails.approved_budget_cost" name="approved_budget_cost" placeholder="Approved buget cost" />
+                                        <input type="number" class="form-control" value="" v-model.lazy="accountDetails.approved_budget_cost" name="approved_budget_cost" placeholder="Approved buget cost" />
                                 <!--         <span class="form-text text-muted">Please enter approved budget cost</span> -->
                                     </div>
                                 </div>
@@ -1970,7 +1970,8 @@ jQuery(document).ready(function() {
                             bid_docs_amount : {
                                 required: function(element){
                                     return $("#sel_org_type").val() == 1;  
-                                }
+                                },
+                                number:true
                             },
                             pre_bid_sched : {
                                 required: function(element){
@@ -1993,7 +1994,8 @@ jQuery(document).ready(function() {
                             approved_budget_cost : {
                                 required: function(element){
                                     return $("#sel_org_type").val() == 1;   
-                                }
+                                },
+                                number:true
                             },
 
                             // Step 2
