@@ -254,7 +254,7 @@
         <div class="signatories" style="margin-top:3em;">
             <table>
                 <tr>
-                    <td>
+                    <td valign="top">
                         <table style="font-size:11px;">
                             <tr>
                                 <td><strong>Prepared by:</strong><br/><br/></td>
@@ -264,10 +264,10 @@
                             </tr>
                            
                             <tr>
-                                <td><strong>{{ $user_details->first_name }} {{ $user_details->last_name }}</strong></td>
+                                <td><strong>{{ ucwords(strtolower($user_details->name_prefix . ' ' .$user_details->first_name . " " .    $user_details->last_name)) }}</strong></td>
                             </tr>
                             <tr>
-                                <td></td>
+                                <td>Dealer Sales</td>
                             </tr>
                             <tr>
                                 <td><br/><br/><br/></td>
@@ -281,7 +281,7 @@
                                 <td>____________________<br/></td>
                             </tr>
                             <tr>
-                                <td><strong>{{ $row->name_prefix}}. {{ $row->first_name }} {{ $row->last_name }}</strong></td>
+                                <td><strong>{{ ucwords(strtolower($row->name_prefix . ". " . $row->first_name . " " .$row->last_name)) }}</strong></td>
                             </tr>
                             <tr>
                                 <td>{{ $row->position_title }}</td>

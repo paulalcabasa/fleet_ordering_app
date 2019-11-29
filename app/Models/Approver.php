@@ -209,7 +209,9 @@ class Approver extends Model
                         fs_app.approver_source_id,
                         usr.email_address,
                         fs_app.module_code,
-                        fs_app.status_id
+                        fs_app.status_id,
+                        fs_app.signatory_type,
+                        fs_app.position_title
                 FROM ipc_dms.fs_approvers fs_app
                 LEFT JOIN ipc_dms.ipc_portal_users_v usr
                     ON usr.user_id = fs_app.approver_user_id
@@ -229,6 +231,23 @@ class Approver extends Model
             	'updated_by'            => $params['updated_by'],
             	'update_user_source_id' => $params['update_user_source_id']
             ]);
-    }    
+    }  
+    
+    public function update_approver($params){
+        $this
+            ->where([
+            	[ 'approver_id', '=' , $params['approver_id'] ],
+            ])
+            ->update([
+            	'vehicle_type'          => $params['vehicle_type'],
+            	'user_type'             => $params['user_type'],
+            	'signatory_type'        => $params['signatory_type'],
+            	'position_title'        => $params['position'],
+            	'approver_user_id'      => $params['approver_user_id'],
+            	'approver_source_id'    => $params['approver_source_id'],
+            	'updated_by'            => $params['updated_by'],
+            	'update_user_source_id' => $params['update_user_source_id']
+            ]);
+    }  
 
 }

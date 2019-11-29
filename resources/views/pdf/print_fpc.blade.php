@@ -262,10 +262,10 @@
                             </tr>
                            
                             <tr>
-                                <td><strong>{{ $header_data->prepared_by }}</strong></td>
+                                <td><strong>{{ ucwords(strtolower($header_data->prepared_by)) }}</strong></td>
                             </tr>
                             <tr>
-                                <td>{{ $header_data->position_title }}</td>
+                                <td>Dealer Sales</td>
                             </tr>
                             <tr>
                                 <td><br/><br/><br/></td>

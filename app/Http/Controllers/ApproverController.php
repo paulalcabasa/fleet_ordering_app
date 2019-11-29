@@ -18,8 +18,18 @@ class ApproverController extends Controller
     }
 
     public function approver_list(){
-        $approvers = $this->approver->get_approvers();
         $user_list = $this->user->get_users();
+        
+        $page_data = array(
+            'users'               => $user_list,
+            'status_colors'       => config('app.status_colors'),
+        );
+        
+    	return view('approvers.approver_list', $page_data);
+    }
+
+    public function get_approvers(){
+        $approvers = $this->approver->get_approvers();
         
         $approver_data = [];
         foreach ($approvers as $row) {
@@ -33,17 +43,13 @@ class ApproverController extends Controller
                 'approver_user_id'  => $row->approver_user_id,
                 'hierarchy'         => $row->hierarchy,
                 'email_address'     => $row->email_address,
+                'signatory_type'    => $row->signatory_type,
+                'position'          => $row->position_title,
             ];
             array_push($approver_data,$arr);
         }
 
-        $page_data = array(
-            'approvers'           => $approver_data,
-            'users'               => $user_list,
-            'status_colors'       => config('app.status_colors'),
-        );
-        
-    	return view('approvers.approver_list', $page_data);
+        return $approver_data;
     }
 
     public function add_approver(Request $request){
@@ -53,6 +59,8 @@ class ApproverController extends Controller
             'approver_source_id'    => $request->approver_source_id,
             'vehicle_type'          => $request->vehicle_type,
             'user_type'             => $request->approver_type,
+            'signatory_type'        => $request->signatory_type,
+            'position_title'        => $request->position,
             'hierarchy'             => 99,
             'status_id'             => 1,
             'module_code'           => 'PRJ',
@@ -65,8 +73,8 @@ class ApproverController extends Controller
 
     public function update_approver_status(Request $request){
 
-        $status_id = $request->status ? 1 : 2;
-  
+        $status_id = $request->status ? 2 : 1;
+        
         $params = [
             'approver_id'           => $request->approver_id,
             'status_id'             => $status_id,
@@ -75,6 +83,22 @@ class ApproverController extends Controller
         ];       
 
         $this->approver->update_status($params);
-        
+    
+    }
+
+    public function update_approver(Request $request){
+        $params = [
+            'approver_id'           => $request->approver_id,
+            'approver_user_id'      => $request->approver_user_id,
+            'approver_source_id'    => $request->approver_source_id,
+            'vehicle_type'          => $request->vehicle_type,
+            'user_type'             => $request->approver_type,
+            'signatory_type'        => $request->signatory_type,
+            'position'              => $request->position,
+            'updated_by'            => session('user')['user_id'],
+            'update_user_source_id' => session('user')['source_id'],
+        ];
+
+        $this->approver->update_approver($params);
     }
 }

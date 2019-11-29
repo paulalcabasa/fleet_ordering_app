@@ -669,11 +669,11 @@ class PriceConfirmationController extends Controller
                 session('user')['user_id'],            
                 session('user')['source_id']            
             );
-
+                
             $fpc_details = $m_fpc->get_details($fpc_id);
             $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type);
             $signatories = collect($signatories)->groupBy('user_type');
-
+       
             $common_inventory_item_id = array_unique($common_items);
 
             $projects  = [];
