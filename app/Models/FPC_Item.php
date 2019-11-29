@@ -159,9 +159,9 @@ class FPC_Item extends Model
             ->selectRaw("vehicle.color,
                          vehicle.model_variant,
                          vehicle.sales_model,
-                         nvl(rl.BODY_BUILDER_NAME,'-') body_builder_name,
-                         nvl(rl.rear_body_type,'-') rear_body_type,
-                         nvl(rl.additional_items,'-') additional_items,
+                         max(nvl(rl.BODY_BUILDER_NAME,'-')) body_builder_name,
+                         max(nvl(rl.rear_body_type,'-')) rear_body_type,
+                         max(nvl(rl.additional_items,'-')) additional_items,
                          sum(CASE WHEN fr.cost_to_owner_id = 5 THEN NVL(fr.amount,0) ELSE 0 END) freebies,
                          fpc_item.wholesale_price,
                          fpc_item.dealers_margin,
@@ -173,14 +173,16 @@ class FPC_Item extends Model
                         'vehicle.color',
                         'vehicle.model_variant',
                         'vehicle.sales_model',
-                        'rl.BODY_BUILDER_NAME',
-                        'rl.rear_body_type',
-                        'rl.additional_items',
+                       
                         'fpc_item.wholesale_price',
                         'fpc_item.dealers_margin',
                         'fpc_item.lto_registration',
                         'fpc_item.fleet_price' )
             ->get();
+
+            //  'rl.BODY_BUILDER_NAME',
+            //            'rl.rear_body_type',
+             //           'rl.additional_items',
         return $query;
     }
 

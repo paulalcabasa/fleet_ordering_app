@@ -674,7 +674,7 @@ class PriceConfirmationController extends Controller
                 
             $fpc_details = $m_fpc->get_details($fpc_id);
             $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type);
-            $signatories = collect($signatories)->groupBy('user_type');
+            $signatories = collect($signatories)->groupBy('signatory_type');
        
             $common_inventory_item_id = array_unique($common_items);
 
@@ -701,7 +701,6 @@ class PriceConfirmationController extends Controller
 
             $terms = array_unique($terms,SORT_REGULAR);
         
-
             $requirements = $m_fpc_item->get_conflict_item_requirement($fpc_id, $common_inventory_item_id);
             
             $detailed_price = $m_fpc_item->get_item_requirement_by_fpc_id($fpc_id,$common_inventory_item_id);
