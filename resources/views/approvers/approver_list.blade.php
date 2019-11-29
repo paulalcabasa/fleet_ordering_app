@@ -110,6 +110,10 @@
                         <label>Position</label>
                         <input type="text" class="form-control" v-model="cur_position" />
                     </div>
+                    <div class="form-group">
+                        <label>Hierarchy</label>
+                        <input type="text" class="form-control" v-model="cur_hierarchy" />
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -161,7 +165,8 @@
             cur_position : '',
             cur_signatory_type : '',
             action : '',
-            cur_approver_id : ''
+            cur_approver_id : '',
+            cur_hierarchy : '',
         },
         methods :{
             updateStatus(row){
@@ -211,6 +216,7 @@
                 this.cur_signatory_type = row.signatory_type;
                 this.action             = "update";
                 this.cur_approver_id    = row.approver_id;
+                this.cur_hierarchy      = row.hierarchy;
             },
             openAddApprover(){    
                 $("#approverModal").modal('show');
@@ -234,7 +240,8 @@
                     vehicle_type      : self.cur_vehicle_type,
                     approver_type     : self.cur_approver_type,
                     position          : self.cur_position,
-                    signatory_type    : self.cur_signatory_type
+                    signatory_type    : self.cur_signatory_type,
+                    hierarchy         : self.cur_hierarchy 
                 })
                 .then(function (response) {
                     Swal.fire({

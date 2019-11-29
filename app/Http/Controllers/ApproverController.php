@@ -95,6 +95,7 @@ class ApproverController extends Controller
             'user_type'             => $request->approver_type,
             'signatory_type'        => $request->signatory_type,
             'position'              => $request->position,
+            'hierarchy'             => $request->hierarchy,
             'updated_by'            => session('user')['user_id'],
             'update_user_source_id' => session('user')['source_id'],
         ];
