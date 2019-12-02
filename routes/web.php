@@ -138,6 +138,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('approver-list' , 'ApproverController@approver_list');
 	Route::post('add-approver' , 'ApproverController@add_approver');
 	Route::post('update-approver-status' , 'ApproverController@update_approver_status');
+	Route::post('update-approver' , 'ApproverController@update_approver');
+	Route::get('get-approvers' , 'ApproverController@get_approvers');
 
 	// PRICELIST
 	Route::get('all-pricelist' , 'PriceListController@all_pricelist');
@@ -153,6 +155,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	// REPORTS
 	Route::view('inquiry-history','reports.inquiry_history'); //->name('dashboard');
 	Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('export_inquiry');
+
+
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

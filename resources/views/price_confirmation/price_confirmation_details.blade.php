@@ -541,12 +541,13 @@
             },  
             priceConfirmation(order,dealerAccount,projectIndex,requirementIndex){
                 var self = this;
-                self.curModel = order;
                 self.curDealerAccount = dealerAccount;
                 self.curModelIndex = requirementIndex;
                 self.curProjectIndex = projectIndex;
                 self.selected_pricelist = order.pricelist_header_id;
                 self.cur_pricelist_line_id = order.pricelist_line_id;
+                self.curModel = order;
+                console.log(self.curModel.lto_registration);
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
                     .then( (response) => {
                         self.curFreebies = response.data;
@@ -826,9 +827,9 @@
             }
         },
         watch : {
-            selected_pricelist : function(val){
+            selected_pricelist : function(val, oldVal){
                 var self = this;
-            
+                
                 if(val == "" || val == null){
                     return false;
                 }
@@ -840,11 +841,7 @@
                     message: 'Please wait...'
                 });
 
-                self.curModel.suggested_retail_price = 0;
-                self.curModel.wholesale_price        = 0;
-                self.curModel.lto_registration       = 0;
-                self.curModel.promo                  = 0;
-                self.cur_pricelist_line_id           = 0;
+                
                 
                 //if(self.curModel.suggested_retail_price == 0){
                     axios.get('get-vehicle-price',{
@@ -861,7 +858,12 @@
 
                         self.curModel.suggested_retail_price = response.data.price.srp;
                         self.curModel.wholesale_price        = response.data.price.wsp;
-                        self.curModel.lto_registration       = response.data.price.lto_registration;
+                        if(self.curModel.lto_registration <= 0){
+                            self.curModel.lto_registration       = response.data.price.lto_registration;
+                        }
+                        if(oldVal != ""){
+                            self.curModel.lto_registration       = response.data.price.lto_registration;
+                        }
                         self.curModel.promo                  = response.data.price.promo;
                         self.cur_pricelist_line_id           = response.data.price.pricelist_line_id;
                         

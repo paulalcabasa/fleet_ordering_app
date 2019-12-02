@@ -99,7 +99,7 @@ class FPC_Project extends Model
                         trim(to_char(fpc_prj.validity,'Month')) || ' ' || trim(to_char(fpc_prj.validity,'DD, YYYY'))  validity,
                         terms.term_name,  
                         fcp.fleet_category_name,
-                        usr.first_name || ' ' || usr.last_name prepared_by,
+                        usr.name_prefix || ' ' || usr.first_name || ' ' || usr.last_name prepared_by,
                         usr.position_title,
                         fpc.fpc_id       
                 FROM ipc_dms.fs_fpc_projects fpc_prj
@@ -122,6 +122,7 @@ class FPC_Project extends Model
                         AND usr.user_source_id = fpc.create_user_source_id
                     LEFT JOIN ipc_dms.dealer_abbrev_names dbb
                         ON dbb.cust_account_id = fp.dealer_id
+                    
                 WHERE 1 = 1
                     AND fpc_prj.fpc_project_id = :fpc_project_id";
         $params = [

@@ -124,14 +124,16 @@ class Approver extends Model
     }
 
     public function get_fpc_signatories($vehicle_type){
-        $sql = "SELECT usr.first_name,
+        $sql = "SELECT usr.user_id,
+                        usr.first_name,
                         usr.middle_name,
                         usr.last_name,
                         fa.user_type,
                         fa.vehicle_type,
-                        usr.position_title,
+                        fa.position_title,
                         usr.nickname,
-                        usr.name_prefix
+                        usr.name_prefix,
+                        fa.signatory_type
                 FROM ipc_dms.fs_approvers fa
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fa.approver_user_id
@@ -139,7 +141,8 @@ class Approver extends Model
                 WHERE 1 = 1
                     AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
                     AND fa.vehicle_type = :vehicle_type
-                    AND fa.status_id = 1";
+                    AND fa.status_id = 1
+                ORDER BY fa.hierarchy ASC";
         $params = [
             'vehicle_type' => $vehicle_type
         ];
@@ -209,12 +212,16 @@ class Approver extends Model
                         fs_app.approver_source_id,
                         usr.email_address,
                         fs_app.module_code,
-                        fs_app.status_id
+                        fs_app.status_id,
+                        fs_app.signatory_type,
+                        fs_app.position_title,
+                        fs_app.hierarchy
                 FROM ipc_dms.fs_approvers fs_app
                 LEFT JOIN ipc_dms.ipc_portal_users_v usr
                     ON usr.user_id = fs_app.approver_user_id
                     AND usr.user_source_id = fs_app.approver_source_id
-                WHERE 1 = 1";
+                WHERE 1 = 1
+                ORDER BY fs_app.hierarchy ASC";
         $query = DB::select($sql);
         return $query;
     }
@@ -229,6 +236,24 @@ class Approver extends Model
             	'updated_by'            => $params['updated_by'],
             	'update_user_source_id' => $params['update_user_source_id']
             ]);
-    }    
+    }  
+    
+    public function update_approver($params){
+        $this
+            ->where([
+            	[ 'approver_id', '=' , $params['approver_id'] ],
+            ])
+            ->update([
+            	'hierarchy'             => $params['hierarchy'],
+            	'vehicle_type'          => $params['vehicle_type'],
+            	'user_type'             => $params['user_type'],
+            	'signatory_type'        => $params['signatory_type'],
+            	'position_title'        => $params['position'],
+            	'approver_user_id'      => $params['approver_user_id'],
+            	'approver_source_id'    => $params['approver_source_id'],
+            	'updated_by'            => $params['updated_by'],
+            	'update_user_source_id' => $params['update_user_source_id']
+            ]);
+    }  
 
 }

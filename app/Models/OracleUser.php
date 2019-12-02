@@ -293,7 +293,8 @@ class OracleUser extends Authenticatable
                     tab.section,
                     tab.customer_id,
                     tab.source_id,
-                    tab.email
+                    tab.email,
+                    tab.name_prefix
                 FROM 
                     (SELECT
                         usr.user_id,
@@ -306,7 +307,9 @@ class OracleUser extends Authenticatable
                         ppf.attribute4 section,
                         usr.email_address email,
                         NULL customer_id,
-                        1 source_id
+                        1 source_id,
+                        ppf.title name_prefix
+                        
                     FROM fnd_user usr 
                     LEFT JOIN per_all_people_f ppf
                         ON usr.employee_id = ppf.person_id
@@ -324,7 +327,8 @@ class OracleUser extends Authenticatable
                         ud.section,
                         ud.email,
                         u.customer_id,
-                        2 source_id
+                        2 source_id,
+                        ud.name_prefix
                     FROM ipc_portal.users u
                     LEFT JOIN ipc_portal.user_details ud 
                         ON u.user_id = ud.user_id

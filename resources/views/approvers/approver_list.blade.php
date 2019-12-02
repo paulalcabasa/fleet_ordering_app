@@ -13,16 +13,17 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="#" data-target="#approverModal" data-toggle="modal" class="btn btn-primary btn-sm">
+            <a href="#" @click="openAddApprover()" class="btn btn-primary btn-sm">
                 <span class="kt-hidden-mobile">New Approver</span>
             </a>
         </div>
     </div>
     <div class="kt-portlet__body">
 
-        <table id="datatable" class="table table-striped" width="100%">
+        <table id="approver_table" class="table table-striped" width="100%">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Approver ID</th>
                     <th>Name</th>
                     <th>User Type</th>
@@ -34,7 +35,11 @@
             </thead>
             <tbody>
                 <tr v-for="(row,index) in approvers">
-                    
+                    <td nowrap>
+                        <a href="#" @click="editApprover(row)" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                          <i class="la la-edit"></i>
+                        </a>
+                    </td>
                     <td>@{{ row.approver_id }}</td>
                     <td>@{{ row.approver_name }}</td>
                     <td>@{{ row.user_type }}</td>
@@ -60,7 +65,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Approver</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Approver</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -92,10 +97,27 @@
                             <option value="IPC_SUPERVISOR">Supervisor</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Signatory Type</label>
+                        <select class="form-control" v-model="cur_signatory_type" v-select style="width:100%;">
+                            <option value="">Choose signatory type</option>
+                            <option value="NOTED_BY">Noted by</option>
+                            <option value="CHECKED_BY">Checked by</option>
+                            <option value="EXPAT">EXPAT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text" class="form-control" v-model="cur_position" />
+                    </div>
+                    <div class="form-group">
+                        <label>Hierarchy</label>
+                        <input type="text" class="form-control" v-model="cur_hierarchy" />
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" @click="addApprover">Save</button>
+                <button type="button" class="btn btn-success" @click="saveApprover">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -129,48 +151,24 @@
         componentUpdated: updateFunction,
     });
 
+    var table;
+
     var vm =  new Vue({
         el : "#app",
         data: {
-            approvers: {!! json_encode($approvers) !!},
+            approvers: [],
             status_colors: {!! json_encode($status_colors) !!},
             users: {!! json_encode($users) !!},
             cur_user_id : '',
             cur_vehicle_type : '',
-            cur_approver_type : ''
+            cur_approver_type : '',
+            cur_position : '',
+            cur_signatory_type : '',
+            action : '',
+            cur_approver_id : '',
+            cur_hierarchy : '',
         },
         methods :{
-            addApprover(){
-                var self = this;
-                var approver_source_id = $("#sel_approver option:selected").data('user_source_id');
-                axios.post('add-approver',{
-                    approver_user_id  : self.cur_user_id,
-                    approver_source_id: approver_source_id,
-                    vehicle_type      : self.cur_vehicle_type,
-                    approver_type     : self.cur_approver_type
-                })
-                .then(function (response) {
-                    Swal.fire({
-                        type: 'success',
-                        title: 'Successfully added approver!',
-                        showConfirmButton: true,
-                        timer: 1500,
-                        onClose : function(data){
-                            window.location.reload();
-                        }
-                    });
-                })
-                .catch(function (error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'System encountered unexpected error.' + error,
-                        showConfirmButton: true
-                    });
-                })
-                .finally( (response) => {
-
-                });
-            },
             updateStatus(row){
                 var self = this;
                 axios.post('update-approver-status',{
@@ -209,6 +207,86 @@
                     title: message
                 });
             },
+            editApprover(row){
+                $("#approverModal").modal('show');
+                this.cur_user_id        = row.approver_user_id;
+                this.cur_vehicle_type   = row.vehicle_type;
+                this.cur_approver_type  = row.user_type;
+                this.cur_position       = row.position;
+                this.cur_signatory_type = row.signatory_type;
+                this.action             = "update";
+                this.cur_approver_id    = row.approver_id;
+                this.cur_hierarchy      = row.hierarchy;
+            },
+            openAddApprover(){    
+                $("#approverModal").modal('show');
+                this.action = "add";
+            },
+            saveApprover(){
+                if(this.action == 'add'){
+                    this.submitData('add-approver');
+                }
+                else if(this.action == 'update'){
+                    this.submitData('update-approver');
+                }
+            },
+            submitData(route){
+                var self = this;
+                var approver_source_id = $("#sel_approver option:selected").data('user_source_id');
+                axios.post(route,{
+                    approver_id       : self.cur_approver_id,
+                    approver_user_id  : self.cur_user_id,
+                    approver_source_id: approver_source_id,
+                    vehicle_type      : self.cur_vehicle_type,
+                    approver_type     : self.cur_approver_type,
+                    position          : self.cur_position,
+                    signatory_type    : self.cur_signatory_type,
+                    hierarchy         : self.cur_hierarchy 
+                })
+                .then(function (response) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Successfully added approver!',
+                        showConfirmButton: true,
+                        timer: 1500,
+                        onClose : function(data){
+                            $("#approverModal").modal('hide');
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'System encountered unexpected error.' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+                    self.loadApprovers();
+                });
+            },
+            loadApprovers(){
+                var self = this;
+                axios.get('get-approvers')
+                    .then( (response) => {
+                        if($.fn.dataTable.isDataTable('#approver_table')){
+                            table.destroy();
+                        }
+                        self.approvers = response.data;
+                    })
+                    .then( () => {
+                        table = $("#approver_table").DataTable({
+                            responsive:true
+                        });
+                    })
+                    .catch( (error) => {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'System encountered unexpected error.' + error + ". Please reload the page to continue.",
+                            showConfirmButton: true
+                        });
+                    });
+            }
         },
         created: function () {
             // `this` points to the vm instance
@@ -216,11 +294,9 @@
         },
 
         mounted : function () {
-            var table = $("#datatable").DataTable({
-                responsive:true
-            });
+            var self = this;
+            this.loadApprovers();
         },
-
         
     });
 </script>

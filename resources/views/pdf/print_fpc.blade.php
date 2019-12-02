@@ -262,36 +262,40 @@
                             </tr>
                            
                             <tr>
-                                <td><strong>{{ $header_data->prepared_by }}</strong></td>
+                                <td><strong>{{ ucwords(strtolower($header_data->prepared_by)) }}</strong></td>
                             </tr>
                             <tr>
-                                <td>{{ $header_data->position_title }}</td>
+                                <td>Dealer Sales</td>
                             </tr>
                             <tr>
                                 <td><br/><br/><br/></td>
                             </tr>
-                            @foreach($signatories['IPC_SUPERVISOR'] as $row)
-                        
+                          
                             <tr>
                                 <td><strong>Checked by: <br/><br/> </td>
                             </tr>
                             <tr>
+                                @foreach($signatories['CHECKED_BY'] as $row)
                                 <td>____________________<br/></td>
+                                @endforeach
                             </tr>
                             <tr>
-                                <td><strong>{{ $row->name_prefix}}. {{ $row->first_name }} {{ $row->last_name }}</strong></td>
+                                @foreach($signatories['CHECKED_BY'] as $row)
+                                <td><strong>{{ ucwords(strtolower($row->name_prefix . ' ' . $row->first_name . ' ' . $row->last_name)) }}</strong></td>
+                                @endforeach
                             </tr>
                             <tr>
+                                @foreach($signatories['CHECKED_BY'] as $row)
                                 <td>{{ $row->position_title }}</td>
+                                @endforeach
                             </tr>
-                        
-                            @endforeach
+                                
                         </table>
                     </td>
                     <td style="width:100px;">&nbsp;</td>
                     <td style="vertical-align: top;">
                         <table style="font-size:11px;">
-                            @foreach($signatories['IPC_MANAGER'] as $row)
+                            @foreach($signatories['NOTED_BY'] as $row)
                         
                             <tr>
                                 <td><strong>Noted by: <br/><br/> </td>
@@ -314,17 +318,17 @@
                                 <td><strong>Approved by: <br/><br/> </td>
                             </tr>
                             <tr>
-                                @foreach($signatories['IPC_EXPAT'] as $row)
+                                @foreach($signatories['EXPAT'] as $row)
                                 <td>____________________<br/></td>
                                 @endforeach
                             </tr>
                             <tr>
-                                @foreach($signatories['IPC_EXPAT'] as $row)
+                                @foreach($signatories['EXPAT'] as $row)
                                 <td><strong>{{ $row->name_prefix}}. {{ $row->first_name }} {{ $row->last_name }}</strong></td>
                                 @endforeach
                             </tr>
                             <tr>
-                                @foreach($signatories['IPC_EXPAT'] as $row)
+                                @foreach($signatories['EXPAT'] as $row)
                                 <td>{{ $row->position_title }}</td>
                                 @endforeach
                             </tr>
