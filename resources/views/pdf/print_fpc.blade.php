@@ -163,7 +163,7 @@
         </table>  
 
         <hr style="border:0;height:3px;background:#000;" />
-        <p style="font-size:12px;font-weight:bold;">After FSD evaluation, your request for Fleet Price Support has been approved as follows:</p>
+        <p style="font-size:12px;font-weight:bold;">After Dealer Sales evaluation, your request for Fleet Price Support has been approved as follows:</p>
         
         <table class="item-table" cellpadding="3" cellspacing="3">
             <thead>
@@ -366,6 +366,7 @@
             $wsp              = $item['header']->wholesale_price;
             $fleet_price      = $item['header']->fleet_price;
             $dealer_margin    = $fleet_price * ($item['header']->dealers_margin/100);
+            $margin_percent   = $item['header']->dealers_margin;
             $lto_registration = $item['header']->lto_registration;
             $freebies         = $item['header']->freebies;
             $cost             = $wsp + $dealer_margin + $freebies + $lto_registration;
@@ -472,7 +473,7 @@
                         </tr>
                         <tr>
                             <td class="text-bold">Dealers Margin</td>
-                            <td align="right">{{ number_format($dealer_margin,2) }} </td>
+                            <td align="right">{{ number_format($dealer_margin,2) }} ({{ $margin_percent }}%)</td>
                         </tr>
                         <tr>
                             <td class="text-bold">3 Yrs LTO Registration</td>
