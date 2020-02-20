@@ -985,70 +985,6 @@ jQuery(document).ready(function() {
             draftButton : ''
         },
         methods : {
-            submitForm(){
-                var self = this;
-                self.action = 'submit';
-                self.saveProject();
-            },
-            processFileUpload(customer_id,project_id){
-                let data = new FormData();
-                var self = this;
-                data.append('customer_id',customer_id);
-                data.append('project_id',project_id);
-
-                $.each($("#attachment")[0].files, function(i, file) {
-                    data.append('attachment[]', file);
-                });
-
-                $.each($("#competitor_attachments")[0].files, function(i, file) {
-                    data.append('competitor_attachments[]', file);
-                });
-
-                axios.post('/upload-project-attachment',data, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }).then(function (response) {
-                    
-                    if(response.data.status == "success"){
-                        var message = "";
-
-                        if(self.action == "create"){
-                            message = "Project has been created!";
-                        }
-                        else if(self.action =="edit"){
-                            message = "Project has been updated!";   
-                        }
-                        Swal.fire({
-                            type: 'success',
-                            title: message,
-                            showConfirmButton: false,
-                            timer: 1500,
-                            onClose : function(){
-                                var link = self.baseUrl + '/project-overview/view/' + project_id;
-                                window.location.href = link;
-                            }
-                        });
-                    }
-                    else {
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Unexpected error encountered during the transaction, please contact the system administrator.',
-                            showConfirmButton: true
-                        });
-                    }
-                })
-                .catch(function (error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Unexpected error encountered during the transaction, please contact the system administrator. Error : ' + error,
-                        showConfirmButton: true
-                    });
-                })
-                .finally( (response) => {
-                    KTApp.unblockPage();
-                });
-            },
             validateFileSize(attachment_type){
                 var self = this;
                 var total_size = 0;
@@ -1584,8 +1520,7 @@ jQuery(document).ready(function() {
                             route = "/project/save";
                         }
                         else {
-                            route = "/project/update";
-                            
+                            route = "/project/update";    
                         }
                         
                         axios.post(route, {
@@ -1601,20 +1536,14 @@ jQuery(document).ready(function() {
                         .then(function (response) {
                             
                             self.project_id = response.data.project_id;
-
-                            if(self.action == 'create'){
-                                window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
-                            }
-                            if(self.action == 'submit') {
-                                self.submitProject();
-                            }
-                            /* self.processFileUpload(
+                        
+                            self.processFileUpload(
                                 response.data.customer_id,
                                 response.data.project_id
-                            ); */
-                            //console.log(response.data);
-                          //  window.location.href = self.baseUrl + "/manage-project/edit/" + response.data.project_id;
+                            );
+                        
                         })
+            
                         .catch(function (error) {
                             Swal.fire({
                                 type: 'error',
@@ -1629,18 +1558,115 @@ jQuery(document).ready(function() {
 
                     }
                 });  
-
-              
             },
             submitProject(){
                 var self = this;
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                
                 axios.post('project/submit', {
                     project_id : self.project_id, 
                 })
                 .then(function (response) {
-                    window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
+                    Swal.fire({
+                        type             : 'success',
+                        title            : 'Project has been submitted!',
+                        showConfirmButton: false,
+                        timer            : 1500,
+                        onClose          : function(){
+                            window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
+                        }
+                    });
                 })
-            }
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Failed on project submission, please try submitting again.',
+                        showConfirmButton: true
+                    });
+                })
+                .finally( () => {
+                    KTApp.unblockPage();
+                });
+            },
+            submitForm(){
+                var self = this;
+                self.action = 'submit';
+                self.saveProject();
+            },
+            processFileUpload(customer_id,project_id){
+                let data = new FormData();
+                var self = this;
+                data.append('customer_id',customer_id);
+                data.append('project_id',project_id);
+
+                $.each($("#attachment")[0].files, function(i, file) {
+                    data.append('attachment[]', file);
+                });
+
+                $.each($("#competitor_attachments")[0].files, function(i, file) {
+                    data.append('competitor_attachments[]', file);
+                });
+
+                axios.post('project/attachment/upload',data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then(function (response) {
+                    
+                    if(response.data.status == "success"){
+                        var message = "";
+
+                        if(self.action == "create"){
+                            message = "Project has been created!";
+                        }
+                        else if(self.action =="edit"){
+                            message = "Project has been updated!";
+                        }
+
+                        
+                        if(self.action != 'submit'){
+                            Swal.fire({
+                                type             : 'success',
+                                title            : message,
+                                showConfirmButton: false,
+                                timer            : 1500,
+                                onClose          : function(){
+                                    if(self.action == 'create'){
+                                        window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
+                                    }          
+                                }
+                            });
+                        }
+                        
+                        if(self.action == 'submit') {
+                            self.submitProject();
+                        }
+                       
+                    }
+                    else {
+                        Swal.fire({
+                            type             : 'error',
+                            title            : 'Unexpected error encountered during the transaction, please contact the system administrator.',
+                            showConfirmButton: true
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Unexpected error encountered during the transaction, please contact the system administrator. Error : ' + error,
+                        showConfirmButton: true
+                    });
+                })
+                .finally( (response) => {
+                    KTApp.unblockPage();
+                });
+            },
         },
         created: function () {
       
