@@ -32,7 +32,7 @@ use App\Models\POHeaders;
 use App\Models\FWPC;
 use App\Models\Dealer;
 use App\Models\FPCValidityRequest;
-
+use DB;
 
 class ProjectController extends Controller
 {
@@ -241,95 +241,6 @@ class ProjectController extends Controller
         return view('projects.project_overview', $page_data);
     }
 
-    public function save_project(
-        Request $request,
-        Customer $m_customer,
-        ProjectSources $m_project_source,
-        CustomerAffiliates $m_affiliates,
-        Project $m_project,
-        CustomerContact $m_customer_contact,
-        ContactPersons $m_contact_person,
-        SalesPersonsOra $m_sales_persons,
-        ProjectRequirement $m_requirement,
-        ProjectDeliverySchedule $m_delivery_sched,
-        Competitor $m_competitor,
-        Approver $m_approver,
-        ModuleApproval $m_module_approval,
-        ActivityLogs $m_activity_logs,
-        RequirementHeader $m_requirement_header,
-        RequirementLine $m_requirement_line
-    ){
-        ini_set('memory_limit', '256M');
-        
-        $account_details = $request['accountDetails'];
-        $contact_details = $request['contactDetails'];
-   
-        // create project source
-        $project_source_id = $this->create_project_source($m_project_source,$account_details);
-    
-        // create or update customer data
-        $customer_id = $this->insert_project_customer($m_customer,$m_affiliates,$account_details);
-    
-        // create project header
-        $project_id = $this->create_project_header(
-            $m_project, 
-            $m_module_approval,
-            $m_approver,
-            $customer_id, 
-            $project_source_id,
-            $account_details,
-            $contact_details, 
-            $request['competitor_flag'],
-            $request['no_competitor_reason'],
-            $m_activity_logs
-        );
-    
-        // project contact number 
-        $this->create_project_contacts($m_customer_contact, $contact_details['custContacts'], $project_id);
-    
-        // project contact persons
-        $this->create_contact_persons($m_contact_person, $contact_details['contactPersons'], $project_id);
-
-        // project sales persons       
-        $this->create_project_sales_persons(
-            $m_sales_persons, 
-            $contact_details['salesPersons'], 
-            $project_id
-        );
-
-        // project requirement
-        $this->create_project_requirement(
-            $m_requirement_header,
-            $m_requirement_line,
-            $m_delivery_sched,
-            $m_module_approval,
-            $m_approver,
-            $request['requirement'],
-            $project_id,
-            $m_activity_logs
-        );
-
-        // project competitor
-        $this->create_project_competitor($m_competitor, $request['competitors'], $project_id);
-    
-
-        // activity Logs
-        $this->create_project_activity_log(
-            $m_activity_logs, 
-            $account_details, 
-            $project_id,
-            $m_project
-        );
-
-        return response()->json(
-            [
-                'status' => "success",
-                'project_id' => $project_id,
-                'customer_id' => $customer_id
-            ]
-        );
-    }
-
     public function create_project_header(
         $m_project, 
         $m_module_approval,
@@ -367,29 +278,23 @@ class ProjectController extends Controller
 
         $project_id = $m_project->insert_project($project_params);
         $this->insert_project_approval(
-            $m_module_approval,
-            $m_approver, 
             'DLR_MANAGER',
             '', // vehicle type
-            $project_id,
-            $m_activity_logs
+            $project_id
         );
         return $project_id;
     }
 
-    public function create_project_requirement(
-        $m_requirement_header,
-        $m_requirement_line,
-        $m_delivery_sched,
-        $m_module_approval,
-        $m_approver,
-        $requirements,
-        $project_id,
-        $m_activity_logs
-    ){   
+    public function create_project_requirement($requirements,$project_id){   
         $lcv_requirement = $requirements['LCV'];
         $cv_requirement = $requirements['CV'];
-       
+        $m_module_approval = new ModuleApproval;
+        $m_activity_logs = new ActivityLogs;
+        $m_requirement_header = new RequirementHeader;
+        $m_requirement_line = new RequirementLine;
+        $m_requirement = new ProjectRequirement;
+        $m_delivery_sched = new ProjectDeliverySchedule;
+
         if(!empty($lcv_requirement)){
             $params = [
                 'vehicle_type'          => 'LCV',
@@ -400,16 +305,6 @@ class ProjectController extends Controller
                 'status'                => 7 // Pending
             ];
             $lcv_requirement_id = $m_requirement_header->insert_requirement_header($params);
-
-            // APPROVAL HERE
-            /*$this->insert_project_approval(
-                $m_module_approval,
-                $m_approver,
-                'IPC_STAFF',
-                'LCV',
-                $project_id,
-                $m_activity_logs
-            );*/
 
             foreach($lcv_requirement as $row){
                 $line_params = [
@@ -453,15 +348,7 @@ class ProjectController extends Controller
             ];
             $cv_requirement_id = $m_requirement_header->insert_requirement_header($params);
 
-            /*$this->insert_project_approval(
-                $m_module_approval,
-                $m_approver,
-                'IPC_STAFF',
-                'CV',
-                $project_id,
-                $m_activity_logs
-            );*/
-
+    
             foreach($cv_requirement as $row){
                 $line_params = [
                     'requirement_header_id' => $cv_requirement_id,
@@ -494,7 +381,8 @@ class ProjectController extends Controller
         }
     }   
 
-    public function create_project_competitor($m_competitor, $competitors, $project_id){
+    public function create_project_competitor($competitors, $project_id){
+        $m_competitor = new Competitor;
         $competitor_params = [];
         foreach ($competitors as $row) {
             if(!isset($row['competitor_id']) && $row['delete_flag'] == 'N'){
@@ -541,12 +429,9 @@ class ProjectController extends Controller
         $m_competitor->insert_competitor($competitor_params);
     }
 
-    public function create_project_activity_log(
-        $m_activity_logs, 
-        $account_details, 
-        $project_id,
-        $m_project
-    ){
+    public function create_project_activity_log($account_details,$project_id){
+        $m_project = new Project;
+        $m_activity_logs = new ActivityLogs;
 
         $project_details = $m_project->get_details($project_id);
         $activity_log_params = [
@@ -568,7 +453,8 @@ class ProjectController extends Controller
         $m_activity_logs->insert_log($activity_log_params);
     }
 
-    public function create_project_sales_persons($m_sales_persons, $sales_persons, $project_id){
+    public function create_project_sales_persons($sales_persons, $project_id){
+        $m_sales_persons = new SalesPersonsOra;
         $sales_persons_params = [];
         foreach ($sales_persons as $row) {
             if($row['delete_flag'] == 'N' && !isset($row['creation_date'])){
@@ -592,7 +478,8 @@ class ProjectController extends Controller
         $m_sales_persons->insert_sales_person($sales_persons_params);
     }
 
-    public function create_project_contacts($m_customer_contact,$customer_contacts, $project_id){
+    public function create_project_contacts($customer_contacts, $project_id){
+        $m_customer_contact = new CustomerContact;
         $cust_contact_params = [];
         foreach($customer_contacts as $row){
             if($row['delete_flag'] == 'N' && !isset($row['contact_id'])){
@@ -609,7 +496,9 @@ class ProjectController extends Controller
         $m_customer_contact->insert_contact($cust_contact_params);
     }
 
-    public function create_contact_persons($m_contact_person, $contact_persons, $project_id){
+    public function create_contact_persons($contact_persons, $project_id){
+        $m_contact_person = new ContactPersons;
+
         $contact_person_params = [];
         foreach($contact_persons as $row){
             if($row['delete_flag'] == 'N'){
@@ -702,15 +591,11 @@ class ProjectController extends Controller
         return $customer_id;
     }
 
-    public function insert_project_approval(
-        $m_module_approval,
-        $m_approver,
-        $user_type,
-        $vehicle_type,
-        $project_id,
-        $m_activity_logs
-    ){
-         // insert IPC approval
+    public function insert_project_approval($user_type,$vehicle_type,$project_id){
+        $m_approver = new Approver;
+        $m_module_approval = new ModuleApproval;
+        $m_activity_logs = new ActivityLogs;
+        // insert IPC approval
         $approvers = $m_approver->get_project_approvers(
             session('user')['user_id'],
             $user_type, //'IPC_STAFF',
@@ -762,11 +647,13 @@ class ProjectController extends Controller
         $m_activity_logs->insert_log($activity_log);
     }
 
-    public function create_project_source($m_project_source,$account_details){
+    public function create_project_source($account_details){
         // Project Source
         $project_source_id = 0; 
+        $projectSource = new ProjectSources;
+        // project source
         if($account_details['selected_project_source'] == 8){
-            $project_source_id = $m_project_source->insert_project_source(
+            $project_source_id = $projectSource->insert_project_source(
                 [
                     'source_name' => $account_details['others']
                 ]
@@ -775,6 +662,7 @@ class ProjectController extends Controller
         else {
             $project_source_id = $account_details['selected_project_source'];
         }
+
         return $project_source_id;
     }
 
@@ -972,12 +860,12 @@ class ProjectController extends Controller
         $m_activity_logs->insert_log($activity_log_params);
 
         // count pending approval for dealers
-        $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
+      //  $pending_approval = $m_approval->get_pending_per_project($project_id,'DLR_MANAGER');
         
         // if no pending approval for dealers INSERT IPC approvers by getting requirements
         // set project status as PENDING
         if(
-            count($pending_approval)           == 0 &&  // if no pending approval from other dealer approver
+           // count($pending_approval)           == 0 &&  // if no pending approval from other dealer approver
             $status                            == "approve"  // if approve
             && session('user')['user_type_id'] == 31 // dealer manager
         ){
@@ -995,12 +883,9 @@ class ProjectController extends Controller
             $requirement_headers = $m_rh->get_headers($project_id);
             foreach($requirement_headers as $row){
                $this->insert_project_approval(
-                    $m_approval,
-                    $m_approver,
                     'IPC_STAFF',
                     $row->vehicle_type,
-                    $project_id,
-                    $m_activity_logs
+                    $project_id
                 ); 
             }
     
@@ -1330,167 +1215,10 @@ class ProjectController extends Controller
         return response()->json($data);
     }
 
-    public function update_project(
-        Request $request,
-        Customer $m_customer,
-        ProjectSources $m_project_source,
-        CustomerAffiliates $m_affiliates,
-        Project $m_project,
-        CustomerContact $m_customer_contact,
-        ContactPersons $m_contact_person,
-        SalesPersonsOra $m_sales_persons,
-        ProjectRequirement $m_requirement,
-        ProjectDeliverySchedule $m_delivery_sched,
-        Competitor $m_competitor,
-        Approver $m_approver,
-        ModuleApproval $m_module_approval,
-        ActivityLogs $m_activity_logs,
-        RequirementHeader $m_requirement_header,
-        RequirementLine $m_requirement_line
-    ){
-        ini_set('memory_limit', '256M');
-        $account_details = $request['accountDetails'];
-        $contact_details = $request['contactDetails'];
-        $project_id = $request->project_id;
-        // create project source
-        $project_source_id = $this->create_project_source($m_project_source,$account_details);
-    
-        // create or update customer data
-        $customer_id = $this->insert_project_customer($m_customer,$m_affiliates,$account_details);
-        
-        // update project header
-        $project_params = [
-            'customer_id'           => $customer_id,
-            'project_source_id'     => $project_source_id,
-            'updated_by'            => session('user')['user_id'],
-            'update_user_source_id' => session('user')['source_id'],
-            'email'                 => $contact_details['email_address'],
-            'facebook_url'          => $contact_details['facebook_url'],
-            'website_url'           => $contact_details['website_url'],
-            'bid_ref_no'            => $account_details['bid_ref_no'],
-            'bid_docs_amount'       => $account_details['bid_docs_amount'],
-            'pre_bid_sched'         => $account_details['pre_bid_sched'],
-            'bid_date_sched'        => $account_details['bid_date_sched'],
-            'bidding_venue'         => $account_details['bidding_venue'],
-            'approved_budget_cost'  => $account_details['approved_budget_cost'],
-            'fleet_category'        => $account_details['fleet_category'],
-            'competitor_flag'       => $request->competitor_flag, 
-            'competitor_remarks'    => $request->no_competitor_reason, 
-            'status'                => 3, // new
-            'project_id'            => $project_id
-        ];
-
-        $m_project->update_project($project_params);
-
-        
-        $project_details = $m_project->get_details($project_id);
-        $activity_log = [];
-        array_push(
-            $activity_log,
-            [
-                'module_id'             => 1, // Fleet Project
-                'module_code'           => 'PRJ',
-                'content'               => 'Project No. <strong>'. $project_id.'</strong> with account name <strong>' . $account_details['account_name'] . '</strong> has been <strong>updated</strong>.',
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id'],
-                'reference_id'          => $project_id,
-                'reference_column'      => 'project_id',
-                'reference_table'       => 'fs_projects',
-                'mail_flag'             => 'Y',
-                'is_sent_flag'          => 'N',
-                'timeline_flag'         => 'Y',
-                'mail_recipient'        => $project_details->requestor_email
-            ]
-        );
-        
-        $approval_workflow = $m_module_approval->get_project_approval_workflow($project_id);
-        foreach($approval_workflow as $row){
-            // update approval status to pending  
-            $m_module_approval->save_approval(
-                $row->approval_id, 
-                $row->project_id, // module_reference_id, 
-                'fs_projects', 
-                'project_id', 
-                7, // set to pending again 
-                $row->remarks,
-                session('user')['user_id'],
-                session('user')['source_id']
-            );
-
-            // 
-            $log_arr = [
-                'module_id'             => 1, // Fleet Project
-                'module_code'           => 'PRJ',
-                'content'               => 'Project No. <strong>' . $project_id . '</strong> has been updated and waiting for your approval.',
-                'created_by'            => session('user')['user_id'],
-                'creation_date'         => Carbon::now(),
-                'create_user_source_id' => session('user')['source_id'],
-                'reference_id'          => $project_id,
-                'reference_column'      => 'project_id',
-                'reference_table'       => 'fs_projects',
-                'mail_flag'             => 'Y',
-                'is_sent_flag'          => 'N',
-                'timeline_flag'         => 'N',
-                'mail_recipient'        => $row->email_address
-            ];
-            array_push($activity_log,$log_arr);
-        }
-        // insert logs
-        $m_activity_logs->insert_log($activity_log);
-
-
-         // project contact number 
-        $this->create_project_contacts(
-            $m_customer_contact, 
-            $contact_details['custContacts'], 
-            $project_id
-        );
-  
-        // project contact persons
-        $this->create_contact_persons(
-            $m_contact_person, 
-            $contact_details['contactPersons'], 
-            $project_id
-        );
-
-        // project sales persons       
-        $this->create_project_sales_persons(
-            $m_sales_persons, 
-            $contact_details['salesPersons'], 
-            $project_id
-        );
-
-        // updating of requirements
-        $requirements = $request['requirements'];
-        $this->updateRequirement(
-            $requirements,
-            $m_requirement_header,
-            $m_requirement_line,
-            $m_delivery_sched,
-            $project_id
-        );
-        
-        // project competitor
-        $this->create_project_competitor($m_competitor, $request['competitors'], $project_id);
-        
-        return response()->json(
-            [
-                'status' => "success",
-                'project_id' => $project_id,
-                'customer_id' => $customer_id
-            ]
-        );
-     
-    }
-
-    public function updateRequirement(
-        $requirements,
-        $m_requirement_header,
-        $m_requirement_line,
-        $m_delivery_sched,
-        $project_id
-    ){
+    public function updateRequirement($requirements,$project_id){
+        $m_requirement_header = new RequirementHeader;
+        $m_requirement_line = new RequirementLine;
+        $m_delivery_sched = new ProjectDeliverySchedule;
 
         $lcv_requirement = $requirements['LCV'];
         $cv_requirement = $requirements['CV'];
@@ -1620,7 +1348,7 @@ class ProjectController extends Controller
         }
         
     }
-
+    
 
     public function print_project(
         Request $request,
@@ -1647,5 +1375,272 @@ class ProjectController extends Controller
         $pdf = PDF::loadView('pdf.print_project', $data);
         return $pdf->setPaper('a4','portrait')->stream();
     }
+
+    public function create_project_customer($account_details){
+         // Customer Details
+        $customer_attrs = 
+            // this will used for insert
+            [
+                'customer_name'         => $account_details['account_name']
+            ];
+        $customer_values = 
+            // this will be used for other parameters to insert
+            [
+                //'customer_name'         => $account_details['account_name'],
+                'organization_type_id'  => $account_details['selected_org_type'],
+                'tin'                   => $account_details['tin'],
+                'address'               => $account_details['address'],
+                'business_style'        => $account_details['business_style'],
+                'establishment_date'    => $account_details['establishment_date'],
+                'products'              => $account_details['products'],
+                'company_overview'      => $account_details['company_overview'],
+                'status'                => 1, // active
+                'created_by'            => session('user')['user_id'],
+                'create_user_source_id' => session('user')['source_id'],
+                'creation_date'         => Carbon::now()
+            ];
+
+        $customer = new Customer;
+        $customer_id = $customer->insert_customer($customer_attrs,$customer_values);
+        // End of customer details
+       
+        // Affiliate details
+        $affiliate = new CustomerAffiliates;
+        $affiliates = $account_details['affiliates'];
+        $affiliate_params = [];
+        foreach($affiliates as $row){
+            $arr = [
+                'customer_id'           => $customer_id,
+                'customer_affiliate_id' => $row,
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id']
+            ];
+            array_push($affiliate_params,$arr);
+        }
+
+        if(!empty($affiliates)){
+            $affiliate->delete_affiliate($customer_id);
+        }
+
+        $affiliate->insert_affiliates($affiliate_params);
+        
+        return $customer_id;
+    }
+
+    public function store(Request $request){    
+        $account_details   = $request['accountDetails'];
+        $contact_details   = $request['contactDetails'];
+        $competitor_flag   = $request['competitor_flag'];
+        $competitor_reason = $request['no_competitor_reason'];
+        $project_id        = $request['project_id'];
+        $project_status    = $request['status'];
+        DB::beginTransaction();
+        
+        try {
+
+            // project source
+            $projectSource = new ProjectSources;
+            $project_source_id = $this->create_project_source($account_details);
+
+            // customer
+            $customer_id = $this->create_project_customer($account_details);
+            
+            // project header
+            $project_params = [
+                'customer_id'           => $customer_id,
+                'dealer_id'             => session('user')['customer_id'],
+                'project_source_id'     => $project_source_id,
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'email'                 => $contact_details['email_address'],
+                'facebook_url'          => $contact_details['facebook_url'],
+                'website_url'           => $contact_details['website_url'],
+                'bid_ref_no'            => $account_details['bid_ref_no'],
+                'bid_docs_amount'       => str_replace(',','',$account_details['bid_docs_amount']),
+                'pre_bid_sched'         => $account_details['pre_bid_sched'],
+                'bid_date_sched'        => $account_details['bid_date_sched'],
+                'bidding_venue'         => $account_details['bidding_venue'],
+                'approved_budget_cost'  => str_replace(',','',$account_details['approved_budget_cost']),
+                'fleet_category'        => $account_details['fleet_category'],
+                'competitor_flag'       => $competitor_flag, 
+                'competitor_remarks'    => $competitor_reason, 
+                'status'                => $project_status // draft status
+            ];
+            
+            $project = new Project;
+
+            $project_id = $project->insert_project($project_params);
+            
+            $this->create_project_contacts($contact_details['custContacts'], $project_id);
+            
+            $this->create_contact_persons($contact_details['contactPersons'], $project_id);
+
+            $this->create_project_sales_persons($contact_details['salesPersons'],$project_id);
+
+            $this->create_project_requirement($request['requirement'],$project_id);
+
+            $this->create_project_competitor($request['competitors'], $project_id);
+    
+            $this->create_project_activity_log($account_details,$project_id); 
+
+            DB::commit();
+            return response()->json([
+                'status' => "success",
+                'project_id' => $project_id,
+                'customer_id' => $customer_id
+            ]);
+
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return $e;
+        }
+    }
+
+    public function update(Request $request){
+        ini_set('memory_limit', '256M');
+        $account_details = $request['accountDetails'];
+        $contact_details = $request['contactDetails'];
+        $project_id = $request->project_id;
+        // create project source
+        $project_source_id = $this->create_project_source($account_details);
+        // create or update customer data
+        $customer_id = $this->create_project_customer($account_details);
+        
+        $project_status    = $request['status'];
+        // update project header
+        $project_params = [
+            'customer_id'           => $customer_id,
+            'project_source_id'     => $project_source_id,
+            'updated_by'            => session('user')['user_id'],
+            'update_user_source_id' => session('user')['source_id'],
+            'email'                 => $contact_details['email_address'],
+            'facebook_url'          => $contact_details['facebook_url'],
+            'website_url'           => $contact_details['website_url'],
+            'bid_ref_no'            => $account_details['bid_ref_no'],
+            'bid_docs_amount'       => $account_details['bid_docs_amount'],
+            'pre_bid_sched'         => $account_details['pre_bid_sched'],
+            'bid_date_sched'        => $account_details['bid_date_sched'],
+            'bidding_venue'         => $account_details['bidding_venue'],
+            'approved_budget_cost'  => $account_details['approved_budget_cost'],
+            'fleet_category'        => $account_details['fleet_category'],
+            'competitor_flag'       => $request->competitor_flag, 
+            'competitor_remarks'    => $request->no_competitor_reason, 
+            'status'                => $project_status, // new
+            'project_id'            => $project_id
+        ];
+
+        $m_project = new Project;
+        $m_project->update_project($project_params);  
+        $project_details = $m_project->get_details($project_id);
+        $activity_log = [];
+        array_push(
+            $activity_log,
+            [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Project No. <strong>'. $project_id.'</strong> with account name <strong>' . $account_details['account_name'] . '</strong> has been <strong>updated</strong>.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        => $project_details->requestor_email
+            ]
+        );
+        
+        /*$approval_workflow = $m_module_approval->get_project_approval_workflow($project_id);
+        foreach($approval_workflow as $row){
+            // update approval status to pending  
+            $m_module_approval->save_approval(
+                $row->approval_id, 
+                $row->project_id, // module_reference_id, 
+                'fs_projects', 
+                'project_id', 
+                7, // set to pending again 
+                $row->remarks,
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+
+            // 
+            $log_arr = [
+                'module_id'             => 1, // Fleet Project
+                'module_code'           => 'PRJ',
+                'content'               => 'Project No. <strong>' . $project_id . '</strong> has been updated and waiting for your approval.',
+                'created_by'            => session('user')['user_id'],
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => session('user')['source_id'],
+                'reference_id'          => $project_id,
+                'reference_column'      => 'project_id',
+                'reference_table'       => 'fs_projects',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'N',
+                'mail_recipient'        => $row->email_address
+            ];
+            array_push($activity_log,$log_arr);
+        }
+        // insert logs
+        $m_activity_logs->insert_log($activity_log);*/
+
+
+         // project contact number 
+        $this->create_project_contacts(
+            $contact_details['custContacts'], 
+            $project_id
+        );
+  
+        // project contact persons
+        $this->create_contact_persons(
+            $contact_details['contactPersons'], 
+            $project_id
+        );
+
+        // project sales persons       
+        $this->create_project_sales_persons(
+            $contact_details['salesPersons'], 
+            $project_id
+        );
+
+        // updating of requirements
+
+        $this->updateRequirement($request['requirement'],$project_id);
+        
+        // project competitor
+        $this->create_project_competitor($request['competitors'], $project_id);
+        
+        return response()->json(
+            [
+                'status' => "success",
+                'project_id' => $project_id,
+                'customer_id' => $customer_id
+            ]
+        );
+     
+    }
+
+    public function submit(Request $request){
+        $project_id = $request->project_id;
+        $project = new Project;
+        // create approval workflow
+        $this->insert_project_approval('DLR_MANAGER','',$project_id);
+        // update status to new
+        $project->update_status(
+            $project_id,
+            3, // new status 
+            session('user')['user_id'],
+            session('user')['source_id']
+        );
+
+    }
+
+
+     
  
 }

@@ -7,12 +7,12 @@
 
 <div id="app">
 
-    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected'">
+    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected' && project_status != 'Draft'">
         <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
         <div class="alert-text">Project # @{{ project_id }} could not be edited since it is already <strong>@{{ project_status }}</strong>.</div>
     </div>
 
-<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected'">
+<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected' || project_status == 'Draft'">
      <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
@@ -33,6 +33,10 @@
                     <span class="kt-hidden-mobile">Cancel</span>
                 </a>
                 @endif
+                <a href="#"  class="btn btn-primary" @click="saveProject()">
+                    <span class="kt-hidden-mobile">@{{ draftButton }}</span>
+                </a>
+
             </div>
         </div>
     </div>
@@ -664,7 +668,7 @@
 
                     <!--begin: Form Actions -->
                     <div class="kt-form__actions">
-                        <button id="vue_submit" @click="callVueSubmitForm" v-show="false">Vue submit</button>
+                        <button id="vue_submit" @click="submitForm" v-show="false">Vue submit</button>
                         <div class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-prev">
                             Previous
                         </div>
@@ -801,8 +805,8 @@ var KTInputmask = function () {
 
         // empty placeholder
         $("#txt_tin").inputmask({
-            "mask": "999-999-99999",
-            placeholder: "XXX-XXX-XXXXX" // remove underscores from the input mask
+            "mask": "999-999-999-999",
+            placeholder: "XXX-XXX-XXX-XXX" // remove underscores from the input mask
         });
 
         // repeating mask
@@ -977,90 +981,14 @@ jQuery(document).ready(function() {
             file_label               : 'Choose file',
             file_label2              : 'Choose file',
             is_exist                 : false,
-            project_status : 'New' // default is 3 for NEW
+            project_status : 'New', // default is 3 for NEW
+            draftButton : ''
         },
         methods : {
-            callVueSubmitForm(){
+            submitForm(){
                 var self = this;
-                
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, submit it!'
-                }).then((result) => {
-                    if (result.value) {
-                          
-                        KTApp.blockPage({
-                            overlayColor: '#000000',
-                            type: 'v2',
-                            state: 'success',
-                            message: 'Please wait...'
-                        });
-                    
-                        // update values of affiliates select2 since remove event is not firing
-                        self.accountDetails.affiliates = $('#sel_affiliates').val();
-
-                        if(self.action == "create"){
-                            axios.post('/save-project', {
-                                accountDetails:       self.accountDetails,
-                                contactDetails:       self.contactDetails,
-                                requirement:          self.vehicleRequirement,
-                                competitors:          self.competitors,
-                                no_competitor_reason: self.no_competitor_reason,
-                                competitor_flag:      self.competitor_flag
-                            })
-                            .then(function (response) {
-                                self.processFileUpload(
-                                    response.data.customer_id,
-                                    response.data.project_id
-                                );
-                            })
-                            .catch(function (error) {
-                                Swal.fire({
-                                    type: 'error',
-                                    title: 'Unexpected error encountered during the transaction, click OK then try saving again.' + error,
-                                    showConfirmButton: true
-                                });
-                            })
-                            .finally( (response) => {
-                                KTApp.unblockPage();
-                            });
-                        }
-                        else if(self.action == "edit") {
-                            axios.post('/update-project', {
-                                project_id:           self.project_id,
-                                accountDetails:       self.accountDetails,
-                                contactDetails:       self.contactDetails,
-                                requirement:          self.vehicleRequirement,
-                                competitors:          self.competitors,
-                                no_competitor_reason: self.no_competitor_reason,
-                                competitor_flag:      self.competitor_flag,
-                                requirements:          self.vehicleRequirement,
-                            })
-                            .then(function (response) {
-                                self.processFileUpload(
-                                    response.data.customer_id,
-                                    response.data.project_id
-                                );
-                            })
-                            .catch(function (error) {
-                                Swal.fire({
-                                    type: 'error',
-                                    title: 'Unexpected error encountered during the transaction, click OK then try saving again.',
-                                    showConfirmButton: true
-                                });
-                            })
-                            .finally( (response) => {
-                                KTApp.unblockPage();
-                            });
-                        }
-                        
-                    }
-                });  
+                self.action = 'submit';
+                self.saveProject();
             },
             processFileUpload(customer_id,project_id){
                 let data = new FormData();
@@ -1626,6 +1554,92 @@ jQuery(document).ready(function() {
                         // always executed
                         KTApp.unblockPage();
                     });      
+            },
+            saveProject(){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are saving this project as draft.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+                    
+                        // update values of affiliates select2 since remove event is not firing
+                        self.accountDetails.affiliates = $('#sel_affiliates').val();
+
+                        var route = "";
+                        // no existing project yet
+                        if(self.project_id == null) {
+                            route = "/project/save";
+                        }
+                        else {
+                            route = "/project/update";
+                            
+                        }
+                        
+                        axios.post(route, {
+                            project_id          : self.project_id,
+                            accountDetails      : self.accountDetails,
+                            contactDetails      : self.contactDetails,
+                            requirement         : self.vehicleRequirement,
+                            competitors         : self.competitors,
+                            no_competitor_reason: self.no_competitor_reason,
+                            competitor_flag     : self.competitor_flag,
+                            status              : 15 // draft
+                        })
+                        .then(function (response) {
+                            
+                            self.project_id = response.data.project_id;
+
+                            if(self.action == 'create'){
+                                window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
+                            }
+                            if(self.action == 'submit') {
+                                self.submitProject();
+                            }
+                            /* self.processFileUpload(
+                                response.data.customer_id,
+                                response.data.project_id
+                            ); */
+                            //console.log(response.data);
+                          //  window.location.href = self.baseUrl + "/manage-project/edit/" + response.data.project_id;
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Unexpected error encountered during the transaction, click OK then try saving again.' + error,
+                                showConfirmButton: true
+                            });
+                        })
+                        .finally( (response) => {
+                            KTApp.unblockPage();
+                        });
+                        
+
+                    }
+                });  
+
+              
+            },
+            submitProject(){
+                var self = this;
+                axios.post('project/submit', {
+                    project_id : self.project_id, 
+                })
+                .then(function (response) {
+                    window.location.href = self.baseUrl + "/project-overview/view/" + self.project_id;
+                })
             }
         },
         created: function () {
@@ -1634,7 +1648,14 @@ jQuery(document).ready(function() {
         mounted : function () {
 
             var self = this;
-        
+            
+            // set button text
+            if(self.project_id == null) {
+                self.draftButton = 'Save as draft';
+            }
+            else {
+                self.draftButton = 'Save changes';
+            }
             Select2.init(
                 this.customerOptions, 
                 this.projectSourceOptions, 
