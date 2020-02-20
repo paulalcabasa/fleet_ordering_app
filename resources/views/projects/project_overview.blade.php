@@ -69,9 +69,9 @@
                 @if($action == "validate")
                 <button type="submit" class="btn btn-success btn-sm" @click="validateProject('approve')">Approve</button>
                 <button type="submit" class="btn btn-danger btn-sm"  @click="validateProject('reject')">Reject</button>
-                <a :href="base_url + '/manage-project/edit/' + projectDetails.project_id" class="btn btn-primary btn-sm" v-if="projectDetails.status_name == 'New' && user_type == 31">Edit</a>
+                <a :href="base_url + '/manage-project/edit/' + projectDetails.project_id" class="btn btn-primary btn-sm" v-if="projectDetails.status_name == 'Draft' && user_type == 31">Edit</a>
                 @elseif($action == "view")
-                <a :href="base_url + '/manage-project/edit/' + projectDetails.project_id" class="btn btn-primary btn-sm" v-if="projectDetails.status_name == 'New'">Edit</a>
+                <a :href="base_url + '/manage-project/edit/' + projectDetails.project_id" class="btn btn-primary btn-sm" v-if="projectDetails.status_name == 'Draft'">Edit</a>
                 <button type="button" class="btn btn-danger btn-sm" @click="cancelProject()" v-if="projectDetails.status_name != 'Cancelled'">Cancel</button>
                 <button type="button" class="btn btn-success btn-sm" @click="closeProject()" v-if="projectDetails.status_name == 'Open'">Close</button>
                 <button type="button" class="btn btn-success btn-sm" @click="reopenProject()" v-if="projectDetails.status_name == 'Closed'">Re-open</button>
