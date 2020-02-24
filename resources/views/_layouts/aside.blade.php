@@ -88,7 +88,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">REPORTS</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -99,6 +99,22 @@
                 <a href="{{ url('/inquiry-history') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-information"></i>
                     <span class="kt-menu__link-text">Inquiry History</span>
+                </a>
+            </li>
+            @endif
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
+            <li class="kt-menu__item {{ request()->is('reports/tagged') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('reports/tagged') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-information"></i>
+                    <span class="kt-menu__link-text">Tagged Units</span>
+                </a>
+            </li>
+            @endif
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
+            <li class="kt-menu__item {{ request()->is('reports/invoice') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('reports/invoice') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-information"></i>
+                    <span class="kt-menu__link-text">Invoices</span>
                 </a>
             </li>
             @endif
