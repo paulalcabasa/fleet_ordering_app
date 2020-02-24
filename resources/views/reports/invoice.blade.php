@@ -39,38 +39,27 @@
             <table class="table table-bordered table-hover" style="font-size:90%;" width="100%" id="data">
                 <thead>
                     <tr>
-                        <th>Actions</th>
-                        <th>Project No.</th>
-                        <th>Account Name</th>
+                        <th>Invoice No.</th>
                         <th>Dealer</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>FPC</th>
-                        <th>PO</th>
-                        <th>FWPC</th>
+                        <th>Fleet Account</th>
+                        <th>CS #</th>
+                        <th>Sales Model</th>
+                        <th>Color</th>
+                        <th>Invoice Date</th>
+                        <th>Payment Terms</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, index) in projects">
-                        <td nowrap>
-                            <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
-                              <i class="la la-eye"></i>
-                            </a>
-                            <a v-show="row.status_name == 'Rejected' || row.status_name == 'Draft'" :href="base_url + '/manage-project/edit/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
-                              <i class="la la-edit"></i>
-                            </a>
-                        </td>
-                        <td>@{{ row.project_id }}</td>
-                        <td nowrap>@{{ row.customer_name }}</td>
+                    <tr v-for="(row, index) in invoices">
+                      
+                        <td>@{{ row.trx_number }}</td>
                         <td>@{{ row.account_name }}</td>
-                        <td nowrap @click.prevent="showApproval(row)" style="cursor:pointer;">
-                            <span :class="status_colors[row.status_name]">@{{ row.status_name }}</span>
-                        </td>
-                        <td>@{{ row.date_created }}</td>
-                        <td><i class="fa fa-check kt-font-success" v-if="row.fpc_status == 'good'"></i></td>
-                        <td><i class="fa fa-check kt-font-success" v-if="row.po_status == 'good'"></i></td>
-                        <td><i class="fa fa-check kt-font-success" v-if="row.fwpc_status == 'good'"></i></td>
-                     
+                        <td>@{{ row.fleet_name }}</td>
+                        <td>@{{ row.cs_number }}</td>
+                        <td>@{{ row.sales_model }}</td>
+                        <td>@{{ row.body_color }}</td>
+                        <td>@{{ row.trx_date }}</td>
+                        <td>@{{ row.payment_terms }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -111,7 +100,9 @@
         el : "#app",
         data: {
             invoices : [],
-            searchFlag : false
+            searchFlag : false,
+            start_date : '',
+            end_date : ''
         },
         created: function () {
             // `this` points to the vm instance
@@ -122,7 +113,6 @@
             
             search(){
                 var self = this;
-                var customer_id = $("#sel_customer").val();
                 
                 KTApp.blockPage({
                     overlayColor: '#000000',
@@ -140,6 +130,7 @@
                     if($.fn.dataTable.isDataTable('#data')){
                         table.destroy();
                     }
+                    self.searchFlag = true;
                     self.invoices = response.data;
                 }).then( (response) => {
                     table = $("#data").DataTable({

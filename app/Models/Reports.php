@@ -179,6 +179,7 @@ class Reports extends Model
                 	AND rcta.cust_trx_type_id = 1002
                   	AND cm.orig_trx_id IS NULL
                   	{$customer_filter}
+                    AND hcpc.name = 'Dealers-Fleet'
                   	AND rcta.trx_date BETWEEN :start_date AND :end_date";
 
        
