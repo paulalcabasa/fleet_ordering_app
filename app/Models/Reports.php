@@ -98,7 +98,6 @@ class Reports extends Model
 
     public function getInvoices($params){
 
-        $customer_filter = "";
         $where = "";
         $user_type = session('user')['user_type_id'];
 
@@ -178,7 +177,7 @@ class Reports extends Model
                 WHERE 1 = 1
                 	AND rcta.cust_trx_type_id = 1002
                   	AND cm.orig_trx_id IS NULL
-                  	{$customer_filter}
+                  	{$where}
                     AND hcpc.name = 'Dealers-Fleet'
                   	AND rcta.trx_date BETWEEN :start_date AND :end_date";
 
