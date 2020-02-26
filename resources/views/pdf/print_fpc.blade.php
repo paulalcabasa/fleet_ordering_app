@@ -295,11 +295,12 @@
                     <td style="width:100px;">&nbsp;</td>
                     <td style="vertical-align: top;">
                         <table style="font-size:11px;">
-                            @foreach($signatories['NOTED_BY'] as $row)
-                        
                             <tr>
                                 <td><strong>Noted by: <br/><br/> </td>
                             </tr>
+                            @foreach($signatories['NOTED_BY'] as $row)
+                        
+                            
                             <tr>
                                 <td>____________________<br/></td>
                             </tr>
