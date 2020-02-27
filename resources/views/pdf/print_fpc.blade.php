@@ -310,6 +310,9 @@
                             <tr>
                                 <td>{{ $row->position_title }}</td>
                             </tr>
+                            <tr>
+                                <td style="font-size:14px;">&nbsp;</td>
+                            </tr>
                           
                             @endforeach
                             <tr>
