@@ -46,6 +46,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        
+    	if ($exception instanceof TokenMismatchException) {
+            return url('http://'.$_SERVER['HTTP_HOST'].'/webapps/dashboard');
+            //return redirect(route('loginpage'))->with('message', 'Your session expired');
+        }
+        
         return parent::render($request, $exception);
     }
 }
