@@ -9,7 +9,6 @@
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
                 Fleet Price Confirmation <small>@{{ row['fpc_header'].vehicle_type }}</small>
-
             </h3>
         </div>
     </div>

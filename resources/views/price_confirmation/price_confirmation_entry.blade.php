@@ -80,38 +80,71 @@
     </div>
 </div>
 
-<div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" v-if="projects.length > 0">
-    <div class="kt-portlet__head" style="">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">Fleet Projects</h3>
+
+<div class="row">
+    <div class="col-md-8">
+
+        
+        <div class="alert alert-info fade show" v-if="activeFpc.length > 0" role="alert" v-for="row in activeFpc">
+            <div class="alert-icon"><i class="flaticon-info"></i></div>
+            <div class="alert-text">An active FPC with Ref No. <strong>@{{ row.fpc_id }}</strong> for <strong>@{{ row.customer_name}}</strong> created by <strong>@{{ row.created_by }}</strong> last <strong>@{{ row.date_created}} exists</strong>, would you like to add these projects instead? Mark the desired projects as <i>checked</i> then click <i>Add</i>. <br/><a :href="'price-confirmation-details/' + row.fpc_id" target="_blank" class="text-light">Click here to view FPC details.</a></div>
+            <div class="alert-close">
+                <button type="button" class="btn btn-success btn-sm">
+                    Add
+                </button>
+            </div>
         </div>
-    </div>
-    <div class="kt-portlet__body"> 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <th>Project No</th>
-                    <th>Dealer</th>
-                    <th>Date Requested</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </thead>
-                <tbody>
-                    <tr v-for="(row,index) in projects">
-                        <td>@{{ row.project_id }}</td>
-                        <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
-                        <td>@{{ row.date_created }}</td>
-                        <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
-                        <td nowrap>
-                            <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
-                            <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+
+        <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" v-if="projects.length > 0">
+            <div class="kt-portlet__head" style="">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">Fleet Projects</h3>
+                </div>
+            </div>
+            <div class="kt-portlet__body"> 
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <th>Project No</th>
+                            <th>Dealer</th>
+                            <th>Date Requested</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row,index) in projects">
+                                <td>@{{ row.project_id }}</td>
+                                <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
+                                <td>@{{ row.date_created }}</td>
+                                <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
+                                <td nowrap>
+                                    <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                                    <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+    <div class="col-md-4" v-if="conflicts.length > 0">
+        <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" v-if="projects.length > 0">
+            <div class="kt-portlet__head" style="">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">Conflicting Models</h3>
+                </div>
+            </div>
+            <div class="kt-portlet__body"> 
+                <ul v-for="row in conflicts" style="list-style-type:none;padding:0;margin:0;">
+                    <li><i class="flaticon2-right-arrow"></i> @{{ row.sales_model }}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
 
 </div>
 
@@ -137,6 +170,8 @@
                 orgType : ''
             },
             projects : [],
+            conflicts : [],
+            activeFpc : [],
             search_flag :false
         },
         methods : {
@@ -200,18 +235,21 @@
             },
             getProjects(){
                 let self = this;
-                KTApp.blockPage({
+               /*  KTApp.blockPage({
                     overlayColor: '#000000',
                     type: 'v2',
                     state: 'success',
                     message: 'Please wait...'
-                });
+                }); */
 
-                axios.get('/ajax-get-projects/' + self.customerDetails.customerId)
+                axios.get('fpc/projects/' + self.customerDetails.customerId)
                     .then(function (response) {
-                        self.projects = response.data;
+                        console.log(response.data);
+                        self.projects = response.data.projects;
+                        self.conflicts = response.data.conflicts;
+                        self.activeFpc = response.data.activeFpc;
                         self.search_flag = true;
-                        KTApp.unblockPage();
+                     //   KTApp.unblockPage();
                     })
                     .catch(function (error) {
                         // handle error
