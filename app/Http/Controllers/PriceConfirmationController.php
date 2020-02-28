@@ -128,7 +128,9 @@ class PriceConfirmationController extends Controller
                 'validity_disp'           => $project->validity_disp,
                 'competitor_flag'         => $project->competitor_flag,
                 'competitor_remarks'      => $project->competitor_remarks,
-                'fpc_project_attachments' => $fpc_project_attachments
+                'fpc_project_attachments' => $fpc_project_attachments,
+                'fpc_prj_status' => $project->fpc_prj_status
+                
             ];
             array_push($projects,$temp_arr);
         }
@@ -745,12 +747,12 @@ class PriceConfirmationController extends Controller
     ){
         $project_id     = $request->project_id;
         // update project details
-        $m_project->update_status(
+        /* $m_project->update_status(
             $project_id,
             6,
             session('user')['user_id'],            
             session('user')['source_id'] 
-        );
+        ); */
         // update fpc project
         $fpc_project_id = $request->fpc_project_id;
         $m_fpc_project->update_fpc_status(

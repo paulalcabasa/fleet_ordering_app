@@ -32,7 +32,8 @@ class FPC_Project extends Model
                         pt.term_name,
                         fp.competitor_flag,
                         fp.competitor_remarks,
-                        usr.email_address requestor_email
+                        usr.email_address requestor_email,
+                        fpc_prj_st.status_name fpc_prj_status
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON fpc_prj.project_id = fp.project_id
@@ -47,6 +48,8 @@ class FPC_Project extends Model
                     LEFT JOIN ipc_dms.ipc_portal_users_v usr
                         ON usr.user_id = fp.created_by
                         AND usr.user_source_id = fp.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_status fpc_prj_st
+                        ON fpc_prj_st.status_id = fpc_prj.status
                  WHERE 1 = 1
                      AND fpc_prj.fpc_id = :fpc_id";
 		$params = [

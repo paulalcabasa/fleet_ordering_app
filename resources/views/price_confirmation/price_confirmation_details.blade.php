@@ -273,9 +273,15 @@
                             <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ project.project_id }}</span>
                         </div>
                         <div class="row kt-margin-b-5">
-                            <span class="col-md-4 kt-font-bold">Status</span>
+                            <span class="col-md-4 kt-font-bold">Project Status</span>
                             <span class="col-md-8">
                                 <span :class="status_colors[project.project_status]">@{{ project.project_status }}</span>
+                            </span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">FPC Project Status</span>
+                            <span class="col-md-8">
+                                <span :class="status_colors[project.fpc_prj_status]">@{{ project.fpc_prj_status }}</span>
                             </span>
                         </div>
                         <div class="row kt-margin-b-5">
