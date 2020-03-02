@@ -65,7 +65,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	// FPC Creation
 	Route::get('/ajax-get-projects/{customer_id}', 'PriceConfirmationController@ajax_get_projects');
 	Route::get('fpc/projects/{customer_id}', 'FPCController@getProjects');
-
+	//Route::post('fpc/project/add','');
 	/* Price Confirmation */
 	Route::get('price-confirmation', 'PriceConfirmationController@price_confirmation_entry');
 	Route::get('all-price-confirmation', 'PriceConfirmationController@all_price_confirmation');

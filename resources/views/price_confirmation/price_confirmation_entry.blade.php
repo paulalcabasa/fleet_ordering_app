@@ -89,7 +89,7 @@
             <div class="alert-icon"><i class="flaticon-info"></i></div>
             <div class="alert-text">An active FPC with Ref No. <strong>@{{ row.fpc_id }}</strong> for <strong>@{{ row.customer_name}}</strong> created by <strong>@{{ row.created_by }}</strong> last <strong>@{{ row.date_created}} exists</strong>, would you like to add these projects instead? Mark the desired projects as <i>checked</i> then click <i>Add</i>. <br/><a :href="'price-confirmation-details/' + row.fpc_id" target="_blank" class="text-light">Click here to view FPC details.</a></div>
             <div class="alert-close">
-                <button type="button" class="btn btn-success btn-sm">
+                <button type="button" @click="addProject(row.fpc_id)" class="btn btn-success btn-sm">
                     Add
                 </button>
             </div>
@@ -105,6 +105,7 @@
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
+                            <th></th>
                             <th>Project No</th>
                             <th>Dealer</th>
                             <th>Date Requested</th>
@@ -113,12 +114,18 @@
                         </thead>
                         <tbody>
                             <tr v-for="(row,index) in projects">
+                                <td>
+                                    <label class="kt-checkbox kt-checkbox--solid kt-checkbox--primary">
+								    <input type="checkbox" v-model="selectedProjects" :value="row.project_id" />
+								        <span></span>
+							        </label>
+                                </td>
                                 <td>@{{ row.project_id }}</td>
                                 <td>@{{ row.dealer_name }} <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.dealer_account }}</span> </td>
                                 <td>@{{ row.date_created }}</td>
                                 <td><span :class="status_colors[row.status_name]">@{{ row.status_name }}</span></td>
                                 <td nowrap>
-                                    <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                                    <a  target="_blank" :href="base_url + '/' + 'project-overview/view/' + row.project_id" class="btn btn-primary  btn-sm btn-icon btn-circle" ><i class="la la-eye"></i></a>
                                     <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle" @click="removeProject(index)"><i class="la la-trash"></i></a> 
                                 </td>
                             </tr>
@@ -172,6 +179,7 @@
             projects : [],
             conflicts : [],
             activeFpc : [],
+            selectedProjects : [],
             search_flag :false
         },
         methods : {
@@ -258,11 +266,46 @@
                     .finally(function () {
                         // always executed
                     });
+            },
+            addProject(fpcId){
+                var self = this;
+                if(self.selectedProjects.length == 0){
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Select projects to add to FPC #' + fpcId,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return false;
+                }
+
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Selected projects will be added to FPC #" + fpcId,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.value) {
+                        axios.post('fpc/project/add', {
+                            fpcId : fpcId,
+                            projects : self.selectedProjects
+                        })
+                        .then(function (response) {
+                            
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });
             }
         },
         created: function () {
             // `this` points to the vm instance
-            
         },
         mounted : function () {
             var self = this;
