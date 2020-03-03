@@ -384,8 +384,8 @@ class Project extends Model
                         to_char(fp.creation_date,'mm/dd/yyyy') date_created,
                         fp.dealer_id,
                         CASE 
-                            WHEN fp.status IN(11,13) AND count(fpc.status) > 0 THEN 
-                                CASE WHEN 
+                            WHEN fp.status IN(11,13) AND count(CASE WHEN fpc.status = 4 THEN 1 ELSE NULL END) > 0 THEN 
+                            CASE WHEN 
                                     SUM(
                                         CASE 
                                             WHEN fpc.status = 12 THEN 1 ELSE 0
