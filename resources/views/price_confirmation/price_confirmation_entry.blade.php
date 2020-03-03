@@ -85,7 +85,7 @@
     <div class="col-md-8">
 
         
-        <div class="alert alert-info fade show" v-if="activeFpc.length > 0" role="alert" v-for="row in activeFpc">
+        <div class="alert alert-info fade show" v-if="activeFpc.length > 0 && projects.length > 0" role="alert" v-for="row in activeFpc">
             <div class="alert-icon"><i class="flaticon-info"></i></div>
             <div class="alert-text">An active FPC with Ref No. <strong>@{{ row.fpc_id }}</strong> for <strong>@{{ row.customer_name}}</strong> created by <strong>@{{ row.created_by }}</strong> last <strong>@{{ row.date_created}} exists</strong>, would you like to add these projects instead? Mark the desired projects as <i>checked</i> then click <i>Add</i>. <br/><a :href="'price-confirmation-details/' + row.fpc_id" target="_blank" class="text-light">Click here to view FPC details.</a></div>
             <div class="alert-close">
