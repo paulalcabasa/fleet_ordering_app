@@ -43,7 +43,7 @@ class SendNotification extends Command
             $mail->Port       = 587; // or 587
             $mail->IsSMTP();
             $mail->Username = "interface-notification@isuzuphil.com";
-            $mail->Password = "NJI99ijn";
+            $mail->Password = "Lo0bC@l3";
             $mail->SetFrom("interface-notification@isuzuphil.com", 'Fleet Ordering System');
 
             $mail->Subject = 'Fleet Ordering System';

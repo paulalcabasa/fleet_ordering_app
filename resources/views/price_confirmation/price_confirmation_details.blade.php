@@ -6,99 +6,123 @@
 
 <div id="app">
 
-<div class="kt-portlet kt-portlet--responsive-mobile" id="kt_page_portlet">
-    <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">Details</h3>
-        </div>
-        <div class="kt-portlet__head-toolbar">
-            <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable">
-                <span class="kt-hidden-mobile">Approve</span>
-            </a>
-            <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()" v-if="editable">
-                <span class="kt-hidden-mobile">Cancel</span>
-            </a>
-            <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
-                <span class="kt-hidden-mobile">Print Conflict</span>
-            </a>
-          
-      <!--       <div class="btn-group">
-                <button type="button" class="btn btn-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Info</button>
-                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                    <a class="dropdown-item" href="#">LCV</a>
-                    <a class="dropdown-item" href="#">CV</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
+<div class="row">
+    <div :class="conflicts.length > 0 ? 'col-md-8' : 'col-md-12'">
+        <div class="kt-portlet kt-portlet--responsive-mobile" id="kt_page_portlet">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">Details</h3>
                 </div>
-            </div> -->
-        </div>
-    </div>
-    <div class="kt-portlet__body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Price Confirmation No.</span>
-                    <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ fpc_details.fpc_id }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Status</span>
-                    <span class="col-md-8">
-                        <span :class="status_colors[fpc_details.status_name]">@{{ fpc_details.status_name }}</span>
-                    </span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Vehicle Type</span>
-                    <span class="col-md-8">@{{ fpc_details.vehicle_type }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Date Created</span>
-                    <span class="col-md-8">@{{ fpc_details.date_created }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Created by</span>
-                    <span class="col-md-8">@{{ fpc_details.created_by }}</span>
-                </div>
-                <div class="row kt-margin-b-5" v-if="!editable">
-                    <span class="col-md-4 kt-font-bold">Remarks</span>
-                    <span class="col-md-8">@{{ fpc_details.remarks }}</span>
-                </div>
-                <div class="row kt-margin-b-5" v-if="fpc_attachments.length > 0">
-                    <span class="col-md-4 kt-font-bold">Attachment</span>
-                    <span class="col-md-8">
-                        <ul style="list-style:none;padding:0;">
-                            <li v-for="(row,index) in fpc_attachments">
-                                <a :href="baseURL + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
-                            </li>
-                        </ul>    
-                    </span>
+                <div class="kt-portlet__head-toolbar">
+                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable">
+                        <span class="kt-hidden-mobile">Approve</span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()" v-if="editable">
+                        <span class="kt-hidden-mobile">Cancel</span>
+                    </a>
+                    <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
+                        <span class="kt-hidden-mobile">Print Conflict</span>
+                    </a>
+                
+            <!--       <div class="btn-group">
+                        <button type="button" class="btn btn-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Info</button>
+                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                            <a class="dropdown-item" href="#">LCV</a>
+                            <a class="dropdown-item" href="#">CV</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Separated link</a>
+                        </div>
+                    </div> -->
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Customer ID</span>
-                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_id }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Customer Name</span>
-                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_name }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Organization Type</span>
-                    <span class="col-md-8">@{{ customer_details.org_type_name }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">TIN</span>
-                    <span class="col-md-8">@{{ customer_details.tin }}</span>
-                </div>
-                <div class="row kt-margin-b-5">
-                    <span class="col-md-4 kt-font-bold">Address</span>
-                    <span class="col-md-8">@{{ customer_details.address }}</span>
+            <div class="kt-portlet__body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Price Confirmation No.</span>
+                            <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ fpc_details.fpc_id }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Status</span>
+                            <span class="col-md-8">
+                                <span :class="status_colors[fpc_details.status_name]">@{{ fpc_details.status_name }}</span>
+                            </span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Vehicle Type</span>
+                            <span class="col-md-8">@{{ fpc_details.vehicle_type }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Date Created</span>
+                            <span class="col-md-8">@{{ fpc_details.date_created }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Created by</span>
+                            <span class="col-md-8">@{{ fpc_details.created_by }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5" v-if="!editable">
+                            <span class="col-md-4 kt-font-bold">Remarks</span>
+                            <span class="col-md-8">@{{ fpc_details.remarks }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5" v-if="fpc_attachments.length > 0">
+                            <span class="col-md-4 kt-font-bold">Attachment</span>
+                            <span class="col-md-8">
+                                <ul style="list-style:none;padding:0;">
+                                    <li v-for="(row,index) in fpc_attachments">
+                                        <a :href="baseURL + '/' + row.symlink_dir  +row.filename " download>@{{ row.orig_filename }}</a>
+                                    </li>
+                                </ul>    
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Customer ID</span>
+                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_id }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Customer Name</span>
+                            <span class="col-md-8 kt-font-bold kt-font-primary">@{{ customer_details.customer_name }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Organization Type</span>
+                            <span class="col-md-8">@{{ customer_details.org_type_name }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">TIN</span>
+                            <span class="col-md-8">@{{ customer_details.tin }}</span>
+                        </div>
+                        <div class="row kt-margin-b-5">
+                            <span class="col-md-4 kt-font-bold">Address</span>
+                            <span class="col-md-8">@{{ customer_details.address }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="col-md-4" v-if="conflicts.length > 0">
+        <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" >
+            <div class="kt-portlet__head" style="">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">Conflicting Models</h3>
+                </div>
+            </div>
+            <div class="kt-portlet__body"> 
+                <ul v-for="row in conflicts" style="list-style-type:none;padding:0;margin:0;">
+                    <li><i class="flaticon2-right-arrow"></i> @{{ row.sales_model }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+
+
 
 <div class="kt-portlet kt-portlet--height-fluid" v-for="(project, index) in projects">
     <div class="kt-portlet__head">
@@ -358,6 +382,7 @@
             customer_details:     {!! json_encode($customer_details) !!},
             projects:             {!! json_encode($projects) !!},
             payment_terms:        {!! json_encode($payment_terms) !!},
+            conflicts:            {!! json_encode($conflicts) !!},
             baseURL:              {!! json_encode($base_url) !!} ,
             editable:             {!! json_encode($editable) !!} ,
             fpc_attachments:      {!! json_encode($fpc_attachments) !!} ,

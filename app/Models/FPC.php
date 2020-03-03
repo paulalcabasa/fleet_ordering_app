@@ -296,6 +296,160 @@ class FPC extends Model
         return $query;
     }
 
+    public function getProjects($customer_id,$vehicle_type){
+        $sql = "SELECT fs.project_id,
+                        fs.customer_id,
+                        fc.customer_name,
+                        dlr.customer_name dealer_name,
+                        dlr.account_name dealer_account,
+                        st.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fs.creation_date,'mm/dd/yyyy') date_created,
+                        fs.dealer_id,
+                        rh.vehicle_type,
+                        rh.requirement_header_id,
+                        null fpc_id
+                FROM ipc_dms.fs_projects fs
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON fs.project_id = rh.project_id
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fs.customer_id = fc.customer_id 
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fs.dealer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fs.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fs.created_by 
+                        AND usr.user_source_id = fs.create_user_source_id
+                WHERE 1 = 1
+                        AND fs.status = 11
+                        AND rh.status = 4
+                        AND fs.customer_id = :customer_id
+                        AND rh.vehicle_type = :vehicle_type
+                        AND fs.project_id NOT IN (
+                            SELECT project_id
+                            FROM ipc_dms.fs_fpc_projects fpc_prj
+                                LEFT JOIN ipc_dms.fs_fpc fpc
+                                ON fpc.fpc_id = fpc_prj.fpc_id
+                            WHERE 1 = 1
+                                AND fpc.status IN(4,12)
+                                AND fpc.vehicle_type = :vehicle_type
+                        )";
+       
+        $params = [
+            'customer_id'  => $customer_id,
+            'vehicle_type' => $vehicle_type
+        ];
+
+        $query = DB::select($sql,$params);
+        return $query;
+    }
+
+    public function getConflictRequirements($project_ids,$vehicle_type){
+        $sql = "SELECT sales_model,
+                        color
+                FROM (
+                    SELECT vehicle.sales_model,
+                                vehicle.color,
+                                COUNT(vehicle.sales_model)  ctr
+                    FROM ipc_dms.fs_prj_requirement_lines rl
+                        LEFT JOIN ipc_dms.fs_prj_requirement_headers rh 
+                            ON rl.requirement_header_id = rh.requirement_header_id
+                        LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                            ON vehicle.inventory_item_id = rl.inventory_item_id
+                    WHERE rh.project_id IN ($project_ids)
+                        AND rh.vehicle_type = '".$vehicle_type."'
+                    GROUP BY 
+                                vehicle.sales_model,
+                                vehicle.color
+                ) 
+                WHERE ctr > 1";
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    public function getActiveFPC($customerId,$vehicleType){
+        $sql = "SELECT fpc.fpc_id,
+                        fc.customer_name,
+                        fpc.vehicle_type,
+                        fs.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fpc.creation_date,'mm/dd/yyyy') date_created
+                FROM ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fc.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.fs_status fs  
+                        ON fs.status_id = fpc.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fpc.created_by 
+                        AND usr.user_source_id = fpc.create_user_source_id
+               
+                WHERE 1 = 1
+                    AND fpc.vehicle_type = :vehicle_type
+                    and fpc.customer_id = :customer_id
+                    AND fpc.status = 12";
+		$params = [
+            "vehicle_type" => $vehicleType,
+            "customer_id" => $customerId
+		];
+		$query = DB::select($sql,$params);
+        return $query;
+    }
+
+    public function getActiveProjects($customer_id,$vehicle_type){
+        $sql = "SELECT fs.project_id,
+                        fs.customer_id,
+                        fc.customer_name,
+                        dlr.customer_name dealer_name,
+                        dlr.account_name dealer_account,
+                        st.status_name,
+                        usr.first_name || ' ' || usr.last_name created_by,
+                        to_char(fs.creation_date,'mm/dd/yyyy') date_created,
+                        fs.dealer_id,
+                        rh.vehicle_type,
+                        rh.requirement_header_id,
+                        fpc_prj.fpc_id
+                FROM ipc_dms.fs_projects fs
+                    LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON fs.project_id = rh.project_id
+                    LEFT JOIN ipc_dms.fs_customers fc
+                        ON fs.customer_id = fc.customer_id 
+                    LEFT JOIN ipc_dms.dealers_v dlr
+                        ON dlr.cust_account_id = fs.dealer_id
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fs.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = fs.created_by 
+                        AND usr.user_source_id = fs.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.project_id = fs.project_id
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                WHERE 1 = 1
+                        AND fs.status = 11
+                        AND rh.status = 4
+                        AND fpc.status = 12
+                        AND fs.customer_id = :customer_id
+                        AND rh.vehicle_type = :vehicle_type
+                        AND fs.project_id  IN (
+                            SELECT project_id
+                            FROM ipc_dms.fs_fpc_projects fpc_prj
+                                LEFT JOIN ipc_dms.fs_fpc fpc
+                                ON fpc.fpc_id = fpc_prj.fpc_id
+                            WHERE 1 = 1
+                                AND fpc.status IN(12)
+                                AND fpc.vehicle_type = :vehicle_type
+                        )";
+       
+        $params = [
+            'customer_id'  => $customer_id,
+            'vehicle_type' => $vehicle_type
+        ];
+
+        $query = DB::select($sql,$params);
+        return $query;
+    }
+
 
 
 

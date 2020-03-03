@@ -1346,10 +1346,8 @@ class ProjectController extends Controller
                 }
             }
         }
-        
     }
     
-
     public function print_project(
         Request $request,
         Project $m_project,
@@ -1358,6 +1356,7 @@ class ProjectController extends Controller
         RequirementHeader  $m_requirement,
         Competitor  $m_competitor
     ){
+        $m_sales_person = new SalesPersonsOra;
         $project_id      = $request->project_id;
         $project_details = $m_project->get_details($project_id);
         $contacts        = $m_contact->get_contacts($project_details->project_id);
@@ -1365,13 +1364,17 @@ class ProjectController extends Controller
         $requirement     = $m_requirement->get_requirements($project_details->project_id);
         $requirement     = collect($requirement)->groupBy('vehicle_type');
         $competitors     = $m_competitor->get_competitors($project_details->project_id);
+        $sales_persons   = $m_sales_person->get_sales_persons($project_details->project_id);
         $data = [
             'project_details' => $project_details,
             'contacts'        => $contacts,
             'contact_persons' => $contact_persons,
             'requirement'     => $requirement,
             'competitors'     => $competitors,
+            'sales_persons'   => $sales_persons
         ];
+  
+
         $pdf = PDF::loadView('pdf.print_project', $data);
         return $pdf->setPaper('a4','portrait')->stream();
     }
