@@ -345,7 +345,7 @@ class FPC extends Model
         return $query;
     }
 
-    public function getConflictRequirements($project_ids){
+    public function getConflictRequirements($project_ids,$vehicle_type){
         $sql = "SELECT sales_model,
                         color
                 FROM (
@@ -358,6 +358,7 @@ class FPC extends Model
                         LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
                             ON vehicle.inventory_item_id = rl.inventory_item_id
                     WHERE rh.project_id IN ($project_ids)
+                        AND rh.vehicle_type = '".$vehicle_type."'
                     GROUP BY 
                                 vehicle.sales_model,
                                 vehicle.color

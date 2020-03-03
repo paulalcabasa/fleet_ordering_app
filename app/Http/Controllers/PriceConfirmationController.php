@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DB;
 use PDF;
 use Illuminate\Support\Facades\Input;
 use App\Models\Customer;
@@ -104,7 +105,7 @@ class PriceConfirmationController extends Controller
     	$fpc_attachments       = $m_attachment->get_fpc_attachments($price_confirmation_id);
     	$projects              = [];
     	$pricelist_headers     = $m_plh->get_active_headers();
-        
+    	$projectsArr           = [];
         foreach($project_headers as $project){
 
             $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
@@ -132,9 +133,12 @@ class PriceConfirmationController extends Controller
                 'fpc_prj_status' => $project->fpc_prj_status
                 
             ];
+            array_push($projectsArr,$project->project_id);
             array_push($projects,$temp_arr);
         }
-
+        $projectsArr = implode($projectsArr,',');
+        $conflicts = $m_fpc->getConflictRequirements($projectsArr,$fpc_details->vehicle_type);
+     
         $payment_terms = $m_payment_terms->get_payment_terms();
     
     	$page_data = array(
@@ -149,7 +153,8 @@ class PriceConfirmationController extends Controller
     		'fpc_attachments'       => $fpc_attachments,
     		'pricelist_headers'     => $pricelist_headers,
     		'status_colors'         => config('app.status_colors'),
-    		'vehicle_lead_time'     => config('app.vehicle_lead_time')
+            'vehicle_lead_time'     => config('app.vehicle_lead_time'),
+            'conflicts'             => $conflicts
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -207,62 +212,70 @@ class PriceConfirmationController extends Controller
         
         $vehicle_type = $this->vehicle_type->get_vehicle_type(session('user')['user_type_id']);
 
-        // insert FPC Header
-        $fpc_params = [
-            'customer_id'           => $customer_id,
-            'vehicle_type'          => $vehicle_type,
-            'status'                => 12, // in progress
-            'created_by'            => session('user')['user_id'],
-            'create_user_source_id' => session('user')['source_id'],
-            'creation_date'         => Carbon::now()
-        ];
-        $fpc_id = $m_fpc->insert_fpc($fpc_params);
-        // end of FPC header
+        DB::beginTransaction();
+        
+        try {
 
-        // insert fpc projects
-        $project_params = [];
-
-        foreach($projects as $project){
-            $temp_arr = [
-                'fpc_id'                => $fpc_id,
-                'project_id'            => $project['project_id'],
-                'requirement_header_id' => $project['requirement_header_id'],
+            // insert FPC Header
+            $fpc_params = [
+                'customer_id'           => $customer_id,
+                'vehicle_type'          => $vehicle_type,
                 'status'                => 12, // in progress
                 'created_by'            => session('user')['user_id'],
                 'create_user_source_id' => session('user')['source_id'],
                 'creation_date'         => Carbon::now()
             ];
-            array_push($project_params,$temp_arr);
-        }
-        $m_fpc_project->insert_fpc_project($project_params);
-        // end of FPC projects
+            $fpc_id = $m_fpc->insert_fpc($fpc_params);
+            // end of FPC header
 
-        // insert fpc project items
-        $requirements = $m_fpc_item->get_fpc_item_requirements($fpc_id);
-        $item_params = [];
-        foreach($requirements as $item){
-            $arr = [
-                'fpc_project_id'         => $item->fpc_project_id,
-                'requirement_line_id'    => $item->requirement_line_id,
-                'suggested_retail_price' => 0, //$item->price,
-                'wholesale_price'        => 0, //$item->price,
-                'fleet_price'            => 0, //$item->price,
-                'dealers_margin'         => 0, // default to 6 but should be from lookup,
-                'lto_registration'       => 0, // default to 10500 but should be from lookup
-                'created_by'             => session('user')['user_id'],
-                'create_user_source_id'  => session('user')['source_id'],
-                'creation_date'          => Carbon::now()
+            // insert fpc projects
+            $project_params = [];
+
+            foreach($projects as $project){
+                $project_params = [
+                    'fpc_id'                => $fpc_id,
+                    'project_id'            => $project['project_id'],
+                    'requirement_header_id' => $project['requirement_header_id'],
+                    'status'                => 12, // in progress
+                    'created_by'            => session('user')['user_id'],
+                    'create_user_source_id' => session('user')['source_id'],
+                    'creation_date'         => Carbon::now()
+                ];
+                //array_push($project_params,$temp_arr);
+                $fpc_project_id = $m_fpc_project->insert_fpc_project($project_params);
+                $requirements = $m_fpc_item->get_fpc_item_requirements($fpc_project_id);
+                $item_params = [];
+                foreach($requirements as $item){
+                    $arr = [
+                        'fpc_project_id'         => $item->fpc_project_id,
+                        'requirement_line_id'    => $item->requirement_line_id,
+                        'suggested_retail_price' => 0, //$item->price,
+                        'wholesale_price'        => 0, //$item->price,
+                        'fleet_price'            => 0, //$item->price,
+                        'dealers_margin'         => 0, // default to 6 but should be from lookup,
+                        'lto_registration'       => 0, // default to 10500 but should be from lookup
+                        'created_by'             => session('user')['user_id'],
+                        'create_user_source_id'  => session('user')['source_id'],
+                        'creation_date'          => Carbon::now()
+                    ];
+                    array_push($item_params,$arr);
+                }
+                $m_fpc_item->insert_fpc_item($item_params);
+            }
+        
+            DB::commit();
+            return [
+                'customer_id' => $customer_id,
+                'projects'    => $projects,
+                'fpc_id'      => $fpc_id 
             ];
-            array_push($item_params,$arr);
+
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return $e;
         }
 
-        $m_fpc_item->insert_fpc_item($item_params);
-        // end of fpc project items
-        return [
-            'customer_id' => $customer_id,
-            'projects'    => $projects,
-            'fpc_id'      => $fpc_id 
-        ];
+        
     }
 
     public function ajax_get_freebies(Request $request, FPCItemFreebies $m_freebies){
@@ -469,6 +482,16 @@ class PriceConfirmationController extends Controller
             6 // cancelled
         );
 
+        $m_fpc_project = new FPC_Project;
+        $fpc_projects = $m_fpc_project->get_projects($fpc_id);
+        foreach($fpc_projects as $row){
+            $m_fpc_project->update_fpc_status(
+                $row->fpc_project_id,
+                6,
+                session('user')['user_id'],
+                session('user')['source_id']
+            );
+        }
         $editable = $fpc_helper->editable('Cancelled');
 
         return [

@@ -249,12 +249,12 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach($contact_persons as $cp)
+            @foreach($sales_persons as $row)
                 <tr>
-                    <td>{{ $cp->name }}</td>
-                    <td>{{ $cp->position_title }}</td>
-                    <td>{{ $cp->department }}</td>
-                    <td>{{ $cp->email_address }}</td>
+                    <td>{{ $row->name }}</td>
+                    <td>{{ $row->position }}</td>
+                    <td>{{ $row->mobile_no }}</td>
+                    <td>{{ $row->email_address }}</td>
                 </tr>
             @endforeach
             </tbody>

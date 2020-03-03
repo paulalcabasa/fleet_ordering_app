@@ -14,16 +14,16 @@ class Vehicle extends Model
 		$sql = "SELECT DISTINCT
 			        vm.model_variant,
 			        vm.sales_model
-				FROM ipc_dms.ipc_vehicles_with_price_v vm
+				FROM ipc_dms.ipc_vehicle_models_v vm
 				WHERE 1 = 1
 					AND vm.model_variant IN (
 						SELECT model 
 						FROM ipc_dms.fs_vehicle_groups 
 						WHERE vehicle_type = :vehicle_type
 					)
-					AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)
+					
 		        	AND vm.sales_model IS NOT NULL";
-
+		// AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)
 		$params = [
 			'vehicle_type' => $vehicle_type
 		];
@@ -38,11 +38,11 @@ class Vehicle extends Model
 			            vm.model_variant,
 			            vm.sales_model,
 			            fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicles_with_price_v vm 
+				FROM ipc_dms.ipc_vehicle_models_v vm 
 				    INNER JOIN ipc_dms.fs_vehicle_groups fvg
 				        ON fvg.model = vm.model_variant
 				WHERE 1 = 1
-				    AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)
+				  
 				    AND vm.sales_model IS NOT NULL
 				ORDER BY vm.model_variant ASC";
 		$query = DB::select($sql);
@@ -54,10 +54,10 @@ class Vehicle extends Model
 		$sql = "SELECT 
 			        vm.inventory_item_id id,
 			        vm.color text
-				FROM ipc_dms.ipc_vehicles_with_price_v vm
+				FROM ipc_dms.ipc_vehicle_models_v vm
 				WHERE 1 = 1
 					AND vm.sales_model = :sales_model
-					AND vm.inventory_item_id NOT IN (SELECT inventory_item_id FROM ipc_dms.inactive_vehicles)
+				
 		        	AND vm.sales_model IS NOT NULL";
 		$params = [
 			'sales_model' => $sales_model

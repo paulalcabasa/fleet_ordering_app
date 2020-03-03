@@ -116,7 +116,7 @@
                             <tr v-for="(row,index) in projects">
                                 <td>
                                     <label class="kt-checkbox kt-checkbox--solid kt-checkbox--primary">
-								    <input type="checkbox" v-model="selectedProjects" :value="row.project_id" />
+								    <input type="checkbox" v-model="selectedProjects" :value="row" />
 								        <span></span>
 							        </label>
                                 </td>
@@ -290,15 +290,39 @@
                     confirmButtonText: 'Confirm'
                 }).then((result) => {
                     if (result.value) {
+
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
                         axios.post('fpc/project/add', {
                             fpcId : fpcId,
                             projects : self.selectedProjects
                         })
                         .then(function (response) {
-                            
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Price confirmation has been saved!',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                onClose : function(){
+                                    window.location.href = self.base_url + "/price-confirmation-details/"  + fpcId;
+                                }
+                            });
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Unable to add project, Unexpected error occured! Error : ' + error,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        })
+                        .finally( () => {
+                            KTApp.unblockPage();
                         });
                     }
                 });

@@ -15,7 +15,7 @@ class FPC_Item extends Model
 		$this->insert($params);
 	}
 
-	public function get_fpc_item_requirements($fpc_id){
+	public function get_fpc_item_requirements($fpc_project_id){
 		$sql = "SELECT  fpc_prj.fpc_id,
 				            rh.project_id,
 				            fpc_prj.fpc_project_id,
@@ -30,10 +30,10 @@ class FPC_Item extends Model
 				    LEFT JOIN ipc_dms.ipc_vehicles_with_price_v vehicle
 				        ON vehicle.inventory_item_id = rl.inventory_item_id
 				WHERE 1 = 1
-				    AND fpc_prj.fpc_id = :fpc_id";
+				    AND fpc_prj.fpc_project_id = :fpc_project_id";
 
 		$params = [
-			'fpc_id' => $fpc_id
+			'fpc_project_id' => $fpc_project_id
 		];
 		$query = DB::select($sql,$params);
     	return $query;

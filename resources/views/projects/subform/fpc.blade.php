@@ -1,4 +1,4 @@
-<div class="alert alert-info" role="alert" v-for="(row,index) in pending_fpc_vehicle_type">
+<div class="alert alert-info" role="alert" v-for="(row,index) in pending_fpc_vehicle_type" v-if="projectDetails.status_name == 'Open'">
     <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
     <div class="alert-text">Awaiting Fleet Price Confirmation for @{{ row }}.</div>
 </div>

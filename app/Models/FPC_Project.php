@@ -12,7 +12,8 @@ class FPC_Project extends Model
     const UPDATED_AT = 'UPDATE_DATE';
 
 	public function insert_fpc_project($params){
-		$this->insert($params);
+       // $this->insert($params);
+        return $this->insertGetId($params,'fpc_project_id');
 	}
 
 	public function get_projects($fpc_id){
