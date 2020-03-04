@@ -166,6 +166,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::view('inquiry-history','reports.inquiry_history'); //->name('dashboard');
 	Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('export_inquiry');
 
+
+	// Payment terms
+//	Route::view('payment_terms','');
+
 	Route::get('reports/tagged','ReportsController@showTaggedUnits');
 	Route::view('reports/invoice','reports.invoice');
 	Route::get('invoice/get','ReportsController@showInvoices');

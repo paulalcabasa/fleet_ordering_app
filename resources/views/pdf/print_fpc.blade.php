@@ -376,7 +376,8 @@
             $cost             = $wsp + $dealer_margin + $freebies + $lto_registration;
             $promo_title      = $item['header']->promo_title;
             $promo            = $item['header']->promo;
-            $net_cost         = $cost + $promo;
+            //$net_cost         = $cost + $promo;
+            $net_cost         = $wsp - $fleet_price +  $lto_registration + $freebies;
             $subsidy          = $net_cost - $fleet_price;
             $total_subsidy    = $subsidy * $item['header']->quantity;
         ?>

@@ -143,6 +143,19 @@
                     <span class="kt-menu__link-text">Price List</span>
                 </a>
             </li>
+           <!--  <li class="kt-menu__item {{ request()->is('payment_terms') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/payment_terms') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-file"></i>
+                    <span class="kt-menu__link-text">Payment Terms</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('sales_persons') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/sales_persons') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-file"></i>
+                    <span class="kt-menu__link-text">Dealer Sales Persons</span>
+                </a>
+            </li> -->
+            
             @endif 
         </ul>
     </div>
