@@ -7,12 +7,12 @@
 
 <div id="app">
 
-    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected' && project_status != 'Draft'">
+    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected' && project_status != 'Draft' && project_status != 'Cancelled'">
         <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
         <div class="alert-text">Project # @{{ project_id }} could not be edited since it is already <strong>@{{ project_status }}</strong>.</div>
     </div>
 
-<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected' || project_status == 'Draft'">
+<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected' || project_status == 'Draft' || project_status == 'Cancelled'">
      <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">

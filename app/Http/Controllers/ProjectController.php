@@ -1641,6 +1641,12 @@ class ProjectController extends Controller
             session('user')['source_id']
         );
 
+        return response()->json(
+            [
+                'status' => "success",
+                'project_id' => $project_id
+            ]
+        ); 
     }
 
 
