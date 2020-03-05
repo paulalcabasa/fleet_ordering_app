@@ -73,11 +73,10 @@ class Vehicle extends Model
 			            vm.model_variant,
 			            vm.sales_model,
 			            fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicles_with_price_v vm 
+				FROM ipc_dms.IPC_VEHICLES_PRICE_ALL_V vm 
 				    INNER JOIN ipc_dms.fs_vehicle_groups fvg
 				        ON fvg.model = vm.model_variant
 				WHERE 1 = 1
-				  
 				    AND vm.sales_model IS NOT NULL
 				ORDER BY vm.model_variant ASC";
 		$query = DB::select($sql);
@@ -91,7 +90,7 @@ class Vehicle extends Model
 					vm.color,
 					vm.price,
 					nvl(spm.floor_subsidy,0) floor_subsidy
-				FROM ipc_dms.ipc_vehicles_with_price_v vm 
+				FROM ipc_dms.IPC_VEHICLES_PRICE_ALL_V vm 
 					LEFT JOIN IPC.IPC_SP_SALES_PROMO spm
 						ON vm.sales_model = spm.sales_model
 						AND spm.month_promo = EXTRACT(month FROM sysdate)
