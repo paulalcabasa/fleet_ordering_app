@@ -159,7 +159,7 @@
                                     class="form-control" 
                                     v-model.lazy="curModel.wsp"
                                     v-mask="{alias:'currency',prefix: ' ', greedy: true }"
-                                    readonly
+                                    
                                 />
                             </div>
                         </div>
