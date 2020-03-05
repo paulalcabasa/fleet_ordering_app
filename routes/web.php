@@ -110,6 +110,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');
 	Route::get('get-vehicle-colors/{sales_model?}', 'VehicleController@get_vehicle_colors')->where('sales_model', '(.*)');
+	Route::get('vehicle/color/{sales_model?}', 'VehicleController@getVehicleColorWithPrice')->where('sales_model', '(.*)');
 	
 	// Approval
 	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
