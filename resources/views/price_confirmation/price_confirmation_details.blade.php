@@ -840,7 +840,7 @@
             },
             calculateNetCost(){
                 //return parseFloat(this.calculateCost) + parseFloat(this.curModel.promo);
-                return parseFloat(this.curModel.wholesale_price) - parseFloat(this.curModel.fleet_price) + parseFloat(this.curModel.lto_registration) + parseFloat(this.sumFreebies);
+                return parseFloat(this.curModel.wholesale_price) - parseFloat(this.curModel.fleet_price) + parseFloat(this.curModel.lto_registration) + parseFloat(this.sumFreebies) + parseFloat(this.calculateMargin);
             },
             calculateSubsidy(){
                 return (parseFloat(this.calculateNetCost) - parseFloat(this.curModel.fleet_price));
