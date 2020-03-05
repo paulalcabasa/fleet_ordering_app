@@ -134,7 +134,7 @@
                                 <span v-show="action == 'add'" >
                                     <select class="form-control" id="sel_vehicle_colors" v-model="selected_color" v-select style="width:100%;">
                                         <option value="-1">Select a color</option>
-                                        <option v-for="(row,index) in vehicleColors" :value="row.id">@{{ row.text }}</option>
+                                        <option v-for="(row,index) in vehicleColors" :value="row">@{{ row.color }}</option>
                                     </select>
                                 </span>
                                 <input v-show="action == 'edit'" type="text" class="form-control"  readonly="readonly" :value="curModel.color"/>
@@ -152,18 +152,19 @@
                             </div>
                         </div>
                         <div class="form-group row" style="margin-bottom:.5em !important;">
-                            <label class="col-lg-4 col-form-label">WSP</label>
+                            <label class="col-lg-4 col-form-label"><abbr title=" (Oracle WSP * 1.12)">WSP</abbr></label>
                             <div class="col-lg-8">
                                 <input 
                                     type="text" 
                                     class="form-control" 
                                     v-model.lazy="curModel.wsp"
                                     v-mask="{alias:'currency',prefix: ' ', greedy: true }"
+                                    readonly
                                 />
                             </div>
                         </div>
                         <div class="form-group row" style="margin-bottom:.5em !important;">
-                            <label class="col-lg-4 col-form-label">Promo</label>
+                            <label class="col-lg-4 col-form-label"><abbr title="Default value from Floor Subsidy of Sales Promo Monitoring">Promo</abbr></label>
                             <div class="col-lg-8">
                                 <input 
                                     type="text" 
@@ -433,7 +434,7 @@
             selected_model : function(val){
                 let self = this;
                 KTApp.block("#newModal .modal-content",{});
-                axios.get('/get-vehicle-colors/' + val)
+                axios.get('vehicle/color/' + val)
                     .then(function (response) {
                         self.vehicleColors = response.data;
                         $("#sel_vehicle_colors").select2();
@@ -458,7 +459,9 @@
                     });
             },
             selected_color : function(val){
-                this.curModel.inventory_item_id = val;
+                this.curModel.inventory_item_id = val.inventory_item_id;
+                this.curModel.wsp = parseFloat(val.price) * 1.12;
+                this.curModel.promo = val.floor_subsidy
             }
         },
         filters : {

@@ -90,7 +90,7 @@ class PriceListController extends Controller
         $pricelist_header_id = $request->pricelist_header_id;
         $header = $this->pl_header->get_details($pricelist_header_id);
         
-        $vehicle_models   = $this->vehicle->get_vehicles();
+        $vehicle_models   = $this->vehicle->get_vehicles_with_price();
         $grouped          = collect($vehicle_models)->groupBy('model_variant'); 
         $vehicle_options  = array();
 
