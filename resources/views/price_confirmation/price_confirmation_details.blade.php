@@ -335,7 +335,7 @@
             <div class="col-lg-12">
                 <button type="button" class="btn btn-danger btn-sm" @click="cancelProject(index)" v-if="project.project_status != 'Cancelled'">Cancel</button>
                 <button type="button" class="btn btn-secondary btn-sm" @click="printFPC(index)">Print</button>
-                <button type="button" class="btn btn-primary btn-sm" @click="showAttachmentModal(index)" v-if="editable">Attach files</button>
+                <button type="button" class="btn btn-primary btn-sm" @click="showAttachmentModal(index)">Attach files</button>
                 <button type="button" class="btn btn-success btn-sm" @click="saveTerms(index)" v-if="editable">Save</button>
             </div>
         </div>
