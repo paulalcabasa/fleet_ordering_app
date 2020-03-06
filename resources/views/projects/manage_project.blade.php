@@ -1545,11 +1545,28 @@ jQuery(document).ready(function() {
                         })
             
                         .catch(function (error) {
-                            Swal.fire({
-                                type: 'error',
-                                title: 'Unexpected error encountered during the transaction, click OK then try saving again.' + error,
-                                showConfirmButton: true
-                            });
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            //session expired
+                            if(error.response.status == 419){
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Your session has expired! Please login again to continue.',
+                                    showConfirmButton: true,
+                                    timer            : 2000,
+                                    onClose          : function(){
+                                        window.location.reload();
+                                    }
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Unexpected error : ' + error.response.message,
+                                    showConfirmButton: true
+                                });
+                            }
+                            
                         })
                         .finally( (response) => {
                             KTApp.unblockPage();
@@ -1583,11 +1600,24 @@ jQuery(document).ready(function() {
                     });
                 })
                 .catch(function (error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Failed on project submission, please try submitting again.',
-                        showConfirmButton: true
-                    });
+                    if(error.response.status == 419){
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Your session has expired! Please login again to continue.',
+                            showConfirmButton: true,
+                            timer            : 2000,
+                            onClose          : function(){
+                                window.location.reload();
+                            }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unexpected error : ' + error.response.message,
+                            showConfirmButton: true
+                        });
+                    }
                 })
                 .finally( () => {
                     KTApp.unblockPage();
@@ -1657,11 +1687,24 @@ jQuery(document).ready(function() {
                     }
                 })
                 .catch(function (error) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Unexpected error encountered during the transaction, please contact the system administrator. Error : ' + error,
-                        showConfirmButton: true
-                    });
+                    if(error.response.status == 419){
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Your session has expired! Please login again to continue.',
+                            showConfirmButton: true,
+                            timer            : 2000,
+                            onClose          : function(){
+                                window.location.reload();
+                            }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Unexpected error : ' + error.response.message,
+                            showConfirmButton: true
+                        });
+                    }
                 })
                 .finally( (response) => {
                     KTApp.unblockPage();

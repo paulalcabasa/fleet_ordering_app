@@ -169,7 +169,9 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 
 
 	// Payment terms
-//	Route::view('payment_terms','');
+	Route::get('payment_terms','TermsController@index');
+	Route::post('term/add','TermsController@store');
+	Route::patch('term/update','TermsController@update');
 
 	Route::get('reports/tagged','ReportsController@showTaggedUnits');
 	Route::view('reports/invoice','reports.invoice');
