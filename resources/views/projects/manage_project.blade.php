@@ -1188,15 +1188,20 @@ jQuery(document).ready(function() {
                                     email : data.email_1,
                                     delete_flag : 'N'
                                 });
-                                $('#se_wrapper').unblock(); 
+                                
                                 self.selected_sales_person = -1;
                             })
                             .catch(function (error) {
-                                // handle error
-                            console.log(error);
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Failed to add sales person. Error : ' + error,
+                                    showConfirmButton: true
+                                }); 
+                                console.log(error);
                             })
                             .finally(function () {
                                 // always executed
+                                $('#se_wrapper').unblock(); 
                             });
                     }
                     else {
@@ -1396,7 +1401,7 @@ jQuery(document).ready(function() {
                             type: 'error',
                             title: "Total delivery quantity must be equal to the requirement's quantity.",
                             showConfirmButton: true,
-                            timer: 1500
+                      
                         });
                     }
                 }
@@ -1406,7 +1411,7 @@ jQuery(document).ready(function() {
                         type: 'error',
                         title: "Please enter value for delivery date and quantity.",
                         showConfirmButton: true,
-                        timer: 1500
+                      
                     });
                 }
             },
@@ -1440,7 +1445,7 @@ jQuery(document).ready(function() {
                         type: 'error',
                         title: 'You must enter the brand and model.',
                         showConfirmButton: true,
-                        timer: 1500
+                   
                     });
                 }
             },
@@ -1479,11 +1484,16 @@ jQuery(document).ready(function() {
                         self.accountDetails.products = data.products;
                         self.accountDetails.establishment_date = data.establishment_date;
 
-                        KTApp.unblockPage();
+                    
                     })
                     .catch(function (error) {
                         // handle error
-                        KTApp.unblockPage();
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Failed to get customer details. Error :' + error,
+                            showConfirmButton: true,
+                           
+                        });
                         console.log(error);
                     })
                     .finally(function () {
@@ -2210,9 +2220,9 @@ jQuery(document).ready(function() {
                     .catch(function (error) {
                         Swal.fire({
                             type: 'error',
-                            title: 'Unexpected error occurred, could not add this model.',
+                            title: 'Failed to get vehicle details.' + error,
                             showConfirmButton: true,
-                            timer: 1500
+                         
                         });
                         console.log(error);
                     })
