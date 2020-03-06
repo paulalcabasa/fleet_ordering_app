@@ -2205,7 +2205,7 @@ jQuery(document).ready(function() {
                         self.vehicleColors = response.data;
                         $("#sel_vehicle_colors").select2();
                         self.selected_color = -1;
-                        KTApp.unblockPage();
+                        
                     })
                     .catch(function (error) {
                         Swal.fire({
@@ -2218,6 +2218,7 @@ jQuery(document).ready(function() {
                     })
                     .finally(function () {
                         // always executed
+                        KTApp.unblockPage();
                     });
             },
             cur_body_builder : function(val){
