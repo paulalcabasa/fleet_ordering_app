@@ -109,7 +109,7 @@
                     <img src="{{ asset('public/img/isuzu_logo.jpg') }}" /><br/>
                     <span style="font-size:11px;">Isuzu Philippines Corporation</span>
                 </td>
-                <td align="right" style="vertical-align: bottom;font-size:11px;">Fleet Ordering System</td>
+                <td align="right" style="vertical-align: bottom;font-size:11px;">Fleet Registration System</td>
             </tr>
         </table>
         <hr/>
