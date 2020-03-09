@@ -156,7 +156,7 @@
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-4 col-form-label">
                                             C. Fleet Price
-                                            <span class="help-block">(A + D + F)</span>
+                                            <span class="help-block">(A - D + F)</span>
                                         </label>
                                         <div class="col-lg-8">
                                             <input 
