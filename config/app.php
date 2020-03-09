@@ -9,7 +9,8 @@ return [
     |--------------------------------------------
     */
     'system_id' => env('SYSTEM_ID'),
-    'hostname' => env('HOSTNAME'),
+    'hostname' => env('hostname'),
+    'webhost' => env('WEBHOST'),
     'webapps_url' => env('WEBAPPS_URL'),
     'vehicle_badge_colors' => [
         'SPLASH WHITE'       => "kt-badge kt-badge--splash-white kt-badge--md kt-badge--rounded",
