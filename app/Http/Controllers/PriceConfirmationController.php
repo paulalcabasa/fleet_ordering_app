@@ -314,6 +314,7 @@ class PriceConfirmationController extends Controller
                 'lto_registration'       => $model_data['lto_registration'],
                 'fleet_price'            => $model_data['fleet_price'],
                 'wholesale_price'        => $model_data['wholesale_price'],
+                'discount'               => $model_data['discount'],
                 'suggested_retail_price' => $model_data['suggested_retail_price'],
                 'promo'                  => $model_data['promo'],
                 'promo_title'            => $model_data['promo_title'],

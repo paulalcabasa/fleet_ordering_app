@@ -834,16 +834,21 @@
             calculateCost(){
                 return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies) + parseFloat(this.curModel.lto_registration);
             },
+            calculateFleetPrice(){
+                //return parseFloat(this.curModel.suggested_retail_price) - (parseFloat(this));
+                return parseFloat(this.curModel.wholesale_price) - (parseFloat(this.curModel.discount) + parseFloat(this.curModel.promo));
+            },
             calculateMargin(){
                 //return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
-                return parseFloat(this.curModel.fleet_price) * parseFloat(this.curModel.dealers_margin/100);
+                return parseFloat(this.calculateFleetPrice) * parseFloat(this.curModel.dealers_margin/100);
             },
             calculateNetCost(){
-                //return parseFloat(this.calculateCost) + parseFloat(this.curModel.promo);
-                return parseFloat(this.curModel.wholesale_price) - parseFloat(this.curModel.fleet_price) + parseFloat(this.curModel.lto_registration) + parseFloat(this.sumFreebies) + parseFloat(this.calculateMargin);
+                return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies) + parseFloat(this.curModel.lto_registration);
+                //return parseFloat(this.calculateCost) - parseFloat(this.curModel.promo);
+                //return parseFloat(this.curModel.wholesale_price) - parseFloat(this.curModel.fleet_price) + parseFloat(this.curModel.lto_registration) + parseFloat(this.sumFreebies) + parseFloat(this.calculateMargin);
             },
             calculateSubsidy(){
-                return (parseFloat(this.calculateNetCost) - parseFloat(this.curModel.fleet_price));
+                return parseFloat(this.calculateNetCost) - parseFloat(this.calculateFleetPrice);
             },
             calculateTotalSubsidy(){
                 return (parseFloat(this.calculateSubsidy) * parseFloat(this.curModel.quantity));

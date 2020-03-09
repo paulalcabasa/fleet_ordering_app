@@ -63,7 +63,8 @@ class FPC_Item extends Model
                         fpc_item.promo,
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
-                        fpc_item.pricelist_line_id
+                        fpc_item.pricelist_line_id,
+                        fpc_item.discount
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     INNER JOIN IPC_DMS.fs_projects fp
                         ON fpc_prj.project_id = fp.project_id
@@ -104,7 +105,8 @@ class FPC_Item extends Model
                         fpc_item.promo,
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
-                        fpc_item.pricelist_line_id";
+                        fpc_item.pricelist_line_id,
+                        fpc_item.discount";
 
 		$params = [
 			'fpc_project_id' => $fpc_project_id
@@ -123,6 +125,7 @@ class FPC_Item extends Model
                 'lto_registration'       => $params['lto_registration'],
                 'fleet_price'            => $params['fleet_price'],
                 'wholesale_price'        => $params['wholesale_price'],
+                'discount'               => $params['discount'],
                 'updated_by'             => $params['updated_by'],
                 'update_user_source_id'  => $params['update_user_source_id'],
                 'suggested_retail_price' => $params['suggested_retail_price'],
