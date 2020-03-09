@@ -184,12 +184,15 @@
             <tbody>
                 {{ $ctr = 1 }}
                 @foreach($items as $item)
+                <?php 
+                    $fleet_price = $item['header']->suggested_retail_price - ($item['header']->discount + $item['header']->promo);
+                ?>
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td class="item-data-style1">{{ $item['header']->sales_model }}</td>
                     <td class="item-data-style1">{{ $item['header']->color }}</td>
                     <td class="item-data-style2">{{ $item['header']->quantity }}</td>
-                    <td class="item-data-style2">P {{ number_format($item['header']->fleet_price,2) }}</td>
+                    <td class="item-data-style2">P {{ number_format($fleet_price,2) }}</td>
                     <td class="item-data-style2">{{ $item['header']->rear_body_type }}</td>
                     <!-- <td class="item-data-style2">
                         <?php 
@@ -368,16 +371,16 @@
         <?php
             $srp              = $item['header']->suggested_retail_price;
             $wsp              = $item['header']->wholesale_price;
-            $fleet_price      = $item['header']->fleet_price;
+            $discount         = $item['header']->discount;
+            $fleet_price      = $item['header']->suggested_retail_price - ($item['header']->discount + $item['header']->promo);
             $dealer_margin    = $fleet_price * ($item['header']->dealers_margin/100);
             $margin_percent   = $item['header']->dealers_margin;
             $lto_registration = $item['header']->lto_registration;
             $freebies         = $item['header']->freebies;
-            $cost             = $wsp + $dealer_margin + $freebies + $lto_registration;
+           // $cost             = $wsp + $dealer_margin + $freebies + $lto_registration;
             $promo_title      = $item['header']->promo_title;
             $promo            = $item['header']->promo;
-            //$net_cost         = $cost + $promo;
-            $net_cost         = ($wsp - $fleet_price) +  $lto_registration + $freebies + $dealer_margin;
+            $net_cost         = $wsp +  $lto_registration + $freebies + $dealer_margin;
             $subsidy          = $net_cost - $fleet_price;
             $total_subsidy    = $subsidy * $item['header']->quantity;
         ?>
@@ -477,6 +480,18 @@
                             <td align="right">{{ number_format($fleet_price ,2) }}</td>
                         </tr>
                         <tr>
+                            <td class="text-bold">Fleet Discount</td>
+                            <td align="right">{{ number_format($discount ,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Promo Title</td>
+                            <td align="right">{{ $promo_title }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Promo</td>
+                            <td align="right">{{ number_format($promo, 2)}}</td>
+                        </tr>
+                        <tr>
                             <td class="text-bold">Dealers Margin</td>
                             <td align="right">{{ number_format($dealer_margin,2) }} ({{ $margin_percent }}%)</td>
                         </tr>
@@ -489,20 +504,8 @@
                             <td align="right">{{ number_format($freebies,2) }}</td>
                         </tr>
                         <tr>
-                            <td class="text-bold">Cost</td>
-                            <td align="right">{{ number_format($cost,2)}}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Promo Title</td>
-                            <td align="right">{{ $promo_title }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Promo</td>
-                            <td align="right">{{ number_format($promo, 2)}}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Net Cost</td>
-                            <td align="right">{{ number_format($net_cost, 2)}}</td>
+                            <td class="text-bold">Vehicle Cost</td>
+                            <td align="right">{{ number_format($net_cost,2)}}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Subsidy</td>
