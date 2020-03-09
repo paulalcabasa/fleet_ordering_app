@@ -121,8 +121,8 @@
                                 <!-- form for entering pricing details -->
                                 <form class="form-horizontal" v-if="editable">
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Price List</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">Price List</label>
+                                        <div class="col-lg-8">
                                             <select class="form-control" v-model="selected_pricelist" v-select style="width:100%;">
                                                 <option value="">Select price list</option>
                                                 <option v-for="(row,index) in pricelist_headers" 
@@ -132,8 +132,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">SRP</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">A. SRP</label>
+                                        <div class="col-lg-8">
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-sm text-right" 
@@ -143,8 +143,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">WSP</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">B. WSP</label>
+                                        <div class="col-lg-8">
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-sm text-right" 
@@ -154,18 +154,42 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Fleet Price</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">
+                                            C. Fleet Price
+                                            <span class="help-block">(A + D + F)</span>
+                                        </label>
+                                        <div class="col-lg-8">
                                             <input 
                                                 type="text" 
-                                                v-model="curModel.fleet_price" 
+                                                :value="formatPrice(calculateFleetPrice)"
+                                                disabled 
                                                 class="form-control form-control-sm text-right"  
                                             />
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Dealer's Margin</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">D. Fleet Discount</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control form-control-sm text-right" v-model="curModel.discount" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" style="margin-bottom:.5em !important;">
+                                        <label class="col-lg-4 col-form-label">E. Promo Title</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control form-control-sm" v-model="curModel.promo_title"  />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" style="margin-bottom:.5em !important;">
+                                        <label class="col-lg-4 col-form-label">F. Promo</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" class="form-control form-control-sm text-right" disabled="disabled" :value="formatPrice(curModel.promo)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" style="margin-bottom:.5em !important;">
+                                        <label class="col-lg-4 col-form-label">G. Dealer's Margin</label>
+                                        <div class="col-lg-8">
                                             <div class="row">
                                                 
                                                 <div class="col-md-7">
@@ -183,8 +207,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">3 Yrs LTO Registration</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">H. 3 Yrs LTO Registration</label>
+                                        <div class="col-lg-8">
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-sm text-right"  
@@ -194,48 +218,39 @@
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Freebies</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">I. Freebies</label>
+                                        <div class="col-lg-8">
                                             <input type="text" :value="formatPrice(sumFreebies)" class="form-control form-control-sm text-right" disabled="" />
                                         </div>
                                     </div>
-
+<!-- 
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
                                         <label class="col-lg-3 col-form-label">Cost</label>
                                         <div class="col-lg-9">
                                             <input type="text" :value="formatPrice(calculateCost)" class="form-control form-control-sm text-right" disabled="" />
                                         </div>
-                                    </div>
-
+                                    </div> 
+                                    
+                                         return parseFloat(this.curModel.wholesale_price) + parseFloat(this.calculateMargin) + parseFloat(this.sumFreebies) + parseFloat(this.curModel.lto_registration);
+         
+         -->
+                                    
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Promo Title</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" class="form-control form-control-sm" v-model="curModel.promo_title"  />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Promo</label>
-                                        <div class="col-lg-9">
-                                            <input type="text" class="form-control form-control-sm text-right" disabled="disabled" :value="formatPrice(curModel.promo)" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Net Cost</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">J. Vehicle Cost (B + G + H + I)</label>
+                                        <div class="col-lg-8">
                                             <input type="text" :value="formatPrice(calculateNetCost)" class="form-control form-control-sm text-right" disabled="" />
                                         </div>
                                     </div>
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Subsidy per unit</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">K. Subsidy per unit (J - C)</label>
+                                        <div class="col-lg-8">
                                             <input type="text" :value="formatPrice(calculateSubsidy)" class="form-control form-control-sm text-right" disabled="" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row" style="margin-bottom:.5em !important;">
-                                        <label class="col-lg-3 col-form-label">Total IPC Subsidy</label>
-                                        <div class="col-lg-9">
+                                        <label class="col-lg-4 col-form-label">L. Total IPC Subsidy (K * Qty)</label>
+                                        <div class="col-lg-8">
                                             <input type="text" :value="formatPrice(calculateTotalSubsidy)" class="form-control form-control-sm text-right" disabled="" />
                                         </div>
                                     </div>
