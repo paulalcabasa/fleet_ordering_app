@@ -836,7 +836,7 @@
             },
             calculateFleetPrice(){
                 //return parseFloat(this.curModel.suggested_retail_price) - (parseFloat(this));
-                return parseFloat(this.curModel.wholesale_price) - (parseFloat(this.curModel.discount) + parseFloat(this.curModel.promo));
+                return parseFloat(this.curModel.suggested_retail_price) - (parseFloat(this.curModel.discount) + parseFloat(this.curModel.promo));
             },
             calculateMargin(){
                 //return (parseFloat(this.curModel.fleet_price) - parseFloat(this.sumFreebies)) * parseFloat(this.curModel.dealers_margin/100);
