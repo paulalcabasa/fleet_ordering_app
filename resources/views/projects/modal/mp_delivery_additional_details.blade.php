@@ -85,7 +85,7 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control form-control-sm" size="4" v-model="row.quantity" />
+                                                <input type="text" class="form-control form-control-sm" size="4" v-model="row.quantity"   @keypress="isNumber($event)"/>
                                             </td>
                                             <td>
                                                 <input type="date" :min="row.min_delivery_date" class="form-control form-control-sm" v-model="row.delivery_date" name="">

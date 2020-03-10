@@ -47,7 +47,7 @@
                 <!--begin: Form Wizard Nav -->
                 <div class="kt-wizard-v1__nav">
                     <div class="kt-wizard-v1__nav-items">
-                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="current">
+                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="pending">
                             <div class="kt-wizard-v1__nav-body">
                                 <div class="kt-wizard-v1__nav-icon">
                                     <i class="flaticon-bus-stop"></i>
@@ -68,7 +68,7 @@
                             </div>
                         </a>
                       
-                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="pending">
+                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="current">
                             <div class="kt-wizard-v1__nav-body">
                                 <div class="kt-wizard-v1__nav-icon">
                                     <i class="flaticon-list"></i>
@@ -116,6 +116,8 @@
                                                 name="account_name" 
                                                 dir="ltr" 
                                                 placeholder="Account Name"  
+                                                @change="toUpper"
+                                                style="text-transform:uppercase"
                                             />
                                         </div> 
                                     </div>
@@ -480,13 +482,25 @@
 
                                                         <td>@{{ model.model }}</td>
                                                         <td>@{{ model.color }}</td>
-                                                        <td><input type="text" name="" class="form-control form-control-sm" size="4" v-model="model.quantity"/></td>
+                                                        <td>
+                                                            <input 
+                                                                type="text" 
+                                                                name="" 
+                                                                class="form-control form-control-sm" 
+                                                                size="4" 
+                                                                v-model="model.quantity"
+                                                                @keypress="isNumber($event)"
+                                                                
+                                                                />
+                                                        </td>
                                                         <td>
                                                             <input 
                                                                 type="text" 
                                                                 name="" 
                                                                 class="form-control form-control-sm" 
                                                                 v-model="model.suggested_price" 
+                                                                @keypress="isNumber($event)"
+                                                                @change="removeComma(vehicleGroup,index)"
                                                             />
                                                         </td>
                                                         <td>@{{ (formatPrice(model.suggested_price * model.quantity))}}</td>
@@ -649,7 +663,15 @@
                                                         </td>
                                                         <td style="width:30%;">@{{ row.brand }}</td>
                                                         <td style="width:20%;">@{{ row.model }}</td>
-                                                        <td><input type="text" v-model.lazy="row.price" class="form-control form-control-sm"/></td>
+                                                        <td>
+                                                            <input 
+                                                                type="text" 
+                                                                v-model.lazy="row.price" 
+                                                                class="form-control form-control-sm"
+                                                                @keypress="isNumber($event)"
+                                                                @change="removeCommaComp(index)"
+                                                            />
+                                                        </td>
                                                         <td>
                                                             @{{ row.ipc_model }}
                                                             <span class="kt-badge kt-badge--brand kt-badge--inline">@{{ row.ipc_color}}</span>
@@ -896,6 +918,14 @@ jQuery(document).ready(function() {
         }
     });
 
+    Vue.directive("uppercase", {
+        update: function (el) {
+            
+            el.value = el.value.toUpperCase()
+        }
+    })
+
+
     var vm =  new Vue({
         el : "#app",
         data: {
@@ -985,6 +1015,16 @@ jQuery(document).ready(function() {
             draftButton : ''
         },
         methods : {
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+                console.log(evt);
+            },
             validateFileSize(attachment_type){
                 var self = this;
                 var total_size = 0;
@@ -1720,6 +1760,16 @@ jQuery(document).ready(function() {
                     KTApp.unblockPage();
                 });
             },
+            toUpper(){
+                this.accountDetails.account_name = this.accountDetails.account_name.toUpperCase();
+            },
+            removeComma(vehicleGroup,index){
+                this.vehicleRequirement[vehicleGroup][index].suggested_price = this.vehicleRequirement[vehicleGroup][index].suggested_price.toString().replace(/,/g, '').trim();
+              //  console.log(this.vehicleRequirement[vehicleGroup][index].suggested_price);
+            },
+            removeCommaComp(index){
+                this.competitors[index].price = this.competitors[index].price.toString().replace(/,/g, '').trim();
+            }
         },
         created: function () {
       
@@ -1946,7 +1996,7 @@ jQuery(document).ready(function() {
                 var initWizard = function () {
                     // Initialize form wizard
                     wizard = new KTWizard('kt_wizard_v1', {
-                        startStep: 1
+                        startStep: 3
                     });
 
                     // Validation before going to next page
@@ -2242,7 +2292,7 @@ jQuery(document).ready(function() {
             cur_addtl_items : function(val){
                 let self = this;
                 self.vehicleRequirement[self.selected_vehicle_group][self.selected_row_index].additional_details = val;
-            }
+            },
         },
         computed : {
             computeCVQty : function(){
@@ -2252,14 +2302,15 @@ jQuery(document).ready(function() {
                 return this.vehicleRequirement['LCV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
             },
             computeCVPrice : function(){
-                return this.vehicleRequirement['CV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
+                return this.vehicleRequirement['CV'].reduce((acc,item) => parseFloat(acc) + parseFloat((item.suggested_price)),0);
             },
             computeLCVPrice : function(){
-                return this.vehicleRequirement['LCV'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.suggested_price),0);
+                return this.vehicleRequirement['LCV'].reduce((acc,item) => parseFloat(acc) + parseFloat((item.suggested_price)),0);
             },
             computeDeliveryQuantity : function(){
                 return this.cur_delivery_sched.reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
-            }
+            },
+            
         }
     });
 
