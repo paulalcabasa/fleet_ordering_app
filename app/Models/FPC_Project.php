@@ -91,7 +91,7 @@ class FPC_Project extends Model
                         to_char(fpc.creation_date,'MM') || 
                         to_char(fpc.creation_date,'YY') || 
                         '-' || 
-                        fpc_prj.fpc_project_id fpc_ref_no,  
+                        fpc_prj.fpc_id fpc_ref_no,  
                         fc.customer_name,
                         dlr.customer_name dealer_name,
                         dlr.account_name dealer_account,
