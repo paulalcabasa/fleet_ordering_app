@@ -1996,7 +1996,7 @@ jQuery(document).ready(function() {
                 var initWizard = function () {
                     // Initialize form wizard
                     wizard = new KTWizard('kt_wizard_v1', {
-                        startStep: 3
+                        startStep: 1
                     });
 
                     // Validation before going to next page
