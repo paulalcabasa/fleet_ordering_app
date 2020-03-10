@@ -191,11 +191,15 @@
                     $ctr = 1;
                 ?>
                 @foreach($requirements as $model)
+                <?php 
+                    
+                    $fleet_price = $model->suggested_retail_price - ($model->discount + $model->promo);
+                ?>
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td class="item-data-style1">{{ $model->sales_model }}</td>
                     <td class="item-data-style1">{{ $model->color }}</td>
-                    <td class="item-data-style2">{{ number_format($model->fleet_price,2) }}</td>
+                    <td class="item-data-style2">{{ number_format($fleet_price,2) }}</td>
                     <td class="item-data-style2">{{ $model->rear_body_type }}</td>
                     <td class="item-data-style2">-</td>
                     <td class="item-data-style2">
@@ -363,28 +367,37 @@
         
         @foreach($detailed_price as $item)
         <?php
-            $dealer_margin = ($item['header']->fleet_price - $item['header']->freebies) * ($item['header']->dealers_margin/100);
+            /* $dealer_margin = ($item['header']->fleet_price - $item['header']->freebies) * ($item['header']->dealers_margin/100);
             $wsp           = $item['header']->suggested_retail_price - ($item['header']->suggested_retail_price * ($item['header']->dealers_margin/100));
             $cost          = $item['header']->suggested_retail_price + $dealer_margin + $item['header']->freebies;
             $net_cost      = $item['header']->wholesale_price + $dealer_margin + $item['header']->lto_registration;
             $subsidy       = $net_cost - $item['header']->fleet_price;
-            $total_subsidy = $subsidy * $item['header']->quantity;
+            $total_subsidy = $subsidy * $item['header']->quantity; */
+            $srp              = $item['header']->suggested_retail_price;
+            $wsp              = $item['header']->wholesale_price;
+            $discount         = $item['header']->discount;
+            $fleet_price      = $item['header']->suggested_retail_price - ($item['header']->discount + $item['header']->promo);
+            $dealer_margin    = $fleet_price * ($item['header']->dealers_margin/100);
+            $margin_percent   = $item['header']->dealers_margin;
+            $lto_registration = $item['header']->lto_registration;
+            $freebies         = $item['header']->freebies;
+           // $cost             = $wsp + $dealer_margin + $freebies + $lto_registration;
+            $promo_title      = $item['header']->promo_title;
+            $promo            = $item['header']->promo;
+            $net_cost         = $wsp +  $lto_registration + $freebies + $dealer_margin;
+            $subsidy          = $net_cost - $fleet_price;
+            $total_subsidy    = $subsidy * $item['header']->quantity;
         ?>
         
-        <table style="font-size:11px;" width="100%">
+       <table style="font-size:11px;" width="100%">
             <tr>
-                <td valign="top" width="50%" style="margin:0;">
-                    <table style="width:100%;" cellspacing="0" cellpadding="0">
+                <td valign="top" width="50%">
+                    <table style="width:100%;">
                         <tr>
-                            <td valign="top">
+                            <td>
                                 <table style="width:100%;">
-                                    <tbody>
                                     <tr style="background-color:#ccc;">
-                                        <td colspan="2" class="text-bold text-center">Details</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold">Dealer</td>
-                                        <td>{{ $item['header']->dealer_name }}</td>
+                                        <td colspan="2" class="text-bold text-center">Vehicle Details</td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold">Model</td>
@@ -400,18 +413,15 @@
                                     </tr>
                                     <tr>
                                         <td class="text-bold">Suggested Price</td>
-                                        <td>{{ number_format($item['header']->suggested_retail_price,2) }}</td>
+                                        <td>{{ number_format($srp,2) }}</td>
                                     </tr>
-                                    </tbody>
                                 </table>
                             </td>
                         </tr>
-                        
-                        @if(count($item['other_items']) > 0 )
-                        
+                        @if(count($item['other_items']) > 0)
                         <tr>
                             <td>
-                                <table style="width:100%;" valign="top">
+                                <table style="width:100%;">
                                     <thead>
                                         <tr style="background-color:#ccc;">
                                             <th  colspan="4" class="text-bold text-center">Other Items</th>
@@ -425,20 +435,21 @@
                                     </thead>
                                     <tbody>
                                         <?php 
-                                            $ctr = 1; 
-                                            $total = 0;
+                                            $index = 1;
+                                            $total_items = count($item['other_items']);
+                                            $total_amount = 0;
                                         ?>
-                                        @foreach($item['other_items'] as $row)
-                                        
+                             
+                                        @foreach($item['other_items'] as $freebie)
                                         <tr>
-                                            <td>{{ $ctr }}</td>
-                                            <td>{{ $row->description}}</td>
-                                            <td>{{ $row->owner_name }}</td>
-                                            <td align="right">{{ number_format($row->amount,2) }}</td>
+                                            <td>{{ $index }}</td>
+                                            <td>{{ $freebie->description }}</td>
+                                            <td>{{ $freebie->owner_name }}</td>
+                                            <td align="right">{{ number_format($freebie->amount,2) }}</td>
                                         </tr> 
                                         <?php 
-                                            $ctr++; 
-                                            $total += $row->amount; 
+                                            $index++; 
+                                            $total_amount += $freebie->amount;
                                         ?>
                                         @endforeach
                                         
@@ -446,13 +457,13 @@
                                     <tfoot>
                                         <tr>
                                             <th colspan="3" align="right"> Total</th>
-                                            <th align="right">{{ number_format($total,2) }}</th>
+                                            <th align="right" >{{ number_format($total_amount,2) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </td>
                         </tr>
-                       @endif
+                        @endif
                     </table>
                 </td>
                 <td width="50%" valign="top">
@@ -462,35 +473,43 @@
                         </tr>
                         <tr>
                             <td class="text-bold">SRP</td>
-                            <td align="right">{{ number_format($item['header']->suggested_retail_price,2) }}</td>
+                            <td align="right">{{ number_format($srp,2) }}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">WSP</td>
                             <td align="right">{{ number_format($wsp,2) }}<td>
                         </tr>
                         <tr>
+                            <td class="text-bold">Fleet Price</td>
+                            <td align="right">{{ number_format($fleet_price ,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Fleet Discount</td>
+                            <td align="right">{{ number_format($discount ,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Promo Title</td>
+                            <td align="right">{{ $promo_title }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Promo</td>
+                            <td align="right">{{ number_format($promo, 2)}}</td>
+                        </tr>
+                        <tr>
                             <td class="text-bold">Dealers Margin</td>
-                            <td align="right">{{ number_format($dealer_margin,2) }} </td>
+                            <td align="right">{{ number_format($dealer_margin,2) }} ({{ $margin_percent }}%)</td>
                         </tr>
                         <tr>
                             <td class="text-bold">3 Yrs LTO Registration</td>
-                            <td align="right">{{ number_format($item['header']->lto_registration,2) }}</td>
+                            <td align="right">{{ number_format($lto_registration,2) }}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Other Items</td>
-                            <td align="right">{{ number_format($item['header']->freebies,2) }}</td>
+                            <td align="right">{{ number_format($freebies,2) }}</td>
                         </tr>
                         <tr>
-                            <td class="text-bold">Cost</td>
-                            <td align="right">{{ number_format($cost,2)}}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Net Cost</td>
-                            <td align="right">{{ number_format($net_cost, 2)}}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Fleet Price</td>
-                            <td align="right">{{ number_format($item['header']->fleet_price,2) }}</td>
+                            <td class="text-bold">Vehicle Cost</td>
+                            <td align="right">{{ number_format($net_cost,2)}}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Subsidy</td>
@@ -503,6 +522,11 @@
                     </table>
                 </td>
             </tr>
+          <!--   <tr>
+                <td colspan="2">
+                    
+                </td>
+            </tr> -->
         </table>
         <hr />
         @endforeach

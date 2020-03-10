@@ -168,8 +168,11 @@ class FPC_Item extends Model
                          sum(CASE WHEN fr.cost_to_owner_id = 5 THEN NVL(fr.amount,0) ELSE 0 END) freebies,
                          fpc_item.wholesale_price,
                          fpc_item.dealers_margin,
+                         fpc_item.suggested_retail_price,
                          fpc_item.lto_registration,
-                         fpc_item.fleet_price")
+                         fpc_item.fleet_price,
+                         fpc_item.promo,
+                         fpc_item.discount")
             ->where('fpc_prj.fpc_id', '=', $fpc_id)
             ->whereIn('rl.inventory_item_id', $item_ids)
             ->groupBy(  
@@ -180,7 +183,10 @@ class FPC_Item extends Model
                         'fpc_item.wholesale_price',
                         'fpc_item.dealers_margin',
                         'fpc_item.lto_registration',
-                        'fpc_item.fleet_price' )
+                        'fpc_item.fleet_price',
+                        'fpc_item.promo',
+                         'fpc_item.discount',
+                         'fpc_item.suggested_retail_price' )
             ->get();
 
             //  'rl.BODY_BUILDER_NAME',
@@ -212,7 +218,10 @@ class FPC_Item extends Model
                          fpc_item.fleet_price,
                          fpc_item.fpc_item_id,
                          dlr.account_name dealer_name,
-                         rl.quantity")
+                         rl.quantity,
+                         fpc_item.discount,
+                         fpc_item.promo,
+                         fpc_item.promo_title")
             ->where('fpc_prj.fpc_id', '=', $fpc_id)
             ->whereIn('rl.inventory_item_id', $item_ids)
             ->groupBy(  
@@ -229,7 +238,10 @@ class FPC_Item extends Model
                         'fpc_item.fleet_price',
                         'fpc_item.fpc_item_id',
                         'dlr.account_name',
-                        'rl.quantity' )
+                        'rl.quantity',
+                        'fpc_item.discount',
+                        'fpc_item.promo',
+                        'fpc_item.promo_title' )
             ->get();
 
      
