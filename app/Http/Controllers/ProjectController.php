@@ -51,7 +51,7 @@ class ProjectController extends Controller
         $organizations    = $org_types->get_org_options();
         $project_sources  = $project_sources->get_project_sources_options();
         $customer_options = $customer->get_customer_options();
-        $sales_persons    = $sales_person->get_sales_person_options(session('user')['customer_id']);
+        $sales_persons    = $sales_person->get_sales_persons(session('user')['customer_id']);
         $vehicle_models   = $m_vehicle->get_vehicles();
         $vehicle_types    = VehicleType::all();
         $fleet_categories = FleetCategories::all();

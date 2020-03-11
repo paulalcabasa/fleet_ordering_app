@@ -12,12 +12,16 @@ class SalesPersons extends Model
     protected $connection = "crms";
 
     public function get_sales_persons($customer_id){
-    	$sql = "SELECT code_item.description,
+    	$sql = "SELECT 
+					se.db_id,
+					code_item.description,
 					se.position,
 					se.fname,
 					se.mname,
 					se.lname,
-					se.nickname
+					se.nickname,
+					se.email_1,
+					se.mobile_1
 				FROM t_crm_sales_exec se
 				    LEFT JOIN t_crm_customer_ifs_oracle ora_cust
 				       ON se.dealer_id = ora_cust.dealer_code
@@ -87,7 +91,9 @@ class SalesPersons extends Model
 
 		$query = DB::connection('crms')->select($sql,$params);
 		return $query;
-    }
+	}
+	
+
 
   
 
