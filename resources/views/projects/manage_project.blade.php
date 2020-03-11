@@ -1012,6 +1012,7 @@ jQuery(document).ready(function() {
             file_label2              : 'Choose file',
             is_exist                 : false,
             project_status : 'New', // default is 3 for NEW
+            project_status_id : 0,
             draftButton : '',
             editable_flag : false,
             user_type:           {!! json_encode($user_type) !!}
@@ -1568,11 +1569,15 @@ jQuery(document).ready(function() {
                         self.accountDetails.affiliates = $('#sel_affiliates').val();
 
                         var route = "";
+                        var status = 15; // default is draft
                         // no existing project yet
                         if(self.project_id == null) {
                             route = "/project/save";
                         }
                         else {
+                            if(self.user_type == 32 || self.user_type == 33){
+                                status = self.project_status_id; // retain status
+                            }
                             route = "/project/update";    
                         }
                         
@@ -1584,7 +1589,7 @@ jQuery(document).ready(function() {
                             competitors         : self.competitors,
                             no_competitor_reason: self.no_competitor_reason,
                             competitor_flag     : self.competitor_flag,
-                            status              : 15 // draft
+                            status              : status // draft
                         })
                         .then(function (response) {
                             
@@ -1598,8 +1603,8 @@ jQuery(document).ready(function() {
                         })
             
                         .catch(function (error) {
-                            console.log(error.response.data);
-                            console.log(error.response.status);
+                           // console.log(error.response.data);
+                           // console.log(error.response.status);
                             //session expired
                             if(error.response.status == 419){
                                 Swal.fire({
@@ -1931,6 +1936,7 @@ jQuery(document).ready(function() {
                     // Load account details
                     project_data = response.data;
                     self.project_status = project_data.project_details.status_name;
+                    self.project_status_id = project_data.project_details.status_id;
                     // if(self.project_status != 'New'){
                     //     return false;
                     // }

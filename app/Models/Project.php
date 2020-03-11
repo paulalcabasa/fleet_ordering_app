@@ -451,7 +451,7 @@ class Project extends Model
                         fp.dealer_id,
                         fp.status";
         $query = DB::select($sql);
-
+        
         return $query;
     }
 
