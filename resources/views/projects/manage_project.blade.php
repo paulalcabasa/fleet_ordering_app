@@ -374,7 +374,8 @@
                                     <div class="form-group row">
                                         <div class="col-md-9">
                                             <select class="form-control" id="sel_sales_persons" v-model="selected_sales_person" v-select  style="width:100%;">
-                                                <option value="-1">Select a sales person</option>
+                                               <option value="-1">Select sales person</option>
+                                               <option v-for="(row,index) in salesPersonOptions" :value="row">@{{ row.fname + " " + row.lname + " - " + row.description}}</option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">
@@ -744,7 +745,7 @@
 @push('scripts')
 <script>
 
-var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){
+var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions){
 
     var initSelProjectSource = function(projectSourceOptions){
         $('#sel_project_source').select2({
@@ -781,24 +782,22 @@ var Select2 = function(afiliateOptions,projectSourceOptions,organizationOptions,
         });
     }
 
-    var initSalesPersons = function(salesPersonOptions){
+    var initSalesPersons = function(){
         $('#sel_sales_persons').select2({
             placeholder: {
                 id: '-1', // the value of the option
                 text: 'Select a sales person'
-            },
-            data: salesPersonOptions
+            }
         });
     }
 
     return {
-        init : function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions,salesPersonOptions){
+        init : function(afiliateOptions,projectSourceOptions,organizationOptions,paymentTermOptions){
             initSelProjectSource(projectSourceOptions);
             intSelOrg(organizationOptions);
             initPaymentTerm(paymentTermOptions);
-          //  initSelScope();
             affiliates(afiliateOptions);
-            initSalesPersons(salesPersonOptions);
+            initSalesPersons();
         }
     };
 }();
@@ -1210,43 +1209,24 @@ jQuery(document).ready(function() {
                     }); 
                 }
                 else {
-                 
+                    
+                    
+
                     var isExist = self.contactDetails.salesPersons.filter(function(elem){
-                        if(elem.sales_person_id === self.selected_sales_person) {
+                      
+                         if(elem.sales_person_id === self.selected_sales_person.db_id) {
                             return elem.sales_person_id;
-                        }
+                        } 
                     });
                     if(isExist == 0 ){
-                        $('#se_wrapper').block({ 
-                            message: '<h1>Processing</h1>'
-                        }); 
-                        axios.get('/get-sales-person-detail/' + this.selected_sales_person)
-                            .then(function (response) {
-                                var data = response.data.data;
-                                // handle success
-                                self.contactDetails.salesPersons.push({
-                                    sales_person_id : self.selected_sales_person,
-                                    position_title : data.description,
-                                    name : data.fname + " " + data.lname,
-                                    mobile_no : data.mobile_1,
-                                    email : data.email_1,
-                                    delete_flag : 'N'
-                                });
-                                
-                                self.selected_sales_person = -1;
-                            })
-                            .catch(function (error) {
-                                Swal.fire({
-                                    type: 'error',
-                                    title: 'Failed to add sales person. Error : ' + error,
-                                    showConfirmButton: true
-                                }); 
-                                console.log(error);
-                            })
-                            .finally(function () {
-                                // always executed
-                                $('#se_wrapper').unblock(); 
-                            });
+                        self.contactDetails.salesPersons.push({
+                            sales_person_id : self.selected_sales_person.db_id,
+                            position_title : self.selected_sales_person.position,
+                            name : self.selected_sales_person.fname + " " + self.selected_sales_person.lname,
+                            mobile_no : self.selected_sales_person.mobile_1,
+                            email : self.selected_sales_person.email_1,
+                            delete_flag : 'N'
+                        });
                     }
                     else {
                         Swal.fire({
@@ -2019,7 +1999,7 @@ jQuery(document).ready(function() {
                 var initWizard = function () {
                     // Initialize form wizard
                     wizard = new KTWizard('kt_wizard_v1', {
-                        startStep: 1
+                        startStep: 2
                     });
 
                     // Validation before going to next page
