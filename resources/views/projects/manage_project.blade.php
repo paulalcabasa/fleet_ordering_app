@@ -1780,7 +1780,7 @@ jQuery(document).ready(function() {
         mounted : function () {
 
             var self = this;
-            
+            self.editable_flag = true;
             // set button text
             if(self.project_id == null) {
                 self.draftButton = 'Save as draft';
