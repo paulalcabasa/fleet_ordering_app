@@ -22,6 +22,7 @@
                     <th>Type</th>
                     <th>Project No.</th>
                     <th>Account Name</th>
+                    <th>Dealer</th>
                     <th>Prepared by</th>
                     <th>Date created</th>
                     <th>Status</th>
@@ -36,6 +37,7 @@
                     <td>@{{ row.type }}</td>
                     <td>@{{ row.project_id }}</td>
                     <td>@{{ row.account_name }}</td>
+                    <td>@{{ row.dealer_name }}</td>
                     <td>@{{ row.created_by }}</td>
                     <td>@{{ row.date_submitted }}</td>
                     <td nowrap>
