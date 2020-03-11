@@ -139,7 +139,10 @@
                             <a :href="base_url + '/project-overview/view/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                               <i class="la la-eye"></i>
                             </a>
-                            <a v-show="row.status_name == 'Rejected' || row.status_name == 'Draft' || row.status_name == 'Cancelled'" :href="base_url + '/manage-project/edit/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                            <a v-show="(row.status_name == 'Rejected' || row.status_name == 'Draft' || row.status_name == 'Cancelled') && user_type == 27 || user_type == 31" :href="base_url + '/manage-project/edit/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
+                              <i class="la la-edit"></i>
+                            </a> 
+                            <a v-show="user_type == 32 || user_type == 33" :href="base_url + '/manage-project/edit/' + row.project_id" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View">
                               <i class="la la-edit"></i>
                             </a>
                         </td>

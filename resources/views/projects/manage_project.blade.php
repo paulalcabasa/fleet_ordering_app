@@ -7,12 +7,12 @@
 
 <div id="app">
 
-    <div class="alert alert-info" role="alert" v-if="project_status != 'New' && project_status != 'Rejected' && project_status != 'Draft' && project_status != 'Cancelled'">
+    <div class="alert alert-info" role="alert" v-if="!editable_flag">
         <div class="alert-icon"><i class="flaticon-questions-circular-button"></i></div>
         <div class="alert-text">Project # @{{ project_id }} could not be edited since it is already <strong>@{{ project_status }}</strong>.</div>
     </div>
 
-<div class="kt-portlet" v-if="project_status == 'New' || project_status == 'Rejected' || project_status == 'Draft' || project_status == 'Cancelled'">
+<div class="kt-portlet" v-show="editable_flag">
      <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
@@ -1012,7 +1012,10 @@ jQuery(document).ready(function() {
             file_label2              : 'Choose file',
             is_exist                 : false,
             project_status : 'New', // default is 3 for NEW
-            draftButton : ''
+            draftButton : '',
+            editable_flag : false,
+            user_type:           {!! json_encode($user_type) !!}
+
         },
         methods : {
             isNumber: function(evt) {
@@ -1977,6 +1980,20 @@ jQuery(document).ready(function() {
                     self.no_competitor_reason   = project_data.project_details.competitor_remarks;
                     self.competitors            = project_data.competitors;
                     self.competitor_attachments = project_data.competitor_attachments;
+                })
+                .then( () => {
+                    if(self.user_type == 32 || self.user_type == 33){
+                        self.editable_flag = true;
+                    }
+                    else {
+                        self.editable_flag = false;
+                        if(self.project_status == 'Rejected' || self.project_status == 'Draft' || self.project_status == 'Cancelled'){
+                            self.editable_flag = true;
+                        }
+                    }
+                })
+                .catch( (error) => {
+                    alert('Failed to get project detais, kindly reload the page.');
                 })
                 .finally( (response) => {
                     KTApp.unblockPage();

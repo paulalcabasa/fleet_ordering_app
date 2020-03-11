@@ -87,6 +87,7 @@ class ProjectController extends Controller
             $page_title = "Edit Project";
         }
 
+
     	$page_data = array(
     		'project_id'           => $project_id,
     		'action'               => $action,
@@ -99,7 +100,8 @@ class ProjectController extends Controller
             'base_url'             => url('/'),
             'fleet_categories'     => $fleet_categories,
             'page_title'           => $page_title,
-            'vehicle_lead_times'   => config('app.vehicle_lead_time')
+            'vehicle_lead_times'   => config('app.vehicle_lead_time'),
+            'user_type'            => session('user')['user_type_id']
     	);
     	return view('projects.manage_project', $page_data);
     }
