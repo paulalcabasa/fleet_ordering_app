@@ -439,10 +439,10 @@
                                             <optgroup v-for="(row,index) in  vehicle_models" :label="row.model">
                                                 <option 
                                                     v-for="(variant,index) in row.variants" 
-                                                    :value="variant.id" 
+                                                    :value="variant.sales_model" 
                                                     :data-vehicle_type="variant.vehicle_type"
                                                     :data-variant="variant.variant"
-                                                >@{{ variant.value}}</option>
+                                                >@{{ variant.sales_model}}</option>
                                             </optgroup>
                                         </select>   
                                     </div>
@@ -450,7 +450,7 @@
                                         <label>Color</label>
                                         <select class="form-control" id="sel_vehicle_colors" v-model="selected_color" v-select style="width:100%;">
                                             <option value="-1">Select a color</option>
-                                            <option v-for="(row,index) in vehicleColors" :value="row.id">@{{ row.text }}</option>
+                                            <option v-for="(row,index) in vehicleColors" :value="row.inventory_item_id">@{{ row.color }}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
@@ -976,6 +976,7 @@ jQuery(document).ready(function() {
             // temp variables
             vehicle_details_flag:    true,
             vehicle_models:           {!! json_encode($vehicle_models) !!},
+            vehicles:           {!! json_encode($vehicles) !!},
             vehicle_types:           {!! json_encode($vehicle_types) !!},
             vehicle_lead_times:           {!! json_encode($vehicle_lead_times) !!},
             selected_row_index:      null,
@@ -1026,7 +1027,7 @@ jQuery(document).ready(function() {
                 } else {
                     return true;
                 }
-                console.log(evt);
+                //console.log(evt);
             },
             validateFileSize(attachment_type){
                 var self = this;
@@ -2217,13 +2218,14 @@ jQuery(document).ready(function() {
                                 }
                             }
                             else if(self.competitor_flag == 'N'){
-                                if(self.no_competitor_reason == ""){
+                                if(self.no_competitor_reason.trim() == ""){
                                      Swal.fire({
                                         type: 'error',
                                         title: 'Please state your reason for not having a competitor',
                                         showConfirmButton: true,
                                         timer: 1500
                                     });   
+                                    self.no_competitor_reason = "";
                                     wizardObj.stop();
                                     return false;  
                                 }
@@ -2257,32 +2259,13 @@ jQuery(document).ready(function() {
         watch: {
             selected_model : function(val){
                 let self = this;
-                KTApp.blockPage({
-                    overlayColor: '#000000',
-                    type: 'v2',
-                    state: 'success',
-                    message: 'Please wait...'
+               self.vehicleColors = [];
+               self.selected_color = -1;
+               self.vehicles.filter(function(elem){
+                    if(val === elem.sales_model) {
+                        self.vehicleColors.push(elem);
+                    } 
                 });
-                axios.get('/get-vehicle-colors/' + val)
-                    .then(function (response) {
-                        self.vehicleColors = response.data;
-                        $("#sel_vehicle_colors").select2();
-                        self.selected_color = -1;
-                        
-                    })
-                    .catch(function (error) {
-                        Swal.fire({
-                            type: 'error',
-                            title: 'Failed to get vehicle details.' + error,
-                            showConfirmButton: true,
-                         
-                        });
-                        console.log(error);
-                    })
-                    .finally(function () {
-                        // always executed
-                        KTApp.unblockPage();
-                    });
             },
             cur_body_builder : function(val){
                 let self = this;
