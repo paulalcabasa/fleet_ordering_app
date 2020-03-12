@@ -1656,11 +1656,14 @@ class ProjectController extends Controller
         $project_id = $request->project_id;
         $project = new Project;
         // create approval workflow
-        $this->insert_project_approval('DLR_MANAGER','',$project_id);
+        
         
         // only update status if dealer
         // update status to new
         if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+
+            $this->insert_project_approval('DLR_MANAGER','',$project_id);
+            
             $project->update_status(
                 $project_id,
                 3, // new status 
