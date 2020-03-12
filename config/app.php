@@ -50,7 +50,9 @@ return [
         'CLOSED'       => "kt-badge kt-badge--success kt-badge--inline",
         'Closed'       => "kt-badge kt-badge--success kt-badge--inline",
         'Active'       => "kt-badge kt-badge--success kt-badge--inline",
+        'active'       => "kt-badge kt-badge--success kt-badge--inline",
         'Inactive'     => "kt-badge kt-badge--danger kt-badge--inline",
+        'inactive'     => "kt-badge kt-badge--danger kt-badge--inline",
         'Draft'        => "kt-badge kt-badge--dark kt-badge--inline",
     ],
     'vehicle_lead_time' => [

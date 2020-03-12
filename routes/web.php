@@ -177,6 +177,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::view('reports/invoice','reports.invoice');
 	Route::get('invoice/get','ReportsController@showInvoices');
 	
+	// Vehicles
+	Route::get('vehicles','InactiveVehicleController@index');
+	Route::post('vehicle/add-inactive','InactiveVehicleController@store');
+	Route::delete('vehicle/delete-inactive/{id}','InactiveVehicleController@destroy');
 
 });
 
