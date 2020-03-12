@@ -104,4 +104,24 @@ class Vehicle extends Model
 		$query = DB::select($sql,$params);
 		return $query;
 	}
+
+	public function get_active_vehicles(){
+		/* ipc_vehicles_with_price_v */
+		$sql = "SELECT 
+					vm.inventory_item_id,
+					vm.model_variant,
+					vm.sales_model,
+					vm.color,
+					fvg.vehicle_type
+				FROM ipc_dms.ipc_vehicle_models_v vm       
+					LEFT JOIN ipc_dms.fs_inactive_vehicles iv
+						ON iv.inventory_item_id = vm.inventory_item_id    
+					LEFT JOIN ipc_dms.fs_vehicle_groups fvg
+				        ON fvg.model = vm.model_variant   
+				WHERE 1 = 1
+					AND vm.sales_model IS NOT NULL
+					AND iv.inventory_item_id IS NULL";
+		$query = DB::select($sql);
+		return $query;
+	}
 }

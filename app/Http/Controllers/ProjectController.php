@@ -52,18 +52,35 @@ class ProjectController extends Controller
         $project_sources  = $project_sources->get_project_sources_options();
         $customer_options = $customer->get_customer_options();
         $sales_persons    = $sales_person->get_sales_persons(session('user')['customer_id']);
-        $vehicle_models   = $m_vehicle->get_vehicles();
+        $vehicle_models   = $m_vehicle->get_active_vehicles();
         $vehicle_types    = VehicleType::all();
         $fleet_categories = FleetCategories::all();
         $grouped          = collect($vehicle_models)->groupBy('model_variant'); 
         $vehicle_options  = array();
-
+        
         foreach($grouped as $model => $variant){
-
+            
             $children = array();
             foreach($variant as $var){
                 $temp_array = array(
-                    "id"           => $var->sales_model,
+                    "variant"      => $var->model_variant,
+                    "sales_model"  => $var->sales_model,
+                    "vehicle_type" => $var->vehicle_type
+                );
+                array_push($children,$temp_array);
+            }
+        
+            $children = array_unique($children,SORT_REGULAR);
+            $option = array(
+                "model" => $model,
+                "variants" => $children
+            );
+            array_push($vehicle_options, $option);
+    
+            /* 
+            foreach($variant as $var){
+                $temp_array = array(
+                    "id"           => $var->inventory_item_id,
                     "value"        => $var->sales_model,
                     "vehicle_type" => $var->vehicle_type,
                     "variant"      => $var->model_variant
@@ -74,8 +91,13 @@ class ProjectController extends Controller
                 "model" => $model,
                 "variants" => $children
             );
-            array_push($vehicle_options, $option);
+            array_push($vehicle_options, $option); */
         }
+
+        //array_unique($vehicle_options);
+        /* echo "<pre>";
+        print_r($vehicle_options);
+        die; */
         
         $project_id = $request->project_id;
     	$action = $request->action;  
@@ -87,7 +109,6 @@ class ProjectController extends Controller
             $page_title = "Edit Project";
         }
 
-
     	$page_data = array(
     		'project_id'           => $project_id,
     		'action'               => $action,
@@ -96,6 +117,7 @@ class ProjectController extends Controller
             'customer_options'     => $customer_options,
             'sales_persons'        => $sales_persons,
             'vehicle_models'       => $vehicle_options,
+            'vehicles'             => $vehicle_models,
             'vehicle_types'        => $vehicle_types,
             'base_url'             => url('/'),
             'fleet_categories'     => $fleet_categories,
