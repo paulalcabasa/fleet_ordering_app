@@ -124,4 +124,6 @@ class Vehicle extends Model
 		$query = DB::select($sql);
 		return $query;
 	}
+
+	
 }

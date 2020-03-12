@@ -55,5 +55,7 @@ class VehicleController extends Controller
 		$sales_model = $request->sales_model;
 		$data = $vehicle->get_model_colors_with_price($sales_model);
 		return $data;
-    }
+	}
+	
+	
 }
