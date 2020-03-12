@@ -56,7 +56,10 @@ class FPC_Item extends Model
                         fpc_item.wholesale_price,
                         fpc_item.dealers_margin,
                         fpc_item.lto_registration,
-                        fpc_item.fleet_price,
+                        CASE 
+                            WHEN fpc_item.fleet_price = 0 THEN (fpc_item.suggested_retail_price - (fpc_item.discount + fpc_item.promo)) 
+                            ELSE fpc_item.fleet_price
+                        END fleet_price,
                         rl.requirement_line_id,
                         fpc_item.fpc_item_id,
                         rl.inventory_item_id,
