@@ -263,7 +263,7 @@
                     $grand_total    = 0;
                     $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
                     $total_margin   = $dealers_margin + $row->lto_registration;
-                    $unit_price     = $row->fleet_price - $total_margin;
+                    $unit_price     = $row->fleet_price + $total_margin;
                     $fwpu           = $unit_price + $row->freebies;
                     $total_fwpu     = $fwpu * $row->quantity;
                 ?>
@@ -272,8 +272,8 @@
                     <td>{{ $row->sales_model }}</td>
                     <td>{{ $row->color }}</td>
                     <td align="center">{{ $row->quantity }}</td>
-                    <td align="center">{{ number_format($row->fleet_price,2) }}</td>
                     <td align="center">{{ number_format($unit_price,2) }}</td>
+                    <td align="center">{{ number_format($row->fleet_price,2) }}</td>
                     <td align="center">{{ number_format($row->freebies,2) }}</td>
                     <td align="center">{{ number_format($fwpu,2) }}</td>
                     <td align="center">{{ number_format($total_fwpu,2) }}</td>

@@ -14,7 +14,7 @@ class SalesOrderLines extends Model
         $sql = "SELECT 
                     msib.attribute9 sales_model,
                     msib.attribute8 color,
-                    oola.unit_list_price + oola.tax_value fleet_price,
+                    round(oola.unit_list_price + oola.tax_value,2) fleet_price,
                     sum(oola.ordered_quantity) quantity,
                     fpc_item.dealers_margin,
                     fpc_item.lto_registration,

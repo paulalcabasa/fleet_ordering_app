@@ -80,6 +80,7 @@ class FPC_Item extends Model
                         ON vehicle.inventory_item_id = rl.inventory_item_id
                     INNER JOIN ipc_dms.fs_fpc_items fpc_item
                         ON fpc_item.fpc_project_id = fpc_prj.fpc_project_id
+                       AND fpc_item.requirement_line_id = rl.requirement_line_id
                     LEFT JOIN ipc_dms.fs_fpc_item_freebies freebie
                         ON freebie.fpc_item_id = fpc_item.fpc_item_id
                 WHERE 1 = 1

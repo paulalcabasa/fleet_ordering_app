@@ -99,8 +99,7 @@ class FWPCController extends Controller
         $sales_persons = $m_sales_persons->get_sales_persons($fwpc_details->project_id);
         
         $so_lines = $m_sol->get_so_lines($fwpc_id);
-        
-        
+   
         $wht_tax = 0;
         $grand_total = 0;
         foreach($so_lines as $row){
