@@ -11,4 +11,8 @@ class Dealer extends Model
     protected $connection = "oracle";
     protected $primaryKey = 'cust_account_id';
 
+    public function dealer_principal()
+    {
+        return $this->hasMany('App\Models\DealerPrincipal', 'cust_account_id', 'dealer_id');
+    } 
 }

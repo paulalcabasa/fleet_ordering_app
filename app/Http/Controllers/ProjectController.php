@@ -32,6 +32,7 @@ use App\Models\POHeaders;
 use App\Models\FWPC;
 use App\Models\Dealer;
 use App\Models\FPCValidityRequest;
+use App\Models\DealerPrincipal;
 use DB;
 
 class ProjectController extends Controller
@@ -48,10 +49,20 @@ class ProjectController extends Controller
         CustomerAffiliates $m_affiliate
     ){
         
+        $dp = new DealerPrincipal;
+         
+        $dealer_principal = \App\Models\DealerPrincipal::with('dealer')->where([
+            ['status',1],
+            ['dealer_id', session('user')['customer_id']]
+        ])->get();
+        
+   
+    
         $organizations    = $org_types->get_org_options();
         $project_sources  = $project_sources->get_project_sources_options();
         $customer_options = $customer->get_customer_options();
         $sales_persons    = $sales_person->get_sales_persons(session('user')['customer_id']);
+      
         $vehicle_models   = $m_vehicle->get_active_vehicles();
         $vehicle_types    = VehicleType::all();
         $fleet_categories = FleetCategories::all();
@@ -110,20 +121,21 @@ class ProjectController extends Controller
         }
 
     	$page_data = array(
-    		'project_id'           => $project_id,
-    		'action'               => $action,
-            'organizations'        => $organizations,
-            'project_sources'      => $project_sources,
-            'customer_options'     => $customer_options,
-            'sales_persons'        => $sales_persons,
-            'vehicle_models'       => $vehicle_options,
-            'vehicles'             => $vehicle_models,
-            'vehicle_types'        => $vehicle_types,
-            'base_url'             => url('/'),
-            'fleet_categories'     => $fleet_categories,
-            'page_title'           => $page_title,
-            'vehicle_lead_times'   => config('app.vehicle_lead_time'),
-            'user_type'            => session('user')['user_type_id']
+    		'project_id'         => $project_id,
+    		'action'             => $action,
+    		'organizations'      => $organizations,
+    		'project_sources'    => $project_sources,
+    		'customer_options'   => $customer_options,
+    		'sales_persons'      => $sales_persons,
+    		'vehicle_models'     => $vehicle_options,
+    		'vehicles'           => $vehicle_models,
+    		'vehicle_types'      => $vehicle_types,
+    		'base_url'           => url('/'),
+    		'fleet_categories'   => $fleet_categories,
+    		'page_title'         => $page_title,
+    		'dealer_principal'   => $dealer_principal,
+    		'vehicle_lead_times' => config('app.vehicle_lead_time'),
+    		'user_type'          => session('user')['user_type_id']
     	);
     	return view('projects.manage_project', $page_data);
     }
