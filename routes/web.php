@@ -182,6 +182,11 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('vehicle/add-inactive','InactiveVehicleController@store');
 	Route::delete('vehicle/delete-inactive/{id}','InactiveVehicleController@destroy');
 
+	// Dealer Principals
+	Route::get('dealer-principals','DealerPrincipalController@index');
+	Route::post('dealer-principal/add','DealerPrincipalController@store');
+	Route::patch('dealer-principal/update','DealerPrincipalController@update');
+	Route::delete('dealer-principal/delete/{principal_id}','DealerPrincipalController@destroy');
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');
