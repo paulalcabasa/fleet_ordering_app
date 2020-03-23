@@ -936,6 +936,7 @@ jQuery(document).ready(function() {
             fleetCategories:      {!! json_encode($fleet_categories) !!},
             baseUrl:              {!! json_encode($base_url) !!},
             action:               {!! json_encode($action) !!},
+            dealer_principal:               {!! json_encode($dealer_principal) !!},
             project_id:           {!! json_encode($project_id) !!},
             competitor_model:     '',
             // step 1 - account details
@@ -1766,6 +1767,20 @@ jQuery(document).ready(function() {
         mounted : function () {
 
             var self = this;
+
+            // add dealer principal default
+            self.dealer_principal.map( row => {
+                self.contactDetails.salesPersons.push({
+                    sales_person_id : row.principal_id,
+                    position_title : row.position,
+                    name : row.name,
+                    mobile_no : row.mobile_no,
+                    email : row.email_address,
+                    delete_flag : 'N'
+                });
+            });
+          
+
             self.editable_flag = true;
             // set button text
             if(self.project_id == null) {

@@ -64,4 +64,6 @@ class DealerPrincipalController extends Controller
         $principal                     = \App\Models\DealerPrincipal::find($request->principal_id);
         $principal->delete(); 
     }
+    
+   
 }
