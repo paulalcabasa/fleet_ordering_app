@@ -19,7 +19,14 @@ class SalesOrderLines extends Model
                     fpc_item.dealers_margin,
                     fpc_item.lto_registration,
                     sum(case when freebies.cost_to_owner_id = 5 then freebies.amount else 0 end) freebies,
-                    fs_term.term_name
+                    fs_term.term_name,
+                    fpc_item.suggested_retail_price,
+                    fpc_item.wholesale_price,
+                    fpc_item.fpc_item_id,
+                    rtt.name payment_term_name,
+                    fpc_item.discount,
+                    fpc_item.promo_title,
+                    fpc_item.promo
                 FROM oe_order_lines_all oola 
                     INNER JOIN oe_order_headers_all ooha
                         ON ooha.header_id = oola.header_id
@@ -36,6 +43,8 @@ class SalesOrderLines extends Model
                         ON fpc_prj.fpc_project_id = fpc_item.fpc_project_id
                     LEFT JOIN ipc_dms.fs_payment_terms fs_term
                         ON fs_term.term_id = fpc_prj.payment_terms
+                    LEFT JOIN apps.ra_Terms_tl rtt
+                        ON rtt.term_id = ooha.payment_term_id
                 WHERE 1 = 1
                     AND fwpc.fwpc_id = :fwpc_id
                 GROUP BY 
@@ -45,7 +54,14 @@ class SalesOrderLines extends Model
                     oola.unit_list_price,
                     fpc_item.dealers_margin,
                     fpc_item.lto_registration,
-                    fs_term.term_name";
+                    fs_term.term_name,
+                    fpc_item.suggested_retail_price,
+                    fpc_item.wholesale_price,
+                    fpc_item.fpc_item_id,
+                    rtt.name,
+                    fpc_item.discount,
+                    fpc_item.promo_title,
+                    fpc_item.promo";
         $params = [
             'fwpc_id' => $fwpc_id
         ];
