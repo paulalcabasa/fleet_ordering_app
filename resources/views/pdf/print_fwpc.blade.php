@@ -99,11 +99,10 @@
                 left: 0px; 
                 right: 0px;
                 height: 250px; 
+                width:720px;
                 margin-left: 1cm;
                 margin-right: 1cm;
                 /** Extra personal styles **/
-          
-       
             }
 
         </style>
@@ -124,80 +123,83 @@
         <div class="confidential">CONFIDENTIAL</div>
     </header>
 
-    <footer>
-        <div style="text-align:center;font-size:10px;font-weight:bold;">*** Note: Fleet Wholesale Price is already net of Fleet Discount. Not valid for subsidy claim. ***</div>
-        <div class="prices">
-            <span>TERMS AND CONDITIONS</span>
-        </div>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <td width="350" valign="top">
-                    <table style="font-size:10px;">
-                      <!--   <tr>
-                            <td style="font-weight:bold;">Payment Term</td>
-                            <td>:</td>
-                            <td>{{ $fwpc_details->payment_terms }}</td>
-                        </tr> -->
-                        <tr>
-                            <td style="font-weight:bold;">Witholding Tax</td>
-                            <td>:</td>
-                            <td align="right">{{ number_format($wht_tax,2,'.',',') }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:bold;">Total Check Payable to IPC</td>
-                            <td>:</td>
-                            <td align="right">{{ number_format($check_amount,2,'.',',') }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="border:1px solid #000;" width="100" align="right">
-                    <table style="font-size:9px;margin:0;">
-                        <tr>
-                            <td><strong>NOTE:</strong> All conditions stipulated on the FWPC should be strictly followed.</td>
-                        </tr>
-                        <tr>
-                            <td align="center"><strong>CONFORME BY:</strong></td>
-                        </tr>
-                        <tr>
-                            <td align="center"><br/><strong>____________________________</strong></td>
-                        </tr>
-                        <tr><td align="center"><strong>(PLS. PRINT NAME & SIGN)</strong></td></tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <table style="font-size:10px;">
-            <tr>
-                <td>Checked by:</td>
-                <td>Approved by: </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="4"><br/></td>
-            </tr>
-            <tr>
-                <td>___________________________</td>
-                <td>___________________________</td>
-                <td></td>
-                <td>___________________________</td>
-            </tr>
-            <tr>
-                <td style="font-weight:bold;">Dealer Sales</td>
-                <td style="font-weight:bold;">HIROTO NAKAGURO</td>
-                <td> / </td>
-                <td style="font-weight:bold;">YASUHIKO OYAMA</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td style="font-weight:bold;">ADvH Sales Division</td>
-                <td>/</td>
-                <td style="font-weight:bold;">VP - Sales Division</td>
-            </tr>
-        </table>
-    </footer>
+    
 
     <main>
+        
+        <footer>
+            <div style="text-align:center;font-size:10px;font-weight:bold;">*** Note: Fleet Wholesale Price is already net of Fleet Discount. Not valid for subsidy claim. ***</div>
+            <div class="prices">
+                <span>TERMS AND CONDITIONS</span>
+            </div>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="350" valign="top">
+                        <table style="font-size:10px;">
+                        <!--   <tr>
+                                <td style="font-weight:bold;">Payment Term</td>
+                                <td>:</td>
+                                <td>{{ $fwpc_details->payment_terms }}</td>
+                            </tr> -->
+                            <tr>
+                                <td style="font-weight:bold;">Witholding Tax</td>
+                                <td>:</td>
+                                <td align="right">{{ number_format($wht_tax,2,'.',',') }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight:bold;">Total Check Payable to IPC</td>
+                                <td>:</td>
+                                <td align="right">{{ number_format($check_amount,2,'.',',') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="border:1px solid #000;" width="100" align="right">
+                        <table style="font-size:9px;margin:0;">
+                            <tr>
+                                <td><strong>NOTE:</strong> All conditions stipulated on the FWPC should be strictly followed.</td>
+                            </tr>
+                            <tr>
+                                <td align="center"><strong>CONFORME BY:</strong></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><br/><strong>____________________________</strong></td>
+                            </tr>
+                            <tr><td align="center"><strong>(PLS. PRINT NAME & SIGN)</strong></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table style="font-size:10px;">
+                <tr>
+                    <td>Checked by:</td>
+                    <td>Approved by: </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><br/></td>
+                </tr>
+                <tr>
+                    <td>___________________________</td>
+                    <td>___________________________</td>
+                    <td></td>
+                    <td>___________________________</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">Dealer Sales</td>
+                    <td style="font-weight:bold;">HIROTO NAKAGURO</td>
+                    <td> / </td>
+                    <td style="font-weight:bold;">YASUHIKO OYAMA</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="font-weight:bold;">ADvH Sales Division</td>
+                    <td>/</td>
+                    <td style="font-weight:bold;">VP - Sales Division</td>
+                </tr>
+            </table>
+        </footer>
+
         <div>
             <h5 style="text-align:center;">FLEET WHOLESALE PRICE CONFIRMATION (FWPC)</h5>
         </div>
@@ -261,7 +263,7 @@
                 <?php 
                     $ctr            = 1;
                     $grand_total    = 0;
-                    $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
+                    $dealers_margin = $row->suggested_retail_price * ($row->dealers_margin/100);
                     $total_margin   = $dealers_margin + $row->lto_registration;
                     $unit_price     = $row->fleet_price + $total_margin;
                     $fwpu           = $unit_price + $row->freebies;
@@ -277,7 +279,7 @@
                     <td align="center">{{ number_format($row->freebies,2) }}</td>
                     <td align="center">{{ number_format($fwpu,2) }}</td>
                     <td align="center">{{ number_format($total_fwpu,2) }}</td>
-                    <td>{{ $row->term_name }}</td>
+                    <td>{{ $row->payment_term_name }}</td>
                 </tr>
                 <?php 
                     $grand_total += $total_fwpu;
@@ -313,7 +315,7 @@
                 @foreach($so_lines as $row)
                 <?php 
                     $ctr = 1;
-                    $dealers_margin = $row->fleet_price * ($row->dealers_margin/100);
+                    $dealers_margin = $row->suggested_retail_price * ($row->dealers_margin/100);
                     $total_margin   = $dealers_margin + $row->lto_registration;
                 ?>
                 <tr>
@@ -327,6 +329,118 @@
                 @endforeach
             </tbody>
         </table>
+
+         <!-- START OF PAGE 2 -->
+        <div style="page-break-before: always"></div>
+        <div>
+            <h4 style="text-align:center;">FLEET WHOLESALE PRICE COMPUTATION DETAILS</h4>
+        </div>
+        @foreach($so_lines as $row)
+        <table style="font-size:11px;" width="100%">
+            <tr>
+                <td valign="top" width="50%">
+                    <table style="width:100%;">
+                        <tr>
+                            <td>
+                                <table style="width:100%;">
+                                    <tr style="background-color:#ccc;">
+                                        <td colspan="2" class="text-bold text-center">Vehicle Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Model</td>
+                                        <td>{{ $row->sales_model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Color</td>
+                                        <td>{{ $row->color }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Quantity</td>
+                                        <td>{{ $row->quantity }}</td>
+                                    </tr>
+                                  
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+                <?php
+                    $dealer_margin = $row->suggested_retail_price * ($row->dealers_margin / 100);
+                    $cost = $row->wholesale_price + $dealer_margin + $row->lto_registration;
+                    $net_cost = $cost - $row->promo;
+                    $fleet_price = $row->fleet_price + $dealer_margin + $row->lto_registration;
+                    $subsidy = $net_cost - $fleet_price;
+                    $total_subsidy = $subsidy * $row->quantity;
+                ?>
+                <td width="50%" valign="top">
+                    <table style="width:100%;">
+                        <tr style="background-color:#ccc;">
+                            <td colspan="2" class="text-bold text-center">Pricing</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">SRP</td>
+                            <td align="right">{{ number_format($row->suggested_retail_price,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">WSP</td>
+                            <td align="right">{{ number_format($row->wholesale_price,2) }}<td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Sales Order Price</td>
+                            <td align="right">{{ number_format($row->fleet_price ,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Fleet Price</td>
+                            <td align="right">{{ number_format($fleet_price ,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Fleet Discount</td>
+                            <td align="right">{{ number_format($row->discount ,2) }}</td>
+                        </tr>
+                       
+                        <tr>
+                            <td class="text-bold">Dealers Margin</td>
+                            <td align="right">{{ number_format($dealer_margin,2) }} ({{ $row->dealers_margin }}%)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">3 Yrs LTO Registration</td>
+                            <td align="right">{{ number_format($row->lto_registration,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Freebies</td>
+                            <td align="right">{{ number_format($row->freebies,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Cost</td>
+                            <td align="right">{{ number_format($cost,2) }}</td>
+                        </tr>
+                         <tr>
+                            <td class="text-bold">Promo Title</td>
+                            <td align="right">{{ $row->promo_title }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Promo</td>
+                            <td align="right">{{ number_format($row->promo, 2)}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Net Cost</td>
+                            <td align="right">{{ number_format($net_cost,2)}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Subsidy</td>
+                            <td align="right">{{ number_format($subsidy,2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-bold">Total IPC Subsidy</td>
+                            <td align="right">{{ number_format($total_subsidy,2)}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+         
+        </table>
+        @endforeach
     </main>
     
 </body>
