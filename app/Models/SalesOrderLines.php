@@ -14,7 +14,7 @@ class SalesOrderLines extends Model
         $sql = "SELECT 
                     msib.attribute9 sales_model,
                     msib.attribute8 color,
-                    round(oola.unit_list_price + oola.tax_value,2) fleet_price,
+                    round(oola.unit_selling_price + oola.tax_value,2) fleet_price,
                     sum(oola.ordered_quantity) quantity,
                     fpc_item.dealers_margin,
                     fpc_item.lto_registration,
@@ -51,7 +51,7 @@ class SalesOrderLines extends Model
                     oola.tax_value,
                     msib.attribute9,
                     msib.attribute8,
-                    oola.unit_list_price,
+                    oola.unit_selling_price,
                     fpc_item.dealers_margin,
                     fpc_item.lto_registration,
                     fs_term.term_name,
