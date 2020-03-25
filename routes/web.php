@@ -187,6 +187,13 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('dealer-principal/add','DealerPrincipalController@store');
 	Route::patch('dealer-principal/update','DealerPrincipalController@update');
 	Route::delete('dealer-principal/delete/{principal_id}','DealerPrincipalController@destroy');
+	
+	// Value sets
+	Route::get('value-sets','ValueSetController@index');
+	Route::post('value-set/add','ValueSetController@store');
+	Route::patch('value-set/update','ValueSetController@updateValueSet');
+	Route::delete('value-set/delete/{value_set_id}','ValueSetController@destroy');
+	
 });
 
 Route::get('login/{user_id}', 'Auth\LoginController@authenticate')->name('api_login');

@@ -159,11 +159,17 @@
 
             <li class="kt-menu__item {{ request()->is('dealer-principals') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/dealer-principals') }}" class="kt-menu__link ">
-                    <i class="kt-menu__link-icon flaticon-truck"></i>
+                    <i class="kt-menu__link-icon flaticon-user"></i>
                     <span class="kt-menu__link-text">Dealer Principals</span>
                 </a>
             </li>
             
+            <li class="kt-menu__item {{ request()->is('value-sets') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/value-sets') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-file"></i>
+                    <span class="kt-menu__link-text">Value sets</span>
+                </a>
+            </li>
             @endif 
         </ul>
     </div>
