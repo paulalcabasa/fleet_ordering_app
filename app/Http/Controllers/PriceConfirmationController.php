@@ -28,6 +28,8 @@ use App\Models\Dealer;
 use App\Models\OracleUser;
 use App\Models\PriceListHeader;
 use App\Models\FPCValidityRequest;
+use App\Models\ValueSetCategory;
+use App\Models\ValueSetName;
 
 class PriceConfirmationController extends Controller
 {   
@@ -140,7 +142,10 @@ class PriceConfirmationController extends Controller
         $conflicts = $m_fpc->getConflictRequirements($projectsArr,$fpc_details->vehicle_type);
      
         $payment_terms = $m_payment_terms->get_payment_terms();
-    
+        $availability = ValueSetName::where('category_id', 1)->get();
+        $note = ValueSetName::where('category_id', 2)->get();
+
+        
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
@@ -148,13 +153,15 @@ class PriceConfirmationController extends Controller
     		'customer_details'      => $customer_details,
     		'projects'              => $projects,
     		'payment_terms'         => $payment_terms,
+    		'availability'          => $availability,
+    		'note'                  => $note,
     		'base_url'              => url('/'),
     		'editable'              => $editable,
     		'fpc_attachments'       => $fpc_attachments,
     		'pricelist_headers'     => $pricelist_headers,
     		'status_colors'         => config('app.status_colors'),
-            'vehicle_lead_time'     => config('app.vehicle_lead_time'),
-            'conflicts'             => $conflicts
+    		'vehicle_lead_time'     => config('app.vehicle_lead_time'),
+    		'conflicts'             => $conflicts
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
