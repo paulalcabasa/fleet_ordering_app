@@ -241,7 +241,7 @@
                     <div class="form-group row" style="margin-bottom:.5em !important;">
                         <div class="col-md-6">
                             <label class="col-form-label">Payment Terms</label>
-                            <select class="form-control" v-model="project.payment_terms" v-select style="width:100%;" id="sel_payment_term">
+                            <select class="form-control sel_payment_term" v-model="project.payment_terms" v-select style="width:100%;">
                                 <option value="">Choose payment term</option>
                                 <option v-for="(row,index) in payment_terms" :value="row.term_id">@{{ row.term_name }}</option>
                             </select>
@@ -254,11 +254,19 @@
                     <div class="form-group row" style="margin-bottom:.5em !important;">
                         <div class="col-md-6">
                             <label class="col-form-label">Availability</label>
-                            <input type="text" class="form-control" v-model.lazy="project.availability">
+                            <select class="form-control sel_availability" v-model="project.availability" v-select style="width:100%;">
+                                <option value="">Choose availability</option>
+                                <option v-for="(row,index) in availability" :value="row.description">@{{ row.description }}</option>
+                            </select>
+                           <!--  <input type="text" class="form-control" v-model.lazy="project.availability"> -->
                         </div>
                         <div class="col-md-6">
                             <label class="col-form-label">Note</label>
-                            <textarea class="form-control" v-model.lazy="project.note"></textarea>
+                            <select class="form-control sel_note" v-model="project.note" v-select style="width:100%;">
+                                <option value="">Choose note</option>
+                                <option v-for="(row,index) in note" :value="row.description">@{{ row.description }}</option>
+                            </select>
+                            <!-- <textarea class="form-control" v-model.lazy="project.note"></textarea> -->
                         </div>
                     </div>
                 </form>
@@ -378,33 +386,35 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            fpc_details:          {!! json_encode($fpc_details) !!},
-            customer_details:     {!! json_encode($customer_details) !!},
-            projects:             {!! json_encode($projects) !!},
-            payment_terms:        {!! json_encode($payment_terms) !!},
-            conflicts:            {!! json_encode($conflicts) !!},
-            baseURL:              {!! json_encode($base_url) !!} ,
-            editable:             {!! json_encode($editable) !!} ,
-            fpc_attachments:      {!! json_encode($fpc_attachments) !!} ,
-            vehicle_lead_time:    {!! json_encode($vehicle_lead_time) !!} ,
-            curModel:             [],
-            curDealerAccount:     '',
-            curFreebies:          [],
-            curDeliveryDetails:   [],
-            active_tab:           0,
-            fpc_attachment:       [],
-            fpc_attachment_label: 'Choose file',
-            remarks:              '',
-            action:               '',
-            cur_lead_time_desc:   '',
-            cur_variant:          '',
-            cur_fpc_project_id:   '',
-            status_colors:        {!! json_encode($status_colors) !!},
-            pricelist_headers:        {!! json_encode($pricelist_headers) !!},
-            selected_pricelist : '',
-            cur_pricelist_line_id : '',
-            curModelIndex : '',
-            curProjectIndex : ''
+            fpc_details          : {!! json_encode($fpc_details) !!},
+            customer_details     : {!! json_encode($customer_details) !!},
+            projects             : {!! json_encode($projects) !!},
+            payment_terms        : {!! json_encode($payment_terms) !!},
+            availability         : {!! json_encode($availability) !!},
+            note                 : {!! json_encode($note) !!},
+            conflicts            : {!! json_encode($conflicts) !!},
+            baseURL              : {!! json_encode($base_url) !!},
+            editable             : {!! json_encode($editable) !!},
+            fpc_attachments      : {!! json_encode($fpc_attachments) !!},
+            vehicle_lead_time    : {!! json_encode($vehicle_lead_time) !!},
+            curModel             : [],
+            curDealerAccount     : '',
+            curFreebies          : [],
+            curDeliveryDetails   : [],
+            active_tab           : 0,
+            fpc_attachment       : [],
+            fpc_attachment_label : 'Choose file',
+            remarks              : '',
+            action               : '',
+            cur_lead_time_desc   : '',
+            cur_variant          : '',
+            cur_fpc_project_id   : '',
+            status_colors        : {!! json_encode($status_colors) !!},
+            pricelist_headers    : {!! json_encode($pricelist_headers) !!},
+            selected_pricelist   : '',
+            cur_pricelist_line_id: '',
+            curModelIndex        : '',
+            curProjectIndex      : ''
         },
         methods : {
             cancelFPC(){
@@ -821,10 +831,17 @@
         },
         created: function () {
             // `this` points to the vm instance
+         
         },
         mounted : function () {
-            $("#sel_payment_term").select2({
+            $(".sel_payment_term").select2({
                 placeholder : 'Choose payment term'
+            });
+            $(".sel_availability").select2({
+                placeholder : 'Choose availability'
+            });
+            $(".sel_note").select2({
+                placeholder : 'Choose note'
             });
         },
         computed: {
