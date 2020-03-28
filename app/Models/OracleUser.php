@@ -114,7 +114,8 @@ class OracleUser extends Authenticatable
                     tab.source_id,
                     tab.email,
                     ut.user_type_name,
-                    ut.user_type_id
+                    ut.user_type_id,
+                    tab.dealer_satellite_id
                 FROM 
                     (SELECT
                         usr.user_id,
@@ -127,13 +128,14 @@ class OracleUser extends Authenticatable
                         ppf.attribute4 section,
                         usr.email_address email,
                         NULL customer_id,
+                        NULL dealer_satellite_id,
                         1 source_id
                     FROM fnd_user usr 
                     LEFT JOIN per_all_people_f ppf
                     ON usr.employee_id = ppf.person_id
                     WHERE usr.user_id = :user_id
                     AND usr.end_date IS NULL
-                    UNION
+                    UNION ALL
                     SELECT 
                         u.user_id,
                         u.user_name,
@@ -145,6 +147,7 @@ class OracleUser extends Authenticatable
                         ud.section,
                         ud.email,
                         u.customer_id,
+                        u.dealer_satellite_id,
                         2 source_id
                     FROM 
                     ipc_portal.users u
@@ -155,11 +158,11 @@ class OracleUser extends Authenticatable
                     AND ud.user_id = :user_id) 
                 tab
                 LEFT JOIN ipc_portal.user_system_access usa
-                ON tab.user_id = usa.user_id
+                    ON tab.user_id = usa.user_id
                 LEFT JOIN ipc_portal.system_user_types ut
-                ON usa.user_type_id = ut.user_type_id
+                    ON usa.user_type_id = ut.user_type_id
                 LEFT JOIN ipc_portal.systems sys
-                ON usa.system_id = sys.system_id
+                    ON usa.system_id = sys.system_id
                 WHERE 1 = 1
                 AND sys.system_id = :system_id
             ', [

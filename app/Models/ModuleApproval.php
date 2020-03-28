@@ -37,7 +37,7 @@ class ModuleApproval extends Model
                             fa.approver_user_id,
                             fa.approver_source_id,
                             usr_app.first_name || ' ' || usr_app.last_name approver_name,
-                            hca.account_name dealer_name
+                            nvl(dlr_sat.account_name,hca.account_name) dealer_name
                 FROM ipc_dms.fs_module_approval ma
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON ma.module_reference_id = fp.project_id
@@ -57,6 +57,8 @@ class ModuleApproval extends Model
                         AND usr_app.user_source_id = fa.approver_source_id  
                     LEFT JOIN apps.hz_cust_accounts_all hca
                         ON hca.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
                 WHERE 1 = 1
                     AND fa.approver_user_id = :approver_id
                     AND fa.approver_source_id = :approver_source_id
@@ -293,7 +295,7 @@ class ModuleApproval extends Model
                         fa.approver_user_id,
                         fa.approver_source_id,
                         usr_app.first_name || ' ' || usr_app.last_name approver_name,
-                        hca.account_name dealer_name
+                        nvl(dlr_sat.account_name,hca.account_name)   dealer_name
                 FROM ipc_dms.fs_module_approval ma
                     INNER JOIN ipc_dms.fs_po_headers ph
                         ON ma.module_reference_id = ph.po_header_id
@@ -315,6 +317,8 @@ class ModuleApproval extends Model
                         AND usr.user_source_id = fp.create_user_source_id
                     LEFT JOIN apps.hz_cust_accounts_all hca
                         ON hca.cust_account_id = fp.dealer_id 
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
                 WHERE 1 = 1
                     AND fa.approver_user_id = :approver_id
                     AND fa.approver_source_id = :approver_source_id
