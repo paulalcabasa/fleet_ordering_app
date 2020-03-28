@@ -24,14 +24,14 @@ class LoginController extends Controller
     {
         
         echo 'AUTHENTICATING...';
-      //  die;
+    
         // Redirect if authenticated already
        // if (Auth::check()) return redirect()->route('dashboard');
         if (Auth::check()) return redirect()->action('DashboardController@dashboard');
 
         // Query user data (Source: Oracle or IPC Portal)
         $user = $oracle_user->get($user_id)[0];
-        
+     
         // Existence validation
             
         
@@ -44,21 +44,22 @@ class LoginController extends Controller
 
             // User harnessed data
             $user_session = [
-                'user_id'        => $user->user_id,
-                'first_name'     => $user->first_name,
-                'last_name'      => $user->last_name,
-                'username'       => $user->user_name,
-                'fullname'       => $user->first_name .' '. $optional_middle .' '. $user->last_name,
-                'email'          => $user->email,
-                'section'        => $user->section,
-                'department'     => $user->department,
-                'division'       => $user->division,
-                'user_type_name' => $user->user_type_name,
-                'customer_id'    => $user->customer_id,
-                'source_id'      => $user->source_id,
-                'user_type_id'      => $user->user_type_id
+                'user_id'             => $user->user_id,
+                'first_name'          => $user->first_name,
+                'last_name'           => $user->last_name,
+                'username'            => $user->user_name,
+                'fullname'            => $user->first_name .' '. $optional_middle .' '. $user->last_name,
+                'email'               => $user->email,
+                'section'             => $user->section,
+                'department'          => $user->department,
+                'division'            => $user->division,
+                'user_type_name'      => $user->user_type_name,
+                'customer_id'         => $user->customer_id,
+                'source_id'           => $user->source_id,
+                'user_type_id'        => $user->user_type_id,
+                'dealer_satellite_id' => $user->dealer_satellite_id
             ];
-
+           
             // Save user instance on session
             session(['user' => $user_session]);
 

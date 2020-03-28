@@ -150,11 +150,12 @@ class ProjectController extends Controller
         }
 
         $page_data = array(
-            'base_url'      => url('/'),
-            'status_colors' => config('app.status_colors'),
-            'dealers'       => $dealers,
-            'user_type'     => session('user')['user_type_id'],
-            'customer_id'   => session('user')['customer_id'] == null ? "" : session('user')['customer_id']
+            'base_url'            => url('/'),
+            'status_colors'       => config('app.status_colors'),
+            'dealers'             => $dealers,
+            'user_type'           => session('user')['user_type_id'],
+            'customer_id'         => session('user')['customer_id'] == null ? "" : session('user')['customer_id'],
+            'dealer_satellite_id' => session('user')['dealer_satellite_id'] == null ? "" : session('user')['dealer_satellite_id'],
         );
 
     	return view('projects.all_projects',$page_data);
@@ -1114,12 +1115,13 @@ class ProjectController extends Controller
     }
 
     public function ajax_get_filtered_projects(Request $m_request, Project $m_project){
-        $customer_id = $m_request->customer_id;
-        $start_date  = $m_request->start_date;
-        $end_date    = $m_request->end_date;
-        $dealer      = $m_request->dealer;
-        $status      = $m_request->status;
-        $projects = $m_project->get_filtered_projects(
+        $customer_id         = $m_request->customer_id;
+        $start_date          = $m_request->start_date;
+        $end_date            = $m_request->end_date;
+        $dealer              = $m_request->dealer;
+        $status              = $m_request->status;
+        $dealer_satellite_id = $m_request->dealer_satellite_id;
+        $projects            = $m_project->get_filtered_projects(
             session('user')['user_type_id'],
             $dealer,
             $start_date,
@@ -1127,7 +1129,8 @@ class ProjectController extends Controller
             $customer_id,
             $status,
             session('user')['user_id'],
-            session('user')['source_id']
+            session('user')['source_id'],
+            $dealer_satellite_id
         );
         return $projects;
     }

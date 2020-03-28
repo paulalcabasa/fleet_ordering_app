@@ -232,6 +232,7 @@
             status_colors:     {!! json_encode($status_colors) !!},
             dealers:           {!! json_encode($dealers) !!},
             user_type:           {!! json_encode($user_type) !!},
+            dealer_satellite_id:           {!! json_encode($dealer_satellite_id) !!},
             cur_approval:      [],
             start_date:        '',
             end_date:          '',
@@ -285,11 +286,12 @@
 
                 axios.get('ajax-get-filtered-projects',{
                     params : {
-                         customer_id: customer_id,
-                         start_date:  self.start_date,
-                         end_date:    self.end_date,
-                         dealer:      self.selected_dealer,
-                         status:      self.project_status
+                         customer_id        : customer_id,
+                         start_date         : self.start_date,
+                         end_date           : self.end_date,
+                         dealer             : self.selected_dealer,
+                         status             : self.project_status,
+                         dealer_satellite_id: self.dealer_satellite_id
                     }
                 }).then( (response) => {
                     if($.fn.dataTable.isDataTable('#projects_table')){

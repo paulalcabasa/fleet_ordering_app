@@ -337,7 +337,8 @@ class Project extends Model
         $customer_id,
         $status,
         $user_id,
-        $user_source_id
+        $user_source_id,
+        $dealer_satellite_id
     ){
         $where = "";
         $addtl_table = "";
@@ -362,6 +363,15 @@ class Project extends Model
             $where .= "AND fp.dealer_id = " . $dealer_id;
         }
 
+        if($user_type == 27 || $user_type == 31){
+            if($dealer_satellite_id != ""){
+                $where .= "AND usr.dealer_satellite_id = " . $dealer_satellite_id;
+            }
+            else {
+                $where .= "AND usr.dealer_satellite_id IS NULL";
+            }
+        }
+
         if($customer_id != ""){
             $where .= "AND fp.customer_id = " . $customer_id;
         }
@@ -377,7 +387,7 @@ class Project extends Model
         $sql = "SELECT  fp.project_id,
                         fp.customer_id,
                         fc.customer_name,
-                        dlr.account_name,
+                        nvl(dlr_sat.account_name,usr.account_name) account_name,
                         st.status_name,
                         fp.status,
                         usr.first_name || ' ' || usr.last_name created_by,
@@ -422,8 +432,7 @@ class Project extends Model
                 FROM ipc_dms.fs_projects fp
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fp.customer_id = fc.customer_id 
-                    LEFT JOIN ipc_dms.dealers_v dlr
-                        ON dlr.cust_account_id = fp.dealer_id
+               
                     LEFT JOIN ipc_dms.fs_status st
                         ON st.status_id = fp.status
                     LEFT JOIN ipc_dms.ipc_portal_users_v usr
@@ -438,18 +447,20 @@ class Project extends Model
                         ON ph.project_id = fp.project_id
                     LEFT JOIN ipc_dms.fs_fwpc fwpc
                         ON fwpc.project_id = fp.project_id    
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
                 WHERE 1 = 1
-                    {$where}
+                   {$where}
                 GROUP BY fp.project_id,
                         fp.customer_id,
                         fc.customer_name,
-                        dlr.account_name,
                         st.status_name,
                         usr.first_name,
                         usr.last_name,
                         fp.creation_date,
                         fp.dealer_id,
-                        fp.status";
+                        fp.status,
+                        usr.account_name,dlr_sat.account_name";
         $query = DB::select($sql);
         
         return $query;
