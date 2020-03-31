@@ -11,6 +11,7 @@
             <table id="data" class="table table-striped" width="100%">
                 <thead>
                     <tr>
+                        <th>Dealer</th>
                         <th>CS No.</th>
                         <th>Model</th>
                         <th>Color</th>
@@ -21,6 +22,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="row in taggedUnits">
+                        <td>@{{ row.account_name }}</td>
                         <td>@{{ row.serial_number }}</td>
                         <td>@{{ row.sales_model }}</td>
                         <td>@{{ row.color }}</td>
