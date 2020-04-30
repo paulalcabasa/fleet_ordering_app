@@ -108,6 +108,7 @@
                                         <label>Account Name</label>
                                          <div class="typeahead">
                                             <input 
+                                                :disabled="action == 'edit'"
                                                 type="text" 
                                                 class="form-control" 
                                                 v-model.lazy="accountDetails.account_name"   
@@ -1859,12 +1860,14 @@ jQuery(document).ready(function() {
                 }
             }).on('typeahead:selected', function(evt, item) {
                 // do what you want with the item here
-                KTApp.blockPage({
-                    overlayColor: '#000000',
-                    type: 'v2',
-                    state: 'success',
-                    message: 'Please wait...'
-                });
+                if(self.action != "edit"){
+                    KTApp.blockPage({
+                        overlayColor: '#000000',
+                        type: 'v2',
+                        state: 'success',
+                        message: 'Please wait...'
+                    });
+                }
              
                 self.loadCustomerData(item);                  
             }); 
@@ -1920,12 +1923,12 @@ jQuery(document).ready(function() {
 
             if(self.action == "edit"){
                 // load project details
-                KTApp.blockPage({
+   /*              KTApp.blockPage({
                     overlayColor: '#000000',
                     type: 'v2',
                     state: 'success',
                     message: 'Please wait...'
-                });
+                }); */
                 var project_data = [];
                 axios.get('get-project-details/' + self.project_id)
                 .then((response) => {
