@@ -415,7 +415,7 @@
                 return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + parseFloat(item.quantity),0);
             },
             sumPrice(header_index){
-                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * (parseFloat(item.fleet_price) + parseFloat(item.freebies)) ),0);
+                return this.fpc[header_index]['fpc_lines'].reduce((acc,item) => parseFloat(acc) + (parseFloat(item.quantity) * ( (parseFloat(item.suggested_retail_price) - parseFloat(item.discount) - parseFloat(item.promo)) + parseFloat(item.freebies)) ),0);
             },
             searchSalesOrder(){
                 var self = this;

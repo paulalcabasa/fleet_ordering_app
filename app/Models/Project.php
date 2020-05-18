@@ -368,7 +368,7 @@ class Project extends Model
                 $where .= "AND usr.dealer_satellite_id = " . $dealer_satellite_id;
             }
             else {
-                $where .= "AND usr.dealer_satellite_id IS NULL";
+                $where .= "AND usr.dealer_satellite_id IS NULL ";
             }
         }
 
@@ -383,6 +383,8 @@ class Project extends Model
         if($user_type == 27) { // dealer staff
             $where .= "AND fp.created_by = " . $user_id . " AND fp.create_user_source_id = " . $user_source_id;
         }
+
+       // DB::enableQueryLog();
 
         $sql = "SELECT  fp.project_id,
                         fp.customer_id,
@@ -463,6 +465,12 @@ class Project extends Model
                         usr.account_name,dlr_sat.account_name";
         $query = DB::select($sql);
         
+     //   $query = DB::getQueryLog();
+
+//$query = end($query);
+
+//print_r($query);
+
         return $query;
     }
 

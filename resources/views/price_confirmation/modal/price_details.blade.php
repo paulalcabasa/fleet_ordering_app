@@ -269,7 +269,11 @@
                                     </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Fleet Price</span>
-                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.fleet_price) }}</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(calculateFleetPrice) }}</span>
+                                    </div>
+                                    <div class="row kt-margin-b-5">
+                                        <span class="col-md-4 kt-font-bold">Discount</span>
+                                        <span class="col-md-8 kt-font-boldest kt-font-primary">@{{ formatPrice(curModel.discount) }}</span>
                                     </div>
                                     <div class="row kt-margin-b-5">
                                         <span class="col-md-4 kt-font-bold">Dealer's Margin</span>
