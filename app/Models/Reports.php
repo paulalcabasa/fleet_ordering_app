@@ -185,4 +185,50 @@ class Reports extends Model
         $query = DB::select($sql,$params);
 		return $query;     
     }
+
+     public function get_fpc_summary($params){
+   
+        $sql = "SELECT prj.project_id project_no,
+                    fpc.fpc_id fpc_ref_no,
+                    nvl(dlr_sat.account_name,usr.account_name) account_name,
+                    to_char(fpc.creation_date,'mm/dd/yyyy') date_created,
+                    cust.customer_name,
+                    vehicle.sales_model,
+                    vehicle.color,
+                    rl.quantity,
+                    fpc_items.wholesale_price,
+                    fpc_items.suggested_retail_price,
+                    fpc_items.discount,
+                    fpc_items.promo,
+                    fpc_items.suggested_retail_price - fpc_items.discount - fpc_items.promo fleet_price,
+                    ipc_usr.first_name || ' ' || ipc_usr.last_name prepared_by,
+                    st.status_name status 
+                FROM ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_status st
+                        ON st.status_id = fpc.status
+                    LEFT JOIN ipc_dms.fs_customers cust
+                        ON cust.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_id = fpc.fpc_id
+                    LEFT JOIN ipc_dms.fs_projects prj
+                        ON prj.project_id = fpc_prj.project_id
+                LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = prj.created_by 
+                        AND usr.user_source_id = prj.create_user_source_id
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
+                    LEFT JOIN ipc_dms.fs_fpc_items fpc_items
+                        ON fpc_items.fpc_project_id  =  fpc_prj.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+                        ON rl.requirement_line_id = fpc_items.requirement_line_id
+                    LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                        ON vehicle.inventory_item_id = rl.inventory_item_id
+                LEFT JOIN ipc_dms.ipc_portal_users_v ipc_usr
+                        ON ipc_usr.user_id = fpc.created_by 
+                        AND ipc_usr.user_source_id = fpc.create_user_source_id
+                where st.status_name NOT IN( 'Cancelled')
+                                    AND trunc(fpc.creation_date) BETWEEN '".$params['start_date']."' AND '". $params['end_date']."'";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

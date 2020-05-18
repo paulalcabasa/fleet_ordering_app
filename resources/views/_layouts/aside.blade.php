@@ -102,6 +102,14 @@
                 </a>
             </li>
             @endif
+            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            <li class="kt-menu__item {{ request()->is('fpc-summary') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/fpc-summary') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-information"></i>
+                    <span class="kt-menu__link-text">FPC Summary</span>
+                </a>
+            </li>
+            @endif
             @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
             <li class="kt-menu__item {{ request()->is('reports/tagged') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('reports/tagged') }}" class="kt-menu__link ">
