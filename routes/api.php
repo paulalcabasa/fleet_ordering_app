@@ -25,3 +25,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // -------------- End of authentication -------------- //
 
 Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('reports.export_inquiry');
+Route::post('export-fpc-summary', 'ReportsController@export_fpc_summary')->name('reports.export_fpc_summary');

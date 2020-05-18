@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InquiryExport;
+use App\Exports\FPCSummaryExport;
 use App\Models\Reports;
 
 
@@ -38,5 +39,13 @@ class ReportsController extends Controller
         ];
         $invoices = $reports->getInvoices($params);
         return response()->json($invoices);
+    }
+
+     public function export_fpc_summary(Request $request){
+        $params = [
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
+        ];
+        return Excel::download(new FPCSummaryExport($params), 'fpc_summary.xlsx');
     }
 }
