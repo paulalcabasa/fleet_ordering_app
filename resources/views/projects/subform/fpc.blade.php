@@ -107,7 +107,8 @@
                         <td><span :class="vehicle_colors[item.color]">&nbsp</span> @{{ item.color }}</td>
                         <td>@{{ item.quantity }}</td>
                         <td>@{{ item.rear_body_type }}</td>
-                        <td align="right">P @{{ item.fleet_price | formatPeso }}</td>
+                        <td align="right">P @{{ item.suggested_retail_price - item.discount - item.promo | formatPeso }}</td>
+
                         <td align="right">@{{ item.freebies | formatPeso }}</td>
                         <!-- <td>N/A</td> -->
                         <td>@{{ item.additional_items }}</td>

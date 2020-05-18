@@ -229,19 +229,20 @@
             {{ $qty_total = 0 }}
             {{ $price_total = 0}}
             @foreach($fpc['fpc_lines'] as $item)
+            {{ $fleet_price  = $item->suggested_retail_price - $item->discount - $item->promo }}
                 <tr>
                     <td>{{ $ctr }}</td>
                     <td>{{ $item->sales_model }}</td>
                     <td>{{ $item->color }}</td>
                     <td align="right">{{ $item->quantity }}</td>
-                    <td align="right">{{ number_format($item->fleet_price,2,',','.')  }}</td>
+                    <td align="right">{{ number_format($fleet_price,2,',','.')  }}</td>
                     <td align="right">{{ number_format($item->freebies,2,',','.')  }}</td>
                     <td>{{ $item->rear_body_type }}</td>
                     <!-- <td>N/A</td> -->
                     <td>{{ $item->additional_items }}</td>
                 </tr>
                 {{ $qty_total += $item->quantity }}
-                {{ $price_total += $item->quantity * ($item->fleet_price - $item->freebies) }}
+                {{ $price_total += $item->quantity * ($fleet_price - $item->freebies) }}
                 {{ $ctr++ }}
             @endforeach
             </tbody>
