@@ -49,20 +49,32 @@ class ProjectController extends Controller
         CustomerAffiliates $m_affiliate
     ){
         
+          //dd($project_details);
+        $customer_id = null;
+        $project_id = $request->project_id;
+       
+      
+        $project_details        = $m_project->get_details($project_id);
+        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+            $customer_id = $project_details->dealer_id;
+        }
+        else {
+            $customer_id = session('user')['customer_id'];
+        }
         $dp = new DealerPrincipal;
-         
+
         $dealer_principal = \App\Models\DealerPrincipal::with('dealer')->where([
             ['status',1],
-            ['dealer_id', session('user')['customer_id']]
+            ['dealer_id', $customer_id ]
         ])->get();
+            
         
-   
-    
         $organizations    = $org_types->get_org_options();
         $project_sources  = $project_sources->get_project_sources_options();
         $customer_options = $customer->get_customer_options();
-        $sales_persons    = $sales_person->get_sales_persons(session('user')['customer_id']);
-      
+        $sales_persons    = $sales_person->get_sales_persons($customer_id);
+        
+    
         $vehicle_models   = $m_vehicle->get_active_vehicles();
         $vehicle_types    = VehicleType::all();
         $fleet_categories = FleetCategories::all();
