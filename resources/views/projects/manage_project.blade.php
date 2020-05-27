@@ -1021,6 +1021,20 @@ jQuery(document).ready(function() {
 
         },
         methods : {
+            addDealerPrincipalToOption(){
+                this.dealer_principal.map(data => {
+                    this.salesPersonOptions.push({
+                        sales_person_id : data.principal_id,
+                        position : data.position,
+                        description : data.position,
+                        email_1 : data.email_address,
+                        fname : data.name,
+                        lname : '',
+                        mobile_1 : data.mobile_no
+                    });
+                });
+               
+            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1767,6 +1781,8 @@ jQuery(document).ready(function() {
         },
         mounted : function () {
 
+            this.addDealerPrincipalToOption();
+            
             var self = this;
 
             // add dealer principal default
