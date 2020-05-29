@@ -15,6 +15,7 @@ use App\Models\Approver;
 use App\Models\ModuleApproval;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
+use App\Models\FPC_Project;
 
 
 class PurchaseOrderController extends Controller
@@ -34,7 +35,7 @@ class PurchaseOrderController extends Controller
         if($action == "validate" && !in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
         }
-
+        
         $approval_id  = $request->approval_id;
         $po_details   = $m_poh->get_po_details($po_header_id);
         $attachments  = $m_attachment->get_po_attachments($po_header_id);
@@ -107,15 +108,22 @@ class PurchaseOrderController extends Controller
         RequirementLine $m_requirement_line,
         ProjectDeliverySchedule $m_delivery_sched
     ){
+
+        $fpc_project = new FPC_Project;
+
         $project_id = $request->project_id;
+        $fpcs = $fpc_project->get_by_project($project_id);
         $project_details = $m_project->get_details($project_id);
         $requirement_lines = $m_requirement_line->get_po_requirement_lines($project_id);
         $requirement_lines_data = [];
+
+        
         foreach ($requirement_lines as $row) {
             $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
+            $fleet_price = $row->suggested_retail_price - $row->promo - $row->discount;
             $arr = [
                 'requirement_line_id' => $row->requirement_line_id,
-                'fleet_price'         => $row->fleet_price,
+                'fleet_price'         => $fleet_price,
                 'sales_model'         => $row->sales_model,
                 'color'               => $row->color,
                 'quantity'            => $row->quantity,
@@ -128,13 +136,14 @@ class PurchaseOrderController extends Controller
         }
        
         $page_data = [
-            'project_id'         => $project_id,
-            'project_details'    => $project_details,
-            'requirement_lines'  => $requirement_lines_data,
-            'vehicle_colors'     => config('app.vehicle_badge_colors'),
-            'status_colors'      => config('app.status_colors'),
-            'base_url'           => url('/'),
-            'vehicle_lead_time' => config('app.vehicle_lead_time')
+            'project_id'        => $project_id,
+            'project_details'   => $project_details,
+            'requirement_lines' => $requirement_lines_data,
+            'vehicle_colors'    => config('app.vehicle_badge_colors'),
+            'status_colors'     => config('app.status_colors'),
+            'base_url'          => url('/'),
+            'vehicle_lead_time' => config('app.vehicle_lead_time'),
+            'fpcs'              => $fpcs
         ];
         return view('purchase_order.submit_po', $page_data);
     }
@@ -152,6 +161,7 @@ class PurchaseOrderController extends Controller
         $po_number         = $request->po_number;
         $project_id        = $request->project_id;
         $vehicle_type      = $request->vehicle_type;
+        $fpc_project_id      = $request->fpc_project_id;
 
         // insert po headers
         $po_header_params = [
@@ -160,6 +170,7 @@ class PurchaseOrderController extends Controller
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
+            'fpc_project_id'        => $fpc_project_id,
             'status'                => 7 // pending , to be reviewed by ipc
         ];
 

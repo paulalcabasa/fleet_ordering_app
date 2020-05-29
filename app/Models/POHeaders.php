@@ -97,19 +97,29 @@ class POHeaders extends Model
                         fc.customer_name account_name,
                         to_char(ph.creation_date,'MM/DD/YYYY') date_created,
                         usr.first_name || ' ' || usr.last_name created_by,
-                        fs.status_name
+                        fs.status_name,
+                        dbb.abbreviation || 
+                        to_char(fpc.creation_date,'MM') || 
+                        to_char(fpc.creation_date,'YY') || 
+                        '-' || fpc_prj.fpc_id fpc_ref_no
                 FROM ipc_dms.fs_po_headers ph
-                    LEFT JOIN ipc_dms.fs_projects fp
-                        ON fp.project_id = ph.project_id
-                    LEFT JOIN ipc_dms.fs_customers fc
-                        ON fc.customer_id = fp.customer_id 
-                    LEFT JOIN ipc_dms.ipc_portal_users_v  usr
-                        ON usr.user_id = ph.created_by
-                        AND ph.create_user_source_id = usr.user_source_id
-                    LEFT JOIN ipc_dms.fs_status fs
-                        ON fs.status_id = ph.status
+                        LEFT JOIN ipc_dms.fs_projects fp
+                            ON fp.project_id = ph.project_id
+                        LEFT JOIN ipc_dms.fs_customers fc
+                            ON fc.customer_id = fp.customer_id 
+                        LEFT JOIN ipc_dms.ipc_portal_users_v  usr
+                            ON usr.user_id = ph.created_by
+                            AND ph.create_user_source_id = usr.user_source_id
+                        LEFT JOIN ipc_dms.fs_status fs
+                            ON fs.status_id = ph.status
+                        LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                            ON fpc_prj.fpc_project_id = ph.fpc_project_id
+                        LEFT JOIN ipc_dms.dealer_abbrev_names dbb
+                            ON dbb.cust_account_id = fp.dealer_id
+                        LEFT JOIN ipc_dms.fs_fpc fpc
+                            ON fpc.fpc_id = fpc_prj.fpc_id  
                 WHERE  1 = 1
-                    AND ph.project_id = :project_id";
+                            AND ph.project_id = :project_id";
         
         $params = [
             'project_id' => $project_id
@@ -186,7 +196,14 @@ class POHeaders extends Model
                         fc.customer_name account_name,
                         to_char(ph.creation_date,'MM/DD/YYYY') date_created,
                         usr.first_name || ' ' || usr.last_name created_by,
-                        fs.status_name
+                        fs.status_name,
+                        CASE WHEN ph.fpc_project_id IS NOT NULL THEN dbb.abbreviation || 
+                                    to_char(fpc.creation_date,'MM') || 
+                                    to_char(fpc.creation_date,'YY') || 
+                                    '-' || fpc_prj.fpc_id 
+                            ELSE NULL
+                        END fpc_ref_no,
+                        nvl(dlr_main.account_name, dlr_sat.account_name) dealer_name
                 FROM ipc_dms.fs_po_headers ph
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON fp.project_id = ph.project_id
@@ -197,6 +214,16 @@ class POHeaders extends Model
                         AND ph.create_user_source_id = usr.user_source_id
                     LEFT JOIN ipc_dms.fs_status fs
                         ON fs.status_id = ph.status
+                    LEFT JOIN ipc_dms.dealer_abbrev_names dbb
+                        ON dbb.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_project_id = ph.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id 
+                    LEFT JOIN ipc_portal.dealers dlr_main
+                        ON dlr_main.cust_account_id = usr.customer_id
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
                 WHERE  1 = 1
                     {$where}";
         $query = DB::select($sql);

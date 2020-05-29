@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th>Action</th>
+                    <th>FPC Ref No.</th>
                     <th>PO Ref</th>
                     <th>PO No.</th>
                     <th>Submitted By</th>
@@ -23,6 +24,7 @@
                     <td nowrap="nowrap">
                         <a :href="base_url + '/po-overview/view/' + row.po_header_id" title="View" class="btn btn-sm btn-clean btn-icon btn-icon-md"><i class="la la-eye"></i></a> 
                     </td>
+                    <td>@{{ row.fpc_ref_no }}</td>
                     <td>@{{ row.po_header_id }}</td>
                     <td>@{{ row.po_number }}</td>
                     <td>@{{ row.created_by }}</td>

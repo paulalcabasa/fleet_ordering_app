@@ -64,6 +64,10 @@ class RequirementLine extends Model
                         rl.rear_body_type,
                         rl.additional_items,
                         fpc_item.fleet_price,
+                        fpc_item.suggested_retail_price,
+                        fpc_item.wholesale_price,
+                        fpc_item.discount,
+                        fpc_item.promo,
                         0 po_qty
                 FROM ipc_dms.fs_prj_requirement_headers rh
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
