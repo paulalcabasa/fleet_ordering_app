@@ -181,4 +181,25 @@ class FPC_Project extends Model
                 'update_user_source_id' => $params['update_user_source_id']
             ]);
     }
+
+    public function get_by_project($project_id){
+        $sql = "SELECT fpc_prj.fpc_id,
+                        fpc_prj.fpc_project_id,
+                        dbb.abbreviation || 
+                        to_char(fpc.creation_date,'MM') || 
+                        to_char(fpc.creation_date,'YY') || 
+                        '-' || 
+                        fpc_prj.fpc_id fpc_ref_no
+                FROM ipc_dms.fs_fpc_projects fpc_prj
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fpc_prj.project_id
+                    LEFT JOIN ipc_dms.dealer_abbrev_names dbb
+                        ON dbb.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                WHERE fpc_prj.project_id = :project_id";
+        
+        $query = DB::select($sql,['project_id' => $project_id]);
+        return $query;
+    }
 }

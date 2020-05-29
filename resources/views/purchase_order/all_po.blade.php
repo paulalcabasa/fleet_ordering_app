@@ -91,6 +91,8 @@
                     <tr>
                         <th>Action</th>
                         <th>PO Number</th>
+                        <th>FPC Ref No.</th>
+                        <th>Dealer</th>
                         <th>Project No</th>
                         <th>Customer</th>
                         <th>Date Submitted</th>
@@ -104,6 +106,8 @@
                             <a :href="base_url + '/po-overview/view/' + row.po_header_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                         </td>
                         <td>@{{ row.po_number }}</td>
+                        <td>@{{ row.fpc_ref_no }}</td>
+                        <td>@{{ row.dealer_name }}</td>
                         <td>@{{ row.project_id }}</td>
                         <td>@{{ row.account_name }}</td>
                         <td>@{{ row.date_created }}</td>

@@ -60,22 +60,33 @@
       
     </div>
     <div class="kt-portlet__body">
-        <div class="form-group row">
+        <div class="row">
             <div class="col-md-6">
-                <label>PO Number</label>
-                <input type="text" v-model.lazy="poNumber" class="form-control"/>
+               <div class="form-group">
+                    <label>FPC Ref No</label>
+                    <select class="form-control" v-model="fpc_project_id">
+                        <option value="">Select fpc ref no.</option>
+                        <option v-for="(row,index) in fpcs" :value="row.fpc_project_id">@{{ row.fpc_ref_no }}</option>
+                    </select>
+                </div>
             </div>
             <div class="col-md-6">
-                <label>PO Document</label>
-                <div></div>
-                <div class="custom-file">
-                    <input type="file" @change="validateFileSize()" class="custom-file-input" ref="customFile" name="attachments[]" id="attachments" multiple="true">
-                    <label class="custom-file-label" for="attachment">@{{ file_label }}</label>
-                    <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
-                        <li v-for="(row,index) in attachments">
-                            <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
-                        </li>
-                    </ul>
+                <div class="form-group">
+                    <label>PO Number</label>
+                    <input type="text" v-model.lazy="poNumber" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>PO Document</label>
+                    <div></div>
+                    <div class="custom-file">
+                        <input type="file" @change="validateFileSize()" class="custom-file-input" ref="customFile" name="attachments[]" id="attachments" multiple="true">
+                        <label class="custom-file-label" for="attachment">@{{ file_label }}</label>
+                        <ul style="list-style:none;padding-left:0;" class="kt-margin-t-10">
+                            <li v-for="(row,index) in attachments">
+                                <span v-if="row.directory == null">@{{ row.orig_filename }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -281,25 +292,27 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-            projectDetails:       {!! json_encode($project_details) !!},
-            requirement_lines:    {!! json_encode($requirement_lines) !!},
-            vehicle_colors:       {!! json_encode($vehicle_colors) !!},
-            status_colors:        {!! json_encode($status_colors) !!},
-            base_url:             {!! json_encode($base_url) !!},
-            vehicle_lead_time:    {!! json_encode($vehicle_lead_time) !!},
-            poNumber:             '',
-            curDeliverySched:     [],
-            curVehicleType:       '',
-            curLineIndex:         '',
-            curModel:             '',
-            curColor:             '',
-            curQuantity:          '',
-            attachments:          [],
-            curRequirementLineId: '',
-            curVariant:           '',
-            file_label:           'Choose file',
-            curMinDate:           '',
-            cur_lead_time_desc: '',
+            projectDetails       : {!! json_encode($project_details) !!},
+            requirement_lines    : {!! json_encode($requirement_lines) !!},
+            vehicle_colors       : {!! json_encode($vehicle_colors) !!},
+            status_colors        : {!! json_encode($status_colors) !!},
+            base_url             : {!! json_encode($base_url) !!},
+            vehicle_lead_time    : {!! json_encode($vehicle_lead_time) !!},
+            fpcs                 : {!! json_encode($fpcs) !!},
+            poNumber             : '',
+            curDeliverySched     : [],
+            fpc_project_id       : '',
+            curVehicleType       : '',
+            curLineIndex         : '',
+            curModel             : '',
+            curColor             : '',
+            curQuantity          : '',
+            attachments          : [],
+            curRequirementLineId : '',
+            curVariant           : '',
+            file_label           : 'Choose file',
+            curMinDate           : '',
+            cur_lead_time_desc   : '',
             cur_vehicle_lead_time: ''
         },
         created: function () {
@@ -367,6 +380,10 @@
                     errors.push('Please check PO Quantities.');   
                 }
 
+                if(self.fpc_project_id == ""){
+                    errors.push('FPC Ref No. is required');   
+                }
+
 
 
                 if(errors.length > 0){
@@ -406,7 +423,8 @@
                         axios.post('/save-po', {
                             requirement_lines: self.requirement_lines,
                             po_number:         self.poNumber,
-                            project_id:        self.projectDetails.project_id
+                            project_id:        self.projectDetails.project_id,
+                            fpc_project_id : self.fpc_project_id
                         })
                         .then(function (response) {
                             self.processFileUpload(
