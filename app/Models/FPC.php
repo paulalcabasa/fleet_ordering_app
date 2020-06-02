@@ -333,6 +333,7 @@ class FPC extends Model
                                 ON fpc.fpc_id = fpc_prj.fpc_id
                             WHERE 1 = 1
                                 AND fpc.status IN(4,12)
+                                AND fpc_prj.status NOT IN (6)
                                 AND fpc.vehicle_type = :vehicle_type
                         )";
        
