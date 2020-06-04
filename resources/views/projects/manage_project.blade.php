@@ -398,7 +398,7 @@
                                             <tbody>
                                                 <tr v-for="(row, index) in contactDetails.salesPersons" v-show="row.delete_flag == 'N'">
                                                     <td>
-                                                        <a href="#" @click.prevent="removeSalesPersons(index)">
+                                                        <a href="#" @click.prevent="removeSalesPersons(index)" v-show="!row.hasOwnProperty('principal_flag')">
                                                             <i class="flaticon flaticon-delete kt-font-danger"></i>
                                                         </a>
                                                     </td>
@@ -1793,7 +1793,8 @@ jQuery(document).ready(function() {
                     name : row.name,
                     mobile_no : row.mobile_no,
                     email : row.email_address,
-                    delete_flag : 'N'
+                    delete_flag : 'N',
+                    principal_flag : 'Y'
                 });
             });
           
