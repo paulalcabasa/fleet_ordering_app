@@ -1505,7 +1505,10 @@ jQuery(document).ready(function() {
             },
             loadCustomerData(customer_name){
                 var self = this;
-                 axios.get('/ajax-get-customer-data/' + customer_name)
+                 axios.post('customer/get',{
+                    customer_name : customer_name
+                  
+                 })
                     .then(function (response) {
                      
                         var data = response.data.details;
