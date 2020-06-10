@@ -33,6 +33,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('/ajax-get-customers/', 'CustomerController@ajax_get_customers');
 	Route::get('/get-customers-select2/', 'CustomerController@get_customers_select2');
 	Route::get('/ajax-get-affiliates/', 'CustomerController@ajax_get_affiliates');
+
+	Route::post('customer/get', 'CustomerController@get_customer_info');
 	/*Route::get('view-customer/{customer_id}', 'CustomerController@view_customer');*/
 
 	/* Projects */

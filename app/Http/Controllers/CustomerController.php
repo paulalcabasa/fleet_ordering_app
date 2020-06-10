@@ -132,4 +132,23 @@ class CustomerController extends Controller
         return view('customer.customer_overview',$page_data);
     }
 
+  
+
+    public function get_customer_info(
+        Request $request, 
+        Customer $m_customer, 
+        CustomerAffiliates $m_affiliate,
+        Attachment $m_attachment
+    ){
+        $customer_name = $request->customer_name;
+        $details       = $m_customer->get_customer_data($customer_name);
+        $affiliates    = $m_affiliate->get_affiliate($details->customer_id);
+        $attachments   = $m_attachment->get_attachments($details->customer_id);
+        return [
+            'details'     => $details,
+            'affiliates'  => $affiliates,
+            'attachments' => $attachments
+        ];
+    }
+
 }
