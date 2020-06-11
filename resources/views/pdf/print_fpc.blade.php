@@ -104,9 +104,22 @@
             .hide {
                 display:none;
             }
-            
+            footer {
+                position: fixed; 
+                bottom: 0px; 
+                left: 0px; 
+                right: 2px;
+                height: 50px; 
+
+                /** Extra personal styles **/
+                color: #000;
+                text-align: right;
+                line-height: 35px;
+                font-size:10px;
+                margin-right:4.5em;
+            }
         </style>
-        <link rel="stylesheet" type="text/css" href="">
+        
     </head>
 <body>
 
@@ -124,6 +137,10 @@
         <hr/>
         <div class="confidential">CONFIDENTIAL</div>
     </header>
+
+     <footer>
+            Print date : <?php echo date("M, d Y H:m A");?> 
+        </footer>
 
     <main>
         <div>
