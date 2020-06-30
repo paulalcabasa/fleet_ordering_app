@@ -300,7 +300,9 @@ class PriceConfirmationController extends Controller
         $add_freebie         = [];
         foreach($freebies as $freebie){
             if(isset($freebie['deleted'])){
-                $m_freebies->delete_freebie($freebie['freebie_id']);        
+                if($freebie['deleted'] == 'Y'){
+                    $m_freebies->delete_freebie($freebie['freebie_id']);        
+                }
             }
             else {
                 $m_freebies->create_freebies(
