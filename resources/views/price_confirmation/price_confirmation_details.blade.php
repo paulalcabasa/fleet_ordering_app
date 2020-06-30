@@ -588,7 +588,7 @@
                 self.selected_pricelist = order.pricelist_header_id;
                 self.cur_pricelist_line_id = order.pricelist_line_id;
                 self.curModel = order;
-                console.log(self.curModel.lto_registration);
+              
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
                     .then( (response) => {
                         self.curFreebies = response.data;
@@ -603,7 +603,8 @@
                         fpc_item_id : fpc_item_id,
                         description : "",
                         amount : 0,
-                        cost_to : 6     
+                        cost_to : 6,
+                        freebie_id : 0     
                     }
                 ); 
             },
@@ -635,8 +636,17 @@
                     if (result.value) {
                         if(freebie.hasOwnProperty('freebie_id')){
                             // mark as deleted to database
-                            self.curFreebies[index].deleted = 'Y';
-                            self.curFreebies[index].amount = 0;
+                          //  self.curFreebies[index].deleted = 'Y';
+                            //self.curFreebies[index].amount = 0;
+                            axios.post('delete-freebie', {
+                                freebie_id          : freebie.freebie_id,
+                               
+                            })
+                            .then((response) => {
+                                self.toast('success','Deleted freebie');
+                            });
+
+                            this.curFreebies.splice(index,1);
                         }
                         else {
                             // delete from object only

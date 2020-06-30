@@ -291,6 +291,10 @@ class PriceConfirmationController extends Controller
         return $freebies;
     }
 
+    public function delete_freebie(Request $request, FPCItemFreebies $m_freebies){
+        $m_freebies->delete_freebie($request->freebie_id);     
+    }
+
     public function ajax_save_fpc_item(Request $request, FPC_Item $m_fpc_item, FPCItemFreebies $m_freebies){
         $model_data          = $request->modelData;
         $freebies            = $request->freebies;
@@ -299,13 +303,19 @@ class PriceConfirmationController extends Controller
         $del_freebie         = [];
         $add_freebie         = [];
         foreach($freebies as $freebie){
-            if(isset($freebie['deleted'])){
-                if($freebie['deleted'] == 'Y'){
-                    $m_freebies->delete_freebie($freebie['freebie_id']);        
-                }
-            }
-            else {
+            //if(isset($freebie['deleted'])){
+           /*  if(isset($f $freebie['deleted'] == 'Y'){
+                $m_freebies->delete_freebie($freebie['freebie_id']);        
+            } */
+            //}
+            //else {
+         ///   if(isset($freebie['freebie_id'])) {
+                // update
+          //  }
+          //  else {
+                // insert
                 $m_freebies->create_freebies(
+                    $freebie['freebie_id'],
                     $freebie['fpc_item_id'],
                     $freebie['description'], 
                     $freebie['amount'], 
@@ -314,7 +324,9 @@ class PriceConfirmationController extends Controller
                     session('user')['source_id'],
                     Carbon::now()
                 );
-            }
+          //  }
+            
+         //   }
         }
         
         $m_fpc_item->updateFPCItem(

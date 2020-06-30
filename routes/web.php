@@ -82,6 +82,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('/ajax-get-freebies/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
 	Route::get('/ajax-delete-freebie/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
 	Route::post('ajax-save-fpc-item', 'PriceConfirmationController@ajax_save_fpc_item');
+	Route::post('delete-freebie', 'PriceConfirmationController@delete_freebie');
 	Route::post('ajax-save-terms', 'PriceConfirmationController@ajax_save_terms');
 	Route::post('ajax-approve-fpc', 'PriceConfirmationController@ajax_approve_fpc');
 	Route::post('ajax-cancel-fpc', 'PriceConfirmationController@ajax_cancel_fpc');
