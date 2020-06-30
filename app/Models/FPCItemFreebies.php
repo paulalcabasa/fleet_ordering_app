@@ -33,6 +33,7 @@ class FPCItemFreebies extends Model
     }
     
     public function create_freebies(
+        $freebie_id,
         $fpc_item_id, 
         $description, 
         $amount, 
@@ -43,7 +44,8 @@ class FPCItemFreebies extends Model
     ){
         $this->updateOrInsert(
                 [
-                    'description' => $description
+                    //'description' => $description,
+                    'freebie_id'  => $freebie_id
                 ],
                 [
                     'fpc_item_id'           => $fpc_item_id,

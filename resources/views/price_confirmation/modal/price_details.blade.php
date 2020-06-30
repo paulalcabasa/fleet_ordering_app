@@ -67,10 +67,11 @@
                                                         <i class="fas fa-trash"></i>
                                                     </a>
                                                 </td>
-                                                <td v-if="freebie.hasOwnProperty('freebie_id')">
+                                             <!--    <td v-if="freebie.hasOwnProperty('freebie_id')">
                                                     <input type="text" size="5" disabled="" class="form-control form-control-sm" :value="freebie.description"/>
-                                                </td>
-                                                <td v-if="!freebie.hasOwnProperty('freebie_id')">
+                                                </td> -->
+                                              <!--   <td v-if="!freebie.hasOwnProperty('freebie_id')"> -->
+                                                <td >
                                                     <input type="text" size="5" class="form-control form-control-sm" v-model.lazy="freebie.description"/>
                                                 </td>
                                                 <td>
