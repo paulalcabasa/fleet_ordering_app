@@ -28,7 +28,11 @@ class POLines extends Model
                         vehicle.model_variant,
                         fpc_item.suggested_retail_price,
                         fpc_item.promo,
-                        fpc_item.discount
+                        fpc_item.discount,
+                        pl.body_builder_id,
+                        pl.mode_of_transpo_id,
+                        body_builders.description body_builder,
+                        modes_of_transpo.description mode_of_transpo
                 FROM ipc_dms.fs_po_lines pl
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rl.requirement_line_id = pl.requirement_line_id
@@ -38,10 +42,14 @@ class POLines extends Model
                         ON vehicle.inventory_item_id = rl.inventory_item_id
                     LEFT JOIN ipc_dms.fs_fpc_items fpc_item
                         ON fpc_item.requirement_line_id = rl.requirement_line_id
-                     LEFT JOIN Ipc_dms.fs_fpc_projects fpc_project
+                    LEFT JOIN Ipc_dms.fs_fpc_projects fpc_project
                         ON fpc_project.fpc_project_id = fpc_item.fpc_project_id
-                     LEFT JOIN ipc_dms.fs_fpc fpc
+                    LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_project.fpc_id
+                    LEFT JOIN ipc_dms.fs_value_sets body_builders 
+                        ON body_builders.value_set_id = pl.body_builder_id
+                    LEFT JOIN ipc_dms.fs_value_sets modes_of_transpo
+                        ON modes_of_transpo.value_set_id = pl.mode_of_transpo_id 
                 WHERE 1 = 1
                     AND pl.po_header_id = :po_header_id
                     AND fpc.status = 4

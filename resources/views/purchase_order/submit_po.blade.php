@@ -101,6 +101,8 @@
                         <th>Order Qty</th>
                         <th>Total Price</th>
                         <th>PO Qty</th>
+                        <th>Body Builder</th>
+                        <th>Mode of Transpo to BB</th>
                         <th>Delivery Sched</th>
                         
                     </tr>
@@ -116,6 +118,18 @@
                             <input type="text" v-model="item.po_qty" class="form-control form-control-sm kt-align-right" size="4"/>
                         </td>
                         <td>
+                            <select class="form-control form-control-sm" v-model="item.body_builder">
+                                <option value="">Choose...</option>
+                                <option :value="row.value_set_id" v-for="(row, index) in body_builders">@{{ row.description }}</option>
+                            </select> 
+                        </td>
+                        <td>
+                            <select class="form-control form-control-sm" v-model="item.mode_of_transpo">
+                                <option value="">Choose...</option>
+                                <option :value="row.value_set_id" v-for="(row, index) in modes_of_transpo">@{{ row.description }}</option>
+                            </select>
+                        </td>
+                        <td>
                             <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
                                 <i class="la la-calendar"></i>
                             </a> 
@@ -127,6 +141,8 @@
                         <td align="right">@{{ calculateSubtotal(key) | formatPeso}}</td>
                         <td align="right">@{{ sumPOQty(key) }}</td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -135,6 +151,8 @@
                         <td align="right">@{{ totalQty }}</td>
                         <td align="right">@{{ totalPrice | formatPeso}}</td>
                         <td align="right">@{{ totalPO }}</td> 
+                        <td align="right"></td> 
+                        <td align="right"></td> 
                         <td></td>
                     </tr>
                 </tfoot>
@@ -299,6 +317,8 @@
             base_url             : {!! json_encode($base_url) !!},
             vehicle_lead_time    : {!! json_encode($vehicle_lead_time) !!},
             fpcs                 : {!! json_encode($fpcs) !!},
+            body_builders        : {!! json_encode($body_builders) !!},
+            modes_of_transpo      : {!! json_encode($mode_of_transpo) !!},
             poNumber             : '',
             curDeliverySched     : [],
             fpc_project_id       : '',
@@ -314,6 +334,7 @@
             curMinDate           : '',
             cur_lead_time_desc   : '',
             cur_vehicle_lead_time: ''
+
         },
         created: function () {
             this.requirement_lines = _.groupBy(this.requirement_lines, 'vehicle_type');
@@ -383,8 +404,6 @@
                 if(self.fpc_project_id == ""){
                     errors.push('FPC Ref No. is required');   
                 }
-
-
 
                 if(errors.length > 0){
                     var message = "<ul>";

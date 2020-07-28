@@ -1507,7 +1507,6 @@ jQuery(document).ready(function() {
                 var self = this;
                  axios.post('customer/get',{
                     customer_name : customer_name
-                  
                  })
                     .then(function (response) {
                      

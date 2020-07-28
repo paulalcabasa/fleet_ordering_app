@@ -16,6 +16,7 @@ use App\Models\ModuleApproval;
 use App\Models\ActivityLogs;
 use App\Models\Dealer;
 use App\Models\FPC_Project;
+use App\Models\ValueSetName;
 
 
 class PurchaseOrderController extends Controller
@@ -55,7 +56,9 @@ class PurchaseOrderController extends Controller
                 'po_quantity'         => $row->po_quantity,
                 'vehicle_type'        => $row->vehicle_type,
                 'variant'             => $row->model_variant,
-                'delivery_sched'      => $delivery_sched
+                'delivery_sched'      => $delivery_sched,
+                'body_builder'        => $row->body_builder,
+                'mode_of_transpo'     => $row->mode_of_transpo,
               
             ];   
             array_push($po_line_data, $arr);
@@ -130,11 +133,18 @@ class PurchaseOrderController extends Controller
                 'po_qty'              => $row->po_qty,
                 'vehicle_type'        => $row->vehicle_type,
                 'delivery_sched'      => $delivery_sched,
-                'variant'             => $row->model_variant
+                'variant'             => $row->model_variant,
+                'body_builder'        => '',
+                'mode_of_transpo'     => ''
             ];   
             array_push($requirement_lines_data, $arr);
         }
-       
+
+        
+        $body_builders = ValueSetName::where('category_id', 3)->get();
+        $mode_of_transpo = ValueSetName::where('category_id', 4)->get();
+        
+
         $page_data = [
             'project_id'        => $project_id,
             'project_details'   => $project_details,
@@ -143,7 +153,9 @@ class PurchaseOrderController extends Controller
             'status_colors'     => config('app.status_colors'),
             'base_url'          => url('/'),
             'vehicle_lead_time' => config('app.vehicle_lead_time'),
-            'fpcs'              => $fpcs
+            'fpcs'              => $fpcs,
+            'body_builders'     => $body_builders,
+            'mode_of_transpo'   => $mode_of_transpo
         ];
         return view('purchase_order.submit_po', $page_data);
     }
@@ -242,6 +254,8 @@ class PurchaseOrderController extends Controller
                     'created_by'            => session('user')['user_id'],
                     'creation_date'         => Carbon::now(),
                     'create_user_source_id' => session('user')['source_id'],
+                    'body_builder_id'       => $model['body_builder'],
+                    'mode_of_transpo_id'    => $model['mode_of_transpo']
                 ];
                 $po_line_id = $m_po_lines->insert_po_lines($po_line_arr);
                 //array_push($po_lines_arr, $temp_arr);
