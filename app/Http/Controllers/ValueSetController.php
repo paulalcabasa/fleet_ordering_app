@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ValueSetCategory;
 use App\Models\ValueSetName;
+use Carbon\Carbon;
 
 class ValueSetController extends Controller
 {
     public function index(){
         $categories = ValueSetCategory::all();
-        $value_sets = ValueSetName::with('category')->get();
+        $value_sets = ValueSetName::with('category')
+            ->whereNull('date_deleted')
+            ->get();
         $page_data = [
             'categories' => $categories,
             'value_sets' => $value_sets,
@@ -49,7 +52,8 @@ class ValueSetController extends Controller
     public function destroy(Request $request){
         $value_set                     = new ValueSetName;
         $value_set                     = \App\Models\ValueSetName::find($request->value_set_id);
-        $value_set->delete(); 
+        $value_set->date_deleted = Carbon::now();
+        $value_set->save();
     }
 
     
