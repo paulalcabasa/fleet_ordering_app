@@ -109,6 +109,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('upload-po-attachment', 'PurchaseOrderController@upload_po_attachment');
 	Route::post('save-po-validation', 'PurchaseOrderController@save_po_validation');
 	Route::get('ajax-get-filtered-po', 'PurchaseOrderController@get_filtered_po');
+	Route::get('po/get-fpc-lines/{fpc_project_id}', 'PurchaseOrderController@get_fpc_lines');
 
 	/* Vehicle */
 	Route::get('get-vehicle-models/{vehicle_type}', 'VehicleController@get_vehicle_models');

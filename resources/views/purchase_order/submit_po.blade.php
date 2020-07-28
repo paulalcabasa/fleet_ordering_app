@@ -118,16 +118,42 @@
                             <input type="text" v-model="item.po_qty" class="form-control form-control-sm kt-align-right" size="4"/>
                         </td>
                         <td>
-                            <select class="form-control form-control-sm" v-model="item.body_builder">
-                                <option value="">Choose...</option>
-                                <option :value="row.value_set_id" v-for="(row, index) in body_builders">@{{ row.description }}</option>
-                            </select> 
+                            <div v-show="item.variant == 'P-SERIES'">
+                                <select class="form-control form-control-sm"  v-show="item.body_builder != 'OTHERS'"  v-model="item.body_builder">
+                                    <option value="">Choose...</option>
+                                    <option :value="row.description" v-for="(row, index) in body_builders">@{{ row.description }}</option>
+                                </select> 
+
+                                <div class="form-group" v-show="item.body_builder == 'OTHERS'">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" v-model="item.body_builder_new" placeholder="Please specify..."/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary btn-sm" type="button" @click="resetBBOthers(key,index)">X</button>
+                                        </div>
+                                    </div>
+                                    <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.body_builder == 'OTHERS' && item.body_builder_new == ''">* Please indicate the body builder.</span>
+                                </div>
+                                <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.body_builder == ''">* Please indicate the body builder.</span>
+                            </div>
                         </td>
                         <td>
-                            <select class="form-control form-control-sm" v-model="item.mode_of_transpo">
-                                <option value="">Choose...</option>
-                                <option :value="row.value_set_id" v-for="(row, index) in modes_of_transpo">@{{ row.description }}</option>
-                            </select>
+                           <div v-show="item.variant == 'P-SERIES'">
+                                <select class="form-control form-control-sm" v-show="item.mode_of_transpo != 'OTHERS'" v-model="item.mode_of_transpo" >
+                                    <option value="">Choose...</option>
+                                    <option :value="row.description" v-for="(row, index) in modes_of_transpo">@{{ row.description }}</option>
+                                </select>
+                                <div class="form-group" v-show="item.mode_of_transpo == 'OTHERS'">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" v-model="item.mode_of_transpo_new" placeholder="Please specify..."/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary btn-sm" type="button" @click="resetOthers(key,index)">X</button>
+                                        </div>
+                                    </div>
+                                    <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.mode_of_transpo == 'OTHERS' && item.mode_of_transpo_new == ''">* Please indicate mode of transport.</span>
+                                </div>
+                                <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.mode_of_transpo == ''">* Please indicate mode of transport.</span>
+                            </div>
+                           
                         </td>
                         <td>
                             <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
@@ -311,7 +337,7 @@
         el : "#app",
         data: {
             projectDetails       : {!! json_encode($project_details) !!},
-            requirement_lines    : {!! json_encode($requirement_lines) !!},
+            requirement_lines    : [],
             vehicle_colors       : {!! json_encode($vehicle_colors) !!},
             status_colors        : {!! json_encode($status_colors) !!},
             base_url             : {!! json_encode($base_url) !!},
@@ -336,8 +362,35 @@
             cur_vehicle_lead_time: ''
 
         },
+        watch: {
+            fpc_project_id: function(newVal, oldVal){
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                
+                axios.get('po/get-fpc-lines/' + newVal).then(res => {
+                    this.requirement_lines = res.data;
+                    this.requirement_lines = _.groupBy(this.requirement_lines, 'vehicle_type');
+                }).catch( err => {
+                    alert("Unexpected error occured, please try again.");
+                }).finally( () => {
+                    KTApp.unblockPage();
+                });
+            },
+        },
         created: function () {
-            this.requirement_lines = _.groupBy(this.requirement_lines, 'vehicle_type');
+            this.body_builders.push({
+                value_set_id : 0,
+                description : 'OTHERS'
+            });
+
+            this.modes_of_transpo.push({
+                value_set_id : 0,
+                description : 'OTHERS'
+            });
         },
         methods : {
             deleteRowSched(index){
@@ -380,6 +433,23 @@
                 if(self.requirement_lines['CV']){
                     for(var req of self.requirement_lines['CV']){
                         total_po_qty += req.po_qty;
+                        if(req.variant == 'P-SERIES'){
+                            if(req.body_builder == ''){
+                                errors.push('Please indidicate body builder for ' + req.sales_model);
+                            }
+                            if(req.body_builder == 'OTHERS' && req.body_builder_new == ''){
+                                errors.push('Please indidicate new body builder ' + req.sales_model);
+                            }
+
+                            if(req.mode_of_transpo == ''){
+                                errors.push('Please indidicate mode of transpo for ' + req.sales_model);
+                            }
+                            if(req.mode_of_transpo == 'OTHERS' && req.mode_of_transpo_new == ''){
+                                errors.push('Please indidicate new mode of transpo for ' + req.sales_model);
+                            }
+
+                        }
+                         
                     }
                 }
 
@@ -404,6 +474,8 @@
                 if(self.fpc_project_id == ""){
                     errors.push('FPC Ref No. is required');   
                 }
+
+                
 
                 if(errors.length > 0){
                     var message = "<ul>";
@@ -550,7 +622,17 @@
             },
             totalDeliveryQty(owner_id){
                 return this.curDeliverySched.reduce((acc,item) => parseFloat(acc) + (item.owner_id == owner_id ? parseFloat(item.quantity) : 0 ),0);
+            },
+            resetOthers(vehicleGroup, lineIndex){
+                this.requirement_lines[vehicleGroup][lineIndex].mode_of_transpo = '';
+                this.requirement_lines[vehicleGroup][lineIndex].mode_of_transpo_new = '';
+            },
+            resetBBOthers(vehicleGroup, lineIndex){
+                this.requirement_lines[vehicleGroup][lineIndex].body_builder = '';
+                this.requirement_lines[vehicleGroup][lineIndex].body_builder_new = '';
             }
+           
+          
         },
         computed : {
             totalQty(){
@@ -585,7 +667,8 @@
             formatPeso: function (value) {
                  return `${parseFloat(value).toLocaleString()}`
             }
-        }
+        },
+        
     });
 
 
