@@ -117,7 +117,7 @@ class PurchaseOrderController extends Controller
         $project_id = $request->project_id;
         $fpcs = $fpc_project->get_by_project($project_id);
         $project_details = $m_project->get_details($project_id);
-        $requirement_lines = $m_requirement_line->get_po_requirement_lines($project_id);
+        /* $requirement_lines = $m_requirement_line->get_po_requirement_lines($project_id);
         $requirement_lines_data = [];
 
         
@@ -138,17 +138,17 @@ class PurchaseOrderController extends Controller
                 'mode_of_transpo'     => ''
             ];   
             array_push($requirement_lines_data, $arr);
-        }
+        } */
 
         
-        $body_builders = ValueSetName::where('category_id', 3)->get();
-        $mode_of_transpo = ValueSetName::where('category_id', 4)->get();
+        $body_builders = ValueSetName::where('category_id', 3)->whereNull('date_deleted')->get();
+        $mode_of_transpo = ValueSetName::where('category_id', 4)->whereNull('date_deleted')->get();
         
 
         $page_data = [
             'project_id'        => $project_id,
             'project_details'   => $project_details,
-            'requirement_lines' => $requirement_lines_data,
+           // 'requirement_lines' => $requirement_lines_data,
             'vehicle_colors'    => config('app.vehicle_badge_colors'),
             'status_colors'     => config('app.status_colors'),
             'base_url'          => url('/'),
@@ -247,6 +247,16 @@ class PurchaseOrderController extends Controller
             }
 
             foreach ($models as $model) {
+             
+
+                if($model['body_builder'] == 'OTHERS'){
+                    $model['body_builder'] = $model['body_builder_new'];
+                }
+              
+                if($model['mode_of_transpo'] == 'OTHERS'){
+                    $mode_of_transpo['mode_of_transpo'] = $model['mode_of_transpo_new'];
+                }
+                
                 $po_line_arr = [
                     'po_header_id'          => $po_header_id,
                     'requirement_line_id'   => $model['requirement_line_id'],
@@ -254,8 +264,8 @@ class PurchaseOrderController extends Controller
                     'created_by'            => session('user')['user_id'],
                     'creation_date'         => Carbon::now(),
                     'create_user_source_id' => session('user')['source_id'],
-                    'body_builder_id'       => $model['body_builder'],
-                    'mode_of_transpo_id'    => $model['mode_of_transpo']
+                    'body_builder'          => $model['body_builder'],
+                    'mode_of_transpo'       => $model['mode_of_transpo']
                 ];
                 $po_line_id = $m_po_lines->insert_po_lines($po_line_arr);
                 //array_push($po_lines_arr, $temp_arr);
@@ -481,5 +491,37 @@ class PurchaseOrderController extends Controller
         
         return $po;
 
+    }
+
+    public function get_fpc_lines(Request $request){
+        $m_requirement_line = new RequirementLine;
+        $m_delivery_sched = new ProjectDeliverySchedule;
+
+        $requirement_lines = $m_requirement_line->get_po_requirement_lines_v2($request->fpc_project_id);
+        $requirement_lines_data = [];
+
+        
+        foreach ($requirement_lines as $row) {
+            $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
+            $fleet_price = $row->suggested_retail_price - $row->promo - $row->discount;
+            $arr = [
+                'requirement_line_id' => $row->requirement_line_id,
+                'fleet_price'         => $fleet_price,
+                'sales_model'         => $row->sales_model,
+                'color'               => $row->color,
+                'quantity'            => $row->quantity,
+                'po_qty'              => $row->po_qty,
+                'vehicle_type'        => $row->vehicle_type,
+                'delivery_sched'      => $delivery_sched,
+                'variant'             => $row->model_variant,
+                'body_builder'        => '',
+                'body_builder_new'        => '',
+                'mode_of_transpo'     => '',
+                'mode_of_transpo_new'     => '',
+            ];   
+            array_push($requirement_lines_data, $arr);
+        }
+
+        return response()->json($requirement_lines_data, 200);
     }
 }
