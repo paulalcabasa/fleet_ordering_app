@@ -17,23 +17,18 @@
                     <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable">
                         <span class="kt-hidden-mobile">Approve</span>
                     </a>
-                    <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()" v-if="editable">
+                    <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()">
                         <span class="kt-hidden-mobile">Cancel</span>
                     </a>
                     <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
                         <span class="kt-hidden-mobile">Print Conflict</span>
                     </a>
+
+                    <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved'" @click.prevent="reviseFPC()" href="#" target="_blank">
+                        <span class="kt-hidden-mobile">Revise</span>
+                    </a>
                 
-            <!--       <div class="btn-group">
-                        <button type="button" class="btn btn-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Info</button>
-                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                            <a class="dropdown-item" href="#">LCV</a>
-                            <a class="dropdown-item" href="#">CV</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </div> -->
+                   
                 </div>
             </div>
             <div class="kt-portlet__body">
@@ -837,6 +832,40 @@
         
                 });
                 
+            },
+            reviseFPC(){
+                var self = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.value) {
+                          
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        axios.patch('fpc/revise',{
+                            fpc_id:     self.fpc_details.fpc_id
+                        }).then( (response) => {
+                            self.toast('success', response.data.message);
+                            self.fpc_details.status_name = response.data.status;
+                            self.editable = true;
+                        });
+        
+                        KTApp.unblockPage();
+        
+                    }
+        
+                });
             }
         },
         created: function () {

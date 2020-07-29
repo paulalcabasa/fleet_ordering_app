@@ -921,4 +921,22 @@ class PriceConfirmationController extends Controller
             ];
 
     }
+
+    public function revise(Request $request){
+        $m_fpc = new FPC;
+
+        $fpc_id = $request->fpc_id;
+        $m_fpc->update_status(
+            $fpc_id, 
+            null, // remarks 
+            session('user')['user_id'],
+            session('user')['source_id'],
+            12 // in progress
+        );
+
+        return response()->json([
+            'message' => 'You can now update the fpc details.',
+            'status' => 'In progress'
+        ]);
+    }
 }
