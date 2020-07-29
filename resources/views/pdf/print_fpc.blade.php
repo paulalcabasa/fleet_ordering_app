@@ -408,7 +408,25 @@
                     <table style="width:100%;">
                         <tr>
                             <td>
+                             
                                 <table style="width:100%;">
+
+                                     <tr style="background-color:#ccc;">
+                                        <td colspan="2" class="text-bold text-center">Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Dealer</td>
+                                        <td>{{ $header_data->dealer_name }} {{ $header_data->dealer_account}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Subject</td>
+                                        <td>{{ $header_data->customer_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-bold">Ref No.</td>
+                                        <td>{{ $header_data->fpc_ref_no }}</td>
+                                    </tr>
+
                                     <tr style="background-color:#ccc;">
                                         <td colspan="2" class="text-bold text-center">Vehicle Details</td>
                                     </tr>
