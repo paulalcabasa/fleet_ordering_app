@@ -166,7 +166,10 @@ class Project extends Model
                         fs.dealer_id,
                         usr.email_address requestor_email,
                         fs.project_source_id,
-                        fs.fleet_category
+                        fs.fleet_category,
+                        fc.address,
+                        fc.tin,
+                        fc.business_style
                 FROM ipc_dms.fs_projects fs
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fs.customer_id = fc.customer_id 

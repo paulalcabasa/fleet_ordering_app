@@ -152,6 +152,21 @@
                 <td>{{ $project_details->fleet_category_name }}</td>
             </tr>
             <tr>
+                <td style="font-weight:bold;vertical-align: top;">TIN</td>
+                <td style="vertical-align: top;">:</td>
+                <td>{{ $project_details->tin }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;vertical-align: top;">Business style</td>
+                <td style="vertical-align: top;">:</td>
+                <td>{{ $project_details->business_style }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;vertical-align: top;">Buiness address</td>
+                <td style="vertical-align: top;">:</td>
+                <td>{{ $project_details->address }}</td>
+            </tr>
+            <tr>
                 <td style="font-weight:bold;vertical-align: top;">Project Source</td>
                 <td style="vertical-align: top;">:</td>
                 <td>{{ $project_details->project_source }}</td>
