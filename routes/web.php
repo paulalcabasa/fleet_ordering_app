@@ -98,6 +98,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('print-fpc-dealer/{print_type}/{project_id}/{fpc_id}/', 'PriceConfirmationController@print_fpc_dealer');
 	Route::get('print-fpc-conflict/{fpc_id}/', 'PriceConfirmationController@print_fpc_conflict');
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
+	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');
@@ -172,7 +173,6 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('export_inquiry');
 	Route::view('fpc-summary', 'reports.fpc_summary')->name('fpc-summary');
 	
-
 	// Payment terms
 	Route::get('payment_terms','TermsController@index');
 	Route::post('term/add','TermsController@store');
