@@ -12,10 +12,11 @@
         <div class="kt-portlet kt-portlet--fit kt-portlet--head-lg kt-portlet--head-overlay kt-portlet--skin-solid kt-portlet--height-fluid">
             <div class="kt-portlet__head kt-portlet__head--noborder kt-portlet__space-x">
                 <div class="kt-portlet__head-label">
-                <h3 class="kt-portlet__head-title">
-                        Statistics
-                </h3>
+                    <h3 class="kt-portlet__head-title">
+                            Statistics
+                    </h3>
                 </div>
+                
             </div>
             <div class="kt-portlet__body kt-portlet__body--fit">
                 <div class="kt-widget17">

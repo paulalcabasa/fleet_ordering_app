@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InquiryExport;
 use App\Exports\FPCSummaryExport;
 use App\Models\Reports;
-
+use App\Models\Dealer;
 
 class ReportsController extends Controller
 {
@@ -41,11 +41,20 @@ class ReportsController extends Controller
         return response()->json($invoices);
     }
 
-     public function export_fpc_summary(Request $request){
+    public function export_fpc_summary(Request $request){
         $params = [
             'start_date' => $request->start_date,
-            'end_date' => $request->end_date
+            'end_date'   => $request->end_date,
+            'dealer'     => $request->dealer
         ];
         return Excel::download(new FPCSummaryExport($params), 'fpc_summary.xlsx');
+    }
+
+    public function fpc_summary_view(Request $request){
+        $data = [
+            'base_url' => url('/'),
+            'dealers'   => Dealer::all()
+        ];     
+    	return view('reports.fpc_summary', $data);
     }
 }

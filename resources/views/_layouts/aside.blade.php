@@ -1,7 +1,7 @@
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
     <div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
         <ul class="kt-menu__nav ">
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,25)))
             <li class="kt-menu__item {{ request()->is('dashboard') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/dashboard') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-home"></i>
@@ -22,7 +22,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33))) 
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,25))) 
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">Project</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -36,7 +36,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33))) 
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,25))) 
             <li class="kt-menu__item {{ request()->is('all-projects') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-projects') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-folder-1"></i>
@@ -58,7 +58,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38,25)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">Pricing</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -72,7 +72,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__item {{ request()->is('all-price-confirmation') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/all-price-confirmation') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon2-crisp-icons"></i>
@@ -80,7 +80,7 @@
                 </a>
             </li>
             @endif 
-            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38)))
+            @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38,25)))
             <li class="kt-menu__item {{ request()->is('fwpc-list') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/fwpc-list') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon2-paper"></i>
@@ -88,13 +88,13 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31,25)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">REPORTS</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
             @endif  
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__item {{ request()->is('inquiry-history') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/inquiry-history') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-information"></i>
@@ -102,7 +102,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__item {{ request()->is('fpc-summary') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/fpc-summary') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-information"></i>
@@ -110,7 +110,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31,25)))
             <li class="kt-menu__item {{ request()->is('reports/tagged') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('reports/tagged') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-information"></i>
@@ -118,7 +118,7 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33,27,31)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,27,31,25)))
             <li class="kt-menu__item {{ request()->is('reports/invoice') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('reports/invoice') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-information"></i>
@@ -126,13 +126,13 @@
                 </a>
             </li>
             @endif
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__section ">
                 <h4 class="kt-menu__section-text">SETTINGS</h4>
                 <i class="kt-menu__section-icon flaticon-more-v2"></i>
             </li>
             @endif  
-            @if(in_array(session('user')['user_type_id'], array(32,33)))
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__item {{ request()->is('users') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/user-list') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-users-1"></i>

@@ -23,12 +23,9 @@
                     <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
                         <span class="kt-hidden-mobile">Print Conflict</span>
                     </a>
-
                     <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved'" @click.prevent="reviseFPC()" href="#" target="_blank">
                         <span class="kt-hidden-mobile">Revise</span>
                     </a>
-                
-                   
                 </div>
             </div>
             <div class="kt-portlet__body">

@@ -171,7 +171,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	// REPORTS
 	Route::view('inquiry-history','reports.inquiry_history'); //->name('dashboard');
 	Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('export_inquiry');
-	Route::view('fpc-summary', 'reports.fpc_summary')->name('fpc-summary');
+	Route::get('fpc-summary', 'ReportsController@fpc_summary_view');//->name('fpc-summary');
 	
 	// Payment terms
 	Route::get('payment_terms','TermsController@index');
