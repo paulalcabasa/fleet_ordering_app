@@ -322,7 +322,7 @@ class Project extends Model
             $query = DB::select($sql);
             return $query[0];
         }
-        else if($user_type == 32 || $user_type == 33) { //  Fleet LCV User
+        else if($user_type == 32 || $user_type == 33 || $user_type == 25) { //  Fleet LCV User
             $sql = "SELECT 
                     $select
                     FROM ipc_dms.fs_projects fp
@@ -503,18 +503,35 @@ class Project extends Model
             ]);
     }
 
-    public function countProjects($params){        
+    public function countProjects($params, $statusIn = []){        
         return DB::table('ipc_dms.fs_projects fp')
             ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
-            ->where($params)
+            ->when($params, function ($query, $params) {  
+                return $query->where($params);
+            })
+            ->when($statusIn, function ($query, $statusIn) {
+                return $query->whereIn('fp.status', $statusIn);
+            })
             ->distinct('fp.project_id')
             ->count('fp.project_id');
     }
 
-    public function countPendingFPC($params){ 
+    public function countAllProjects(){        
+        return DB::table('ipc_dms.fs_projects fp')
+        //    ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
+           // ->distinct('fp.project_id')
+            ->whereNotIn('status',[6,5])
+            ->count('fp.project_id');
+    }
+
+ 
+
+    public function countPendingFPC($params = []){ 
         return DB::table('ipc_dms.fs_projects fp')
             ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
-            ->where($params)
+            ->when($params, function ($query, $params) {  
+                return $query->where($params);
+            })
             ->whereNotIn('fp.project_id', function($query){
                 $query->select(DB::raw('prj.project_id'))
                     ->from('ipc_dms.fs_fpc_projects prj')
@@ -538,9 +555,11 @@ class Project extends Model
                     SUM(CASE WHEN extract(month from fp.creation_date) = 8    THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  AUG,
                     SUM(CASE WHEN extract(month from fp.creation_date) = 9   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  SEP,
                     SUM(CASE WHEN extract(month from fp.creation_date) = 10   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  OCT,
-                    SUM(CASE WHEN extract(month from fp.creation_date) = 11   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  NOV,
-                    SUM(CASE WHEN extract(month from fp.creation_date) = 12   THEN 1 ELSE 0 END)  + TRUNC(DBMS_RANDOM.value(1,100))  DEC")
-            ->where($params)
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 11   THEN 1 ELSE 0 END)   NOV,
+                    SUM(CASE WHEN extract(month from fp.creation_date) = 12   THEN 1 ELSE 0 END)   DEC")
+            ->when($params, function($query, $params) {
+                return $query->where($params);
+            })
             ->whereRaw($whereRaw)
             ->distinct('fp.project_id')
             ->count('fp.project_id');

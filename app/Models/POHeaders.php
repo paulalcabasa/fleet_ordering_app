@@ -155,7 +155,9 @@ class POHeaders extends Model
         return DB::table('ipc_dms.fs_po_headers ph')
             ->leftJoin('ipc_dms.fs_projects fp', 'fp.project_id', '=', 'ph.project_id')
             ->leftJoin('ipc_dms.fs_prj_requirement_headers rh', 'rh.project_id', '=', 'fp.project_id')
-            ->where($params)
+            ->when($params, function($query, $params) {
+                return $query->where($params);
+            })
             ->distinct('ph.po_header_id')
             ->count('ph.po_header_id');
     }

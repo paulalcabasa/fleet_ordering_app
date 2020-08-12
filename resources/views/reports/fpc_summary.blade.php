@@ -28,6 +28,16 @@
                                 <input type="date" class="form-control" name="end_date">
                             </div>
                         </div>
+                        <div class="form-group row" style="margin-bottom:1em !important;">
+                            <label class="col-2  col-form-label">Dealer</label>
+                            <div class="col-10">
+                                <select class="form-control" name="dealer">
+                                    <option value="">All</option>
+                                    <option :value="row.cust_account_id" v-for="(row, index) in dealers">@{{ row.account_name }}</option>
+                                </select> 
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
                 <div class="kt-portlet__foot">
@@ -55,7 +65,7 @@
     var vm =  new Vue({
         el : "#app",
         data: {
-      
+            dealers : {!! json_encode($dealers) !!}
         },
         created: function () {
             // `this` points to the vm instance

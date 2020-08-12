@@ -166,6 +166,35 @@ class DashboardController extends Controller
                 );
 
             break;
+
+            case 25: // administrator
+                
+                $project_ctr = $m_project->countProjects([], [11,7,3,13]);
+
+                $open_project_ctr = $m_project->countProjects([], [11]);
+
+              
+                $pending_fpc_projects = $m_project->countPendingFPC([
+                    ['fp.status', 11 ]
+                ]);
+                
+    
+                $purchase_orders = $m_poh->countPO([]);
+
+                $recent_activities = $m_logs->getRecentActivities([
+                    ['fp.dealer_id' , session('user')['customer_id']],
+                    ['fp.created_by', session('user')['user_id']],
+                    ['fp.create_user_source_id', session('user')['source_id']],
+                ]);
+
+                $project_ctr_year = $m_project->countProjectsYearly(
+                    [],
+                    'extract(year from fp.creation_date) = ' . date('Y')
+                );
+
+       
+                
+            break;
              
         }
         
@@ -178,12 +207,13 @@ class DashboardController extends Controller
             session('user')['user_type_id'],
             session('user')['customer_id']
         );  
+      
 
         $mp_flat = [];
 
         $index = 0;
         foreach($monthly_projects as $key => $value){
-            $mp_flat[$index] =  $value + rand(1,20);
+            $mp_flat[$index] =  $value; // + rand(1,20);
             $index++;
         }
 
