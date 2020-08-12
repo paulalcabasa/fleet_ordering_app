@@ -34,11 +34,11 @@
             <td>{{ $row->sales_model }}</td>
             <td>{{ $row->quantity }}</td>
             <td>{{ $row->body_application }}</td>
-            <td>{{ $row->wholesale_price }}</td>
-            <td>{{ $row->suggested_retail_price }}</td>
-            <td>{{ $row->discount }}</td>
-            <td>{{ $row->fleet_price }}</td>
-            <td>{{ $row->dealers_margin }}</td>
+            <td align="right">{{ number_format($row->wholesale_price,2) }}</td>
+            <td align="right">{{ number_format($row->suggested_retail_price,2) }}</td>
+            <td align="right">{{ number_format($row->discount,2) }}</td>
+            <td align="right">{{ number_format($row->fleet_price,2) }}</td>
+            <td align="right">{{ number_format($row->dealers_margin,2) }}</td>
             <td>{{ $row->inclusion }}</td>
             <td>{{ $row->validity }}</td>
             <td>{{ $row->competitor_brand }}</td>
