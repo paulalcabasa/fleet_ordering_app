@@ -21,6 +21,7 @@
             <th width="30">Competitors Price</th>
             <th width="30">Prepared by</th>
             <th width="30">FPC Status</th>
+            <th width="30">PO Number</th>
         </tr>
     </thead>
     <tbody>
@@ -46,6 +47,7 @@
             <td>{{ $row->competitors_price }}</td>
             <td>{{ $row->prepared_by }}</td>
             <td>{{ $row->fpc_status }}</td>
+            <td>{{ $row->po_number }}</td>
         </tr>
         @endforeach
     </tbody>

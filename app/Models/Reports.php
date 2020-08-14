@@ -214,7 +214,8 @@ class Reports extends Model
                         competitor.model competitor_model,
                         competitor.price competitors_price,
                         ipc_usr.first_name || ' ' || ipc_usr.last_name prepared_by,
-                        st.status_name fpc_status 
+                        st.status_name fpc_status,
+                        poh.po_number
                 FROM ipc_dms.fs_fpc fpc
                     LEFT JOIN ipc_dms.fs_status st
                         ON st.status_id = fpc.status
@@ -245,6 +246,9 @@ class Reports extends Model
                         AND competitor.project_id = rh.project_id
                     LEFT JOIN ipc_dms.fs_fpc_item_freebies freebie
                         ON freebie.fpc_item_id = fpc_items.fpc_item_id 
+                     LEFT JOIN ipc_dms.fs_po_headers poh
+                        ON poh.fpc_project_id = fpc_prj.fpc_project_id
+                        AND poh.status = 4
                     WHERE st.status_name NOT IN( 'Cancelled')
                         AND trunc(fpc.creation_date) BETWEEN '".$params['start_date']."' AND '". $params['end_date']."'
                         $where
@@ -270,7 +274,8 @@ class Reports extends Model
                             competitor.price ,
                             ipc_usr.first_name,
                             ipc_usr.last_name,
-                            st.status_name";
+                            st.status_name,
+                            poh.po_number";
         $query = DB::select($sql);
         return $query;
     }
