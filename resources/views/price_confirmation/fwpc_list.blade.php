@@ -110,6 +110,15 @@
                         <th>Fleet Account</th>
                         <th>Ordered Date</th>
                         <th>Status</th>
+                        <th>Body Application</th>
+                        <th>WSP</th>
+                        <th>SRP</th>
+                        <th>Fleet Price</th>
+                        <th>Discount</th>
+                        <th>Dealer Margin</th>
+                        <th>Competitors Brand</th>
+                        <th>Competitors Model</th>
+                        <th>Competitors Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -127,6 +136,15 @@
                         <td>@{{ row.fleet_account_name }}</td>
                         <td>@{{ row.ordered_date | formatDate }}</td>
                         <td>@{{ row.fwpc_status }}</td>
+                        <td>@{{ row.body_application }}</td>
+                        <td>@{{ row.wholesale_price }}</td>
+                        <td>@{{ row.suggested_retail_price }}</td>
+                        <td>@{{ row.fleet_price }}</td>
+                        <td>@{{ row.discount }}</td>
+                        <td>@{{ row.dealers_margin }}</td>
+                        <td>@{{ row.competitor_brand }}</td>
+                        <td>@{{ row.competitor_model }}</td>
+                        <td>@{{ row.competitors_price }}</td>
                     </tr>
                 </tbody>
             </table>  
