@@ -217,7 +217,10 @@ class FWPC extends Model
             $where .= " AND fp.customer_id = " . $customer_id;
         }
  
-        $sql = "SELECT fwpc.fwpc_id,
+        $sql = "SELECT distinct
+                    fpc_prj.fpc_id,
+                    rl.requirement_line_id,
+                       fwpc.fwpc_id,
                         fwpc.project_id,
                         fs.status_name fwpc_status,
                         fpc.vehicle_type,
@@ -231,8 +234,19 @@ class FWPC extends Model
                         qlh.name price_list_name,
                         vehicle.sales_model,
                         vehicle.color,
+                        oola.line_id      ,
                         rcta.trx_number,            
-                        rcta.attribute3 cs_no
+                        rcta.attribute3 cs_no,
+                        rl.rear_body_type body_application,
+                        fpc_items.wholesale_price,
+                        fpc_items.suggested_retail_price,
+                        fpc_items.suggested_retail_price - fpc_items.discount - fpc_items.promo fleet_price,
+                        fpc_items.discount,
+                        round((fpc_items.suggested_retail_price - fpc_items.discount - fpc_items.promo)  * fpc_items.dealers_margin/100,2) dealers_margin,
+                        competitor.brand competitor_brand,
+                        competitor.model competitor_model,
+                        competitor.price competitors_price  
+                           
                 FROM ipc_dms.fs_fwpc fwpc 
                     LEFT JOIN ipc_dms.fs_status fs
                         ON fwpc.status = fs.status_id
@@ -253,15 +267,34 @@ class FWPC extends Model
                         ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
                     LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_prj.fpc_id
-                    LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
-                        ON vehicle.inventory_item_id = oola.inventory_item_id
-                        AND vehicle.organization_id =  oola.ship_from_org_id   
+                  
+                     LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                        ON rh.project_id = fp.project_id
+                    LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+                        ON rl.requirement_header_id = rh.requirement_header_id
+                    LEFT JOIN Ipc_dms.fs_fpc_items fpc_items
+                        ON fpc_items.requirement_line_id = rl.requirement_line_id
+                        AND rl.inventory_item_id = oola.inventory_item_id
+                        AND fpc_items.fpc_project_id = fpc_prj.fpc_project_id
+                      LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                        ON vehicle.inventory_item_id = rl.inventory_item_id  
+                    LEFT JOIN ipc_dms.fs_project_competitors competitor
+                        ON competitor.ipc_item_id = rl.inventory_item_id
+                        AND competitor.project_id = rh.project_id
+                       
+                     LEFT JOIN ra_customer_trx_lines_all rctla
+                        ON rctla.interface_line_attribute6 = TO_CHAR (oola.line_id)
+                        AND rctla.inventory_item_id = rl.inventory_item_id
+                        AND rctla.interface_line_attribute1 = TO_CHAR (ooha.order_number)
                      LEFT JOIN (
                         SELECT *
                         FROM apps.ra_customer_trx_all
                         WHERE cust_trx_type_id =1002
                      ) rcta
-                        ON (ooha.order_number) = (rcta.interface_header_attribute1)
+                        ON (rctla.customer_trx_id) = (rcta.customer_trx_id)
+                    LEFT JOIN ipc_dms.fs_fpc fpc
+                        ON fpc.fpc_id = fpc_prj.fpc_id
+                        AND fpc.status = 4
                 WHERE 1 = 1
                     $where";
 
