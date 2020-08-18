@@ -47,6 +47,15 @@
                         <th>Color</th>
                         <th>Invoice Date</th>
                         <th>Payment Terms</th>
+                        <th>Body Application</th>
+                        <th>WSP</th>
+                        <th>SRP</th>
+                        <th>Fleet Price</th>
+                        <th>Discount</th>
+                        <th>Margin</th>
+                        <th>Competitors Brand</th>
+                        <th>Competitors Model</th>
+                        <th>Competitors Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +69,15 @@
                         <td>@{{ row.body_color }}</td>
                         <td>@{{ row.trx_date }}</td>
                         <td>@{{ row.payment_terms }}</td>
+                        <td>@{{ row.body_application }}</td>
+                        <td>@{{ row.wholesale_price }}</td>
+                        <td>@{{ row.suggested_retail_price }}</td>
+                        <td>@{{ row.fleet_price }}</td>
+                        <td>@{{ row.discount }}</td>
+                        <td>@{{ row.dealers_margin }}</td>
+                        <td>@{{ row.competitor_brand }}</td>
+                        <td>@{{ row.competitor_model }}</td>
+                        <td>@{{ row.competitors_price }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -143,7 +161,10 @@
                             'copyHtml5',
                             'excelHtml5'
                         ],
-                        responsive:true
+                        responsive:false,
+                        initComplete: function (settings, json) {  
+                            $("#data").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+                        }
                     });
                 }).finally( (response) => {
                     KTApp.unblockPage();
