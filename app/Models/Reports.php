@@ -105,8 +105,18 @@ class Reports extends Model
             $where .= "AND hcaa.cust_account_id = " . session('user')['customer_id'];    	
         }
 
-		$sql = "SELECT distinct 
-						rcta.customer_trx_id,
+		$sql = "SELECT distinct
+                        rl.rear_body_type, 
+                        fwpc.fwpc_id,
+                           fpc_item.wholesale_price,
+                        fpc_item.suggested_retail_price,
+                        fpc_item.suggested_retail_price - fpc_item.discount - fpc_item.promo fleet_price,
+                        fpc_item.discount,
+                        round((fpc_item.suggested_retail_price - fpc_item.discount - fpc_item.promo)  * fpc_item.dealers_margin/100,2) dealers_margin,
+                        rcta.customer_trx_id,
+                        competitor.brand competitor_brand,
+                        competitor.model competitor_model,
+                        competitor.price competitors_price,
                        hcaa.account_number,
                        hp.party_name customer_name,
                        NVL(hcaa.account_name,  hp.party_name) account_name,
@@ -167,16 +177,33 @@ class Reports extends Model
                           ON araa.applied_customer_trx_id = rcta.customer_trx_id
                        LEFT JOIN oe_order_headers_all ooha
                           ON rcta.interface_header_attribute1 = ooha.order_number
-						LEFT JOIN oe_order_lines_all oola
-							ON oola.header_id = ooha.header_id
+                        LEFT JOIN oe_order_lines_all oola
+                            ON oola.header_id = ooha.header_id
                         LEFT JOIN oe_transaction_types_tl ottt
                         ON ooha.order_type_id = ottt.transaction_type_id
                        LEFT JOIN ra_terms_tl rtl ON ooha.payment_term_id = rtl.term_id
                        LEFT JOIN oe_transaction_types_tl ottl
                           ON ooha.order_type_id = ottl.transaction_type_id
+                       LEFT JOIN oe_order_headers_all ooha
+                            ON to_char(ooha.order_number) = to_char(rcta.interface_header_attribute1)
+                       LEFT JOIN ipc_dms.fs_fwpc fwpc
+                        on fwpc.sales_order_header_id = ooha.header_id
+                        LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                            ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
+                        LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+                            ON rh.requirement_header_id = fpc_prj.requirement_header_id
+                         LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+                            ON rl.requirement_header_id = rh.requirement_header_id
+                            AND rl.inventory_item_id = msib.inventory_item_id
+                        LEFT JOIN ipc_dms.fs_fpc_items fpc_item
+                            ON fpc_item.fpc_project_id = fpc_prj.fpc_project_id
+                            AND fpc_item.requirement_line_id = rl.requirement_line_id 
+                        LEFT JOIN ipc_dms.fs_project_competitors competitor
+                            ON competitor.ipc_item_id = rl.inventory_item_id
+                            AND competitor.project_id = rh.project_id
                 WHERE 1 = 1
-                	AND rcta.cust_trx_type_id = 1002
-                  	AND cm.orig_trx_id IS NULL
+                    AND rcta.cust_trx_type_id = 1002
+                    AND cm.orig_trx_id IS NULL
                   	{$where}
                     AND hcpc.name = 'Dealers-Fleet'
                   	AND rcta.trx_date BETWEEN :start_date AND :end_date";
