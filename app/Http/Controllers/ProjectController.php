@@ -207,7 +207,7 @@ class ProjectController extends Controller
         $status_colors          = config('app.status_colors');
         $max_validity_date      = $m_fpc->get_max_validity_by_project($project_id);
         $add_po_flag            = false;
-        $current_date           = date('Y-m-d H:i:s');
+        $current_date           = date('Y-m-d 00:00:00');
         $timeline               = $m_activity_logs->get_activities_by_project($project_id);
 
         // get all vehicle types based on requirement
@@ -239,7 +239,9 @@ class ProjectController extends Controller
         
         // check if FPC has been created for all VEHICLE TYPE REQUIREMENTS
         $pending_fpc_vehicle_type = array_diff($vehicle_types_requirement,$vehicle_types_fpc);
-        if(empty($pending_fpc_vehicle_type) && $current_date < $max_validity_date){
+
+        
+        if(empty($pending_fpc_vehicle_type) && ($current_date) <= ($max_validity_date)){
             // get max validity date from FPC Projects
             // compare to current to know if dealer can still add purchase orders
             // purchase orders can only added if FPC validity date is still covered
