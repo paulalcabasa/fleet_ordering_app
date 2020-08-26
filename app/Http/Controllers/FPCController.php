@@ -127,4 +127,18 @@ class FPCController extends Controller
         }
     }
 
+    public function approve(Request $request){
+        return [
+            'fpc_id' => $request->fpc_id,
+            'state' => 'approve'
+        ];
+    }
+
+    public function reject(Request $request){
+        return [
+            'fpc_id' => $request->fpc_id,
+            'state' => 'reject'
+        ];
+    }
+
 }

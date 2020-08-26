@@ -26,3 +26,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('export-inquiry', 'ReportsController@export_inquiry_history')->name('reports.export_inquiry');
 Route::post('export-fpc-summary', 'ReportsController@export_fpc_summary')->name('reports.export_fpc_summary');
+
+Route::get('fpc/project/print/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
+Route::get('fpc/approve/{fpc_id}', 'FPCController@approve');
+Route::get('fpc/reject/{fpc_id}', 'FPCController@reject');

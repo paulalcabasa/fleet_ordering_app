@@ -476,8 +476,44 @@ class FPC extends Model
                         ON status.status_id = ma.status
                 WHERE ma.module_id = 3
                     AND fpc.fpc_id = :fpc_id
-                    AND ma.date_sent IS NULL";
+                    AND ma.date_sent IS NULL
+                ORDER BY ma.hierarchy ASC";
         $query = DB::select($sql, $params);
+        return $query;
+    }
+
+    public function get_pending(){
+        $sql = "SELECT ma.approval_id,
+                        fpc.fpc_id,
+                        usr.first_name || ' '  || usr.last_name approver_name,
+                        usr.email_address,
+                        status.status_name,
+                        ma.update_date,
+                        fpc.customer_id,
+                        cust.customer_name,
+                        fpc.vehicle_type,
+                        to_char(fpc.creation_date,'MM/DD/YYYY') date_created,
+                         creator.first_name || ' '  || creator.last_name prepared_by
+                FROM ipc_dms.fs_fpc fpc
+                    INNER JOIN ipc_dms.fs_module_approval ma
+                        ON ma.module_reference_id = fpc.fpc_id
+                        AND ma.hierarchy = fpc.current_approval_hierarchy
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    INNER JOIN ipc_dms.fs_status status
+                        ON status.status_id = ma.status
+                    LEFT JOIN ipc_dms.fs_customers cust
+                        ON cust.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v creator
+                          ON creator.user_id = fpc.created_by
+                        AND creator.user_source_id = fpc.create_user_source_id
+                WHERE ma.module_id = 3
+                    AND fpc.status = 7 -- pending 
+                    AND ma.date_sent IS NULL";
+        $query = DB::select($sql);
         return $query;
     }
 

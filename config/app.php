@@ -12,6 +12,7 @@ return [
     'hostname' => env('hostname'),
     'webhost' => env('WEBHOST'),
     'webapps_url' => env('WEBAPPS_URL'),
+    'project_root' => env('PROJECT_ROOT'),
     'vehicle_badge_colors' => [
         'SPLASH WHITE'       => "kt-badge kt-badge--splash-white kt-badge--md kt-badge--rounded",
         'RED SPINEL MICA'    => "kt-badge kt-badge--red-spinel-mica kt-badge--md kt-badge--rounded",

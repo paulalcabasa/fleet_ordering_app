@@ -15,6 +15,10 @@
     return view('dashboard');
 });*/
 
+
+
+
+
 Route::get('/', 'RedirectController@redirect_login');
 
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users

@@ -561,9 +561,9 @@ class PriceConfirmationController extends Controller
 
     ){
 
-        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+       /*  if(!in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
-        }
+        } */
 
         $fpc_project_id = $request->fpc_project_id;
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);

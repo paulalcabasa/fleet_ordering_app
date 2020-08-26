@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SendNotification::class,
+        Commands\SendFPCApproval::class,
     ];
 
     /**
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule -> exec("php artisan fpc_approval:send");
         // $schedule->command('inspire')
         //          ->hourly();
     }
