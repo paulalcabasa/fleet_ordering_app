@@ -99,6 +99,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('print-fpc-conflict/{fpc_id}/', 'PriceConfirmationController@print_fpc_conflict');
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
+	Route::patch('fpc/submit', 'PriceConfirmationController@submit');
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');

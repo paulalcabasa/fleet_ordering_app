@@ -133,7 +133,9 @@ class Approver extends Model
                         fa.position_title,
                         usr.nickname,
                         usr.name_prefix,
-                        fa.signatory_type
+                        fa.signatory_type,
+                         fa.approver_id,
+                         fa.hierarchy
                 FROM ipc_dms.fs_approvers fa
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fa.approver_user_id

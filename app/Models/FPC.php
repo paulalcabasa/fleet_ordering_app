@@ -452,6 +452,35 @@ class FPC extends Model
     }
 
 
+    public function get_approvers($fpc_id){
+        $params = [
+            'fpc_id' => $fpc_id
+        ];
+        $sql = "SELECT ma.approval_id,
+                        fpc.fpc_id,
+                        usr.first_name || ' '  || usr.last_name approver_name,
+                        usr.email_address,
+                        status.status_name,
+                        ma.update_date,
+                        ma.hierarchy,
+                        ma.date_sent
+                FROM ipc_dms.fs_fpc fpc
+                    INNER JOIN ipc_dms.fs_module_approval ma
+                        ON ma.module_reference_id = fpc.fpc_id
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    INNER JOIN ipc_dms.fs_status status
+                        ON status.status_id = ma.status
+                WHERE ma.module_id = 3
+                    AND fpc.fpc_id = :fpc_id
+                    AND ma.date_sent IS NULL";
+        $query = DB::select($sql, $params);
+        return $query;
+    }
+
 
 
 

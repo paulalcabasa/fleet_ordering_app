@@ -30,7 +30,7 @@ use App\Models\PriceListHeader;
 use App\Models\FPCValidityRequest;
 use App\Models\ValueSetCategory;
 use App\Models\ValueSetName;
-
+use App\Models\ModuleApproval;
 class PriceConfirmationController extends Controller
 {   
 
@@ -91,13 +91,14 @@ class PriceConfirmationController extends Controller
         PaymentTerms $m_payment_terms,
         FPCHelper $fpc_helper,
         Attachment $m_attachment,
-        PriceListHeader $m_plh
+        PriceListHeader $m_plh,
+        Approver $m_approver
     ){
 
         if(!in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
         }
-
+    
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
     	$fpc_details           = $m_fpc->get_details($price_confirmation_id);
@@ -145,7 +146,8 @@ class PriceConfirmationController extends Controller
         $availability = ValueSetName::where('category_id', 1)->get();
         $note = ValueSetName::where('category_id', 2)->get();
 
-        
+        $approvers = $m_fpc->get_approvers($price_confirmation_id);
+      
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
@@ -161,7 +163,8 @@ class PriceConfirmationController extends Controller
     		'pricelist_headers'     => $pricelist_headers,
     		'status_colors'         => config('app.status_colors'),
     		'vehicle_lead_time'     => config('app.vehicle_lead_time'),
-    		'conflicts'             => $conflicts
+            'conflicts'             => $conflicts,
+            'approvers'             => $approvers
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -211,7 +214,8 @@ class PriceConfirmationController extends Controller
         Request $request,
         FPC $m_fpc,
         FPC_Project $m_fpc_project,
-        FPC_Item $m_fpc_item
+        FPC_Item $m_fpc_item,
+        Approver $m_approver
     ){
         $customer_id = $request['customerDetails']['customerId'];
         
@@ -223,6 +227,7 @@ class PriceConfirmationController extends Controller
         
         try {
 
+          
             // insert FPC Header
             $fpc_params = [
                 'customer_id'           => $customer_id,
@@ -234,7 +239,29 @@ class PriceConfirmationController extends Controller
             ];
             $fpc_id = $m_fpc->insert_fpc($fpc_params);
             // end of FPC header
+            
 
+            // approvers
+            $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
+            $approval_params = [];
+            $m_module_approval = new ModuleApproval;
+            foreach($approvers as $row){
+                $temp_arr = [
+                    'module_id'             => 3, // Fleet Project
+                    'module_reference_id'   => $fpc_id,
+                    'approver_id'           => $row->approver_id,
+                    'hierarchy'             => $row->hierarchy,
+                    'status'                => 7, // Pending
+                    'column_reference'      => 'fpc_id',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'table_reference'       => 'fs_fpc'
+                ];
+                array_push($approval_params,$temp_arr);
+            } 
+            $m_module_approval->insert_module_approval($approval_params);
+                
             // insert fpc projects
             $project_params = [];
 
@@ -268,8 +295,9 @@ class PriceConfirmationController extends Controller
                     array_push($item_params,$arr);
                 }
                 $m_fpc_item->insert_fpc_item($item_params);
+                
             }
-        
+
             DB::commit();
             return [
                 'customer_id' => $customer_id,
@@ -937,6 +965,24 @@ class PriceConfirmationController extends Controller
         return response()->json([
             'message' => 'You can now update the fpc details.',
             'status' => 'In progress'
+        ]);
+    }
+
+    public function submit(Request $request){
+        $m_fpc = new FPC;
+
+        $fpc_id = $request->fpc_id;
+        $m_fpc->update_status(
+            $fpc_id, 
+            null, // remarks 
+            session('user')['user_id'],
+            session('user')['source_id'],
+            7 // pending
+        );
+
+        return response()->json([
+            'message' => 'FPC has been submitted',
+            'status' => 'Pending'
         ]);
     }
 }
