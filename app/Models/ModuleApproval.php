@@ -13,6 +13,7 @@ class ModuleApproval extends Model
 	protected $connection = "oracle";
 	const CREATED_AT = 'CREATION_DATE';
     const UPDATED_AT = 'UPDATE_DATE';
+    protected $primaryKey = "approval_id";
 
 	public function insert_module_approval($params){
 		$this->insert($params);

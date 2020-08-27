@@ -130,6 +130,7 @@
                         <th>Date sent</th>
                         <th>Status</th>
                         <th>Date approved</th>
+                        <th>Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -139,7 +140,8 @@
                         <td>@{{ row.email_address }}</td>
                         <td>@{{ row.date_sent }}</td>
                         <td>@{{ row.status_name }}</td>
-                        <td>@{{ row.update_date }}</td>
+                        <td>@{{ row.date_approved }}</td>
+                        <td>@{{ row.remarks }}</td>
                     </tr>
                 </tbody>
             </table>

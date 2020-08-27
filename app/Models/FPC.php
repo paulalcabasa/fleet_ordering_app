@@ -10,6 +10,7 @@ class FPC extends Model
 	protected $connection = "oracle";
 	const CREATED_AT = 'CREATION_DATE';
 	const UPDATED_AT = 'UPDATE_DATE';
+    protected $primaryKey = "fpc_id";
     
 	public function insert_fpc($params){
     	return $this->insertGetId($params,'fpc_id');
@@ -461,9 +462,11 @@ class FPC extends Model
                         usr.first_name || ' '  || usr.last_name approver_name,
                         usr.email_address,
                         status.status_name,
-                        ma.update_date,
+                        to_char(ma.date_approved, 'MM/DD/YYYY HH:MI:SS') date_approved,
                         ma.hierarchy,
-                        ma.date_sent
+                        to_char(ma.date_sent, 'MM/DD/YYYY HH:MI:SS') date_sent,
+                     
+                        ma.remarks
                 FROM ipc_dms.fs_fpc fpc
                     INNER JOIN ipc_dms.fs_module_approval ma
                         ON ma.module_reference_id = fpc.fpc_id
@@ -476,7 +479,6 @@ class FPC extends Model
                         ON status.status_id = ma.status
                 WHERE ma.module_id = 3
                     AND fpc.fpc_id = :fpc_id
-                    AND ma.date_sent IS NULL
                 ORDER BY ma.hierarchy ASC";
         $query = DB::select($sql, $params);
         return $query;

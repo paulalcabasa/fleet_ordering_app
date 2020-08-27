@@ -8,6 +8,7 @@ use App\Models\FPC;
 use App\Models\FPC_Project;
 use Carbon\Carbon;
 use App\Models\Email;
+use App\Models\ModuleApproval;
 
 class SendFPCApproval extends Command
 {
@@ -68,14 +69,14 @@ class SendFPCApproval extends Command
             $mail->Body    = view('mail.fpc_approval', $content);
             $mail->isHTML(true);
             $mail->AddEmbeddedImage(config('app.project_root') . 'public/img/isuzu-logo-compressor.png', 'isuzu_logo');
-           // $mail->addCC($log->mail_recipient);
-           //  $mail->addAddress($row->email_address, $row->approver_name);	// Add a recipient, Name is optional
              $mail->addAddress('paul-alcabasa@isuzuphil.com', 'Paul');	// Add a recipient, Name is optional
              $mail->addCC('paul-alcabasa@isuzuphil.com');
-            //mail->addBCC('paul-alcabasa@isuzuphil.com');
-            $mailSend = $mail->Send();
+           $mailSend = $mail->Send();
             
             if($mailSend){
+                $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
+                $moduleApproval->date_sent = Carbon::now();
+                $moduleApproval->save();
                 // update notification status to sent
                // $m_activity_logs->update_sent_flag($log->log_id,  Carbon::now());
             }

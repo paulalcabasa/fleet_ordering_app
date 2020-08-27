@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Helpers\VehicleTypeIdentification;
 use App\Models\FPC_Project;
 use App\Models\FPC_Item;
+use App\Models\ModuleApproval;
+
 use DB; 
 
 class FPCController extends Controller
@@ -128,17 +130,77 @@ class FPCController extends Controller
     }
 
     public function approve(Request $request){
-        return [
-            'fpc_id' => $request->fpc_id,
-            'state' => 'approve'
-        ];
+        DB::beginTransaction();
+        try{
+
+       
+            // set module approval as approved 
+            $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+            
+            $maxHierarchy = ModuleApproval::where([
+                ['module_reference_id', $moduleApproval->module_reference_id],
+                ['module_id' , 3],
+            ])->max('hierarchy');
+            
+            if($moduleApproval->status == 4){
+                $data = [
+                    'approval_id' => $request->approval_id,
+                    'state'       => 'approve',
+                    'message'     => 'It seems that you have already approved the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
+                    'image_url'   => url('/') . '/public/img/approval-error.jpg'
+                ];
+                return view('mail.message', $data);
+            }
+
+            $moduleApproval->status = 4;
+            $moduleApproval->date_approved = Carbon::now();
+            $moduleApproval->updated_by = -1;
+            $moduleApproval->update_user_source_id = -1;
+            $moduleApproval->save();
+
+            // update next hierarchy
+            $fpc = FPC::findOrFail($moduleApproval->module_reference_id);
+            $current = (int) $fpc->current_approval_hierarchy;
+            $fpc->current_approval_hierarchy = $current + 1;
+            // check if this is the last approver
+            if($moduleApproval->hierarchy == $maxHierarchy){
+                $fpc->status = 4;    
+            }
+            $fpc->save();
+
+            
+
+            DB::commit();
+
+            // if current hierarchy is equal to the max hierarchy 
+            // set fpc status to approved
+            $data = [
+                'approval_id' => $request->approval_id,
+                'state'       => 'approve',
+                'fpc_id'      => 'the fpc _id',
+                'message'     => 'You have successfully approved FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>!',
+                'image_url'   => url('/') . '/public/img/approval-success.gif'
+            ];
+            return view('mail.message', $data);
+            
+        } catch(Exception $e){
+            return [
+                'message' => 'An error occured!'
+            ];
+            DB::rollBack();
+        }
+        
+
+
+        
     }
 
     public function reject(Request $request){
-        return [
-            'fpc_id' => $request->fpc_id,
-            'state' => 'reject'
+        $data = [
+            'approval_id' => $request->approval_id,
+            'reject_api'      => url('/') . '/api/fpc/reject-fpc/' . $request->approval_id . '/' . 'thefpcid'
         ];
+        return view('mail.form-reject', $data);
     }
 
 }
