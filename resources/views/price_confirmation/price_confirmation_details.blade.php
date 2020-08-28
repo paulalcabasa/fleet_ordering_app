@@ -17,7 +17,7 @@
                     <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable && approvers.length == 0">
                         <span class="kt-hidden-mobile">Approve</span>
                     </a>
-                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="submitFPC()" v-if="editable && approvers.length > 0 && fpc_details.status_name == 'In progress'">
+                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="submitFPC()" v-if="editable && approvers.length > 0 && (fpc_details.status_name == 'In progress')">
                         <span class="kt-hidden-mobile">Submit</span>
                     </a>
                     <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()">
@@ -26,7 +26,7 @@
                     <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
                         <span class="kt-hidden-mobile">Print Conflict</span>
                     </a>
-                    <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved'" @click.prevent="reviseFPC()" href="#" target="_blank">
+                    <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved' || fpc_details.status_name == 'Pending'" @click.prevent="reviseFPC()" href="#" target="_blank">
                         <span class="kt-hidden-mobile">Revise</span>
                     </a>
                 </div>

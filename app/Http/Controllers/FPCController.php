@@ -198,9 +198,41 @@ class FPCController extends Controller
     public function reject(Request $request){
         $data = [
             'approval_id' => $request->approval_id,
-            'reject_api'      => url('/') . '/api/fpc/reject-fpc/' . $request->approval_id . '/' . 'thefpcid'
+            'reject_api'      => url('/') . '/api/fpc/reject-fpc/' . $request->approval_id
         ];
         return view('mail.form-reject', $data);
+    }
+
+    public function processReject(Request $request){
+        DB::beginTransaction();
+        try {
+            $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+            $moduleApproval->status = 5; // rejected
+            $moduleApproval->remarks = $request->remarks;
+            $moduleApproval->date_approved = Carbon::now();
+            $moduleApproval->updated_by = -1;
+            $moduleApproval->update_user_source_id = -1;
+            $moduleApproval->save();
+
+            $fpc = FPC::findOrFail($moduleApproval->module_reference_id);
+            $fpc->status = 12; // rejected;
+            $fpc->save();
+
+            
+
+            DB::commit();
+
+            $data = [
+                'approval_id' => $request->approval_id,
+                'state'       => 'reject',
+                'message'     => 'You have successfully rejected FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>!',
+                'image_url'   => url('/') . '/public/img/approval-success.gif'
+            ];
+            return view('mail.message', $data);
+
+        } catch(Exception $e){
+            DB::rollBack();
+        }
     }
 
 }

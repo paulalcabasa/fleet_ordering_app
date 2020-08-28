@@ -30,3 +30,4 @@ Route::post('export-fpc-summary', 'ReportsController@export_fpc_summary')->name(
 Route::get('fpc/project/print/{fpc_project_id}', 'PriceConfirmationController@print_fpc');
 Route::get('fpc/approve/{approval_id}', 'FPCController@approve');
 Route::get('fpc/reject/{approval_id}', 'FPCController@reject');
+Route::post('fpc/reject-fpc/{approval_id}', 'FPCController@processReject');

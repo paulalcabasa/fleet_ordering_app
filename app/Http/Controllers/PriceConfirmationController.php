@@ -951,7 +951,7 @@ class PriceConfirmationController extends Controller
     }
 
     public function revise(Request $request){
-        $m_fpc = new FPC;
+       /*  $m_fpc = new FPC;
 
         $fpc_id = $request->fpc_id;
         $m_fpc->update_status(
@@ -965,24 +965,77 @@ class PriceConfirmationController extends Controller
         return response()->json([
             'message' => 'You can now update the fpc details.',
             'status' => 'In progress'
-        ]);
+        ]); */
+
+        $moduleApproval = new ModuleApproval;
+        DB::beginTransaction();
+
+        try{
+            $fpc_id = $request->fpc_id;
+            $fpc = FPC::findOrFail($fpc_id);
+            $fpc->status = 12;
+            $fpc->current_approval_hierarchy = 1;
+            $fpc->save();
+            /* 
+            $m_fpc->update_status(
+                $fpc_id, 
+                null, // remarks 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                7 // pending
+            ); */
+
+            $moduleApproval->revertFPCApproval($fpc_id);
+            DB::commit();
+            return response()->json([
+                'message' => 'You can now update the fpc details.',
+                'status' => 'In progress'
+            ]);
+        } catch(Exception $ex){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'An error occurred!',
+                'status' => 'Pending'
+            ]);
+        }
+
     }
 
     public function submit(Request $request){
-        $m_fpc = new FPC;
+  
+        $moduleApproval = new ModuleApproval;
+        DB::beginTransaction();
 
-        $fpc_id = $request->fpc_id;
-        $m_fpc->update_status(
-            $fpc_id, 
-            null, // remarks 
-            session('user')['user_id'],
-            session('user')['source_id'],
-            7 // pending
-        );
+        try{
+            $fpc_id = $request->fpc_id;
+            $fpc = FPC::findOrFail($fpc_id);
+            $fpc->status = 7;
+            $fpc->current_approval_hierarchy = 1;
+            $fpc->save();
+            /* 
+            $m_fpc->update_status(
+                $fpc_id, 
+                null, // remarks 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                7 // pending
+            ); */
 
-        return response()->json([
-            'message' => 'FPC has been submitted',
-            'status' => 'Pending'
-        ]);
+            $moduleApproval->revertFPCApproval($fpc_id);
+            DB::commit();
+            return response()->json([
+                'message' => 'FPC has been submitted',
+                'status' => 'Pending'
+            ]);
+        } catch(Exception $ex){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'An error occurred!',
+                'status' => 'Pending'
+            ]);
+        }
+        
+
+        
     }
 }
