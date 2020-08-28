@@ -218,6 +218,26 @@ class FPCController extends Controller
     }
 
     public function reject(Request $request){
+
+        // set module approval as approved 
+        $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+ 
+        if($moduleApproval->status == 5){
+            $data = [
+                'approval_id' => $request->approval_id,
+                'state'       => 'reject',
+                'message'     => 'It seems that you have already rejected the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
+                'image_url'   => url('/') . '/public/img/approval-error.jpg'
+            ];
+            return view('mail.message', $data);
+        }
+
+        $moduleApproval->status = 4;
+        $moduleApproval->date_approved = Carbon::now();
+        $moduleApproval->updated_by = -1;
+        $moduleApproval->update_user_source_id = -1;
+        $moduleApproval->save();
+
         $data = [
             'approval_id' => $request->approval_id,
             'reject_api'      => url('/') . '/api/fpc/reject-fpc/' . $request->approval_id
@@ -226,6 +246,8 @@ class FPCController extends Controller
     }
 
     public function processReject(Request $request){
+
+        
         DB::beginTransaction();
         try {
             $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
