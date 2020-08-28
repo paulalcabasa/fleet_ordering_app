@@ -142,11 +142,12 @@ class FPCController extends Controller
                 ['module_id' , 3],
             ])->max('hierarchy');
             
-            if($moduleApproval->status == 4){
+            if($moduleApproval->status == 4 || $moduleApproval->status == 5){
+                $status = $moduleApproval->status == 4 ? 'approved' : 'rejected';
                 $data = [
                     'approval_id' => $request->approval_id,
                     'state'       => 'approve',
-                    'message'     => 'It seems that you have already approved the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
+                    'message'     => 'It seems that you have already '.$status.' the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
                     'image_url'   => url('/') . '/public/img/approval-error.jpg'
                 ];
                 return view('mail.message', $data);
@@ -221,12 +222,13 @@ class FPCController extends Controller
 
         // set module approval as approved 
         $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
- 
-        if($moduleApproval->status == 5){
+        
+        if($moduleApproval->status == 5 || $moduleApproval->status  == 4){
+            $status = $moduleApproval->status == 4 ? 'approved' : 'rejected';
             $data = [
                 'approval_id' => $request->approval_id,
                 'state'       => 'reject',
-                'message'     => 'It seems that you have already rejected the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
+                'message'     => 'It seems that you have already '. $status .' the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
                 'image_url'   => url('/') . '/public/img/approval-error.jpg'
             ];
             return view('mail.message', $data);
