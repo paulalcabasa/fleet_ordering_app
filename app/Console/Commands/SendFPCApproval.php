@@ -69,8 +69,9 @@ class SendFPCApproval extends Command
             $mail->Body    = view('mail.fpc_approval', $content);
             $mail->isHTML(true);
             $mail->AddEmbeddedImage(config('app.project_root') . 'public/img/isuzu-logo-compressor.png', 'isuzu_logo');
-             $mail->addAddress('paul-alcabasa@isuzuphil.com', 'Paul');	// Add a recipient, Name is optional
-             $mail->addCC('paul-alcabasa@isuzuphil.com');
+            // $mail->addAddress($row->email_address, $row->approver_name);	// Add a recipient, Name is optional
+            $mail->addAddress('paul-alcabasa@isuzuphil.com', 'Paul');	// Add a recipient, Name is optional
+            $mail->addBCC('paul-alcabasa@isuzuphil.com');
            $mailSend = $mail->Send();
             
             if($mailSend){

@@ -1034,8 +1034,52 @@ class PriceConfirmationController extends Controller
                 'status' => 'Pending'
             ]);
         }
-        
-
-        
     }
+
+    public function print_fpc_dealer_v2(
+        Request $request,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        FPC_Item $m_fpc_item,
+        Approver $m_approver,
+        FPCItemFreebies $m_freebies
+
+    ){
+
+       /*  if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        } */
+
+        $fpc_project_id = $request->fpc_project_id;
+        $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
+        $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
+        $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = collect($signatories)->groupBy('signatory_type');
+        
+      //  dd($signatories);
+      
+        $items_arr = [];
+        foreach($items as $row){
+            $arr = [
+                'header' => $row,
+                'other_items' => $m_freebies->get_item_freebies($row->fpc_item_id)
+            ];
+
+            array_push($items_arr, $arr);
+        }
+        
+      
+        $data = [
+            'header_data'   => $header_data,
+            'sales_persons' => $sales_persons,
+            'items'         => $items_arr,
+            'signatories'   => $signatories
+        ];
+
+        $pdf = PDF::loadView('pdf.print_fpc_dealer_v2', $data);
+        return $pdf->setPaper('a4','portrait')->stream();
+    }
+
+
 }

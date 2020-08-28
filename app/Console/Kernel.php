@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule -> exec("php artisan fpc_approval:send");
+        $schedule -> exec("php artisan notification:send");
         // $schedule->command('inspire')
         //          ->hourly();
     }

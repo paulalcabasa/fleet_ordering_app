@@ -10,7 +10,7 @@ use App\Helpers\VehicleTypeIdentification;
 use App\Models\FPC_Project;
 use App\Models\FPC_Item;
 use App\Models\ModuleApproval;
-
+use App\Models\ActivityLogs;
 use DB; 
 
 class FPCController extends Controller
@@ -165,6 +165,28 @@ class FPCController extends Controller
             // check if this is the last approver
             if($moduleApproval->hierarchy == $maxHierarchy){
                 $fpc->status = 4;    
+                
+                // notify ipc staff and dealer that fpc is approved
+                $activity_log = new ActivityLogs;
+                $fpc_detail = new FPC;
+                $fpc_details = $fpc_detail->get_details($moduleApproval->module_reference_id);
+                $activity_log_params = [
+                    'module_id'             => 3, // Fleet Project
+                    'module_code'           => 'FPC',
+                    'content'               => 'Your FPC No. ' . $moduleApproval->module_reference_id . ' has been approved!',
+                    'created_by'            => -1,
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => -1,
+                    'reference_id'          => $moduleApproval->module_reference_id,
+                    'reference_column'      => 'fpc_id',
+                    'reference_table'       => 'fs_fpc',
+                    'mail_flag'             => 'Y',
+                    'is_sent_flag'          => 'N',
+                    'timeline_flag'         => 'Y',
+                    'mail_recipient'        => $fpc_details->requestor_email
+                ];
+
+                $activity_log->insert_log($activity_log_params);
             }
             $fpc->save();
 
@@ -218,7 +240,27 @@ class FPCController extends Controller
             $fpc->status = 12; // rejected;
             $fpc->save();
 
-            
+            $fpc_detail = new FPC;
+            $fpc_details = $fpc_detail->get_details($moduleApproval->module_reference_id);
+
+            $activity_log = new ActivityLogs;
+            $activity_log_params = [
+                'module_id'             => 3, // Fleet Project
+                'module_code'           => 'FPC',
+                'content'               => 'Your FPC No. ' . $moduleApproval->module_reference_id . ' has been rejected!',
+                'created_by'            => -1,
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => -1,
+                'reference_id'          => $moduleApproval->module_reference_id,
+                'reference_column'      => 'fpc_id',
+                'reference_table'       => 'fs_fpc',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+                'mail_recipient'        => $fpc_details->requestor_email
+            ];
+            $activity_log->insert_log($activity_log_params);
+
 
             DB::commit();
 

@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use PHPMailer\PHPMailer;
 use App\Models\ActivityLogs;
 use Carbon\Carbon;
-
+use App\Models\Email;
 class SendNotification extends Command
 {
     /**
@@ -33,6 +33,8 @@ class SendNotification extends Command
        
         // get logs for mailing
         $logs = $m_activity_logs->get_logs_for_mail();
+        $email = new Email;
+        $mailCredentials = $email->getMailCredentials();
 
         foreach($logs as $log){
 
@@ -42,18 +44,17 @@ class SendNotification extends Command
             $mail->Host       = "smtp.office365.com";
             $mail->Port       = 587; // or 587
             $mail->IsSMTP();
-            $mail->Username = "interface-notification@isuzuphil.com";
-            $mail->Password = "Lo0bC@l3";
-            $mail->SetFrom("interface-notification@isuzuphil.com", 'Fleet Ordering System');
-
+            $mail->Username = $mailCredentials->email;
+            $mail->Password = $mailCredentials->email_password;
+            $mail->SetFrom($mailCredentials->email, 'Fleet Registration');
             $mail->Subject = 'Fleet Ordering System';
             $content = [
                 'message' => $log->content
             ];
             $mail->Body    = view('mail.notification', $content);
             $mail->isHTML(true);
-            $mail->addCC($log->mail_recipient);
-            //mail->addBCC('paul-alcabasa@isuzuphil.com');
+            $mail->addAddress($log->mail_recipient);
+            $mail->addBCC('paul-alcabasa@isuzuphil.com');
             $mailSend = $mail->Send();
             
             if($mailSend){
