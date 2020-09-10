@@ -134,6 +134,12 @@
             @endif  
             @if(in_array(session('user')['user_type_id'], array(32,33,25)))
             <li class="kt-menu__item {{ request()->is('users') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/out-of-office') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-users-1"></i>
+                    <span class="kt-menu__link-text">Out of office</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('users') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/user-list') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-users-1"></i>
                     <span class="kt-menu__link-text">Users</span>

@@ -258,4 +258,17 @@ class Approver extends Model
             ]);
     }  
 
+    public function getApprovers(){
+        $sql = "SELECT distinct users.user_id,
+                        users.user_source_id,
+                        users.first_name || ' ' || users.last_name approver_name
+                FROM ipc_dms.fs_approvers approvers
+                    LEFT JOIN ipc_dms.ipc_portal_users_v users
+                        ON approvers.approver_user_id = users.user_id
+                        AND approvers.approver_source_id = users.user_source_id
+                WHERE approvers.signatory_type IN ('CHECKED_BY','NOTED_BY','EXPAT')";
+        $query = DB::select($sql);
+        return $query;
+    }
+
 }

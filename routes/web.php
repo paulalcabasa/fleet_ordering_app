@@ -155,6 +155,14 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
 	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
 
+	// out of office
+	Route::post('out-of-office/save', 'OutOfficeController@store');
+	Route::get('out-of-office' , 'OutOfficeController@index');
+	Route::get('out-of-office/{id}' , 'OutOfficeController@show');
+	Route::get('out-of-office/update/{id}' , 'OutOfficeController@update');
+	Route::get('out-of-office/delete/{id}' , 'OutOfficeController@destroy');
+
+	
 	// APPROVERS
 	Route::get('approver-list' , 'ApproverController@approver_list');
 	Route::post('add-approver' , 'ApproverController@add_approver');
