@@ -171,17 +171,33 @@
                 }).then(res => {
                     $("#form").modal('hide');
                     this.toast('success','Data successfully saved.');
-                    window.location.reload();
-                }).catch(err => {
-                    console.log(err);
-                }).finally( (response) => {
-                    KTApp.unblockPage();
-                    this.form.approver = '';
+                    if($.fn.dataTable.isDataTable('#data')){
+                        table.destroy();
+                    }
+                    this.setDefaultApprover();
                     this.form.startDate = '';
                     this.form.endDate = '';
                     this.form.remarks = '';
                     this.form.id = '';
-                });
+                    this.list = res.data.list;
+                }).then( () => {
+                    table = $("#data").DataTable({
+                        // Pagination settings
+                        dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+                        <'row'<'col-sm-12'tr>>
+                        <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                        buttons: [
+                            'print',
+                            'copyHtml5',
+                            'excelHtml5'
+                        ],
+                        responsive:true
+                    });
+                }).catch(err => {
+                    console.log(err);
+                }).finally( (response) => {
+                    KTApp.unblockPage();
+                }); 
             },
             update(){
                 KTApp.blockPage({
@@ -196,7 +212,28 @@
                 }).then(res => {
                     $("#form").modal('hide');
                     this.toast('success','Data successfully saved.');
-                    window.location.reload();
+                    if($.fn.dataTable.isDataTable('#data')){
+                        table.destroy();
+                    }
+                    this.setDefaultApprover();
+                    this.form.startDate = '';
+                    this.form.endDate = '';
+                    this.form.remarks = '';
+                    this.form.id = '';
+                    this.list = res.data.list;
+                }).then( () => {
+                    table = $("#data").DataTable({
+                        // Pagination settings
+                        dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+                        <'row'<'col-sm-12'tr>>
+                        <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                        buttons: [
+                            'print',
+                            'copyHtml5',
+                            'excelHtml5'
+                        ],
+                        responsive:true
+                    });
                 }).catch(err => {
                     console.log(err);
                 }).finally( (response) => {
@@ -256,15 +293,29 @@
                         });
 
                         axios.delete('out-of-office/' + row.id).then(res => {
-                            // if($.fn.dataTable.isDataTable('#data')){
-                            //     table.destroy();
-                            // }
                             this.toast('success','Data successfully deleted.');
-                            window.location.reload();
-                            // this.list = [];
-                            // this.list = res.data.list;
-                            // this.initTable();
-                            // 
+                            if($.fn.dataTable.isDataTable('#data')){
+                                table.destroy();
+                            }
+                            this.setDefaultApprover();
+                            this.form.startDate = '';
+                            this.form.endDate = '';
+                            this.form.remarks = '';
+                            this.form.id = '';
+                            this.list = res.data.list;
+                        }).then( () => {
+                            table = $("#data").DataTable({
+                                // Pagination settings
+                                dom: `<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+                                <'row'<'col-sm-12'tr>>
+                                <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                                buttons: [
+                                    'print',
+                                    'copyHtml5',
+                                    'excelHtml5'
+                                ],
+                                responsive:true
+                            });
                         }).catch(err => {
                             console.log(err.data);
                         }).finally(() => {
@@ -285,6 +336,9 @@
                         user_source_id : this.user.source_id
                     };
                     this.approverDefault = true;
+                }
+                else {
+                    this.form.approver = '';
                 }
             }
         },

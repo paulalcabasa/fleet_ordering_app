@@ -58,18 +58,18 @@ class OutOfficeController extends Controller
             'id' => $request->form['id']
         ]);
 
-        // $list = [];
-        // $user = session('user');
-        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
-        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
-        // }
-        // else {
-        //     $list = $this->outOfficeRepository->all();
-        // }
+        $list = [];
+        $user = session('user');
+        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+            $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        }
+        else {
+            $list = $this->outOfficeRepository->all();
+        }
 
         return response()->json([
             'message' => 'Successfully saved.',
-          //  'list' => $list
+            'list' => $list
         ]);
 
     }
@@ -80,18 +80,18 @@ class OutOfficeController extends Controller
 
         $this->outOfficeRepository->delete($id);
 
-        // $list = [];
-        // $user = session('user');
-        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
-        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
-        // }
-        // else {
-        //     $list = $this->outOfficeRepository->all();
-        // }
+        $list = [];
+        $user = session('user');
+        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+            $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        }
+        else {
+            $list = $this->outOfficeRepository->all();
+        }
 
         return response()->json([
             'message' => 'Successfully deleted.',
-            //'list' => $list
+            'list' => $list
         ]);
     }
 
@@ -108,19 +108,18 @@ class OutOfficeController extends Controller
             'creation_date' => Carbon::now()
         ]);
         
-        // $list = [];
-
-        // $user = session('user');
-        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
-        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
-        // }
-        // else {
-        //     $list = $this->outOfficeRepository->all();
-        // }
+        $list = [];
+        $user = session('user');
+        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+            $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        }
+        else {
+            $list = $this->outOfficeRepository->all();
+        }
 
         return response()->json([
             'message' => 'Successfully saved.',
-          //  'list' => $list
+            'list' => $list
         ]);
     }
 
