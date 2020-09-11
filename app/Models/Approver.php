@@ -134,16 +134,21 @@ class Approver extends Model
                         usr.nickname,
                         usr.name_prefix,
                         fa.signatory_type,
-                         fa.approver_id,
-                         fa.hierarchy
+                        fa.approver_id,
+                        fa.hierarchy
                 FROM ipc_dms.fs_approvers fa
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fa.approver_user_id
                         AND fa.approver_source_id = usr.user_source_id
+                    LEFT JOIN ipc_dms.fs_out_of_office out_office
+                        ON out_office.approver_user_id = usr.user_id
+                        AND out_office.approver_source_id = usr.user_source_id 
+                        AND start_date >= trunc(sysdate) and end_date <= trunc(sysdate)
                 WHERE 1 = 1
                     AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
                     AND fa.vehicle_type = :vehicle_type
                     AND fa.status_id = 1
+                    AND out_office.id IS NULL
                 ORDER BY fa.hierarchy ASC";
         $params = [
             'vehicle_type' => $vehicle_type
