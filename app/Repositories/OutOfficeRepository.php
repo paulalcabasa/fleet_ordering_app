@@ -15,26 +15,29 @@ class OutOfficeRepository implements OutOfficeRepositoryInterface
         return $outOffice->getAll();
     }
 
-    public function findById($id)
+    public function findByUser($userId, $userSource)
     {
         $outOffice = new OutOffice;
-        return $outOffice->findById();
+        return $outOffice->getByUser($userId, $userSource);
     }
 
-    public function update($id)
+    public function update($request)
     {
-        $outOffice = OutOffice::where('id', $id)->firstOrFail();
-
-        $outOffice->update(
-            request()->only('approver_user_id')
-        ); 
-
-        return redirect('/out-of-office/' . $id);
+        $outOffice = OutOffice::findOrFail($request['id']);
+        $outOffice->approver_user_id = $request['user_id'];
+        $outOffice->approver_source_id = $request['user_source_id'];
+        $outOffice->start_date = $request['start_date'];
+        $outOffice->end_date = $request['end_date'];
+        $outOffice->remarks = $request['remarks'];
+        $outOffice->updated_by = $request['updated_by'];
+        $outOffice->update_user_source = $request['update_user_source'];
+        $outOffice->update_date = $request['update_date'];
+        $outOffice->save();
     }
 
     public function delete($id)
     {
-        $outOffice = OutOffice::where('id', $id)->delete();   
+        OutOffice::where('id', $id)->delete();   
     }
 
     public function store($request)

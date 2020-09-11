@@ -19,7 +19,6 @@
         </div>
     </div>
     <div class="kt-portlet__body">
-
         <table id="data" class="table table-striped" width="100%">
             <thead>
                 <tr>
@@ -37,8 +36,8 @@
                     <td>@{{ row.end_date | formatDate }}</td>
                     <td>@{{ row.remarks }}</td>
                     <td>
-                        <a href="#" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-edit"></i></a>
-                        <a href="#" class="btn btn-danger  btn-sm btn-icon btn-circle"><i class="la la-trash"></i></a>
+                        <a href="#" @click="showUpdate(row)" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-edit"></i></a>
+                        <a href="#" @click="deleteData(row)" class="btn btn-danger  btn-sm btn-icon btn-circle"><i class="la la-trash"></i></a>
                     </td>
                 </tr>
             </tbody>
@@ -57,7 +56,7 @@
             </div>
             <div class="modal-body">  
                 <form class="form">
-                    <div class="form-group">
+                    <div class="form-group" v-show="!approverDefault">
                         <label>Name</label>
                         <select class="form-control" v-model="form.approver" id="sel_approver" v-select style="width:100%;">
                             <option value="">Choose user</option>
@@ -121,13 +120,16 @@
         data: {
             list: {!! json_encode($list) !!},
             approvers: {!! json_encode($approvers) !!},
+            user: {!! json_encode($user) !!},
             form : {
                 approver : '',
                 startDate : '',
                 endDate : '',
-                remarks : ''
+                remarks : '',
+                id : ''
             },
-            action : ''
+            action : '',
+            approverDefault : false
         },
         methods :{
             toast(type,message) {
@@ -146,30 +148,64 @@
             newData(){
                 this.action = "add";
                 $("#form").modal("show");
+             
             },
             save(){
-
+                if(this.action == "add"){
+                    this.store();
+                }
+                else if(this.action == "edit"){
+                    this.update();
+                }
+            },
+            store(){
                 KTApp.blockPage({
                     overlayColor: '#000000',
                     type: 'v2',
                     state: 'success',
                     message: 'Please wait...'
-                });
-                
+                });  
+
                 axios.post('out-of-office/save', {
                     form : this.form
                 }).then(res => {
-                    if($.fn.dataTable.isDataTable('#data')){
-                        table.destroy();
-                    }
-                    this.list = res.data.list;
-                    this.initTable();
-                    $("#form").modal("hide");
+                    $("#form").modal('hide');
                     this.toast('success','Data successfully saved.');
+                    window.location.reload();
                 }).catch(err => {
                     console.log(err);
                 }).finally( (response) => {
                     KTApp.unblockPage();
+                    this.form.approver = '';
+                    this.form.startDate = '';
+                    this.form.endDate = '';
+                    this.form.remarks = '';
+                    this.form.id = '';
+                });
+            },
+            update(){
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });  
+
+                axios.put('out-of-office/update', {
+                    form : this.form
+                }).then(res => {
+                    $("#form").modal('hide');
+                    this.toast('success','Data successfully saved.');
+                    window.location.reload();
+                }).catch(err => {
+                    console.log(err);
+                }).finally( (response) => {
+                    KTApp.unblockPage();
+                    this.form.approver = '';
+                    this.form.startDate = '';
+                    this.form.endDate = '';
+                    this.form.remarks = '';
+                    this.form.id = '';
                 });
             },
             initTable(){
@@ -185,8 +221,72 @@
                     ],
                     responsive:true
                 });
+            },
+            showUpdate(row){
+                $("#form").modal('show');
+                this.action = "edit";
+              
+                this.form.approver = {
+                    approver_name : row.approver_name,
+                    user_id : row.approver_user_id,
+                    user_source_id : row.approver_source_id
+                };
+             
+                this.form.startDate = this.formatBackendDate(row.start_date);
+                this.form.endDate = this.formatBackendDate(row.end_date);
+                this.form.remarks = row.remarks;
+                this.form.id = row.id;
+            },
+            deleteData(row){
+                Swal.fire({
+                    title: 'Are you sure to delete this data?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if(result.value){
+                        KTApp.blockPage({
+                            overlayColor: '#000000',
+                            type: 'v2',
+                            state: 'success',
+                            message: 'Please wait...'
+                        });
+
+                        axios.delete('out-of-office/' + row.id).then(res => {
+                            // if($.fn.dataTable.isDataTable('#data')){
+                            //     table.destroy();
+                            // }
+                            this.toast('success','Data successfully deleted.');
+                            window.location.reload();
+                            // this.list = [];
+                            // this.list = res.data.list;
+                            // this.initTable();
+                            // 
+                        }).catch(err => {
+                            console.log(err.data);
+                        }).finally(() => {
+                            KTApp.unblockPage();
+                        });
+                    }
+                    
+                }); 
+            },
+            formatBackendDate(date) {
+        		return moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+        	},
+            setDefaultApprover(){
+                if(this.user.user_type_id == 32 || this.user.user_type_id == 33){
+                    this.form.approver = {
+                        approver_name : this.user.first_name + ' ' + this.user.last_name,
+                        user_id : this.user.user_id,
+                        user_source_id : this.user.source_id
+                    };
+                    this.approverDefault = true;
+                }
             }
-            
         },
         created: function () {
             // `this` points to the vm instance
@@ -195,12 +295,13 @@
 
         mounted : function () {
             this.initTable();
+            this.setDefaultApprover();
         },
 
         filters : {
             formatDate: function(date) {
         		return moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
-        	},
+        	} 
         }
         
     });

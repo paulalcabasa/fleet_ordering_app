@@ -160,7 +160,8 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('out-of-office' , 'OutOfficeController@index');
 	Route::get('out-of-office/{id}' , 'OutOfficeController@show');
 	Route::get('out-of-office/update/{id}' , 'OutOfficeController@update');
-	Route::get('out-of-office/delete/{id}' , 'OutOfficeController@destroy');
+	Route::delete('out-of-office/{id}' , 'OutOfficeController@destroy');
+	Route::put('out-of-office/update' , 'OutOfficeController@update');
 
 	
 	// APPROVERS

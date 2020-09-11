@@ -6,7 +6,7 @@ interface OutOfficeRepositoryInterface
 {
     public function all();
 
-    public function findById($id);
+    public function findByUser($userId, $userSource);
 
     public function update($id);
 

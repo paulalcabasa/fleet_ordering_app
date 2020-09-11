@@ -19,12 +19,20 @@ class OutOfficeController extends Controller
     }
 
     public function index(ApproverRepositoryInterface $approverRepository)
-    {
-        $list = $this->outOfficeRepository->all();
+    {    
+
+        $user = session('user');
+        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+            $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        }
+        else {
+            $list = $this->outOfficeRepository->all();
+        }
         $approvers = $approverRepository->getApprovers();
         $data = [
             'list' => $list,
-            'approvers' => $approvers
+            'approvers' => $approvers,
+            'user' => $user
         ];
         return view('out_office.list', $data);
     }
@@ -36,14 +44,55 @@ class OutOfficeController extends Controller
         return $outOffice;
     }
 
-    public function update($id)
+    public function update(Request $request)
     {
-        $this->outOfficeRepository->update($id);
+        $this->outOfficeRepository->update([
+            'user_id' => $request->form['approver']['user_id'],
+            'user_source_id' => $request->form['approver']['user_source_id'],
+            'start_date' => $request->form['startDate'],
+            'end_date' => $request->form['endDate'],
+            'remarks' => $request->form['remarks'],
+            'updated_by' => session('user')['user_id'],
+            'update_user_source' => session('user')['source_id'],
+            'update_date' => Carbon::now(),
+            'id' => $request->form['id']
+        ]);
+
+        // $list = [];
+        // $user = session('user');
+        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        // }
+        // else {
+        //     $list = $this->outOfficeRepository->all();
+        // }
+
+        return response()->json([
+            'message' => 'Successfully saved.',
+          //  'list' => $list
+        ]);
+
     }
 
     public function destroy($id)
     {
+        
+
         $this->outOfficeRepository->delete($id);
+
+        // $list = [];
+        // $user = session('user');
+        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        // }
+        // else {
+        //     $list = $this->outOfficeRepository->all();
+        // }
+
+        return response()->json([
+            'message' => 'Successfully deleted.',
+            //'list' => $list
+        ]);
     }
 
     public function store(Request $request)
@@ -58,10 +107,20 @@ class OutOfficeController extends Controller
             'create_user_source' => session('user')['source_id'],
             'creation_date' => Carbon::now()
         ]);
+        
+        // $list = [];
+
+        // $user = session('user');
+        // if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+        //     $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
+        // }
+        // else {
+        //     $list = $this->outOfficeRepository->all();
+        // }
 
         return response()->json([
             'message' => 'Successfully saved.',
-            'list' => $this->outOfficeRepository->all()
+          //  'list' => $list
         ]);
     }
 
