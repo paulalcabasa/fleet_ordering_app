@@ -245,12 +245,13 @@ class PriceConfirmationController extends Controller
             $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
             $approval_params = [];
             $m_module_approval = new ModuleApproval;
+            $hierarchy = 1;
             foreach($approvers as $row){
                 $temp_arr = [
                     'module_id'             => 3, // Fleet Project
                     'module_reference_id'   => $fpc_id,
                     'approver_id'           => $row->approver_id,
-                    'hierarchy'             => $row->hierarchy,
+                    'hierarchy'             => $hierarchy,
                     'status'                => 7, // Pending
                     'column_reference'      => 'fpc_id',
                     'created_by'            => session('user')['user_id'],
@@ -258,6 +259,7 @@ class PriceConfirmationController extends Controller
                     'create_user_source_id' => session('user')['source_id'],
                     'table_reference'       => 'fs_fpc'
                 ];
+                $hierarchy++;
                 array_push($approval_params,$temp_arr);
             } 
             $m_module_approval->insert_module_approval($approval_params);
