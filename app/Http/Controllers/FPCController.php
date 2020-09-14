@@ -11,6 +11,7 @@ use App\Models\FPC_Project;
 use App\Models\FPC_Item;
 use App\Models\ModuleApproval;
 use App\Models\ActivityLogs;
+use App\Models\Approver;
 use DB; 
 
 class FPCController extends Controller
@@ -132,8 +133,6 @@ class FPCController extends Controller
     public function approve(Request $request){
         DB::beginTransaction();
         try{
-
-       
             // set module approval as approved 
             $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
             
@@ -234,11 +233,11 @@ class FPCController extends Controller
             return view('mail.message', $data);
         }
 
-        $moduleApproval->status = 4;
-        $moduleApproval->date_approved = Carbon::now();
-        $moduleApproval->updated_by = -1;
-        $moduleApproval->update_user_source_id = -1;
-        $moduleApproval->save();
+        // $moduleApproval->status = 4;
+        // $moduleApproval->date_approved = Carbon::now();
+        // $moduleApproval->updated_by = -1;
+        // $moduleApproval->update_user_source_id = -1;
+        // $moduleApproval->save();
 
         $data = [
             'approval_id' => $request->approval_id,
@@ -248,8 +247,6 @@ class FPCController extends Controller
     }
 
     public function processReject(Request $request){
-
-        
         DB::beginTransaction();
         try {
             $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
@@ -299,6 +296,94 @@ class FPCController extends Controller
         } catch(Exception $e){
             DB::rollBack();
         }
+    }
+
+    public function inquiry(Request $request){
+
+        // set module approval as approved 
+        $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+        
+        if($moduleApproval->status == 5 || $moduleApproval->status  == 4){
+            $status = $moduleApproval->status == 4 ? 'approved' : 'rejected';
+            $data = [
+                'approval_id' => $request->approval_id,
+                'state'       => 'reject',
+                'message'     => 'It seems that you have already '. $status .' the FPC No. <strong>' . $moduleApproval->module_reference_id . '</strong>',
+                'image_url'   => url('/') . '/public/img/approval-error.jpg'
+            ];
+            return view('mail.message', $data);
+        }
+
+
+        $data = [
+            'approval_id' => $request->approval_id,
+            'inquiry_api'      => url('/') . '/api/fpc/inquiry-fpc/' . $request->approval_id
+        ];
+        return view('mail.form-inquiry', $data);
+    }
+
+    public function processInquiry(Request $request){
+        DB::beginTransaction();
+        try {
+            $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+            $approver = new Approver;
+            $approverDetails = $approver->getDetails($moduleApproval->approver_id);
+         //   dd($approverDetails);
+
+            $fpc = FPC::findOrFail($moduleApproval->module_reference_id);
+             
+            $fpc_detail = new FPC;
+            $fpc_details = $fpc_detail->get_details($moduleApproval->module_reference_id);
+
+            $activity_log = new ActivityLogs;
+            $activity_log_params = [
+                'module_id'             => 3, // Fleet Project
+                'module_code'           => 'FPC',
+                'content'               => 'An inquiry has been sent by ' . $approverDetails->approver_name . '.<br/></br> <i>'. $request->remarks . '</i>',
+                'created_by'            => -1,
+                'creation_date'         => Carbon::now(),
+                'create_user_source_id' => -1,
+                'reference_id'          => $moduleApproval->module_reference_id,
+                'reference_column'      => 'fpc_id',
+                'reference_table'       => 'fs_fpc',
+                'mail_flag'             => 'Y',
+                'is_sent_flag'          => 'N',
+                'timeline_flag'         => 'Y',
+              //  'mail_recipient'        => $fpc_details->requestor_email . ';' . $approverDetails->email_address
+                'mail_recipient'        => $fpc_details->requestor_email . ';' . 'paulalcabasa@gmail.com'
+            ];
+            $activity_log->insert_log($activity_log_params);
+
+
+            DB::commit();
+
+            $data = [
+                'approval_id' => $request->approval_id,
+                'state'       => 'reject',
+                'message'     => 'You have successfully sent the inquiry!',
+                'image_url'   => url('/') . '/public/img/approval-success.gif'
+            ];
+            return view('mail.message', $data);
+
+        } catch(Exception $e){
+            DB::rollBack();
+        }
+    }
+
+    public function fpc_approval(){
+        $fpc = new FPC;
+        $user = session('user');
+        $approverPending = $fpc->getByApprover($user['user_id'], $user['source_id']);
+        $subordinatePending = $fpc->getBySubordinate($user['user_id'], $user['source_id']);
+
+        $list = array_merge($approverPending, $subordinatePending);
+
+        $page_data = [
+            'approval_list' => $list,
+            'base_url'      => url('/'),
+            'status_colors' => config('app.status_colors')
+        ];
+        return view('price_confirmation.approval_list',$page_data); 
     }
 
 }

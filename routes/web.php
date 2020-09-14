@@ -80,7 +80,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('manage-fwpc/{action}/{price_confirmation_id}', 'PriceConfirmationController@manage_fwpc');
 	Route::get('all-fwpc', 'PriceConfirmationController@all_fwpc');
 	Route::get('view-fpc/{price_confirmation_id}', 'PriceConfirmationController@view_fpc');
-	Route::get('fpc-approval', 'PriceConfirmationController@fpc_approval');
+
 	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
 	Route::post('save-fpc', 'PriceConfirmationController@save_fpc');
 	Route::get('/ajax-get-freebies/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
@@ -104,6 +104,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
 	Route::patch('fpc/submit', 'PriceConfirmationController@submit');
+	Route::get('fpc-approval', 'FPCController@fpc_approval');
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');

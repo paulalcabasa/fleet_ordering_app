@@ -496,7 +496,8 @@ class FPC extends Model
                         cust.customer_name,
                         fpc.vehicle_type,
                         to_char(fpc.creation_date,'MM/DD/YYYY') date_created,
-                         creator.first_name || ' '  || creator.last_name prepared_by
+                         creator.first_name || ' '  || creator.last_name prepared_by,
+                         fpc.remarks
                 FROM ipc_dms.fs_fpc fpc
                     INNER JOIN ipc_dms.fs_module_approval ma
                         ON ma.module_reference_id = fpc.fpc_id
@@ -520,6 +521,90 @@ class FPC extends Model
         return $query;
     }
 
+    public function getByApprover($userId, $userSource){
+        $sql = "SELECT ma.approval_id,
+                        fpc.fpc_id,
+                        usr.first_name || ' '  || usr.last_name approver_name,
+                        usr.email_address,
+                        status.status_name,
+                        ma.update_date,
+                        fpc.customer_id,
+                        cust.customer_name,
+                        fpc.vehicle_type,
+                        to_char(fpc.creation_date,'MM/DD/YYYY') date_created,
+                        creator.first_name || ' '  || creator.last_name prepared_by,
+                        null subordinate
+                FROM ipc_dms.fs_fpc fpc
+                    INNER JOIN ipc_dms.fs_module_approval ma
+                        ON ma.module_reference_id = fpc.fpc_id
+                        AND ma.hierarchy = fpc.current_approval_hierarchy
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    INNER JOIN ipc_dms.fs_status status
+                        ON status.status_id = ma.status
+                    LEFT JOIN ipc_dms.fs_customers cust
+                        ON cust.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v creator
+                        ON creator.user_id = fpc.created_by
+                        AND creator.user_source_id = fpc.create_user_source_id
+                WHERE ma.module_id = 3
+                    AND fpc.status = 7 -- pending 
+                    AND fa.approver_user_id = :approver_user_id
+                    AND fa.approver_source_id = :approver_source_id";
+        $query = DB::select($sql,  [
+                                        'approver_user_id' => $userId, 
+                                        'approver_source_id' => $userSource
+                                    ]
+        );
+        return $query;
+    }
 
+    public function getBySubordinate($userId, $userSource){
+        $sql = "SELECT ma.approval_id,
+                        fpc.fpc_id,
+                        usr.first_name || ' '  || usr.last_name subordinate,
+                        usr.email_address,
+                        status.status_name,
+                        ma.update_date,
+                        fpc.customer_id,
+                        cust.customer_name,
+                        fpc.vehicle_type,
+                        to_char(fpc.creation_date,'MM/DD/YYYY') date_created,
+                        creator.first_name || ' '  || creator.last_name prepared_by,
+                        fa.subordinate_approver_id,
+                        subordinate_approver.approver_user_id,
+                        subordinate_approver.approver_source_id
+                FROM ipc_dms.fs_fpc fpc
+                    INNER JOIN ipc_dms.fs_module_approval ma
+                        ON ma.module_reference_id = fpc.fpc_id
+                        AND ma.hierarchy = fpc.current_approval_hierarchy
+                    INNER JOIN ipc_dms.fs_approvers fa
+                        ON fa.approver_id = ma.approver_id
+                    INNER JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    INNER JOIN ipc_dms.fs_status status
+                        ON status.status_id = ma.status
+                    LEFT JOIN ipc_dms.fs_customers cust
+                        ON cust.customer_id = fpc.customer_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v creator
+                        ON creator.user_id = fpc.created_by
+                        AND creator.user_source_id = fpc.create_user_source_id
+                    LEFT JOIN ipc_dms.fs_approvers subordinate_approver
+                        ON subordinate_approver.approver_id = fa.subordinate_approver_id
+                WHERE ma.module_id = 3
+                    AND fpc.status = 7 -- pending 
+                    AND subordinate_approver.approver_user_id = :subordinate_user_id
+                    AND subordinate_approver.approver_source_id = :subordinate_source_id";
+        $query = DB::select($sql,  [
+                        'subordinate_user_id' => $userId, 
+                        'subordinate_source_id' => $userSource
+        ]);
+
+        return $query;
+    }
 
 }

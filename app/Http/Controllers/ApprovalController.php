@@ -30,7 +30,7 @@ class ApprovalController extends Controller
         $po_approval_list = $m_approval->get_po_approval(
             session('user')['user_id'],
             session('user')['source_id']
-        );
+        );  
 
         $approval_list = array_merge($project_approval_list, $po_approval_list);
 

@@ -26,6 +26,9 @@
 		},
 		{
 			"path": "app\\Providers"
+		},
+		{
+			"path": "app\\Console"
 		}
 	],
 	"settings": {}

@@ -9,6 +9,8 @@ use App\Models\FPC_Project;
 use Carbon\Carbon;
 use App\Models\Email;
 use App\Models\ModuleApproval;
+use App\Models\FPC_Item;
+use App\Models\Competitor;
 
 class SendFPCApproval extends Command
 {
@@ -42,7 +44,7 @@ class SendFPCApproval extends Command
 
         // get logs for mailing
         $approval = $fpc->get_pending();
-     
+
         foreach($approval as $row){
 
             $mail             = new PHPMailer\PHPMailer(); // create a n
@@ -55,14 +57,43 @@ class SendFPCApproval extends Command
             $mail->Password = $mailCredentials->email_password;
             $mail->SetFrom($mailCredentials->email, 'Fleet Registration');
 
-            $project_headers       = $fpc_project->get_projects($row->fpc_id);
-            
+            $project_headers = $fpc_project->get_projects($row->fpc_id);
+ 
+            $projects           = [];
+            $fpcItem = new FPC_Item;
+            $competitor = new Competitor;
+            foreach($project_headers as $project){
+                $requirements            = $fpcItem->get_item_requirements($project->fpc_project_id);
+                $competitors             = $competitor->get_competitors($project->project_id);
+
+                $temp_arr                = [
+                    'project_id'              => $project->project_id,
+                    'payment_terms'           => $project->payment_terms,
+                    'validity'                => $project->validity,
+                    'availability'            => $project->availability,
+                    'note'                    => $project->note,
+                    'dealer_name'             => $project->dealer_name,
+                    'dealer_account'          => $project->dealer_account,
+                    'project_status'          => $project->project_status,
+                    'fpc_project_id'          => $project->fpc_project_id,
+                    'requirements'            => $requirements,
+                    'competitors'             => $competitors,
+                    'term_name'               => $project->term_name,
+                    'validity_disp'           => $project->validity_disp,
+                    'competitor_flag'         => $project->competitor_flag,
+                    'competitor_remarks'      => $project->competitor_remarks,
+                    
+                ];
+                array_push($projects,$temp_arr);
+            }
+
             $mail->Subject = 'System Notification : Fleet Registration';
             $content = [
                 'fpc_header' => $row,
                 'approve_link' => url('/') . '/api/fpc/approve/' . $row->approval_id,
                 'reject_link' => url('/')  . '/api/fpc/reject/' . $row->approval_id,
-                'fpc_projects' => $project_headers,
+                'inquiry_link' => url('/')  . '/api/fpc/inquiry/' . $row->approval_id,
+                'fpc_projects' => $projects,
                 'print_url' => url('/')  . '/api/fpc/project/print/'
             ];
             
@@ -72,14 +103,14 @@ class SendFPCApproval extends Command
             // $mail->addAddress($row->email_address, $row->approver_name);	// Add a recipient, Name is optional
             $mail->addAddress('paul-alcabasa@isuzuphil.com', 'Paul');	// Add a recipient, Name is optional
             $mail->addBCC('paul-alcabasa@isuzuphil.com');
-           $mailSend = $mail->Send();
+            $mailSend = $mail->Send();
             
             if($mailSend){
-                $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
-                $moduleApproval->date_sent = Carbon::now();
-                $moduleApproval->save();
+               // $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
+              //  $moduleApproval->date_sent = Carbon::now();
+             //   $moduleApproval->save();
                 // update notification status to sent
-               // $m_activity_logs->update_sent_flag($log->log_id,  Carbon::now());
+       
             }
 
         }

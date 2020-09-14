@@ -33,6 +33,7 @@ class SendNotification extends Command
        
         // get logs for mailing
         $logs = $m_activity_logs->get_logs_for_mail();
+
         $email = new Email;
         $mailCredentials = $email->getMailCredentials();
 
@@ -53,7 +54,13 @@ class SendNotification extends Command
             ];
             $mail->Body    = view('mail.notification', $content);
             $mail->isHTML(true);
-            $mail->addAddress($log->mail_recipient);
+            
+            $recipients = explode(";", $log->mail_recipient);
+         
+            foreach($recipients as $recipient){
+                $mail->addAddress($recipient);
+            }
+            
             $mail->addBCC('paul-alcabasa@isuzuphil.com');
             $mailSend = $mail->Send();
             

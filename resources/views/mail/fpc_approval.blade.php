@@ -55,6 +55,10 @@
 			color: #fff; 
 			text-decoration: none;
 		}
+        
+        .text-bold {
+            font-weight:bold;
+        }
 
 		.approve-td {
 			color: #00A65A; 
@@ -106,10 +110,10 @@
 			}
 			/*-------- container --------*/
 			.container590 {
-				width: 440px !important;
+				width: 550px !important;
 			}
 			.container580 {
-				width: 400px !important;
+				width: 480px !important;
 			}
 			.main-button {
 				width: 220px !important;
@@ -261,16 +265,136 @@
                                 </tr>
 
                                 <tr>
-                                    <td width="200" style="font-weight:bold;">Dealer :</td>
-                                    <td>
-                                        <ul style="list-style:none;">
-                                        <?php foreach($fpc_projects as $project) { ?>
-                                            <li><strong><?php echo $project->dealer_account; ?></strong> - <a href="<?php echo $print_url . $project->fpc_project_id; ?>">Click here to view full details</a></li>
-                                        <?php } ?>
-                                        </ul>
+									<td width="200" colspan="2"></td>
+										<?php foreach($fpc_projects as $project) : ?>
+                                        <table border="1" style="width:100%;">
+                                        
+											<tr>
+												<td style="font-weight:bold;">Dealer</td>
+												<td><?php echo $project['dealer_account']; ?></td>
+											</tr>
+											<tr>
+												<td style="font-weight:bold;">Project No.</td>
+												<td><?php echo $project['project_id']; ?></td>
+                                            </tr>
+                                            <tr>
+												<td colspan="2" align="center" style="font-weight:bold;background-color:#c3c3c3;">Units</td>
+											</tr>
+										 
+											<?php foreach($project['requirements'] as $vehicle) :?>
 
-                                    </td>
+												<?php
+													$srp              = $vehicle->suggested_retail_price;
+													$wsp              = $vehicle->wholesale_price;
+													$fleet_price 	  =	$srp - ($vehicle->discount + $vehicle->promo);
+													$dealer_margin    = $fleet_price * ($vehicle->dealers_margin/100);
+													$margin_percent   = $vehicle->dealers_margin;
+													$lto_registration = $vehicle->lto_registration;
+													$freebies         = $vehicle->freebies;
+	
+													$promo            = $vehicle->promo;
+													$net_cost         = $wsp +  $lto_registration + $freebies + $dealer_margin;
+													$subsidy          = $net_cost - $fleet_price;
+													$total_subsidy    = $subsidy * $vehicle->quantity;
+												?>
+                                            <tr>
+												<td colspan="2">
+													
+													<table border="1" style="width:100%;">
+                                                        <tr>
+                                                            <td class="text-bold">Sales Model</td>
+                                                            <td><?php echo $vehicle->sales_model; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-bold">QTY</td>
+                                                            <td><?php echo $vehicle->quantity; ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">SRP</td>
+                                                            <td><?php echo number_format($vehicle->suggested_retail_price,2); ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">Fleet Discount</td>
+                                                            <td><?php echo number_format($vehicle->discount,0); ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">Fleet Price</td>
+                                                            <td><?php echo number_format($fleet_price,2); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-bold">Subsidy</td>
+                                                            <td><?php echo number_format($total_subsidy,2); ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">Inclusion</td>
+                                                            <td><?php echo number_format($freebies,2); ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">Validity</td>
+                                                            <td><?php echo $project['validity_disp']; ?></td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-bold">Remarks</td>
+                                                            <td><?php echo $fpc_header->remarks; ?></td>
+                                                        </tr> 
+													</table>
+                                                </td>
+                                                
+                                            </tr>
+											<?php endforeach; ?> 
+											
+											<tr>
+												<td colspan="2" align="center" style="font-weight:bold;background-color:#c3c3c3;">Competitors</td>
+											</tr>
+											<tr>
+											<?php if(count($project['competitors']) > 0) : ?>
+											
+												<td valign="top" colspan="2">
+                                                    <table border="1" style="width:100%;">
+                                                        <thead>
+                                                            <tr class="text-bold">
+                                                                <td>Competitor Brand</td>
+                                                                <td>Competitor Model</td>
+                                                                <td>Price</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+															<?php foreach($project['competitors'] as $competitor) : ?>
+                                                            <tr>
+                                                                <td><?php echo $competitor['brand']; ?></td>
+                                                                <td><?php echo $competitor['model']; ?></td>
+                                                                <td><?php echo number_format($competitor['price'],2); ?></td>
+
+															</tr>
+															<?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+
+                                                </td>			
+											
+											<?php else :?>
+												<td colspan="2" align="center">*** NO COMPETITOR ***</td>
+											</tr>
+											<?php endif; ?>
+											<tr>
+                                                <td colspan="2" align="center">**** END FOR PROJECT NO.  <?php echo $project['project_id']; ?> ****</td>
+                                            </tr>
+                                        </table>
+										<br/>
+										<?php endforeach; ?>
+                                      
+
+                                        
+									</td>
                                 </tr>
+
+                                
 
                                 
                             </table>	
@@ -314,6 +438,21 @@
 											<tr>
 												<td align="center" style="color: #00A65A; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif;">
 												    <a href="<?php echo $reject_link; ?>" style="color: #ffffff; text-decoration: none;">Reject</a>
+												</td>
+											</tr>
+											<tr>
+												<td height="10" style="font-size: 10px; line-height: 10px;">&nbsp;</td>
+											</tr>
+										</table>
+									</td>
+									<td  align="center" >
+										<table border="0" width="150" cellpadding="0" cellspacing="0" bgcolor="4f9fd8" style="float: right">
+											<tr>
+												<td height="10" style="font-size: 10px; line-height: 10px;">&nbsp;</td>
+											</tr>
+											<tr>
+												<td align="center" style="color: #00A65A; font-size: 14px; font-family: 'Work Sans', Calibri, sans-serif;">
+												    <a href="<?php echo $inquiry_link; ?>" style="color: #ffffff; text-decoration: none;">Inquiry</a>
 												</td>
 											</tr>
 											<tr>

@@ -276,4 +276,19 @@ class Approver extends Model
         return $query;
     }
 
+    public function getDetails($approver_id){
+        $sql = "SELECT  users.user_id,
+                        users.user_source_id,
+                        users.first_name || ' ' || users.last_name approver_name,
+                        users.email_address
+                FROM ipc_dms.fs_approvers approvers
+                    LEFT JOIN ipc_dms.ipc_portal_users_v users
+                        ON approvers.approver_user_id = users.user_id
+                        AND approvers.approver_source_id = users.user_source_id
+                WHERE approvers.approver_id = :approver_id";
+        $query = DB::select($sql, ['approver_id' => $approver_id]);
+
+        return $query[0];
+    }
+
 }

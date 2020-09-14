@@ -112,7 +112,7 @@ class PriceConfirmationController extends Controller
         foreach($project_headers as $project){
 
             $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
-            $competitors             = $m_competitor->get_competitors($project->project_id);
+         
             $competitor_attachments  = $m_attachment->get_competitor_attachments($project->project_id);
             $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
             $temp_arr                = [
@@ -126,7 +126,7 @@ class PriceConfirmationController extends Controller
                 'project_status'          => $project->project_status,
                 'fpc_project_id'          => $project->fpc_project_id,
                 'requirements'            => $requirements,
-                'competitors'             => $competitors,
+        
                 'competitor_attachments'  => $competitor_attachments,
                 'term_name'               => $project->term_name,
                 'validity_disp'           => $project->validity_disp,
@@ -1013,6 +1013,7 @@ class PriceConfirmationController extends Controller
             $fpc = FPC::findOrFail($fpc_id);
             $fpc->status = 7;
             $fpc->current_approval_hierarchy = 1;
+            $fpc->remarks = $request->remarks;
             $fpc->save();
             /* 
             $m_fpc->update_status(

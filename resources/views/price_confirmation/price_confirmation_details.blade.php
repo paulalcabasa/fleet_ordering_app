@@ -945,16 +945,22 @@
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirm'
+                    confirmButtonText: 'Confirm',
+                    input: 'textarea',
+                    inputPlaceholder: 'Type your message here...',
+                    inputAttributes: {
+                        'aria-label': 'Type your message here'
+                    },
                 }).then((result) => {
+                  
                     if (result.value) {
+                       
                         axios.patch('fpc/submit', {
-                            fpc_id : self.fpc_details.fpc_id
+                            fpc_id : self.fpc_details.fpc_id,
+                            remarks : result.value
                         }).then(function (response) {
                             self.toast('success','FPC has been submitted!');
                             self.fpc_details.status_name = 'Pending';
