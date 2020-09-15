@@ -43,7 +43,7 @@ class PriceConfirmationController extends Controller
     public function all_price_confirmation(FPC $m_fpc){
         $user_type_id = session('user')['user_type_id'];
 
-        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+        if(in_array(session('user')['user_type_id'], array(32,33,25)) ){
             $dealers = Dealer::all();
         }
         else {
@@ -95,7 +95,7 @@ class PriceConfirmationController extends Controller
         Approver $m_approver
     ){
 
-        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+        if(!in_array(session('user')['user_type_id'], array(32,33,25)) ){
             return view('errors.404');
         }
     
@@ -115,6 +115,7 @@ class PriceConfirmationController extends Controller
          
             $competitor_attachments  = $m_attachment->get_competitor_attachments($project->project_id);
             $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
+            $competitors = $m_competitor->get_competitors($project->project_id);
             $temp_arr                = [
                 'project_id'              => $project->project_id,
                 'payment_terms'           => $project->payment_terms,
@@ -126,6 +127,7 @@ class PriceConfirmationController extends Controller
                 'project_status'          => $project->project_status,
                 'fpc_project_id'          => $project->fpc_project_id,
                 'requirements'            => $requirements,
+                'competitors'            => $competitors,
         
                 'competitor_attachments'  => $competitor_attachments,
                 'term_name'               => $project->term_name,

@@ -265,20 +265,21 @@
                                 </tr>
 
                                 <tr>
-									<td width="200" colspan="2"></td>
+									<td width="200" colspan="2" style="border-top:3px solid #000;"></td>
+
 										<?php foreach($fpc_projects as $project) : ?>
-                                        <table border="1" style="width:100%;">
+                                        <table border="0" style="width:100%;">
                                         
 											<tr>
-												<td style="font-weight:bold;">Dealer</td>
+												<td style="font-weight:bold;" width="175">Dealer</td>
 												<td><?php echo $project['dealer_account']; ?></td>
 											</tr>
 											<tr>
-												<td style="font-weight:bold;">Project No.</td>
+												<td style="font-weight:bold;" width="175">Project No.</td>
 												<td><?php echo $project['project_id']; ?></td>
                                             </tr>
                                             <tr>
-												<td colspan="2" align="center" style="font-weight:bold;background-color:#c3c3c3;">Units</td>
+												<td colspan="2" align="center" style="font-weight:bold;background-color:#c3c3c3;">Requirement</td>
 											</tr>
 										 
 											<?php foreach($project['requirements'] as $vehicle) :?>
@@ -300,7 +301,7 @@
                                             <tr>
 												<td colspan="2">
 													
-													<table border="1" style="width:100%;">
+													<table border="1" style="width:100%;border-collapse:collapse;border:1px solid #000;" cellspacing="5" cellpadding="5">
                                                         <tr>
                                                             <td class="text-bold">Sales Model</td>
                                                             <td><?php echo $vehicle->sales_model; ?></td>
@@ -344,6 +345,7 @@
                                                             <td><?php echo $fpc_header->remarks; ?></td>
                                                         </tr> 
 													</table>
+													<br/>
                                                 </td>
                                                 
                                             </tr>
@@ -356,20 +358,20 @@
 											<?php if(count($project['competitors']) > 0) : ?>
 											
 												<td valign="top" colspan="2">
-                                                    <table border="1" style="width:100%;">
+                                                    <table border="1" style="width:100%;border-collapse:collapse;border:1px solid #000;" cellspacing="5" cellpadding="5">
                                                         <thead>
-                                                            <tr class="text-bold">
-                                                                <td>Competitor Brand</td>
-                                                                <td>Competitor Model</td>
-                                                                <td>Price</td>
+                                                            <tr>
+                                                                <td  class="text-bold">Competitor Brand</td>
+                                                                <td  class="text-bold">Competitor Model</td>
+                                                                <td  class="text-bold">Price</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
 															<?php foreach($project['competitors'] as $competitor) : ?>
                                                             <tr>
-                                                                <td><?php echo $competitor['brand']; ?></td>
-                                                                <td><?php echo $competitor['model']; ?></td>
-                                                                <td><?php echo number_format($competitor['price'],2); ?></td>
+                                                                <td><?php echo $competitor->brand; ?></td>
+                                                                <td><?php echo $competitor->model; ?></td>
+                                                                <td><?php echo number_format($competitor->price,2); ?></td>
 
 															</tr>
 															<?php endforeach; ?>

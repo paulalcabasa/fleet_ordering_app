@@ -129,6 +129,7 @@
                         <th>Email</th>
                         <th>Date sent</th>
                         <th>Status</th>
+                        <th>Approved by</th>
                         <th>Date approved</th>
                         <th>Remarks</th>
                     </tr>
@@ -140,6 +141,7 @@
                         <td>@{{ row.email_address }}</td>
                         <td>@{{ row.date_sent }}</td>
                         <td>@{{ row.status_name }}</td>
+                        <td>@{{ row.approved_by }}</td>
                         <td>@{{ row.date_approved }}</td>
                         <td>@{{ row.remarks }}</td>
                     </tr>

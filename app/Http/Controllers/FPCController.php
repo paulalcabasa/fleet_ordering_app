@@ -13,6 +13,7 @@ use App\Models\ModuleApproval;
 use App\Models\ActivityLogs;
 use App\Models\Approver;
 use DB; 
+use App\Models\Competitor;
 
 class FPCController extends Controller
 {
@@ -131,11 +132,16 @@ class FPCController extends Controller
     }
 
     public function approve(Request $request){
+        
         DB::beginTransaction();
         try{
             // set module approval as approved 
             $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
-            
+           
+            $approver = new Approver;
+            $originalApprover = $approver->getDetails($moduleApproval->approver_id);
+
+
             $maxHierarchy = ModuleApproval::where([
                 ['module_reference_id', $moduleApproval->module_reference_id],
                 ['module_id' , 3],
@@ -152,10 +158,17 @@ class FPCController extends Controller
                 return view('mail.message', $data);
             }
 
+            $user_id = $originalApprover->user_id;
+            $user_source_id = $originalApprover->user_source_id;
+            if(!empty(session('user')) ){
+                $user_id = session('user')['user_id'];
+                $user_source_id = session('user')['source_id'];
+            }
+
             $moduleApproval->status = 4;
             $moduleApproval->date_approved = Carbon::now();
-            $moduleApproval->updated_by = -1;
-            $moduleApproval->update_user_source_id = -1;
+            $moduleApproval->updated_by = $user_id;
+            $moduleApproval->update_user_source_id = $user_source_id;
             $moduleApproval->save();
 
             // update next hierarchy
@@ -253,8 +266,19 @@ class FPCController extends Controller
             $moduleApproval->status = 5; // rejected
             $moduleApproval->remarks = $request->remarks;
             $moduleApproval->date_approved = Carbon::now();
-            $moduleApproval->updated_by = -1;
-            $moduleApproval->update_user_source_id = -1;
+
+            $approver = new Approver;
+            $originalApprover = $approver->getDetails($moduleApproval->approver_id);
+
+            $user_id = $originalApprover->user_id;
+            $user_source_id = $originalApprover->user_source_id;
+            if(!empty(session('user')) ){
+                $user_id = session('user')['user_id'];
+                $user_source_id = session('user')['source_id'];
+            }
+            $moduleApproval->updated_by = $user_id;
+            $moduleApproval->update_user_source_id = $user_source_id;
+            
             $moduleApproval->save();
 
             $fpc = FPC::findOrFail($moduleApproval->module_reference_id);
@@ -384,6 +408,60 @@ class FPCController extends Controller
             'status_colors' => config('app.status_colors')
         ];
         return view('price_confirmation.approval_list',$page_data); 
+    }
+
+    public function viewFPC(Request $request){
+
+        // approval id
+        $moduleApproval = ModuleApproval::findOrFail($request->approval_id);
+        $fpc_project = new FPC_Project;
+        $project_headers = $fpc_project->get_projects($moduleApproval->module_reference_id);
+        $competitor = new Competitor;
+        $projects           = [];
+        $fpcItem = new FPC_Item;
+        $competitor = new Competitor;
+        $fpc = new FPC;
+
+        $fpcDetails = $fpc->get_details($moduleApproval->module_reference_id);
+      
+        foreach($project_headers as $project){
+            $requirements            = $fpcItem->get_item_requirements($project->fpc_project_id);
+            $competitors             = $competitor->get_competitors($project->project_id);
+            $temp_arr                = [
+                'project_id'              => $project->project_id,
+                'payment_terms'           => $project->payment_terms,
+                'validity'                => $project->validity,
+                'availability'            => $project->availability,
+                'note'                    => $project->note,
+                'dealer_name'             => $project->dealer_name,
+                'dealer_account'          => $project->dealer_account,
+                'project_status'          => $project->project_status,
+                'fpc_project_id'          => $project->fpc_project_id,
+                'requirements'            => $requirements,
+                'competitors'             => $competitors,
+                'term_name'               => $project->term_name,
+                'validity_disp'           => $project->validity_disp,
+                'competitor_flag'         => $project->competitor_flag,
+                'competitor_remarks'      => $project->competitor_remarks,
+                
+            ];
+            array_push($projects,$temp_arr);
+        }
+        
+
+        $page_data = [
+
+            'base_url'      => url('/'),
+            'status_colors' => config('app.status_colors'),
+            'projects'      => $projects,
+            'approval'      => $moduleApproval,
+            'fpcDetails'      => $fpcDetails,
+            'approve_link' => url('/') . '/fpc/approve/' . $moduleApproval->approval_id,
+            'reject_link' => url('/')  . '/fpc/reject/' . $moduleApproval->approval_id,
+            'inquiry_link' => url('/')  . '/fpc/inquiry/' . $moduleApproval->approval_id,
+
+        ];
+        return view('price_confirmation.view_fpc',$page_data);
     }
 
 }

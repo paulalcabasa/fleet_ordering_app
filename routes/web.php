@@ -105,6 +105,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
 	Route::patch('fpc/submit', 'PriceConfirmationController@submit');
 	Route::get('fpc-approval', 'FPCController@fpc_approval');
+	Route::get('fpc/approval/{approval_id}', 'FPCController@viewFPC');
+
+	Route::get('fpc/approve/{approval_id}', 'FPCController@approve');
+
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');

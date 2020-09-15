@@ -45,6 +45,7 @@ class SendFPCApproval extends Command
         // get logs for mailing
         $approval = $fpc->get_pending();
 
+       
         foreach($approval as $row){
 
             $mail             = new PHPMailer\PHPMailer(); // create a n
@@ -58,7 +59,8 @@ class SendFPCApproval extends Command
             $mail->SetFrom($mailCredentials->email, 'Fleet Registration');
 
             $project_headers = $fpc_project->get_projects($row->fpc_id);
- 
+            
+       
             $projects           = [];
             $fpcItem = new FPC_Item;
             $competitor = new Competitor;
@@ -87,6 +89,8 @@ class SendFPCApproval extends Command
                 array_push($projects,$temp_arr);
             }
 
+       
+
             $mail->Subject = 'System Notification : Fleet Registration';
             $content = [
                 'fpc_header' => $row,
@@ -96,6 +100,7 @@ class SendFPCApproval extends Command
                 'fpc_projects' => $projects,
                 'print_url' => url('/')  . '/api/fpc/project/print/'
             ];
+       
             
             $mail->Body    = view('mail.fpc_approval', $content);
             $mail->isHTML(true);
@@ -106,11 +111,10 @@ class SendFPCApproval extends Command
             $mailSend = $mail->Send();
             
             if($mailSend){
-               // $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
-              //  $moduleApproval->date_sent = Carbon::now();
-             //   $moduleApproval->save();
                 // update notification status to sent
-       
+             //   $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
+              //  $moduleApproval->date_sent = Carbon::now();
+              //  $moduleApproval->save();
             }
 
         }

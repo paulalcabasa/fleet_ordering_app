@@ -29,7 +29,7 @@
             <tbody>
                 <tr v-for="(row,index) in approval_list">
                     <td nowrap>
-                        <a href="#" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
+                        <a target="_blank" :href="base_url + '/fpc/approval/' + row.approval_id" class="btn btn-primary  btn-sm btn-icon btn-circle"><i class="la la-eye"></i></a>
                      </td>
                     <td>@{{ row.fpc_id }}</td>
                     <td>@{{ row.customer_name }}</td>

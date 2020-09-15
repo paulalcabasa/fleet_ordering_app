@@ -466,8 +466,8 @@ class FPC extends Model
                         to_char(ma.date_approved, 'MM/DD/YYYY HH:MI:SS') date_approved,
                         ma.hierarchy,
                         to_char(ma.date_sent, 'MM/DD/YYYY HH:MI:SS') date_sent,
-                     
-                        ma.remarks
+                        ma.remarks,
+                        approver.first_name || ' ' || approver.last_name approved_by
                 FROM ipc_dms.fs_fpc fpc
                     INNER JOIN ipc_dms.fs_module_approval ma
                         ON ma.module_reference_id = fpc.fpc_id
@@ -478,6 +478,9 @@ class FPC extends Model
                         AND fa.approver_source_id = usr.user_source_id
                     INNER JOIN ipc_dms.fs_status status
                         ON status.status_id = ma.status
+                    LEFT JOIN ipc_dms.ipc_portal_users_v approver
+                        ON approver.user_id = ma.updated_by
+                        AND approver.user_source_id = ma.update_user_source_id
                 WHERE ma.module_id = 3
                     AND fpc.fpc_id = :fpc_id
                 ORDER BY ma.hierarchy ASC";
