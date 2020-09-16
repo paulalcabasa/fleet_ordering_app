@@ -45,9 +45,9 @@ class SendFPCApproval extends Command
         // get logs for mailing
         $approval = $fpc->get_pending();
 
-       
+      
         foreach($approval as $row){
-
+        
             $mail             = new PHPMailer\PHPMailer(); // create a n
             $mail->SMTPAuth   = true; // authentication enabled
             $mail->SMTPSecure = 'tls'; // secure transfer enabled REQUIRED for Gmail
@@ -59,11 +59,13 @@ class SendFPCApproval extends Command
             $mail->SetFrom($mailCredentials->email, 'Fleet Registration');
 
             $project_headers = $fpc_project->get_projects($row->fpc_id);
-            
-       
+        
             $projects           = [];
             $fpcItem = new FPC_Item;
             $competitor = new Competitor;
+
+            $projectIds = "";
+
             foreach($project_headers as $project){
                 $requirements            = $fpcItem->get_item_requirements($project->fpc_project_id);
                 $competitors             = $competitor->get_competitors($project->project_id);
@@ -87,11 +89,16 @@ class SendFPCApproval extends Command
                     
                 ];
                 array_push($projects,$temp_arr);
+
+                $projectIds .= $project->project_id . ';';
             }
 
        
+            $subject = 'System Notification : FROS FPC - ' . $row->customer_name . ' ' . $projectIds;
 
-            $mail->Subject = 'System Notification : Fleet Registration';
+            $mail->Subject = $subject;
+
+
             $content = [
                 'fpc_header' => $row,
                 'approve_link' => url('/') . '/api/fpc/approve/' . $row->approval_id,
@@ -105,16 +112,23 @@ class SendFPCApproval extends Command
             $mail->Body    = view('mail.fpc_approval', $content);
             $mail->isHTML(true);
             $mail->AddEmbeddedImage(config('app.project_root') . 'public/img/isuzu-logo-compressor.png', 'isuzu_logo');
+
+            // uncomment this on go live
             // $mail->addAddress($row->email_address, $row->approver_name);	// Add a recipient, Name is optional
-            $mail->addAddress('paul-alcabasa@isuzuphil.com', 'Paul');	// Add a recipient, Name is optional
+            
+            // this is for testing purposes only
+            $mail->addAddress('jennifer-olivera@isuzuphil.com', 'Jen');	// Add a recipient, Name is optional
+            $mail->addAddress('mary-orias@isuzuphil.com', 'Mabeth');	// Add a recipient, Name is optional
+            $mail->addAddress('efhraim-reas@isuzuphil.com', 'Regan');	// Add a recipient, Name is optional
+
             $mail->addBCC('paul-alcabasa@isuzuphil.com');
             $mailSend = $mail->Send();
             
             if($mailSend){
                 // update notification status to sent
-             //   $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
-              //  $moduleApproval->date_sent = Carbon::now();
-              //  $moduleApproval->save();
+                $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
+                $moduleApproval->date_sent = Carbon::now();
+                $moduleApproval->save();
             }
 
         }
