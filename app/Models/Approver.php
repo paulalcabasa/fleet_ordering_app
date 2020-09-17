@@ -143,7 +143,7 @@ class Approver extends Model
                     LEFT JOIN ipc_dms.fs_out_of_office out_office
                         ON out_office.approver_user_id = usr.user_id
                         AND out_office.approver_source_id = usr.user_source_id 
-                        AND start_date >= trunc(sysdate) and end_date <= trunc(sysdate)
+                        AND trunc(sysdate) >= out_office.start_date and trunc(sysdate) <= out_office.end_date
                 WHERE 1 = 1
                     AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
                     AND fa.vehicle_type = :vehicle_type
