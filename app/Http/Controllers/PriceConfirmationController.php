@@ -264,7 +264,9 @@ class PriceConfirmationController extends Controller
                 $hierarchy++;
                 array_push($approval_params,$temp_arr);
             } 
-            $m_module_approval->insert_module_approval($approval_params);
+
+            // uncomment this to unlock fpc approval
+            //$m_module_approval->insert_module_approval($approval_params);
                 
             // insert fpc projects
             $project_params = [];
