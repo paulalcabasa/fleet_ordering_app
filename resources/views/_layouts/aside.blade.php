@@ -80,6 +80,14 @@
                 </a>
             </li>
             @endif 
+            @if(in_array(session('user')['user_type_id'], array(32,33,25)))
+            <li class="kt-menu__item {{ request()->is('fpc-approval') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/fpc-approval') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon2-crisp-icons"></i>
+                    <span class="kt-menu__link-text">Approval</span>
+                </a>
+            </li>
+            @endif 
             @if(in_array(session('user')['user_type_id'], array(27,31,32,33,38,25)))
             <li class="kt-menu__item {{ request()->is('fwpc-list') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/fwpc-list') }}" class="kt-menu__link ">
@@ -133,6 +141,12 @@
             </li>
             @endif  
             @if(in_array(session('user')['user_type_id'], array(32,33,25)))
+            <li class="kt-menu__item {{ request()->is('users') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/out-of-office') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-users-1"></i>
+                    <span class="kt-menu__link-text">Out of office</span>
+                </a>
+            </li>
             <li class="kt-menu__item {{ request()->is('users') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
                 <a href="{{ url('/user-list') }}" class="kt-menu__link ">
                     <i class="kt-menu__link-icon flaticon-users-1"></i>

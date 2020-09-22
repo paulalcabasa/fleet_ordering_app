@@ -14,8 +14,11 @@
                     <h3 class="kt-portlet__head-title">Details</h3>
                 </div>
                 <div class="kt-portlet__head-toolbar">
-                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable">
+                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="approveFPC()" v-if="editable && approvers.length == 0">
                         <span class="kt-hidden-mobile">Approve</span>
+                    </a>
+                    <a href="#" class="btn btn-success btn-sm kt-margin-r-5" @click="submitFPC()" v-if="editable && approvers.length > 0 && (fpc_details.status_name == 'In progress')">
+                        <span class="kt-hidden-mobile">Submit</span>
                     </a>
                     <a href="#" class="btn btn-sm btn-danger kt-margin-r-5" @click="cancelFPC()">
                         <span class="kt-hidden-mobile">Cancel</span>
@@ -23,7 +26,7 @@
                     <a  class="btn btn-sm btn-primary kt-margin-r-5" href="{{ url('print-fpc-conflict/' . $price_confirmation_id ) }}" target="_blank">
                         <span class="kt-hidden-mobile">Print Conflict</span>
                     </a>
-                    <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved'" @click.prevent="reviseFPC()" href="#" target="_blank">
+                    <a class="btn btn-sm btn-primary" v-show="fpc_details.status_name == 'Approved' || fpc_details.status_name == 'Pending'" @click.prevent="reviseFPC()" href="#" target="_blank">
                         <span class="kt-hidden-mobile">Revise</span>
                     </a>
                 </div>
@@ -106,6 +109,44 @@
                 <ul v-for="row in conflicts" style="list-style-type:none;padding:0;margin:0;">
                     <li><i class="flaticon2-right-arrow"></i> @{{ row.sales_model }}</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" v-if="approvers.length > 0">
+        <div class="kt-portlet kt-portlet--last  kt-portlet--responsive-mobile" >
+            <div class="kt-portlet__head" style="">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">Approval</h3>
+                </div>
+            </div>
+            <div class="kt-portlet__body"> 
+                <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Hierarchy</th>
+                        <th>Approver</th>
+                        <th>Email</th>
+                        <th>Date sent</th>
+                        <th>Status</th>
+                        <th>Approved by</th>
+                        <th>Date approved</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row, index) in approvers">
+                        <td>@{{ row.hierarchy }}</td>
+                        <td>@{{ row.approver_name }}</td>
+                        <td>@{{ row.email_address }}</td>
+                        <td>@{{ row.date_sent }}</td>
+                        <td>@{{ row.status_name }}</td>
+                        <td>@{{ row.approved_by }}</td>
+                        <td>@{{ row.date_approved }}</td>
+                        <td>@{{ row.remarks }}</td>
+                    </tr>
+                </tbody>
+            </table>
             </div>
         </div>
     </div>
@@ -348,6 +389,7 @@
 
 @include('price_confirmation.modal.additional_details')
 
+
 </div>
 
 @stop
@@ -378,6 +420,7 @@
     var vm =  new Vue({
         el : "#app",
         data: {
+            approvers          : {!! json_encode($approvers) !!},
             fpc_details          : {!! json_encode($fpc_details) !!},
             customer_details     : {!! json_encode($customer_details) !!},
             projects             : {!! json_encode($projects) !!},
@@ -863,7 +906,74 @@
                     }
         
                 });
-            }
+            },
+            submitFPC(){
+                this.action = "approve";
+                let data = new FormData();
+                var self = this;
+                var action = self.action;
+                var errors = [];
+                for(var prj of self.projects){
+                    if(prj.payment_terms == "" || prj.payment_terms == null){
+                        errors.push("Select a payment term for " + prj.dealer_account + ".");
+                    }
+
+                    if(prj.validity == "" || prj.payment_terms == null){
+                        errors.push("Select validity date for " + prj.dealer_account + ".");
+                    }
+
+                    if(prj.availability == "" || prj.availability == null){
+                        errors.push('Please enter availability for ' + prj.dealer_account);
+                    }
+
+                    if(prj.note == "" || prj.note == null){
+                        errors.push('Please enter note for ' + prj.dealer_account);
+                    }
+                }
+
+                if(errors.length > 0){
+                    var message = "<ul>";
+                    for(var msg of errors){
+                        message += "<li>" + msg + "</li>";
+                    }
+                    message += "<ul>";
+                    Swal.fire({
+                        type: 'error',
+                        title: message,
+                        showConfirmButton: true
+                    });
+                    return false;
+                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm',
+                    input: 'textarea',
+                    inputPlaceholder: 'Type your message here...',
+                    inputAttributes: {
+                        'aria-label': 'Type your message here'
+                    },
+                }).then((result) => {
+                  
+                    if (result.value) {
+                       
+                        axios.patch('fpc/submit', {
+                            fpc_id : self.fpc_details.fpc_id,
+                            remarks : result.value
+                        }).then(function (response) {
+                            self.toast('success','FPC has been submitted!');
+                            self.fpc_details.status_name = 'Pending';
+                            self.editable = false; 
+                        });
+                    }
+                }); 
+
+               
+
+            },
         },
         created: function () {
             // `this` points to the vm instance

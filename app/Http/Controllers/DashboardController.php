@@ -15,7 +15,7 @@ class DashboardController extends Controller
         POHeaders $m_poh
     ){
       
-        if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38)) ){
+        if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38,30)) ){
             return view('errors.404');
         }
 
@@ -191,7 +191,7 @@ class DashboardController extends Controller
                     [],
                     'extract(year from fp.creation_date) = ' . date('Y')
                 );
-
+              
        
                 
             break;
@@ -199,7 +199,7 @@ class DashboardController extends Controller
         }
         
         $last_day = date("t", strtotime(date('Y-m-d')));
-        
+       
         $monthly_projects = $m_project->count_projects_monthly(
             $last_day, 
             date('m'), 
@@ -207,8 +207,8 @@ class DashboardController extends Controller
             session('user')['user_type_id'],
             session('user')['customer_id']
         );  
-      
-
+        
+    
         $mp_flat = [];
 
         $index = 0;

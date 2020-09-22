@@ -73,6 +73,14 @@
                                 </ul>    
                             </span>
                         </div>
+                        <div class="row kt-margin-b-5" v-if="row['fpc_header'].status_name == 'Approved'">
+                            <span class="col-md-4 kt-font-bold">Digital FPC</span>
+                            <span class="col-md-8">
+                        
+                                <a :href="base_url + '/' + 'api/fpc/print/dealer/' + row['fpc_header'].fpc_project_id ">Click here to print</a>
+                                       
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -13,6 +13,7 @@ class ModuleApproval extends Model
 	protected $connection = "oracle";
 	const CREATED_AT = 'CREATION_DATE';
     const UPDATED_AT = 'UPDATE_DATE';
+    protected $primaryKey = "approval_id";
 
 	public function insert_module_approval($params){
 		$this->insert($params);
@@ -400,5 +401,19 @@ class ModuleApproval extends Model
         ])->delete();
     }
 
+    public function revertFPCApproval($fpc_id){
+        $this
+            ->where([
+            	[ 'module_reference_id', '=' , $fpc_id ],
+            	[ 'module_id', '=' , 3 ],
+            ])
+            ->update([
+                'status'                => 7,
+                'date_approved'         => '',
+            	'updated_by'            => -1,
+                'update_user_source_id' => -1,
+                'date_sent'             => ''
+            ]);
+    }
 
 }

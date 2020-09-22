@@ -133,15 +133,22 @@ class Approver extends Model
                         fa.position_title,
                         usr.nickname,
                         usr.name_prefix,
-                        fa.signatory_type
+                        fa.signatory_type,
+                        fa.approver_id,
+                        fa.hierarchy
                 FROM ipc_dms.fs_approvers fa
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fa.approver_user_id
                         AND fa.approver_source_id = usr.user_source_id
+                    LEFT JOIN ipc_dms.fs_out_of_office out_office
+                        ON out_office.approver_user_id = usr.user_id
+                        AND out_office.approver_source_id = usr.user_source_id 
+                        AND trunc(sysdate) >= out_office.start_date and trunc(sysdate) <= out_office.end_date
                 WHERE 1 = 1
                     AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
                     AND fa.vehicle_type = :vehicle_type
                     AND fa.status_id = 1
+                    AND out_office.id IS NULL
                 ORDER BY fa.hierarchy ASC";
         $params = [
             'vehicle_type' => $vehicle_type
@@ -255,5 +262,33 @@ class Approver extends Model
             	'update_user_source_id' => $params['update_user_source_id']
             ]);
     }  
+
+    public function getApprovers(){
+        $sql = "SELECT distinct users.user_id,
+                        users.user_source_id,
+                        users.first_name || ' ' || users.last_name approver_name
+                FROM ipc_dms.fs_approvers approvers
+                    LEFT JOIN ipc_dms.ipc_portal_users_v users
+                        ON approvers.approver_user_id = users.user_id
+                        AND approvers.approver_source_id = users.user_source_id
+                WHERE approvers.signatory_type IN ('CHECKED_BY','NOTED_BY','EXPAT')";
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    public function getDetails($approver_id){
+        $sql = "SELECT  users.user_id,
+                        users.user_source_id,
+                        users.first_name || ' ' || users.last_name approver_name,
+                        users.email_address
+                FROM ipc_dms.fs_approvers approvers
+                    LEFT JOIN ipc_dms.ipc_portal_users_v users
+                        ON approvers.approver_user_id = users.user_id
+                        AND approvers.approver_source_id = users.user_source_id
+                WHERE approvers.approver_id = :approver_id";
+        $query = DB::select($sql, ['approver_id' => $approver_id]);
+
+        return $query[0];
+    }
 
 }

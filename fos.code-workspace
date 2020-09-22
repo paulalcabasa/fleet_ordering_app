@@ -20,6 +20,15 @@
 		},
 		{
 			"path": "app\\Exports"
+		},
+		{
+			"path": "app\\Repositories"
+		},
+		{
+			"path": "app\\Providers"
+		},
+		{
+			"path": "app\\Console"
 		}
 	],
 	"settings": {}

@@ -322,7 +322,7 @@ class Project extends Model
             $query = DB::select($sql);
             return $query[0];
         }
-        else if($user_type == 32 || $user_type == 33 || $user_type == 25) { //  Fleet LCV User
+        else if(in_array($user_type,array(32,33,25,30)) ) { //  Fleet LCV User
             $sql = "SELECT 
                     $select
                     FROM ipc_dms.fs_projects fp
@@ -330,6 +330,7 @@ class Project extends Model
             $query = DB::select($sql);
             return $query[0];
         }
+       
     }
 
     public function get_filtered_projects(

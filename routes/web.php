@@ -15,6 +15,10 @@
     return view('dashboard');
 });*/
 
+
+
+
+
 Route::get('/', 'RedirectController@redirect_login');
 
 Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenticated Users
@@ -76,7 +80,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('manage-fwpc/{action}/{price_confirmation_id}', 'PriceConfirmationController@manage_fwpc');
 	Route::get('all-fwpc', 'PriceConfirmationController@all_fwpc');
 	Route::get('view-fpc/{price_confirmation_id}', 'PriceConfirmationController@view_fpc');
-	Route::get('fpc-approval', 'PriceConfirmationController@fpc_approval');
+
 	Route::get('fpc-details/{action}/{fpc_id}', 'PriceConfirmationController@fpc_details');
 	Route::post('save-fpc', 'PriceConfirmationController@save_fpc');
 	Route::get('/ajax-get-freebies/{fpc_item_id}', 'PriceConfirmationController@ajax_get_freebies');
@@ -99,6 +103,12 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('print-fpc-conflict/{fpc_id}/', 'PriceConfirmationController@print_fpc_conflict');
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
+	Route::patch('fpc/submit', 'PriceConfirmationController@submit');
+	Route::get('fpc-approval', 'FPCController@fpc_approval');
+	Route::get('fpc/approval/{approval_id}', 'FPCController@viewFPC');
+
+	Route::get('fpc/approve/{approval_id}', 'FPCController@approve');
+
 
 	/* Purchase Order */
 	Route::get('po-overview/{action}/{po_header_id}', 'PurchaseOrderController@po_overview');
@@ -150,6 +160,15 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::delete('delete-requirement/{requirement_line_id}' , 'RequirementController@deleteRequirement');
 	Route::post('cancel-fpc-project' , 'PriceConfirmationController@cancelFPCProject');
 
+	// out of office
+	Route::post('out-of-office/save', 'OutOfficeController@store');
+	Route::get('out-of-office' , 'OutOfficeController@index');
+	Route::get('out-of-office/{id}' , 'OutOfficeController@show');
+	Route::get('out-of-office/update/{id}' , 'OutOfficeController@update');
+	Route::delete('out-of-office/{id}' , 'OutOfficeController@destroy');
+	Route::put('out-of-office/update' , 'OutOfficeController@update');
+
+	
 	// APPROVERS
 	Route::get('approver-list' , 'ApproverController@approver_list');
 	Route::post('add-approver' , 'ApproverController@add_approver');

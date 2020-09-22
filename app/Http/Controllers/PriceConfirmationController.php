@@ -30,7 +30,7 @@ use App\Models\PriceListHeader;
 use App\Models\FPCValidityRequest;
 use App\Models\ValueSetCategory;
 use App\Models\ValueSetName;
-
+use App\Models\ModuleApproval;
 class PriceConfirmationController extends Controller
 {   
 
@@ -43,7 +43,7 @@ class PriceConfirmationController extends Controller
     public function all_price_confirmation(FPC $m_fpc){
         $user_type_id = session('user')['user_type_id'];
 
-        if(in_array(session('user')['user_type_id'], array(32,33)) ){
+        if(in_array(session('user')['user_type_id'], array(32,33,25)) ){
             $dealers = Dealer::all();
         }
         else {
@@ -91,13 +91,14 @@ class PriceConfirmationController extends Controller
         PaymentTerms $m_payment_terms,
         FPCHelper $fpc_helper,
         Attachment $m_attachment,
-        PriceListHeader $m_plh
+        PriceListHeader $m_plh,
+        Approver $m_approver
     ){
 
-        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+        if(!in_array(session('user')['user_type_id'], array(32,33,25)) ){
             return view('errors.404');
         }
-
+    
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
     	$fpc_details           = $m_fpc->get_details($price_confirmation_id);
@@ -111,9 +112,10 @@ class PriceConfirmationController extends Controller
         foreach($project_headers as $project){
 
             $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
-            $competitors             = $m_competitor->get_competitors($project->project_id);
+         
             $competitor_attachments  = $m_attachment->get_competitor_attachments($project->project_id);
             $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
+            $competitors = $m_competitor->get_competitors($project->project_id);
             $temp_arr                = [
                 'project_id'              => $project->project_id,
                 'payment_terms'           => $project->payment_terms,
@@ -125,7 +127,8 @@ class PriceConfirmationController extends Controller
                 'project_status'          => $project->project_status,
                 'fpc_project_id'          => $project->fpc_project_id,
                 'requirements'            => $requirements,
-                'competitors'             => $competitors,
+                'competitors'            => $competitors,
+        
                 'competitor_attachments'  => $competitor_attachments,
                 'term_name'               => $project->term_name,
                 'validity_disp'           => $project->validity_disp,
@@ -145,7 +148,8 @@ class PriceConfirmationController extends Controller
         $availability = ValueSetName::where('category_id', 1)->get();
         $note = ValueSetName::where('category_id', 2)->get();
 
-        
+        $approvers = $m_fpc->get_approvers($price_confirmation_id);
+      
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
@@ -161,7 +165,8 @@ class PriceConfirmationController extends Controller
     		'pricelist_headers'     => $pricelist_headers,
     		'status_colors'         => config('app.status_colors'),
     		'vehicle_lead_time'     => config('app.vehicle_lead_time'),
-    		'conflicts'             => $conflicts
+            'conflicts'             => $conflicts,
+            'approvers'             => $approvers
     	);
     	return view('price_confirmation.price_confirmation_details', $page_data);
     }
@@ -211,7 +216,8 @@ class PriceConfirmationController extends Controller
         Request $request,
         FPC $m_fpc,
         FPC_Project $m_fpc_project,
-        FPC_Item $m_fpc_item
+        FPC_Item $m_fpc_item,
+        Approver $m_approver
     ){
         $customer_id = $request['customerDetails']['customerId'];
         
@@ -223,6 +229,7 @@ class PriceConfirmationController extends Controller
         
         try {
 
+          
             // insert FPC Header
             $fpc_params = [
                 'customer_id'           => $customer_id,
@@ -234,7 +241,33 @@ class PriceConfirmationController extends Controller
             ];
             $fpc_id = $m_fpc->insert_fpc($fpc_params);
             // end of FPC header
+            
 
+            // approvers
+            $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
+            $approval_params = [];
+            $m_module_approval = new ModuleApproval;
+            $hierarchy = 1;
+            foreach($approvers as $row){
+                $temp_arr = [
+                    'module_id'             => 3, // Fleet Project
+                    'module_reference_id'   => $fpc_id,
+                    'approver_id'           => $row->approver_id,
+                    'hierarchy'             => $hierarchy,
+                    'status'                => 7, // Pending
+                    'column_reference'      => 'fpc_id',
+                    'created_by'            => session('user')['user_id'],
+                    'creation_date'         => Carbon::now(),
+                    'create_user_source_id' => session('user')['source_id'],
+                    'table_reference'       => 'fs_fpc'
+                ];
+                $hierarchy++;
+                array_push($approval_params,$temp_arr);
+            } 
+
+            // uncomment this to unlock fpc approval
+            //$m_module_approval->insert_module_approval($approval_params);
+                
             // insert fpc projects
             $project_params = [];
 
@@ -268,8 +301,9 @@ class PriceConfirmationController extends Controller
                     array_push($item_params,$arr);
                 }
                 $m_fpc_item->insert_fpc_item($item_params);
+                
             }
-        
+
             DB::commit();
             return [
                 'customer_id' => $customer_id,
@@ -533,9 +567,9 @@ class PriceConfirmationController extends Controller
 
     ){
 
-        if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+       /*  if(!in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
-        }
+        } */
 
         $fpc_project_id = $request->fpc_project_id;
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
@@ -886,6 +920,8 @@ class PriceConfirmationController extends Controller
             $mail_recipient = $validity_request['approver_email'];
             $message        = 'Successfully submitted request!';
             $swal_type      = 'success';
+
+
         }
         else if($validity_request['action'] == "view"){
             return [
@@ -923,7 +959,7 @@ class PriceConfirmationController extends Controller
     }
 
     public function revise(Request $request){
-        $m_fpc = new FPC;
+       /*  $m_fpc = new FPC;
 
         $fpc_id = $request->fpc_id;
         $m_fpc->update_status(
@@ -937,6 +973,122 @@ class PriceConfirmationController extends Controller
         return response()->json([
             'message' => 'You can now update the fpc details.',
             'status' => 'In progress'
-        ]);
+        ]); */
+
+        $moduleApproval = new ModuleApproval;
+        DB::beginTransaction();
+
+        try{
+            $fpc_id = $request->fpc_id;
+            $fpc = FPC::findOrFail($fpc_id);
+            $fpc->status = 12;
+            $fpc->current_approval_hierarchy = 1;
+            $fpc->save();
+            /* 
+            $m_fpc->update_status(
+                $fpc_id, 
+                null, // remarks 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                7 // pending
+            ); */
+
+            $moduleApproval->revertFPCApproval($fpc_id);
+            DB::commit();
+            return response()->json([
+                'message' => 'You can now update the fpc details.',
+                'status' => 'In progress'
+            ]);
+        } catch(Exception $ex){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'An error occurred!',
+                'status' => 'Pending'
+            ]);
+        }
+
     }
+
+    public function submit(Request $request){
+  
+        $moduleApproval = new ModuleApproval;
+        DB::beginTransaction();
+
+        try{
+            $fpc_id = $request->fpc_id;
+            $fpc = FPC::findOrFail($fpc_id);
+            $fpc->status = 7;
+            $fpc->current_approval_hierarchy = 1;
+            $fpc->remarks = $request->remarks;
+            $fpc->save();
+            /* 
+            $m_fpc->update_status(
+                $fpc_id, 
+                null, // remarks 
+                session('user')['user_id'],
+                session('user')['source_id'],
+                7 // pending
+            ); */
+
+            $moduleApproval->revertFPCApproval($fpc_id);
+            DB::commit();
+            return response()->json([
+                'message' => 'FPC has been submitted',
+                'status' => 'Pending'
+            ]);
+        } catch(Exception $ex){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'An error occurred!',
+                'status' => 'Pending'
+            ]);
+        }
+    }
+
+    public function print_fpc_dealer_v2(
+        Request $request,
+        FPC_Project $m_fpc_project,
+        SalesPersonsOra $m_sales_persons,
+        FPC_Item $m_fpc_item,
+        Approver $m_approver,
+        FPCItemFreebies $m_freebies
+
+    ){
+
+       /*  if(!in_array(session('user')['user_type_id'], array(32,33)) ){
+            return view('errors.404');
+        } */
+
+        $fpc_project_id = $request->fpc_project_id;
+        $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
+        $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
+        $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = collect($signatories)->groupBy('signatory_type');
+        
+      //  dd($signatories);
+      
+        $items_arr = [];
+        foreach($items as $row){
+            $arr = [
+                'header' => $row,
+                'other_items' => $m_freebies->get_item_freebies($row->fpc_item_id)
+            ];
+
+            array_push($items_arr, $arr);
+        }
+        
+      
+        $data = [
+            'header_data'   => $header_data,
+            'sales_persons' => $sales_persons,
+            'items'         => $items_arr,
+            'signatories'   => $signatories
+        ];
+
+        $pdf = PDF::loadView('pdf.print_fpc_dealer_v2', $data);
+        return $pdf->setPaper('a4','portrait')->stream();
+    }
+
+
 }

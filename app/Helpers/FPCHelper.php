@@ -17,6 +17,8 @@ class FPCHelper
             break;
             case 'Cancelled' :
                 $flag = false;
+            case 'Pending' :
+                $flag = false;
             break;
         }
 
