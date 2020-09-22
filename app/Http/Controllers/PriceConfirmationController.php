@@ -244,7 +244,8 @@ class PriceConfirmationController extends Controller
             
 
             // approvers
-            $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
+           // uncomment this to unlock fpc approval
+            /*$approvers    = $m_approver->get_fpc_signatories($vehicle_type);
             $approval_params = [];
             $m_module_approval = new ModuleApproval;
             $hierarchy = 1;
@@ -265,9 +266,9 @@ class PriceConfirmationController extends Controller
                 array_push($approval_params,$temp_arr);
             } 
 
-            // uncomment this to unlock fpc approval
+            //
             //$m_module_approval->insert_module_approval($approval_params);
-                
+            */
             // insert fpc projects
             $project_params = [];
 
