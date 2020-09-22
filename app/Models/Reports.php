@@ -216,8 +216,17 @@ class Reports extends Model
     public function get_fpc_summary($params){
         
         $where = "";
-        if($params['dealer'] != ''){
-            $where = " AND prj.dealer_id = " . $params['dealer'];
+  
+        if(count($params['dealer']) > 0){
+      
+            $dealers = "";
+            foreach($params['dealer'] as $dealer){
+                $dealers .= $dealer . ',';
+            }
+            $dealers = rtrim($dealers, ",");
+
+            $where = " AND prj.dealer_id IN (" . $dealers . ")";
+        
         }
 
         $sql = "SELECT to_char(fpc.creation_date,'mm/dd/yyyy') date_created,

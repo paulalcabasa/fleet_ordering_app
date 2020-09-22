@@ -31,8 +31,7 @@
                         <div class="form-group row" style="margin-bottom:1em !important;">
                             <label class="col-2  col-form-label">Dealer</label>
                             <div class="col-10">
-                                <select class="form-control" name="dealer">
-                                    <option value="">All</option>
+                                <select class="form-control" name="dealer[]" multiple>
                                     <option :value="row.cust_account_id" v-for="(row, index) in dealers">@{{ row.account_name }}</option>
                                 </select> 
                             </div>
