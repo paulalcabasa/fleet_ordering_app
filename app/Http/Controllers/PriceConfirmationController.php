@@ -918,6 +918,8 @@ class PriceConfirmationController extends Controller
             $mail_recipient = $validity_request['approver_email'];
             $message        = 'Successfully submitted request!';
             $swal_type      = 'success';
+
+
         }
         else if($validity_request['action'] == "view"){
             return [
