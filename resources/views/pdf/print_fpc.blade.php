@@ -290,7 +290,7 @@
                             <tr>
                                 <td><br/><br/><br/></td>
                             </tr>
-                          
+                            @if(!empty($signatories['CHECKED_BY'])):
                             <tr>
                                 <td><strong>Checked by: <br/><br/> </td>
                             </tr>
@@ -299,6 +299,7 @@
                                 <td>____________________<br/></td>
                                 @endforeach
                             </tr>
+                            
                             <tr>
                                 @foreach($signatories['CHECKED_BY'] as $row)
                                 <td><strong>{{ ucwords(strtolower($row->name_prefix . ' ' . $row->first_name . ' ' . $row->last_name)) }}</strong></td>
@@ -309,7 +310,7 @@
                                 <td>{{ $row->position_title }}</td>
                                 @endforeach
                             </tr>
-                                
+                            @endif 
                         </table>
                     </td>
                     <td style="width:100px;">&nbsp;</td>
