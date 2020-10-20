@@ -112,12 +112,11 @@ class Vehicle extends Model
 					vm.model_variant,
 					vm.sales_model,
 					vm.color,
-					fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicle_models_v vm       
+					vm.vehicle_type,
+					vm.vehicle_source_id
+				FROM ipc_dms.ipc_fros_vehicles_v vm       
 					LEFT JOIN ipc_dms.fs_inactive_vehicles iv
-						ON iv.inventory_item_id = vm.inventory_item_id    
-					LEFT JOIN ipc_dms.fs_vehicle_groups fvg
-				        ON fvg.model = vm.model_variant   
+						ON iv.inventory_item_id = vm.inventory_item_id   
 				WHERE 1 = 1
 					AND vm.sales_model IS NOT NULL
 					AND iv.inventory_item_id IS NULL";

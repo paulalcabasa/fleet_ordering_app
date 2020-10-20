@@ -88,7 +88,8 @@ class ProjectController extends Controller
                 $temp_array = array(
                     "variant"      => $var->model_variant,
                     "sales_model"  => $var->sales_model,
-                    "vehicle_type" => $var->vehicle_type
+                    "vehicle_type" => $var->vehicle_type,
+                    "vehicle_source_id" => $var->vehicle_source_id
                 );
                 array_push($children,$temp_array);
             }
@@ -116,11 +117,6 @@ class ProjectController extends Controller
             );
             array_push($vehicle_options, $option); */
         }
-
-        //array_unique($vehicle_options);
-        /* echo "<pre>";
-        print_r($vehicle_options);
-        die; */
         
         $project_id = $request->project_id;
     	$action = $request->action;  
@@ -361,6 +357,7 @@ class ProjectController extends Controller
                 $line_params = [
                     'requirement_header_id' => $lcv_requirement_id,
                     'inventory_item_id'     => $row['inventory_item_id'],
+                    'vehicle_source_id'     => $row['vehicle_source_id'],
                     'quantity'              => $row['quantity'],
                     'suggested_price'       => $row['suggested_price'],
                     'body_builder_name'     => $row['body_builder'],
@@ -404,6 +401,7 @@ class ProjectController extends Controller
                 $line_params = [
                     'requirement_header_id' => $cv_requirement_id,
                     'inventory_item_id'     => $row['inventory_item_id'],
+                    'vehicle_source_id'     => $row['vehicle_source_id'],
                     'quantity'              => $row['quantity'],
                     'suggested_price'       => $row['suggested_price'],
                     'body_builder_name'     => $row['body_builder'],
