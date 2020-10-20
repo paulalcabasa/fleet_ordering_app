@@ -623,7 +623,7 @@
                 self.selected_pricelist = order.pricelist_header_id;
                 self.cur_pricelist_line_id = order.pricelist_line_id;
                 self.curModel = order;
-              
+                self.vehicle_source_id = order.vehicle_source_id
                 axios.get('/ajax-get-freebies/' + self.curModel.fpc_item_id)
                     .then( (response) => {
                         self.curFreebies = response.data;
@@ -1047,7 +1047,8 @@
                     axios.get('get-vehicle-price',{
                         params : {
                             pricelist_header_id : val,
-                            inventory_item_id : self.curModel.inventory_item_id
+                            inventory_item_id : self.curModel.inventory_item_id,
+                            vehicle_source_id : self.curModel.vehicle_source_id
                         }
                     })
                     .then( (response) => {  

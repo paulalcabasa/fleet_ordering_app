@@ -67,7 +67,8 @@ class FPC_Item extends Model
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
                         fpc_item.pricelist_line_id,
-                        fpc_item.discount
+                        fpc_item.discount,
+                        vehicle.vehicle_source_id
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     INNER JOIN IPC_DMS.fs_projects fp
                         ON fpc_prj.project_id = fp.project_id
@@ -110,7 +111,8 @@ class FPC_Item extends Model
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
                         fpc_item.pricelist_line_id,
-                        fpc_item.discount";
+                        fpc_item.discount,
+                        vehicle.vehicle_source_id";
 
 		$params = [
 			'fpc_project_id' => $fpc_project_id

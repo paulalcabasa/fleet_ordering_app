@@ -13,8 +13,7 @@
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
                     <h3 class="kt-portlet__head-title">Customer</h3>
-                </div>
-               
+                </div>              
             </div>
             <div class="kt-portlet__body">
                 <div class="form-group row">

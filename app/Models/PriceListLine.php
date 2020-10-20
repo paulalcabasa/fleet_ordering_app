@@ -29,7 +29,7 @@ class PriceListLine extends Model
                         fpl.pricelist_line_id,
                         fpl.inventory_item_id
                 FROM ipc_dms.fs_pricelist_lines fpl
-                    LEFT JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                    LEFT JOIN ipc_dms.ipc_fros_vehicles_v vehicle
                         ON vehicle.inventory_item_id = fpl.inventory_item_id
                     LEFT JOIN ipc_dms.fs_status st
                         ON st.status_id = fpl.status
@@ -61,7 +61,7 @@ class PriceListLine extends Model
             ]);
     }
 
-    public function get_vehicle_price($pricelist_header_id,$inventory_item_id){
+    public function get_vehicle_price($pricelist_header_id, $inventory_item_id, $vehicle_source_id){
         $sql = "SELECT fpl.pricelist_line_id,
                         fpl.srp,
                         fpl.wsp,
@@ -71,14 +71,18 @@ class PriceListLine extends Model
                 FROM ipc_dms.fs_pricelist_lines fpl
                     INNER JOIN ipc_dms.fs_pricelist_header fph
                         ON fph.pricelist_header_id = fpl.pricelist_header_id
+                  
                 WHERE 1 = 1
                     AND fpl.inventory_item_id = :inventory_item_id
+                    
                     AND fph.pricelist_header_id = :pricelist_header_id
+                    AND fpl.vehicle_source_id = :vehicle_source_id
                     AND fph.status = 1
                     AND fpl.status = 1";
         $params = [
             'inventory_item_id'   => $inventory_item_id,
             'pricelist_header_id' => $pricelist_header_id,
+            'vehicle_source_id' => $vehicle_source_id,
         ];
 
         $query = DB::select($sql,$params);
