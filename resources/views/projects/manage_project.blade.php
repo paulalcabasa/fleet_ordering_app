@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="kt-portlet__body kt-portlet__body--fit">
-        <div class="kt-grid  kt-wizard-v1 kt-wizard-v1--white" id="kt_wizard_v1" data-ktwizard-state="first">
+        <div class="kt-grid  kt-wizard-v1 kt-wizard-v1--white" id="kt_wizard_v1" data-ktwizard-state="pending">
             <div class="kt-grid__item">
 
                 <!--begin: Form Wizard Nav -->
@@ -68,7 +68,7 @@
                             </div>
                         </a>
                       
-                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="current">
+                        <a class="kt-wizard-v1__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="first">
                             <div class="kt-wizard-v1__nav-body">
                                 <div class="kt-wizard-v1__nav-icon">
                                     <i class="flaticon-list"></i>
@@ -443,6 +443,7 @@
                                                     :value="variant.sales_model" 
                                                     :data-vehicle_type="variant.vehicle_type"
                                                     :data-variant="variant.variant"
+                                                    :data-vehicle_source_id="variant.vehicle_source_id"
                                                 >@{{ variant.sales_model}}</option>
                                             </optgroup>
                                         </select>   
@@ -1261,6 +1262,7 @@ jQuery(document).ready(function() {
                 let color = $("#sel_vehicle_colors option:selected").text();
                 var vehicle_type = $("#sel_vehicle_models option:selected").data('vehicle_type');
                 var variant = $("#sel_vehicle_models option:selected").data('variant');
+                var vehicle_source_id = $("#sel_vehicle_models option:selected").data('vehicle_source_id');
 
                 if(self.selected_model != -1 && self.selected_color != -1){
 
@@ -1281,7 +1283,8 @@ jQuery(document).ready(function() {
                                 body_builder : null,
                                 rear_body_type : null,
                                 additional_details : null,
-                                delivery_schedule : []
+                                delivery_schedule : [],
+                                vehicle_source_id : vehicle_source_id
                         }
                         self.vehicleRequirement[vehicle_type].push(newObj);
                 
