@@ -134,7 +134,7 @@
                                 <span v-show="action == 'add'" >
                                     <select class="form-control" id="sel_vehicle_colors" v-model="selected_color" v-select style="width:100%;">
                                         <option value="-1">Select a color</option>
-                                        <option v-for="(row,index) in vehicleColors" :value="row">@{{ row.color }}</option>
+                                        <option v-for="(row,index) in vehicleColors" :value="row" :data-vehicle_source_id="row.vehicle_source_id">@{{ row.color }}</option>
                                     </select>
                                 </span>
                                 <input v-show="action == 'edit'" type="text" class="form-control"  readonly="readonly" :value="curModel.color"/>
@@ -253,7 +253,8 @@
                 pricelist_line_id: 0,
                 sales_model      : '',
                 color            : '',
-                status_flag      : false
+                status_flag      : false,
+                vehicle_source_id : 0
             },
             vehicle_models: {!! json_encode($vehicle_models) !!},
             selected_model: -1,
@@ -288,6 +289,7 @@
                 self.selected_color             = -1;
                 self.curModel.status            = 1;
                 self.curModel.pricelist_line_id = 0;
+                self.curModel.vehicle_source_id = 0;
                 $("#newModal").modal('show');
             },
             saveVehicle(){
@@ -461,7 +463,8 @@
             selected_color : function(val){
                 this.curModel.inventory_item_id = val.inventory_item_id;
                 this.curModel.wsp = parseFloat(val.price) * 1.12;
-                this.curModel.promo = val.floor_subsidy
+                this.curModel.promo = val.floor_subsidy;
+                this.curModel.vehicle_source_id = val.vehicle_source_id
             }
         },
         filters : {

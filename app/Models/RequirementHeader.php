@@ -41,8 +41,9 @@ class RequirementHeader extends Model
                 FROM ipc_dms.fs_prj_requirement_headers rh
                     INNER JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rh.requirement_header_id = rl.requirement_header_id
-                    INNER JOIN IPC_DMS.IPC_VEHICLE_MODELS_V vehicle
+                    INNER JOIN ipc_dms.ipc_fros_vehicles_v vehicle
                         ON vehicle.inventory_item_id = rl.inventory_item_id
+                        AND vehicle.vehicle_source_id = rl.vehicle_source_id
                     LEFT JOIN ipc_dms.fs_po_lines pl
                         ON pl.requirement_line_id = rl.requirement_line_id
                     LEFT JOIN ipc_dms.fs_po_headers ph

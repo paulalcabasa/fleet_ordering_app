@@ -7,7 +7,7 @@ use DB;
 class Vehicle extends Model
 {
     //
-	protected $table = "ipc_dms.ipc_vehicles_with_price_v";
+	protected $table = "ipc_dms.IPC_FROS_VEHICLES_WITH_PRICE_V";
 	protected $connection = "oracle"; 
 
 	public function get_vehicle_models($vehicle_type){
@@ -72,10 +72,8 @@ class Vehicle extends Model
 		$sql = "SELECT DISTINCT
 			            vm.model_variant,
 			            vm.sales_model,
-			            fvg.vehicle_type
-				FROM ipc_dms.IPC_VEHICLES_PRICE_ALL_V vm 
-				    INNER JOIN ipc_dms.fs_vehicle_groups fvg
-				        ON fvg.model = vm.model_variant
+			            vm.vehicle_type
+				FROM ipc_dms.IPC_FROS_VEHICLES_WITH_PRICE_V vm 
 				WHERE 1 = 1
 				    AND vm.sales_model IS NOT NULL
 				ORDER BY vm.model_variant ASC";
@@ -89,8 +87,9 @@ class Vehicle extends Model
 					vm.inventory_item_id,
 					vm.color,
 					vm.price,
-					nvl(spm.floor_subsidy,0) floor_subsidy
-				FROM ipc_dms.IPC_VEHICLES_PRICE_ALL_V vm 
+					nvl(spm.floor_subsidy,0) floor_subsidy,
+					vm.vehicle_source_id
+				FROM ipc_dms.IPC_FROS_VEHICLES_WITH_PRICE_V vm 
 					LEFT JOIN IPC.IPC_SP_SALES_PROMO spm
 						ON vm.sales_model = spm.sales_model
 						AND spm.month_promo = EXTRACT(month FROM sysdate)
@@ -112,12 +111,11 @@ class Vehicle extends Model
 					vm.model_variant,
 					vm.sales_model,
 					vm.color,
-					fvg.vehicle_type
-				FROM ipc_dms.ipc_vehicle_models_v vm       
+					vm.vehicle_type,
+					vm.vehicle_source_id
+				FROM ipc_dms.ipc_fros_vehicles_v vm       
 					LEFT JOIN ipc_dms.fs_inactive_vehicles iv
-						ON iv.inventory_item_id = vm.inventory_item_id    
-					LEFT JOIN ipc_dms.fs_vehicle_groups fvg
-				        ON fvg.model = vm.model_variant   
+						ON iv.inventory_item_id = vm.inventory_item_id   
 				WHERE 1 = 1
 					AND vm.sales_model IS NOT NULL
 					AND iv.inventory_item_id IS NULL";

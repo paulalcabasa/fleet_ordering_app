@@ -89,11 +89,11 @@ class PriceListController extends Controller
         
         $pricelist_header_id = $request->pricelist_header_id;
         $header = $this->pl_header->get_details($pricelist_header_id);
-        
+
         $vehicle_models   = $this->vehicle->get_vehicles_with_price();
         $grouped          = collect($vehicle_models)->groupBy('model_variant'); 
         $vehicle_options  = array();
-
+        
         foreach($grouped as $model => $variant){
 
             $children = array();
@@ -154,6 +154,7 @@ class PriceListController extends Controller
             $this->pl_line->insert_line([
                 'pricelist_header_id'   => $pricelist_header_id,
                 'inventory_item_id'     => $vehicle_details['inventory_item_id'],
+                'vehicle_source_id'     => $vehicle_details['vehicle_source_id'],
                 'srp'                   => $srp,
                 'wsp'                   => $wsp,
                 'promo'                 => $promo,
@@ -220,7 +221,8 @@ class PriceListController extends Controller
     public function get_vehicle_price(Request $request){
         $pricelist_header_id = $request->pricelist_header_id;
         $inventory_item_id = $request->inventory_item_id;
-        $vehicle_price = $this->pl_line->get_vehicle_price($pricelist_header_id,$inventory_item_id);
+        $vehicle_source_id = $request->vehicle_source_id;
+        $vehicle_price = $this->pl_line->get_vehicle_price($pricelist_header_id, $inventory_item_id, $vehicle_source_id);
         if(empty($vehicle_price)){
             return response()->json(['status' => 404]);
         }

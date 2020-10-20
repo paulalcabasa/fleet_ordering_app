@@ -141,7 +141,8 @@ class Reports extends Model
                        rcta.attribute11                    csr_date,
                        apps.IPC_GET_VEHICLE_VARIANT(msib.segment1) model_variant,
                        CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN 'PAID' ELSE 'UNPAID' END PAYMENT_STATUS,
-                       CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN  araa.apply_date ELSE NULL END paid_date
+                       CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN  araa.apply_date ELSE NULL END paid_date,
+                       (rctla.net_amount + rctla.vat_amount) invoice_amount
                 FROM ra_customer_trx_all rcta
                        LEFT JOIN ipc_ar_invoices_with_cm cm
                           ON rcta.customer_trx_id = cm.orig_trx_id

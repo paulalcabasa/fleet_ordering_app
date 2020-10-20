@@ -67,7 +67,8 @@ class FPC_Item extends Model
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
                         fpc_item.pricelist_line_id,
-                        fpc_item.discount
+                        fpc_item.discount,
+                        vehicle.vehicle_source_id
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     INNER JOIN IPC_DMS.fs_projects fp
                         ON fpc_prj.project_id = fp.project_id
@@ -76,8 +77,9 @@ class FPC_Item extends Model
                         AND rh.requirement_header_id = fpc_prj.requirement_header_id
                     INNER JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rl.requirement_header_id = rh.requirement_header_id
-                    INNER JOIN ipc_dms.ipc_vehicle_models_v vehicle
+                    INNER JOIN ipc_dms.ipc_fros_vehicles_v vehicle
                         ON vehicle.inventory_item_id = rl.inventory_item_id
+                        AND vehicle.vehicle_source_id = rl.vehicle_source_id
                     INNER JOIN ipc_dms.fs_fpc_items fpc_item
                         ON fpc_item.fpc_project_id = fpc_prj.fpc_project_id
                        AND fpc_item.requirement_line_id = rl.requirement_line_id
@@ -109,7 +111,8 @@ class FPC_Item extends Model
                         fpc_item.promo_title,
                         fpc_item.pricelist_header_id,
                         fpc_item.pricelist_line_id,
-                        fpc_item.discount";
+                        fpc_item.discount,
+                        vehicle.vehicle_source_id";
 
 		$params = [
 			'fpc_project_id' => $fpc_project_id
