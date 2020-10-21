@@ -33,7 +33,7 @@
                     <span class="kt-hidden-mobile">Cancel</span>
                 </a>
                 @endif
-                <a href="#"  class="btn btn-primary" @click="saveProject()">
+                <a href="#" v-show="hideSave"  class="btn btn-primary" @click="saveProject()">
                     <span class="kt-hidden-mobile">@{{ draftButton }}</span>
                 </a>
 
@@ -697,7 +697,7 @@
                         <div class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-prev">
                             Previous
                         </div>
-                        <div v-show="user_type == 27 || user_type == 31" class="btn btn-success btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-submit">
+                        <div v-show="(user_type == 27 || user_type == 31) && hideSave" class="btn btn-success btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-submit">
                             Submit
                         </div>
                         <div class="btn btn-brand btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-next">
@@ -930,6 +930,7 @@ jQuery(document).ready(function() {
     var vm =  new Vue({
         el : "#app",
         data: {
+            hideSave : true,
             // option data
             projectSourceOptions: {!! json_encode($project_sources) !!},
             organizationOptions:  {!! json_encode($organizations) !!},
@@ -1559,7 +1560,7 @@ jQuery(document).ready(function() {
                     confirmButtonText: 'Confirm'
                 }).then((result) => {
                     if (result.value) {
-                          
+                        self.hideSave = false;
                         KTApp.blockPage({
                             overlayColor: '#000000',
                             type: 'v2',
@@ -1630,6 +1631,7 @@ jQuery(document).ready(function() {
                         })
                         .finally( (response) => {
                             KTApp.unblockPage();
+                          
                         });
                         
 
@@ -1735,6 +1737,10 @@ jQuery(document).ready(function() {
                         
                         if(self.action == 'submit') {
                             self.submitProject();
+                        }
+
+                        if(self.action == 'edit') {
+                            window.location.reload();
                         }
                        
                     }
@@ -2143,9 +2149,9 @@ jQuery(document).ready(function() {
                             fleet_category: {
                                 required: true 
                             },
-                           /*  tin: {
+                            tin: { // require tin as requested by Jelly Limbo on October 21, 2020
                                 required: true 
-                            }, */
+                            },
                             establishment_date: {
                                 required: true 
                             },

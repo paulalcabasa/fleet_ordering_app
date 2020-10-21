@@ -1314,6 +1314,7 @@ class ProjectController extends Controller
                     $line_params = [
                         'requirement_header_id' => $lcv_requirement_id,
                         'inventory_item_id'     => $row['inventory_item_id'],
+                        'vehicle_source_id'     => $row['vehicle_source_id'],
                         'quantity'              => $row['quantity'],
                         'suggested_price'       => $row['suggested_price'],
                         'body_builder_name'     => $row['body_builder'],
@@ -1366,6 +1367,7 @@ class ProjectController extends Controller
                     $line_params = [
                         'requirement_header_id' => $cv_requirement_id,
                         'inventory_item_id'     => $row['inventory_item_id'],
+                        'vehicle_source_id'     => $row['vehicle_source_id'],
                         'quantity'              => $row['quantity'],
                         'suggested_price'       => $row['suggested_price'],
                         'body_builder_name'     => $row['body_builder'],
@@ -1608,7 +1610,10 @@ class ProjectController extends Controller
             ]
         );
         
-        /*$approval_workflow = $m_module_approval->get_project_approval_workflow($project_id);
+        /*
+        Uncomment this to active online approval
+        written by : Paul Alcabasa
+        $approval_workflow = $m_module_approval->get_project_approval_workflow($project_id);
         foreach($approval_workflow as $row){
             // update approval status to pending  
             $m_module_approval->save_approval(
