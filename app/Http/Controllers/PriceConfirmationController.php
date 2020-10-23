@@ -63,7 +63,8 @@ class PriceConfirmationController extends Controller
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
-       
+        $online_approval_flag = config('app.online_approval_flag');
+        
         if(!in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
         }
@@ -71,8 +72,6 @@ class PriceConfirmationController extends Controller
         $customers = $m_customer->get_project_customers(
             $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
         );
-
-  
         $page_data = [
             'customers'    => $customers,
             'base_url'     => url('/'),
@@ -225,6 +224,7 @@ class PriceConfirmationController extends Controller
         
         $vehicle_type = $this->vehicle_type->get_vehicle_type(session('user')['user_type_id']);
 
+        $online_approval_flag = config('app.online_approval_flag');
         DB::beginTransaction();
         
         try {
@@ -243,32 +243,33 @@ class PriceConfirmationController extends Controller
             // end of FPC header
             
 
-            // approvers
-           // uncomment this to unlock fpc approval
-            /*$approvers    = $m_approver->get_fpc_signatories($vehicle_type);
-            $approval_params = [];
-            $m_module_approval = new ModuleApproval;
-            $hierarchy = 1;
-            foreach($approvers as $row){
-                $temp_arr = [
-                    'module_id'             => 3, // Fleet Project
-                    'module_reference_id'   => $fpc_id,
-                    'approver_id'           => $row->approver_id,
-                    'hierarchy'             => $hierarchy,
-                    'status'                => 7, // Pending
-                    'column_reference'      => 'fpc_id',
-                    'created_by'            => session('user')['user_id'],
-                    'creation_date'         => Carbon::now(),
-                    'create_user_source_id' => session('user')['source_id'],
-                    'table_reference'       => 'fs_fpc'
-                ];
-                $hierarchy++;
-                array_push($approval_params,$temp_arr);
-            } 
+            // approvers     
+            if($online_approval_flag){ 
+                $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
+                $approval_params = [];
+                $m_module_approval = new ModuleApproval;
+                $hierarchy = 1;
+                foreach($approvers as $row){
+                    $temp_arr = [
+                        'module_id'             => 3, // Fleet Project
+                        'module_reference_id'   => $fpc_id,
+                        'approver_id'           => $row->approver_id,
+                        'hierarchy'             => $hierarchy,
+                        'status'                => 7, // Pending
+                        'column_reference'      => 'fpc_id',
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id'],
+                        'table_reference'       => 'fs_fpc'
+                    ];
+                    $hierarchy++;
+                    array_push($approval_params,$temp_arr);
+                } 
 
-            //
-            //$m_module_approval->insert_module_approval($approval_params);
-            */
+                // insert to approval table
+                $m_module_approval->insert_module_approval($approval_params);
+            }
+
             // insert fpc projects
             $project_params = [];
 

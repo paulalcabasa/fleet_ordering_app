@@ -277,6 +277,7 @@
                             <tr>
                                 <td><strong>Prepared by:</strong><br/><br/></td>
                             </tr>
+                            
                             <tr>
                                 <td>____________________</td>
                             </tr>
@@ -294,22 +295,24 @@
                             <tr>
                                 <td><strong>Checked by: <br/><br/> </td>
                             </tr>
+                            @foreach($signatories['CHECKED_BY'] as $row)
                             <tr>
-                                @foreach($signatories['CHECKED_BY'] as $row)
-                                <td>____________________<br/></td>
-                                @endforeach
+                                <td><img width="120" height="50" src="{{ asset($row->e_signature_path) }}" /></td>
                             </tr>
-                            
                             <tr>
-                                @foreach($signatories['CHECKED_BY'] as $row)
+                                <td style="line-height:-15;">____________________<br/></td>
+                            </tr>
+                            @endforeach
+                            @foreach($signatories['CHECKED_BY'] as $row)
+                            <tr>
                                 <td><strong>{{ ucwords(strtolower($row->name_prefix . ' ' . $row->first_name . ' ' . $row->last_name)) }}</strong></td>
-                                @endforeach
                             </tr>
+                            @endforeach
+                            @foreach($signatories['CHECKED_BY'] as $row)
                             <tr>
-                                @foreach($signatories['CHECKED_BY'] as $row)
                                 <td>{{ $row->position_title }}</td>
-                                @endforeach
                             </tr>
+                            @endforeach
                             @endif 
                         </table>
                     </td>
@@ -320,9 +323,10 @@
                                 <td><strong>Noted by: <br/><br/> </td>
                             </tr>
                             @foreach($signatories['NOTED_BY'] as $row)
-                        
-                            
                             <tr>
+                                <td><img width="120" height="50" src="{{ asset($row->e_signature_path) }}" /></td>
+                            </tr>
+                            <tr style="line-height:-15;">
                                 <td>____________________<br/></td>
                             </tr>
                             <tr>

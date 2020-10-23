@@ -36,12 +36,12 @@ return [
         // For Oracle
         'oracle' => [
             'driver'         => 'oracle',
-            'service_name'   => env('DB_SERVICE_NAME', ''),
-            'host'           => env('DB_HOST', ''),
-            'port'           => env('DB_PORT', ''),
-            'database'       => env('DB_DATABASE', ''),
-            'username'       => env('DB_USERNAME', ''),
-            'password'       => env('DB_PASSWORD', ''),
+            'service_name'   => env('DB_ORA_SERVICE_NAME', ''),
+            'host'           => env('DB_ORA_HOST', ''),
+            'port'           => env('DB_ORA_PORT', ''),
+            'database'       => env('DB_ORA_DATABASE', ''),
+            'username'       => env('DB_ORA_USERNAME', ''),
+            'password'       => env('DB_ORA_PASSWORD', ''),
             'charset'        => env('DB_CHARSET', 'AL32UTF8'),
             'prefix'         => env('DB_PREFIX', ''),
             'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
