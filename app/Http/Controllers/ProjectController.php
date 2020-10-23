@@ -49,7 +49,6 @@ class ProjectController extends Controller
         CustomerAffiliates $m_affiliate
     ){
         
-          //dd($project_details);
         $customer_id = null;
         $project_id = $request->project_id;
        
