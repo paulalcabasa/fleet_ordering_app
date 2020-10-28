@@ -21,7 +21,7 @@
                 <a :href="reject_link" class="btn btn-danger btn-sm kt-margin-r-5" >
                     <span class="kt-hidden-mobile">Reject</span>
                 </a>
-                <a :href="inquiry_link" class="btn btn-primary btn-sm" >
+                <a :href="inquiry_link" target="_blank" class="btn btn-primary btn-sm" >
                     <span class="kt-hidden-mobile">Inquiry</span>
                 </a>
             
@@ -67,7 +67,12 @@
                 Project No. @{{ project.project_id }} - @{{ project.dealer_name }} (@{{ project.dealer_account }} ) 
             </h3>
         </div>
-      
+        <div class="kt-portlet__head-toolbar">
+         
+            <a target="_blank" :href="base_url + '/print-fpc/' + project.fpc_project_id" class="btn btn-primary" >
+                <span class="kt-hidden-mobile">Print</span>
+            </a>
+        </div> 
     </div>
     <div class="kt-portlet__body">
         <h5>Requirement</h5>
@@ -148,6 +153,7 @@
             approve_link : {!! json_encode($approve_link) !!},  
             reject_link : {!! json_encode($reject_link) !!},  
             inquiry_link : {!! json_encode($inquiry_link) !!},  
+            base_url : {!! json_encode($base_url) !!}
         },
         created: function () {
         },

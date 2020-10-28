@@ -22,7 +22,7 @@ class OutOfficeController extends Controller
     {    
 
         $user = session('user');
-        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33){
+        if($user['user_type_id'] == 32 || $user['user_type_id'] == 33 || $user['user_type_id'] == 57){
             $list = $this->outOfficeRepository->findByUser($user['user_id'], $user['source_id']);
         }
         else {

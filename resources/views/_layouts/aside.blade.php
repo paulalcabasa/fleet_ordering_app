@@ -193,6 +193,26 @@
                 </a>
             </li>
             @endif 
+            @if(in_array(session('user')['user_type_id'], array(57)))
+            <li class="kt-menu__item {{ request()->is('fpc-approval') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/fpc-approval') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon2-crisp-icons"></i>
+                    <span class="kt-menu__link-text">Approval</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('out-of-office') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/out-of-office') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-users-1"></i>
+                    <span class="kt-menu__link-text">Out of office</span>
+                </a>
+            </li>
+            <li class="kt-menu__item {{ request()->is('all-projects') ? 'kt-menu__item--active' : ''}}" aria-haspopup="true">
+                <a href="{{ url('/all-projects') }}" class="kt-menu__link ">
+                    <i class="kt-menu__link-icon flaticon-folder-1"></i>
+                    <span class="kt-menu__link-text">Projects</span>
+                </a>
+            </li>
+            @endif 
         </ul>
     </div>
 </div>

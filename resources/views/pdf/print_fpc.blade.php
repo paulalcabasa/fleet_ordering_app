@@ -302,13 +302,9 @@
                             <tr>
                                 <td style="line-height:-15;">____________________<br/></td>
                             </tr>
-                            @endforeach
-                            @foreach($signatories['CHECKED_BY'] as $row)
                             <tr>
                                 <td><strong>{{ ucwords(strtolower($row->name_prefix . ' ' . $row->first_name . ' ' . $row->last_name)) }}</strong></td>
                             </tr>
-                            @endforeach
-                            @foreach($signatories['CHECKED_BY'] as $row)
                             <tr>
                                 <td>{{ $row->position_title }}</td>
                             </tr>

@@ -15,8 +15,15 @@ class DashboardController extends Controller
         POHeaders $m_poh
     ){
       
-        if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38,30)) ){
+     
+        if(!in_array(session('user')['user_type_id'], array(25,27,31,32,33,38,30,57)) ){
             return view('errors.404');
+        }
+
+    
+        // if fleet cv manager
+        if(session('user')['user_type_id'] == 57){
+            return redirect()->route('fpc_approval');
         }
 
         // if sales invoicing user, redirect to FWPC Listing

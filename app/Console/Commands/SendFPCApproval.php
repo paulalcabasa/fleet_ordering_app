@@ -87,7 +87,6 @@ class SendFPCApproval extends Command
                     'competitor_flag'         => $project->competitor_flag,
                     'competitor_remarks'      => $project->competitor_remarks,
                     'print_fpc_url'           => url('/') . '/api/print-fpc/' . $project->fpc_project_id
-                    
                 ];
                 array_push($projects,$temp_arr);
 
