@@ -105,7 +105,8 @@ class FPC_Project extends Model
                         fcp.fleet_category_name,
                         usr.name_prefix || ' ' || usr.first_name || ' ' || usr.last_name prepared_by,
                         usr.position_title,
-                        fpc.fpc_id       
+                        fpc.fpc_id,
+                        fpc.status fpc_status_id    
                 FROM ipc_dms.fs_fpc_projects fpc_prj
                     LEFT JOIN ipc_dms.fs_projects fp
                         ON fp.project_id = fpc_prj.project_id

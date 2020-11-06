@@ -245,7 +245,7 @@ class PriceConfirmationController extends Controller
 
             // approvers     
             if($online_approval_flag){ 
-                $approvers    = $m_approver->get_fpc_signatories($vehicle_type);
+                $approvers    = $m_approver->getFPCApprovers($vehicle_type);
                 $approval_params = [];
                 $m_module_approval = new ModuleApproval;
                 $hierarchy = 1;
@@ -577,10 +577,11 @@ class PriceConfirmationController extends Controller
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
         $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
         $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
-        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type, $header_data->fpc_id);
         $signatories    = collect($signatories)->groupBy('signatory_type');
         
-      //  dd($signatories);
+      //  dd($header_data);
+    //   dd($signatories);
       
         $items_arr = [];
         foreach($items as $row){
