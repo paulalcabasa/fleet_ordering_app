@@ -129,6 +129,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	
 	// Approval
 	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
+	Route::post('approval/resend', 'ApprovalController@resend');
 
 	//Competitors
 	Route::get('/ajax-get-competitor-brands/', 'CompetitorController@ajax_get_competitor_brands');

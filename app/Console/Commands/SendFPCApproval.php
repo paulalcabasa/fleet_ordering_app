@@ -132,9 +132,9 @@ class SendFPCApproval extends Command
             
             if($mailSend){
                 // update notification status to sent
-              //  $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
-               // $moduleApproval->date_sent = Carbon::now();
-              //  $moduleApproval->save();
+                $moduleApproval = ModuleApproval::findOrFail($row->approval_id);
+                $moduleApproval->date_sent = Carbon::now();
+                $moduleApproval->save();
             }
 
         }

@@ -467,7 +467,8 @@ class FPC extends Model
                         ma.hierarchy,
                         to_char(ma.date_sent, 'MM/DD/YYYY HH:MI:SS') date_sent,
                         ma.remarks,
-                        approver.first_name || ' ' || approver.last_name approved_by
+                        approver.first_name || ' ' || approver.last_name approved_by,
+                        CASE WHEN fpc.current_approval_hierarchy = ma.hierarchy THEN 'Y' ELSE NULL END current_approver
                 FROM ipc_dms.fs_fpc fpc
                     INNER JOIN ipc_dms.fs_module_approval ma
                         ON ma.module_reference_id = fpc.fpc_id
