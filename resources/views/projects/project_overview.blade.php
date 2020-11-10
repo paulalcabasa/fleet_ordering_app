@@ -772,7 +772,14 @@
                     cust_account_id : row.cust_account_id,
                     project_id : self.projectId
                 }).then(response => {
-                    console.log(response.data);
+                    Swal.fire({
+                        type: 'success',
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    self.matched_customers = [];
+                    self.search_criteria = row.party_name;
                 }).catch(error => {
                     console.log(error);
                 }).finally( () => {
