@@ -218,6 +218,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('value-set/add','ValueSetController@store');
 	Route::patch('value-set/update','ValueSetController@updateValueSet');
 	Route::delete('value-set/delete/{value_set_id}','ValueSetController@destroy');
+
+	// Oracle customers
+	Route::post('customer/oracle/search', 'CustomerController@findOracleCustomer');
+	Route::post('project/oracle-customer/update', 'ProjectController@updateOracleCustomer');
 	
 });
 

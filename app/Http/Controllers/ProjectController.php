@@ -205,6 +205,17 @@ class ProjectController extends Controller
         $current_date           = date('Y-m-d 00:00:00');
         $timeline               = $m_activity_logs->get_activities_by_project($project_id);
 
+        // oracle customer matching
+        if($project_details->oracle_customer == ""){
+            $customer_name_search = explode(" ", $customer_details->customer_name);
+            $search_criteria = $customer_name_search[0];
+            $matched_customers = $m_customer->findOracleCustomer($search_criteria);
+        }
+        else {
+            $search_criteria = $project_details->oracle_customer;
+            $matched_customers = [];
+        }
+
         // get all vehicle types based on requirement
         $vehicle_types_requirement = [];
         foreach ($requirement as $key => $value) {
@@ -282,7 +293,9 @@ class ProjectController extends Controller
             'vehicle_user_type'        => $vehicle_user_type,
             'add_po_flag'              => $add_po_flag,
             'timeline'                 => $timeline,
-            'pending_fpc_vehicle_type' => $pending_fpc_vehicle_type
+            'pending_fpc_vehicle_type' => $pending_fpc_vehicle_type,
+            'matched_customers'        => $matched_customers,
+            'search_criteria'          => $search_criteria
         ];
         return view('projects.project_overview', $page_data);
     }
@@ -1709,6 +1722,22 @@ class ProjectController extends Controller
                 'project_id' => $project_id
             ]
         ); 
+    }
+
+    public function updateOracleCustomer(Request $request){
+        $params = [
+            'customer_id' => $request->cust_account_id, 
+            'project_id'  => $request->project_id,
+            'update_user' => session('user')['user_id'],
+            'update_user_source' => session('user')['source_id']
+        ];
+
+        $project = new Project;
+        $project->updateOracleCustomer($params);
+        
+        return [
+            'message' => 'Successfully updated oracle customer'
+        ];
     }
 
 

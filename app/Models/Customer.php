@@ -240,6 +240,16 @@ class Customer extends Model
         return $query;
 
     }
+
+    public function findOracleCustomer($search){
+        $sql = "SELECT cust_account_id,
+                        party_name
+                FROM ipc_dms.oracle_customers_v
+                WHERE profile_class = 'Dealers-Fleet'
+                    AND lower(party_name) LIKE lower('%".$search."%')";
+        $query = DB::select($sql);
+        return $query;
+    }
     
 
 }

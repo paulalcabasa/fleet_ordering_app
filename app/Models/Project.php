@@ -169,7 +169,8 @@ class Project extends Model
                         fs.fleet_category,
                         fc.address,
                         fc.tin,
-                        fc.business_style
+                        fc.business_style,
+                        cust.party_name oracle_customer
                 FROM ipc_dms.fs_projects fs
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fs.customer_id = fc.customer_id 
@@ -184,6 +185,9 @@ class Project extends Model
                         ON fps.project_source_id = fs.project_source_id
                     LEFT JOIN ipc_dms.fs_fleet_categories ffc
                         ON ffc.fleet_category_id = fs.fleet_category
+                    LEFT JOIN ipc_dms.oracle_customers_v cust
+                        ON cust.cust_account_id = fs.oracle_customer_id
+                        AND cust.profile_class = 'Dealers-Fleet'
                 WHERE 1 = 1
                     AND fs.project_id = :project_id";
 
@@ -564,6 +568,18 @@ class Project extends Model
             ->whereRaw($whereRaw)
             ->distinct('fp.project_id')
             ->count('fp.project_id');
+    }
+
+    public function updateOracleCustomer($params){
+        $this
+            ->where([
+            	[ 'project_id', '=' , $params['project_id'] ]
+            ])
+            ->update([
+            	'oracle_customer_id'    => $params['customer_id'],
+            	'updated_by'            => $params['update_user'],
+            	'update_user_source_id' => $params['update_user_source']
+            ]);
     }
     
 

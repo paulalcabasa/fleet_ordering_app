@@ -151,4 +151,10 @@ class CustomerController extends Controller
         ];
     }
 
+    public function findOracleCustomer(Request $request){
+        $m_customer = new Customer; 
+        $data = $m_customer->findOracleCustomer($request->search_criteria);
+        return $data;
+    }
+
 }
