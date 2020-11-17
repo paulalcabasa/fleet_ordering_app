@@ -369,11 +369,14 @@ class PurchaseOrderController extends Controller
         $project_id = $request->project_id;
         $project_details = $m_project->get_details($project_id);
         $status_id = 0;
+        $activity_remarks = "";
 
         if($status == "approve"){
             $status_id = 4; // approve
+            $activity_Remarks = "session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has approved purchase order no. <strong>'.$po_header_id.'</strong>. " . $remarks;
         }
         else if($status == "reject") {
+            $activity_Remarks = "session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has rejected purchase order no. <strong>'.$po_header_id.'</strong>. " . $remarks;
             $status_id = 5; // reject
             // once rejected by an approver, reject whole PO submission
             $m_poh->update_status(
@@ -396,10 +399,11 @@ class PurchaseOrderController extends Controller
             session('user')['source_id']
         ); 
 
+    
         $activity_log = [
             'module_id'             => 1, // Fleet Project
             'module_code'           => 'PRJ',
-            'content'               => session('user')['first_name'] . ' ' . session('user')['last_name'] . ' has approved purchase order no. <strong>'.$po_header_id.'</strong>',
+            'content'               => $activity_remarks,
             'created_by'            => session('user')['user_id'],
             'creation_date'         => Carbon::now(),
             'create_user_source_id' => session('user')['source_id'],
