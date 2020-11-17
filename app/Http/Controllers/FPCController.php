@@ -458,7 +458,7 @@ class FPCController extends Controller
             'fpcDetails'      => $fpcDetails,
             'approve_link' => url('/') . '/fpc/approve/' . $moduleApproval->approval_id,
             'reject_link' => url('/')  . '/fpc/reject/' . $moduleApproval->approval_id,
-            'inquiry_link' => url('/')  . '/fpc/inquiry/' . $moduleApproval->approval_id,
+            'inquiry_link' => url('/')  . '/api/fpc/inquiry/' . $moduleApproval->approval_id,
 
         ];
         return view('price_confirmation.view_fpc',$page_data);

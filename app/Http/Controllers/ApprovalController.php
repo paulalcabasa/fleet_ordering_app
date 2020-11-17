@@ -42,4 +42,14 @@ class ApprovalController extends Controller
         return view('approval_list',$page_data); 
     }
 
+    public function resend(Request $request){
+        $moduleApproval = ModuleApproval::findOrFail($request->approvalId);
+        $moduleApproval->date_sent = null;
+        $moduleApproval->save();
+        return [
+            'message' => 'You have resent the email to your approver.'
+        ];
+    }
+
+
 }

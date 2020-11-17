@@ -266,8 +266,12 @@
 
                                 <tr>
 									<td width="200" colspan="2" style="border-top:3px solid #000;"></td>
+                                </tr>
 
-										<?php foreach($fpc_projects as $project) : ?>
+								<tr>
+									<td colspan="2">
+									<?php foreach($fpc_projects as $project) : ?>
+										
                                         <table border="0" style="width:100%;">
                                         
 											<tr>
@@ -303,7 +307,7 @@
 													
 													<table border="1" style="width:100%;border-collapse:collapse;border:1px solid #000;" cellspacing="5" cellpadding="5">
                                                         <tr>
-                                                            <td class="text-bold">Sales Model</td>
+                                                            <td class="text-bold" width="120">Sales Model</td>
                                                             <td><?php echo $vehicle->sales_model; ?></td>
                                                         </tr>
                                                         <tr>
@@ -385,16 +389,16 @@
 											</tr>
 											<?php endif; ?>
 											<tr>
+                                                <td colspan="2" align="center"><a href="<?php echo $project['print_fpc_url']; ?>">Click here to view full details</a></td>
+                                            </tr>
+											<tr>
                                                 <td colspan="2" align="center">**** END FOR PROJECT NO.  <?php echo $project['project_id']; ?> ****</td>
                                             </tr>
                                         </table>
 										<br/>
 										<?php endforeach; ?>
-                                      
-
-                                        
 									</td>
-                                </tr>
+								</tr>
 
                                 
 

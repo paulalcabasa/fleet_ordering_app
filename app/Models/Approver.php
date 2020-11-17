@@ -123,7 +123,7 @@ class Approver extends Model
 
     }
 
-    public function get_fpc_signatories($vehicle_type){
+    public function get_fpc_signatories($vehicle_type, $fpc_id){
         $sql = "SELECT usr.user_id,
                         usr.first_name,
                         usr.middle_name,
@@ -135,7 +135,9 @@ class Approver extends Model
                         usr.name_prefix,
                         fa.signatory_type,
                         fa.approver_id,
-                        fa.hierarchy
+                        fa.hierarchy,
+                        fa.e_signature_path,
+                        approvers.status approval_status
                 FROM ipc_dms.fs_approvers fa
                     LEFT JOIN ipc_dms.ipc_portal_users_v  usr
                         ON usr.user_id = fa.approver_user_id
@@ -144,6 +146,16 @@ class Approver extends Model
                         ON out_office.approver_user_id = usr.user_id
                         AND out_office.approver_source_id = usr.user_source_id 
                         AND trunc(sysdate) >= out_office.start_date and trunc(sysdate) <= out_office.end_date
+                    LEFT JOIN (
+                        SELECT approval.approver_id,
+                                approval.status,
+                                approval.module_reference_id
+                        FROM ipc_dms.fs_module_approval approval
+                        WHERE 1 = 1 
+                            AND approval.module_id = 3
+                    ) approvers
+                        ON approvers.approver_id = fa.approver_id
+                        AND approvers.module_reference_id = :fpc_id
                 WHERE 1 = 1
                     AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
                     AND fa.vehicle_type = :vehicle_type
@@ -151,9 +163,46 @@ class Approver extends Model
                     AND out_office.id IS NULL
                 ORDER BY fa.hierarchy ASC";
         $params = [
-            'vehicle_type' => $vehicle_type
+            'vehicle_type' => $vehicle_type,
+            'fpc_id' => $fpc_id
         ];
-
+        /*
+        SELECT usr.user_id,
+                        usr.first_name,
+                        usr.middle_name,
+                        usr.last_name,
+                        fa.user_type,
+                        fa.vehicle_type,
+                        fa.position_title,
+                        usr.nickname,
+                        usr.name_prefix,
+                        fa.signatory_type,
+                        fa.approver_id,
+                        fa.hierarchy,
+                        fa.e_signature_path,
+                        approvers.status approval_status
+                FROM ipc_dms.fs_approvers fa
+                    LEFT JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    LEFT JOIN ipc_dms.fs_out_of_office out_office
+                        ON out_office.approver_user_id = usr.user_id
+                        AND out_office.approver_source_id = usr.user_source_id 
+                        AND trunc(sysdate) >= out_office.start_date and trunc(sysdate) <= out_office.end_date
+                    LEFT JOIN (
+                        SELECT approver_id,
+                                status
+                        FROM ipc_dms.fs_module_approval approval
+                        WHERE 1 =
+                            AND approval.module_id = 3
+                    ) approvers
+                        ON approvers.approver_id = fa.approver_id 
+                WHERE 1 = 1
+                    AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR','IPC_EXPAT')
+                    AND fa.vehicle_type = :vehicle_type
+                    AND fa.status_id = 1
+                    AND out_office.id IS NULL
+                ORDER BY fa.hierarchy ASC */
         $query = DB::select($sql,$params);
         return $query;
     }
@@ -289,6 +338,42 @@ class Approver extends Model
         $query = DB::select($sql, ['approver_id' => $approver_id]);
 
         return $query[0];
+    }
+
+    public function getFPCApprovers($vehicle_type){
+        $sql = "SELECT usr.user_id,
+                        usr.first_name,
+                        usr.middle_name,
+                        usr.last_name,
+                        fa.user_type,
+                        fa.vehicle_type,
+                        fa.position_title,
+                        usr.nickname,
+                        usr.name_prefix,
+                        fa.signatory_type,
+                        fa.approver_id,
+                        fa.hierarchy,
+                        fa.e_signature_path
+                FROM ipc_dms.fs_approvers fa
+                    LEFT JOIN ipc_dms.ipc_portal_users_v  usr
+                        ON usr.user_id = fa.approver_user_id
+                        AND fa.approver_source_id = usr.user_source_id
+                    LEFT JOIN ipc_dms.fs_out_of_office out_office
+                        ON out_office.approver_user_id = usr.user_id
+                        AND out_office.approver_source_id = usr.user_source_id 
+                        AND trunc(sysdate) >= out_office.start_date and trunc(sysdate) <= out_office.end_date
+                WHERE 1 = 1
+                    AND fa.user_type IN ('IPC_MANAGER','IPC_SUPERVISOR')
+                    AND fa.vehicle_type = :vehicle_type
+                    AND fa.status_id = 1
+                    AND out_office.id IS NULL
+                ORDER BY fa.hierarchy ASC";
+        $params = [
+            'vehicle_type' => $vehicle_type
+        ];
+   
+        $query = DB::select($sql,$params);
+        return $query;
     }
 
 }

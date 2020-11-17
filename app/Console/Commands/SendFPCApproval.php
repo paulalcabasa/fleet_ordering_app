@@ -44,7 +44,7 @@ class SendFPCApproval extends Command
 
         // get logs for mailing
         $approval = $fpc->get_pending();
-
+    
       
         foreach($approval as $row){
         
@@ -86,7 +86,7 @@ class SendFPCApproval extends Command
                     'validity_disp'           => $project->validity_disp,
                     'competitor_flag'         => $project->competitor_flag,
                     'competitor_remarks'      => $project->competitor_remarks,
-                    
+                    'print_fpc_url'           => url('/') . '/api/print-fpc/' . $project->fpc_project_id
                 ];
                 array_push($projects,$temp_arr);
 
@@ -94,10 +94,11 @@ class SendFPCApproval extends Command
             }
 
        
-            $subject = 'System Notification : FROS FPC - ' . $row->customer_name . ' ' . $projectIds;
+            $subject = 'System Notification : FROS - Fpc No. ' . $row->fpc_id . ' | ' . $row->customer_name . ' | ' . $project->dealer_account;
 
             $mail->Subject = $subject;
 
+        
 
             $content = [
                 'fpc_header' => $row,
@@ -105,8 +106,11 @@ class SendFPCApproval extends Command
                 'reject_link' => url('/')  . '/api/fpc/reject/' . $row->approval_id,
                 'inquiry_link' => url('/')  . '/api/fpc/inquiry/' . $row->approval_id,
                 'fpc_projects' => $projects,
-                'print_url' => url('/')  . '/api/fpc/project/print/'
+                'print_url' => url('/')  . '/api/fpc/project/print/',
+                
             ];
+
+
        
             
             $mail->Body    = view('mail.fpc_approval', $content);
@@ -114,13 +118,15 @@ class SendFPCApproval extends Command
             $mail->AddEmbeddedImage(config('app.project_root') . 'public/img/isuzu-logo-compressor.png', 'isuzu_logo');
 
             // uncomment this on go live
+            
             // $mail->addAddress($row->email_address, $row->approver_name);	// Add a recipient, Name is optional
             
             // this is for testing purposes only
-            $mail->addAddress('jennifer-olivera@isuzuphil.com', 'Jen');	// Add a recipient, Name is optional
-            $mail->addAddress('mary-orias@isuzuphil.com', 'Mabeth');	// Add a recipient, Name is optional
-            $mail->addAddress('efhraim-reas@isuzuphil.com', 'Regan');	// Add a recipient, Name is optional
+            //$mail->addAddress('jennifer-olivera@isuzuphil.com', 'Jen');	// Add a recipient, Name is optional
+           // $mail->addAddress('mary-orias@isuzuphil.com', 'Mabeth');	// Add a recipient, Name is optional
+            //$mail->addAddress('efhraim-reas@isuzuphil.com', 'Regan');	// Add a recipient, Name is optional
 
+            $mail->addAddress('paul-alcabasa@isuzuphil.com');
             $mail->addBCC('paul-alcabasa@isuzuphil.com');
             $mailSend = $mail->Send();
             

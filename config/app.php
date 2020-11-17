@@ -11,6 +11,7 @@ return [
     'system_id' => env('SYSTEM_ID'),
     'hostname' => env('hostname'),
     'webhost' => env('WEBHOST'),
+    'online_approval_flag' => env('ONLINE_APPROVAL_FLAG'),
     'webapps_url' => env('WEBAPPS_URL'),
     'project_root' => env('PROJECT_ROOT'),
     'vehicle_badge_colors' => [

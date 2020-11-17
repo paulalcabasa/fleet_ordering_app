@@ -132,10 +132,11 @@
                         <th>Approved by</th>
                         <th>Date approved</th>
                         <th>Remarks</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, index) in approvers">
+                    <tr v-for="(row, index) in approvers" :class="row.current_approver == 'Y' ? 'text-success' : ''">
                         <td>@{{ row.hierarchy }}</td>
                         <td>@{{ row.approver_name }}</td>
                         <td>@{{ row.email_address }}</td>
@@ -144,6 +145,9 @@
                         <td>@{{ row.approved_by }}</td>
                         <td>@{{ row.date_approved }}</td>
                         <td>@{{ row.remarks }}</td>
+                        <td>
+                            <button v-if="row.current_approver == 'Y'" @click="resendEmail(row)" type="button" class="btn btn-primary btn-sm"><i class="far fa-bell  "></i></button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -970,10 +974,16 @@
                         });
                     }
                 }); 
-
-               
-
             },
+            resendEmail(row){
+                axios.post('approval/resend', {
+                    approvalId : row.approval_id
+                }).then(response => {
+                    console.log(response.data);
+                }).catch(err => {
+                    console.log(err);
+                });
+            }
         },
         created: function () {
             // `this` points to the vm instance

@@ -104,7 +104,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::get('get-filtered-fpc', 'PriceConfirmationController@get_filtered_fpc');
 	Route::patch('fpc/revise', 'PriceConfirmationController@revise');
 	Route::patch('fpc/submit', 'PriceConfirmationController@submit');
-	Route::get('fpc-approval', 'FPCController@fpc_approval');
+	Route::get('fpc-approval', 'FPCController@fpc_approval')->name('fpc_approval');
 	Route::get('fpc/approval/{approval_id}', 'FPCController@viewFPC');
 
 	Route::get('fpc/approve/{approval_id}', 'FPCController@approve');
@@ -129,6 +129,7 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	
 	// Approval
 	Route::get('/ajax-get-approval-workflow/{project_id}', 'ApprovalController@ajax_get_approval_workflow');
+	Route::post('approval/resend', 'ApprovalController@resend');
 
 	//Competitors
 	Route::get('/ajax-get-competitor-brands/', 'CompetitorController@ajax_get_competitor_brands');
@@ -217,6 +218,10 @@ Route::middleware(['auth:oracle_users,web'])->group(function () { //--> Authenti
 	Route::post('value-set/add','ValueSetController@store');
 	Route::patch('value-set/update','ValueSetController@updateValueSet');
 	Route::delete('value-set/delete/{value_set_id}','ValueSetController@destroy');
+
+	// Oracle customers
+	Route::post('customer/oracle/search', 'CustomerController@findOracleCustomer');
+	Route::post('project/oracle-customer/update', 'ProjectController@updateOracleCustomer');
 	
 });
 

@@ -19,6 +19,10 @@
                                     <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_account_name }}</span>
                                 </div>
                                 <div class="row kt-margin-b-5">
+                                    <span class="col-md-4 kt-font-bold">Oracle Customer</span>
+                                    <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.oracle_customer }}</span>
+                                </div>
+                                <div class="row kt-margin-b-5">
                                     <span class="col-md-4 kt-font-bold">Fleet Category</span>
                                     <span class="col-md-8 kt-font-bold kt-font-primary">@{{ projectDetails.fleet_category_name }}</span>
                                 </div>

@@ -63,7 +63,8 @@ class PriceConfirmationController extends Controller
     }
 
     public function price_confirmation_entry(Customer $m_customer){   
-       
+        $online_approval_flag = config('app.online_approval_flag');
+        
         if(!in_array(session('user')['user_type_id'], array(32,33)) ){
             return view('errors.404');
         }
@@ -71,8 +72,6 @@ class PriceConfirmationController extends Controller
         $customers = $m_customer->get_project_customers(
             $this->vehicle_type->get_vehicle_type(session('user')['user_type_id'])
         );
-
-  
         $page_data = [
             'customers'    => $customers,
             'base_url'     => url('/'),
@@ -102,7 +101,8 @@ class PriceConfirmationController extends Controller
     	$price_confirmation_id = $request->price_confirmation_id;
     	$action                = $request->action;
     	$fpc_details           = $m_fpc->get_details($price_confirmation_id);
-    	$editable              = $fpc_helper->editable($fpc_details->status_name);
+        
+        $editable              = $fpc_helper->editable($fpc_details->status_name);
     	$customer_details      = $m_customer->get_customer_details_by_id($fpc_details->customer_id);
     	$project_headers       = $m_fpc_project->get_projects($price_confirmation_id);
     	$fpc_attachments       = $m_attachment->get_fpc_attachments($price_confirmation_id);
@@ -110,9 +110,7 @@ class PriceConfirmationController extends Controller
     	$pricelist_headers     = $m_plh->get_active_headers();
     	$projectsArr           = [];
         foreach($project_headers as $project){
-
             $requirements            = $m_fpc_item->get_item_requirements($project->fpc_project_id);
-         
             $competitor_attachments  = $m_attachment->get_competitor_attachments($project->project_id);
             $fpc_project_attachments = $m_attachment->get_fpc_project_attachments($project->fpc_project_id);
             $competitors = $m_competitor->get_competitors($project->project_id);
@@ -149,7 +147,7 @@ class PriceConfirmationController extends Controller
         $note = ValueSetName::where('category_id', 2)->get();
 
         $approvers = $m_fpc->get_approvers($price_confirmation_id);
-      
+        
     	$page_data = array(
     		'price_confirmation_id' => $price_confirmation_id,
     		'action'                => $action,
@@ -225,6 +223,7 @@ class PriceConfirmationController extends Controller
         
         $vehicle_type = $this->vehicle_type->get_vehicle_type(session('user')['user_type_id']);
 
+        $online_approval_flag = config('app.online_approval_flag');
         DB::beginTransaction();
         
         try {
@@ -243,32 +242,33 @@ class PriceConfirmationController extends Controller
             // end of FPC header
             
 
-            // approvers
-           // uncomment this to unlock fpc approval
-            /*$approvers    = $m_approver->get_fpc_signatories($vehicle_type);
-            $approval_params = [];
-            $m_module_approval = new ModuleApproval;
-            $hierarchy = 1;
-            foreach($approvers as $row){
-                $temp_arr = [
-                    'module_id'             => 3, // Fleet Project
-                    'module_reference_id'   => $fpc_id,
-                    'approver_id'           => $row->approver_id,
-                    'hierarchy'             => $hierarchy,
-                    'status'                => 7, // Pending
-                    'column_reference'      => 'fpc_id',
-                    'created_by'            => session('user')['user_id'],
-                    'creation_date'         => Carbon::now(),
-                    'create_user_source_id' => session('user')['source_id'],
-                    'table_reference'       => 'fs_fpc'
-                ];
-                $hierarchy++;
-                array_push($approval_params,$temp_arr);
-            } 
+            // approvers     
+            if($online_approval_flag){ 
+                $approvers    = $m_approver->getFPCApprovers($vehicle_type);
+                $approval_params = [];
+                $m_module_approval = new ModuleApproval;
+                $hierarchy = 1;
+                foreach($approvers as $row){
+                    $temp_arr = [
+                        'module_id'             => 3, // Fleet Project
+                        'module_reference_id'   => $fpc_id,
+                        'approver_id'           => $row->approver_id,
+                        'hierarchy'             => $hierarchy,
+                        'status'                => 7, // Pending
+                        'column_reference'      => 'fpc_id',
+                        'created_by'            => session('user')['user_id'],
+                        'creation_date'         => Carbon::now(),
+                        'create_user_source_id' => session('user')['source_id'],
+                        'table_reference'       => 'fs_fpc'
+                    ];
+                    $hierarchy++;
+                    array_push($approval_params,$temp_arr);
+                } 
 
-            //
-            //$m_module_approval->insert_module_approval($approval_params);
-            */
+                // insert to approval table
+                $m_module_approval->insert_module_approval($approval_params);
+            }
+
             // insert fpc projects
             $project_params = [];
 
@@ -576,10 +576,11 @@ class PriceConfirmationController extends Controller
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
         $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
         $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
-        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type, $header_data->fpc_id);
         $signatories    = collect($signatories)->groupBy('signatory_type');
         
-      //  dd($signatories);
+      //  dd($header_data);
+    //   dd($signatories);
       
         $items_arr = [];
         foreach($items as $row){
@@ -755,7 +756,7 @@ class PriceConfirmationController extends Controller
             );
                 
             $fpc_details = $m_fpc->get_details($fpc_id);
-            $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type);
+            $signatories = $m_approver->get_fpc_signatories($fpc_details->vehicle_type, $fpc_id);
             $signatories = collect($signatories)->groupBy('signatory_type');
        
             $common_inventory_item_id = array_unique($common_items);
@@ -1053,7 +1054,6 @@ class PriceConfirmationController extends Controller
         FPC_Item $m_fpc_item,
         Approver $m_approver,
         FPCItemFreebies $m_freebies
-
     ){
 
        /*  if(!in_array(session('user')['user_type_id'], array(32,33)) ){
@@ -1064,7 +1064,7 @@ class PriceConfirmationController extends Controller
         $header_data    = $m_fpc_project->get_fpc_project_details($fpc_project_id);
         $sales_persons  = $m_sales_persons->get_sales_persons($header_data->project_id);
         $items          = $m_fpc_item->get_item_requirements($fpc_project_id);
-        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type);
+        $signatories    = $m_approver->get_fpc_signatories($header_data->vehicle_type, $header_data->fpc_id);
         $signatories    = collect($signatories)->groupBy('signatory_type');
         
       //  dd($signatories);

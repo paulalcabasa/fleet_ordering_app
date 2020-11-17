@@ -40,6 +40,11 @@
                         Timeline
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#customer" role="tab" aria-selected="false">
+                        Customer
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -59,6 +64,9 @@
             </div>
             <div class="tab-pane" id="timeline">
                 @include('projects.subform.timeline')
+            </div>
+            <div class="tab-pane" id="customer">
+                @include('projects.subform.customer')
             </div>
         </div>
     </div>
@@ -131,6 +139,8 @@
             vehicle_user_type:        {!! json_encode($vehicle_user_type) !!},
             add_po_flag:              {!! json_encode($add_po_flag) !!},
             pending_fpc_vehicle_type: {!! json_encode($pending_fpc_vehicle_type) !!},
+            matched_customers:        {!! json_encode($matched_customers) !!},
+            search_criteria:          {!! json_encode($search_criteria) !!},
             cancel_flag:              false,
             remarks:                  null,
             curBodyBuilder:           null,
@@ -731,6 +741,50 @@
             },
             formatDate(value){
                 return moment(String(value)).format('YYYY-MM-DD');
+            },
+            searchOracleCustomer(){
+                this.matched_customers = [];
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                axios.post('customer/oracle/search', {
+                    search_criteria : this.search_criteria
+                }).then(response => {
+                    this.matched_customers = response.data
+                }).catch(error => {
+                    console.log(error);
+                }).finally( () => {
+                    KTApp.unblockPage();
+                });
+            },
+            updateOracleCustomer(row){
+                var self = this;
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'success',
+                    message: 'Please wait...'
+                });
+                axios.post('project/oracle-customer/update', {
+                    cust_account_id : row.cust_account_id,
+                    project_id : self.projectId
+                }).then(response => {
+                    Swal.fire({
+                        type: 'success',
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    self.matched_customers = [];
+                    self.search_criteria = row.party_name;
+                }).catch(error => {
+                    console.log(error);
+                }).finally( () => {
+                    KTApp.unblockPage();
+                });
             }
         },
         created: function () {
