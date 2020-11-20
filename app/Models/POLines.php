@@ -30,7 +30,8 @@ class POLines extends Model
                         fpc_item.promo,
                         fpc_item.discount,
                         pl.body_builder,
-                        pl.mode_of_transpo
+                        pl.mode_of_transpo,
+                        pl.aircon
                 FROM ipc_dms.fs_po_lines pl
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rl.requirement_line_id = pl.requirement_line_id

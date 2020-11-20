@@ -17,7 +17,7 @@ use App\Models\ActivityLogs;
 use App\Models\Dealer;
 use App\Models\FPC_Project;
 use App\Models\ValueSetName;
-
+use App\Models\DealerBBMap;
 
 class PurchaseOrderController extends Controller
 {
@@ -59,6 +59,7 @@ class PurchaseOrderController extends Controller
                 'delivery_sched'      => $delivery_sched,
                 'body_builder'        => $row->body_builder,
                 'mode_of_transpo'     => $row->mode_of_transpo,
+                'aircon'              => $row->aircon
               
             ];   
             array_push($po_line_data, $arr);
@@ -143,6 +144,7 @@ class PurchaseOrderController extends Controller
         
         $body_builders = ValueSetName::where('category_id', 3)->whereNull('date_deleted')->get();
         $mode_of_transpo = ValueSetName::where('category_id', 4)->whereNull('date_deleted')->get();
+        $aircon = ValueSetName::where('category_id', 5)->whereNull('date_deleted')->get();
         
 
         $page_data = [
@@ -155,7 +157,8 @@ class PurchaseOrderController extends Controller
             'vehicle_lead_time' => config('app.vehicle_lead_time'),
             'fpcs'              => $fpcs,
             'body_builders'     => $body_builders,
-            'mode_of_transpo'   => $mode_of_transpo
+            'mode_of_transpo'   => $mode_of_transpo,
+            'aircon'            => $aircon
         ];
         return view('purchase_order.submit_po', $page_data);
     }
@@ -265,7 +268,8 @@ class PurchaseOrderController extends Controller
                     'creation_date'         => Carbon::now(),
                     'create_user_source_id' => session('user')['source_id'],
                     'body_builder'          => $model['body_builder'],
-                    'mode_of_transpo'       => $model['mode_of_transpo']
+                    'mode_of_transpo'       => $model['mode_of_transpo'],
+                    'aircon'                => $model['aircon']
                 ];
                 $po_line_id = $m_po_lines->insert_po_lines($po_line_arr);
                 //array_push($po_lines_arr, $temp_arr);
@@ -500,11 +504,11 @@ class PurchaseOrderController extends Controller
     public function get_fpc_lines(Request $request){
         $m_requirement_line = new RequirementLine;
         $m_delivery_sched = new ProjectDeliverySchedule;
-
+        $dealer_bb_map = new DealerBBMap;
+        
         $requirement_lines = $m_requirement_line->get_po_requirement_lines_v2($request->fpc_project_id);
         $requirement_lines_data = [];
 
-        
         foreach ($requirement_lines as $row) {
             $delivery_sched = $m_delivery_sched->get_project_delivery_schedule($row->requirement_line_id); 
             $fleet_price = $row->suggested_retail_price - $row->promo - $row->discount;
@@ -518,10 +522,12 @@ class PurchaseOrderController extends Controller
                 'vehicle_type'        => $row->vehicle_type,
                 'delivery_sched'      => $delivery_sched,
                 'variant'             => $row->model_variant,
-                'body_builder'        => '',
+                'body_builder'        => $row->body_builder,
                 'body_builder_new'        => '',
                 'mode_of_transpo'     => '',
                 'mode_of_transpo_new'     => '',
+                'aircon'     => $row->aircon,
+                'aircon_new'     => '',
             ];   
             array_push($requirement_lines_data, $arr);
         }

@@ -103,6 +103,7 @@
                         <th>PO Qty</th>
                         <th>Body Builder</th>
                         <th>Mode of Transpo to BB</th>
+                        <th>Aircon</th>
                         <th>Delivery Sched</th>
                         
                     </tr>
@@ -119,7 +120,9 @@
                         </td>
                         <td>
                             <div v-show="item.variant == 'P-SERIES'">
-                                <select class="form-control form-control-sm"  v-show="item.body_builder != 'OTHERS'"  v-model="item.body_builder">
+
+                                <!-- <span v-if="item.body_builder != ''">@{{ item.body_builder }}</span> -->
+                                <select class="form-control form-control-sm"  v-show="item.body_builder != 'OTHERS'" :disabled="item.body_builder != '' ? true :false"  v-model="item.body_builder">
                                     <option value="">Choose...</option>
                                     <option :value="row.description" v-for="(row, index) in body_builders">@{{ row.description }}</option>
                                 </select> 
@@ -138,7 +141,7 @@
                         </td>
                         <td>
                            <div v-show="item.variant == 'P-SERIES'">
-                                <select class="form-control form-control-sm" v-show="item.mode_of_transpo != 'OTHERS'" v-model="item.mode_of_transpo" >
+                                <select class="form-control form-control-sm" v-show="item.mode_of_transpo != 'OTHERS'"  v-model="item.mode_of_transpo" >
                                     <option value="">Choose...</option>
                                     <option :value="row.description" v-for="(row, index) in modes_of_transpo">@{{ row.description }}</option>
                                 </select>
@@ -156,6 +159,25 @@
                            
                         </td>
                         <td>
+                           <div v-show="item.variant == 'P-SERIES'">
+                                <select class="form-control form-control-sm" v-show="item.aircon != 'OTHERS'" :disabled="item.aircon != '' ? true :false" v-model="item.aircon" >
+                                    <option value="">Choose...</option>
+                                    <option :value="row.description" v-for="(row, index) in aircon">@{{ row.description }}</option>
+                                </select>
+                                <div class="form-group" v-show="item.aircon == 'OTHERS'">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" v-model="item.aircon" placeholder="Please specify..."/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary btn-sm" type="button" @click="resetOthers(key,index)">X</button>
+                                        </div>
+                                    </div>
+                                    <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.aircon == 'OTHERS' && item.aircon_new == ''">* Please indicate mode of transport.</span>
+                                </div>
+                                <span class="help-block text-danger text-sm" v-if="item.variant == 'P-SERIES' && item.aircon == ''">* Please indicate mode of transport.</span>
+                            </div>
+                           
+                        </td>
+                        <td>
                             <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
                                 <i class="la la-calendar"></i>
                             </a> 
@@ -169,6 +191,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -179,6 +202,7 @@
                         <td align="right">@{{ totalPO }}</td> 
                         <td align="right"></td> 
                         <td align="right"></td> 
+                        <td></td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -344,7 +368,8 @@
             vehicle_lead_time    : {!! json_encode($vehicle_lead_time) !!},
             fpcs                 : {!! json_encode($fpcs) !!},
             body_builders        : {!! json_encode($body_builders) !!},
-            modes_of_transpo      : {!! json_encode($mode_of_transpo) !!},
+            modes_of_transpo     : {!! json_encode($mode_of_transpo) !!},
+            aircon               : {!! json_encode($aircon) !!},
             poNumber             : '',
             curDeliverySched     : [],
             fpc_project_id       : '',
