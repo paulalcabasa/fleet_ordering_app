@@ -93,6 +93,7 @@
                         <th>PO Qty</th>
                         <th>Body builder</th>
                         <th>Mode of transpo</th>
+                        <th>Aircon</th>
                         <th>Delivery Sched</th>
                     </tr>
                 </thead>
@@ -106,6 +107,7 @@
                         <td align="right">@{{ item.po_quantity }}</td>
                         <td align="right">@{{ item.body_builder }}</td>
                         <td align="right">@{{ item.mode_of_transpo }}</td>
+                        <td align="right">@{{ item.aircon }}</td>
                         <td>
                             <a href="#" class="btn btn-primary btn-sm btn-icon btn-circle" @click.prevent="setDeliverySched(key,index)">
                                 <i class="la la-calendar"></i>
@@ -117,7 +119,7 @@
                         <td align="right">@{{ sumQty(key) }}</td>
                         <td align="right">@{{ calculateSubtotal(key) | formatPeso}}</td>
                         <td align="right">@{{ sumPOQty(key) }}</td>
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -126,7 +128,7 @@
                         <td align="right">@{{ totalQty }}</td>
                         <td align="right">@{{ totalPrice | formatPeso}}</td>
                         <td align="right">@{{ totalPO }}</td> 
-                        <td colspan="3"></td>
+                        <td colspan="4"></td>
                     </tr>
                 </tfoot>
             </table>

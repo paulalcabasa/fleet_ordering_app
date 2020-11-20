@@ -59,6 +59,7 @@ class PurchaseOrderController extends Controller
                 'delivery_sched'      => $delivery_sched,
                 'body_builder'        => $row->body_builder,
                 'mode_of_transpo'     => $row->mode_of_transpo,
+                'aircon'              => $row->aircon
               
             ];   
             array_push($po_line_data, $arr);
