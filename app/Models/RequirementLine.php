@@ -109,7 +109,10 @@ class RequirementLine extends Model
                         fpc_item.wholesale_price,
                         fpc_item.discount,
                         fpc_item.promo,
-                        0 po_qty
+                        fp.dealer_id,
+                        0 po_qty,
+                        body_builder.description body_builder,
+                        aircon.description aircon
                 FROM ipc_dms.fs_prj_requirement_headers rh
                     LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                         ON rh.requirement_header_id = rl.requirement_header_id
@@ -121,6 +124,16 @@ class RequirementLine extends Model
                         ON fpc_project.fpc_project_id = fpc_item.fpc_project_id
                     LEFT JOIN ipc_dms.fs_fpc fpc
                         ON fpc.fpc_id = fpc_project.fpc_id
+                    LEFT JOIN ipc_dms.fs_projects fp
+                        ON fp.project_id = fpc_project.project_id
+                    LEFT JOIN ipc_portal.dealers dlr
+                        ON dlr.cust_account_id = fp.dealer_id
+                    LEFT JOIN ipc_dms.fs_body_builder_map bb_map
+                        ON dlr.id = bb_map.dealer_id
+                    LEFT JOIN ipc_dms.fs_value_sets body_builder
+                        ON body_builder.value_set_id = bb_map.body_builder_value_set_id
+                    LEFT JOIN ipc_dms.fs_value_sets aircon
+                        ON aircon.value_set_id = bb_map.aircon_value_set_id
                 WHERE 1 = 1
                     AND fpc_project.fpc_project_id = :fpc_project_id
                     AND fpc.status = 4
