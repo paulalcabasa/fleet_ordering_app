@@ -73,6 +73,10 @@
                     case 'Project' :
                         return self.base_url + '/project-overview/validate/' + row.project_id + '/' + row.approval_id; 
                     break;
+
+                    case 'FPC Extension' :
+                        return self.base_url + '/project-overview/view/' + row.project_id; 
+                    break;
                 }
             }
         },
