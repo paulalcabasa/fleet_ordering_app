@@ -431,19 +431,19 @@ class ModuleApproval extends Model
                         nvl(dlr_sat.account_name,hca.account_name)   dealer_name,
                         cust.customer_name account_name
                 FROM ipc_dms.fs_fpc_validity_request vr
-                LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
-                    ON fpc_prj.fpc_project_id = vr.fpc_project_id
-                LEFT JOIN ipc_dms.fs_projects prj
-                    ON prj.project_id = fpc_prj.project_id
-                LEFT JOIN ipc_dms.ipc_portal_users_v usr
-                    ON usr.user_id = vr.created_by
-                    AND usr.user_source_id = vr.create_user_source_id  
-                LEFT JOIN ipc_portal.dealers  hca
-                    ON hca.cust_account_id = prj.dealer_id 
-                LEFT JOIN ipc_portal.dealers dlr_sat
-                    ON dlr_sat.id = usr.dealer_satellite_id
-                LEFT JOIN ipc_dms.fs_customers cust
-                    ON cust.customer_id = prj.customer_id
+                    LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+                        ON fpc_prj.fpc_project_id = vr.fpc_project_id
+                    LEFT JOIN ipc_dms.fs_projects prj
+                        ON prj.project_id = fpc_prj.project_id
+                    LEFT JOIN ipc_dms.ipc_portal_users_v usr
+                        ON usr.user_id = vr.created_by
+                        AND usr.user_source_id = vr.create_user_source_id  
+                    LEFT JOIN ipc_portal.dealers  hca
+                        ON hca.cust_account_id = prj.dealer_id 
+                    LEFT JOIN ipc_portal.dealers dlr_sat
+                        ON dlr_sat.id = usr.dealer_satellite_id
+                    LEFT JOIN ipc_dms.fs_customers cust
+                        ON cust.customer_id = prj.customer_id
                 WHERE vr.status = 7";
         $query = DB::select($sql);
         return $query;
