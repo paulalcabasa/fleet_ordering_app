@@ -34,7 +34,7 @@ class ApprovalController extends Controller
 
         $fpc_extension_list = $m_approval->get_fpc_extension_approval();
 
-        $approval_list = array_merge($project_approval_list, $po_approval_list, $fpc_extension_list);
+        $approval_list = array_merge($project_approval_list, $po_approval_list);
 
         $page_data = [
             'approval_list' => $approval_list,
