@@ -162,7 +162,7 @@
                 <td>{{ $project_details->business_style }}</td>
             </tr>
             <tr>
-                <td style="font-weight:bold;vertical-align: top;">Buiness address</td>
+                <td style="font-weight:bold;vertical-align: top;">Business address</td>
                 <td style="vertical-align: top;">:</td>
                 <td>{{ $project_details->address }}</td>
             </tr>
@@ -188,6 +188,40 @@
                 <td>:</td>
                 <td>{{ $project_details->status_name }}</td>
             </tr>
+
+            <?php if($project_details->organization_type_id == 1):?>
+            <tr>
+                <td style="font-weight:bold;">Bidding Ref No.</td>
+                <td>:</td>
+                <td>{{ $project_details->bid_ref_no }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Bidding Docs Amount</td>
+                <td>:</td>
+                <td>{{ $project_details->bid_docs_amount }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Pre-bid Schedule</td>
+                <td>:</td>
+                <td>{{ $project_details->pre_bid_sched }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Bid Date Sched</td>
+                <td>:</td>
+                <td>{{ $project_details->bid_date_sched }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Bidding Venue</td>
+                <td>:</td>
+                <td>{{ $project_details->bidding_venue }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Approved Budget Cost</td>
+                <td>:</td>
+                <td>{{ number_format($project_details->approved_budget_cost,2) }}</td>
+            </tr>
+
+            <?php endif; ?>
               
         </table>  
   
