@@ -170,7 +170,8 @@ class Project extends Model
                         fc.address,
                         fc.tin,
                         fc.business_style,
-                        cust.party_name oracle_customer
+                        cust.party_name oracle_customer,
+                        fc.organization_type_id
                 FROM ipc_dms.fs_projects fs
                     LEFT JOIN ipc_dms.fs_customers fc
                         ON fs.customer_id = fc.customer_id 
