@@ -1,4 +1,36 @@
 <?php
+$oracle = [];
+if(true){
+    $oracle =  [
+        'driver'         => 'oracle',
+        'service_name'   => env('DB_ORA_SERVICE_NAME', ''),
+        'host'           => env('DB_ORA_HOST', ''),
+        'port'           => env('DB_ORA_PORT', ''),
+        'database'       => env('DB_ORA_DATABASE', ''),
+        'username'       => env('DB_ORA_USERNAME', ''),
+        'password'       => env('DB_ORA_PASSWORD', ''),
+        'charset'        => env('DB_CHARSET', 'AL32UTF8'),
+        'prefix'         => env('DB_PREFIX', ''),
+        'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+        'edition'        => env('DB_EDITION', 'ora$base'),
+        'server_version' => env('DB_SERVER_VERSION', '11g'),
+    ];
+} else {
+    $oracle =  [
+        'driver'         => 'oracle',
+        'service_name'   => env('DB_ORA_SERVICE_NAME', ''),
+        'host'           => env('DB_ORA_HOST', ''),
+        'port'           => env('DB_ORA_PORT', ''),
+        'database'       => env('DB_ORA_DATABASE', ''),
+        'username'       => env('DB_ORA_USERNAME', ''),
+        'password'       => env('DB_ORA_PASSWORD', ''),
+        'charset'        => env('DB_CHARSET', 'AL32UTF8'),
+        'prefix'         => env('DB_PREFIX', ''),
+        'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+        'edition'        => env('DB_EDITION', 'ora$base'),
+        'server_version' => env('DB_SERVER_VERSION', '11g'),
+    ];
+}
 
 return [
 
@@ -34,20 +66,7 @@ return [
     'connections' => [
 
         // For Oracle
-        'oracle' => [
-            'driver'         => 'oracle',
-            'service_name'   => env('DB_ORA_SERVICE_NAME', ''),
-            'host'           => env('DB_ORA_HOST', ''),
-            'port'           => env('DB_ORA_PORT', ''),
-            'database'       => env('DB_ORA_DATABASE', ''),
-            'username'       => env('DB_ORA_USERNAME', ''),
-            'password'       => env('DB_ORA_PASSWORD', ''),
-            'charset'        => env('DB_CHARSET', 'AL32UTF8'),
-            'prefix'         => env('DB_PREFIX', ''),
-            'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
-            'edition'        => env('DB_EDITION', 'ora$base'),
-            'server_version' => env('DB_SERVER_VERSION', '11g'),
-        ],
+        'oracle' => $oracle,
 
         'oracle_portal' => [
             'driver'         => 'oracle',
