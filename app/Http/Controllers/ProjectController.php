@@ -205,16 +205,18 @@ class ProjectController extends Controller
         $current_date           = date('Y-m-d 00:00:00');
         $timeline               = $m_activity_logs->get_activities_by_project($project_id);
 
-        // oracle customer matching
+       //oracle customer matching
         if($project_details->oracle_customer == ""){
             $customer_name_search = explode(" ", $customer_details->customer_name);
-            $search_criteria = $customer_name_search[0];
+            $search_criteria = str_replace("'", "", $customer_name_search[0]);
             $matched_customers = $m_customer->findOracleCustomer($search_criteria);
         }
         else {
             $search_criteria = $project_details->oracle_customer;
             $matched_customers = [];
         }
+        //$search_criteria = "";
+        //$matched_customers = [];
 
         // get all vehicle types based on requirement
         $vehicle_types_requirement = [];
