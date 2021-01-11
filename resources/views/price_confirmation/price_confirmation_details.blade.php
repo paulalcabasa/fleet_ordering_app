@@ -262,7 +262,7 @@
                             <div class="card-body">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in project.competitor_attachments">
-                                        <a :href="baseURL + '/' + row.directory" download>@{{ row.orig_filename }}</a>
+                                        <a :href="baseURL + '/' + row.symlink_dir + '/' + row.filename" download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>
                             </div>
