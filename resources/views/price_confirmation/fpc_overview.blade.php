@@ -104,7 +104,7 @@
                             <span class="col-md-8">
                                 <ul style="list-style:none;padding:0;">
                                     <li v-for="(row,index) in row['attachments']">
-                                        <a :href="base_url + '/' + row.directory + '/' +row.filename " download>@{{ row.orig_filename }}</a>
+                                        <a :href="base_url + '/' + row.directory" download>@{{ row.orig_filename }}</a>
                                     </li>
                                 </ul>    
                             </span>
