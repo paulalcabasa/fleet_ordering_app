@@ -40,11 +40,13 @@
                         Timeline
                     </a>
                 </li>
+                @if($user_type == 32 || $user_type == 33)
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#customer" role="tab" aria-selected="false">
                         Customer
                     </a>
                 </li>
+                @endif
             </ul>
         </div>
     </div>
@@ -65,9 +67,11 @@
             <div class="tab-pane" id="timeline">
                 @include('projects.subform.timeline')
             </div>
+            @if($user_type == 32 || $user_type == 33)
             <div class="tab-pane" id="customer">
                 @include('projects.subform.customer')
             </div>
+            @endif
         </div>
     </div>
 
