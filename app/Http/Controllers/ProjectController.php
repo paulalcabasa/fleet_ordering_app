@@ -249,7 +249,8 @@ class ProjectController extends Controller
         $pending_fpc_vehicle_type = array_diff($vehicle_types_requirement,$vehicle_types_fpc);
 
         
-        if(empty($pending_fpc_vehicle_type) && ($current_date) <= ($max_validity_date)){
+       // if(empty($pending_fpc_vehicle_type) && ($current_date) <= ($max_validity_date)){
+        if(($current_date) <= ($max_validity_date)){
             // get max validity date from FPC Projects
             // compare to current to know if dealer can still add purchase orders
             // purchase orders can only added if FPC validity date is still covered
