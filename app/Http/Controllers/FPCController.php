@@ -398,12 +398,12 @@ class FPCController extends Controller
         $fpc = new FPC;
         $user = session('user');
         $approverPending = $fpc->getByApprover($user['user_id'], $user['source_id']);
-        $subordinatePending = $fpc->getBySubordinate($user['user_id'], $user['source_id']);
+      //  $subordinatePending = $fpc->getBySubordinate($user['user_id'], $user['source_id']);
 
-        $list = array_merge($approverPending, $subordinatePending);
-
+     //  $list = array_merge($approverPending, $subordinatePending);
+     //   $list = $approverPending;
         $page_data = [
-            'approval_list' => $list,
+            'approval_list' => $approverPending,
             'base_url'      => url('/'),
             'status_colors' => config('app.status_colors')
         ];
