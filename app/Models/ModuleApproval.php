@@ -96,6 +96,7 @@ class ModuleApproval extends Model
                     FROM ipc_dms.fs_module_approval ma
                         INNER JOIN ipc_dms.fs_projects fp
                             ON ma.module_reference_id = fp.project_id
+                            AND fp.status = :project_status
                         INNER JOIN ipc_dms.fs_prj_requirement_headers rh
                             ON rh.project_id = fp.project_id
                         INNER JOIN ipc_dms.fs_approvers fa
@@ -119,7 +120,7 @@ class ModuleApproval extends Model
                         AND fa.approver_user_id = :approver_id
                         AND fa.approver_source_id = :approver_source_id
                         AND fs.status_id = :approval_status      
-                        AND fp.status = :project_status";
+                        ";
             $params = [
                 'project_status'     => $project_status,
                 'approval_status'    => $approval_status,
@@ -323,7 +324,8 @@ class ModuleApproval extends Model
                 WHERE 1 = 1
                     AND fa.approver_user_id = :approver_id
                     AND fa.approver_source_id = :approver_source_id
-                    AND ma.status = :approval_status";
+                    AND ma.status = :approval_status
+                    AND ph.status = 7";
         
         $params = [
             'approver_id'        => $approver_id,
