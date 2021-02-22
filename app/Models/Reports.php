@@ -104,11 +104,10 @@ class Reports extends Model
         if($user_type == 27 || $user_type == 31) { //  Fleet LCV User
             $where .= "AND hcaa.cust_account_id = " . session('user')['customer_id'];    	
         }
-
-		$sql = "SELECT distinct
+        $sql = "SELECT distinct
                         rl.rear_body_type, 
                         fwpc.fwpc_id,
-                           fpc_item.wholesale_price,
+                        fpc_item.wholesale_price,
                         fpc_item.suggested_retail_price,
                         fpc_item.suggested_retail_price - fpc_item.discount - fpc_item.promo fleet_price,
                         fpc_item.discount,
@@ -117,83 +116,85 @@ class Reports extends Model
                         competitor.brand competitor_brand,
                         competitor.model competitor_model,
                         competitor.price competitors_price,
-                       hcaa.account_number,
-                       hp.party_name customer_name,
-                       NVL(hcaa.account_name,  hp.party_name) account_name,
-                       hcpc.name profile_class,
-                       ooha.attribute3                     fleet_name,
-                       ottl.description                    sales_type,
-                       rcta.attribute3 cs_number,
-                       msib.attribute9 || ' ' || oola.attribute1 sales_model,
-                       msib.attribute8 body_color,
-                       ottt.description order_type,
-                       rcta.trx_number,
-                       to_char(rcta.trx_date,'MM/DD/YYYY') trx_date,
-                       to_char(rcta.creation_date,'MM/DD/YYYY HH:MI:SS AM') creation_date,
-                       rcta.purchase_order,
-                       rtl.name                            payment_terms,
-                       ooha.order_number,
-                       to_char(ooha.ordered_date,'MM/DD/YYYY') ordered_date,
-                       rcta.attribute5                 pullout_date,
-                      CASE  WHEN rcta.attribute5 IS NOT NULL THEN to_date(rcta.attribute5, 'YYYY/MM/DD HH24:MI:SS')  + (NVL(SUBSTR( rtl.name, 0, INSTR( rtl.name, ' ')-1),  rtl.name) ) ELSE NULL END due_date,
+                    hcaa.account_number,
+                    hp.party_name customer_name,
+                    NVL(hcaa.account_name,  hp.party_name) account_name,
+                    hcpc.name profile_class,
+                    ooha.attribute3                     fleet_name,
+                    ottl.description                    sales_type,
+                    rcta.attribute3 cs_number,
+                    msib.attribute9 || ' ' || oola.attribute1 sales_model,
+                    msib.attribute8 body_color,
+                    ottt.description order_type,
+                    rcta.trx_number,
+                    to_char(rcta.trx_date,'MM/DD/YYYY') trx_date,
+                    to_char(rcta.creation_date,'MM/DD/YYYY HH:MI:SS AM') creation_date,
+                    rcta.purchase_order,
+                    rtl.name                            payment_terms,
+                    ooha.order_number,
+                    to_char(ooha.ordered_date,'MM/DD/YYYY') ordered_date,
+                    rcta.attribute5                 pullout_date,
+                    CASE  WHEN rcta.attribute5 IS NOT NULL THEN to_date(rcta.attribute5, 'YYYY/MM/DD HH24:MI:SS')  + (NVL(SUBSTR( rtl.name, 0, INSTR( rtl.name, ' ')-1),  rtl.name) ) ELSE NULL END due_date,
                         rcta.attribute4                     wb_number,
-                       rcta.attribute8                     csr_number,
-                       rcta.attribute11                    csr_date,
-                       apps.IPC_GET_VEHICLE_VARIANT(msib.segment1) model_variant,
-                       CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN 'PAID' ELSE 'UNPAID' END PAYMENT_STATUS,
-                       CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN  araa.apply_date ELSE NULL END paid_date,
-                       (rctla.net_amount + rctla.vat_amount) invoice_amount
+                    rcta.attribute8                     csr_number,
+                    rcta.attribute11                    csr_date,
+                    apps.IPC_GET_VEHICLE_VARIANT(msib.segment1) model_variant,
+                    CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN 'PAID' ELSE 'UNPAID' END PAYMENT_STATUS,
+                    CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN  araa.apply_date ELSE NULL END paid_date,
+                    (rctla.net_amount + rctla.vat_amount) invoice_amount
                 FROM ra_customer_trx_all rcta
-                       LEFT JOIN ipc_ar_invoices_with_cm cm
-                          ON rcta.customer_trx_id = cm.orig_trx_id
-                       LEFT JOIN (SELECT customer_trx_id,
-                                         MAX(warehouse_id) warehouse_id,
-                                         MAX(inventory_item_id) inventory_item_id,
-                                         MAX(quantity_invoiced) quantity_invoiced,
-                                         SUM (LINE_RECOVERABLE) net_amount,
-                                         SUM (TAX_RECOVERABLE) vat_amount
+                    LEFT JOIN ipc_ar_invoices_with_cm cm
+                        ON rcta.customer_trx_id = cm.orig_trx_id
+                    LEFT JOIN (SELECT customer_trx_id,
+                                        MAX(warehouse_id) warehouse_id,
+                                        MAX(inventory_item_id) inventory_item_id,
+                                        MAX(quantity_invoiced) quantity_invoiced,
+                                        SUM (LINE_RECOVERABLE) net_amount,
+                                        SUM (TAX_RECOVERABLE) vat_amount,
+                                        max(interface_line_attribute6 ) interface_line_attribute6 
                                     FROM ra_customer_trx_lines_all
-                                   WHERE line_type = 'LINE'
+                                WHERE line_type = 'LINE'
                                 GROUP BY customer_trx_id) rctla
-                          ON rcta.customer_trx_id = rctla.customer_trx_id
-                       LEFT JOIN hz_cust_accounts_all hcaa
-                          ON rcta.sold_to_customer_id = hcaa.cust_account_id
-                       LEFT JOIN hz_customer_profiles hzp
-                          ON hcaa.cust_account_id = hzp.cust_account_id
-                           AND rcta.bill_to_site_use_id = hzp.site_use_id
-                       LEFT JOIN hz_cust_profile_classes hcpc
-                           ON hzp.profile_class_id = hcpc.profile_class_id
-                       LEFT JOIN hz_parties hp 
-                           ON hcaa.party_id = hp.party_id
-                       LEFT JOIN  mtl_system_items_b msib
+                        ON rcta.customer_trx_id = rctla.customer_trx_id
+                    LEFT JOIN hz_cust_accounts_all hcaa
+                        ON rcta.sold_to_customer_id = hcaa.cust_account_id
+                    LEFT JOIN hz_customer_profiles hzp
+                        ON hcaa.cust_account_id = hzp.cust_account_id
+                        AND rcta.bill_to_site_use_id = hzp.site_use_id
+                    LEFT JOIN hz_cust_profile_classes hcpc
+                        ON hzp.profile_class_id = hcpc.profile_class_id
+                    LEFT JOIN hz_parties hp 
+                        ON hcaa.party_id = hp.party_id
+                    LEFT JOIN  mtl_system_items_b msib
                             ON rctla.warehouse_id = msib.organization_id
                             AND rctla.inventory_item_id = msib.inventory_item_id
-                       LEFT JOIN
-                         (SELECT applied_customer_trx_id,
-                                 SUM (amount_applied) amount_applied,
-                                 MAX (apply_date)   apply_date
+                    LEFT JOIN
+                        (SELECT applied_customer_trx_id,
+                                SUM (amount_applied) amount_applied,
+                                MAX (apply_date)   apply_date
                             FROM ar_receivable_applications_all
-                           WHERE display = 'Y'
+                        WHERE display = 'Y'
                         GROUP BY applied_customer_trx_id) araa
-                          ON araa.applied_customer_trx_id = rcta.customer_trx_id
-                       LEFT JOIN oe_order_headers_all ooha
-                          ON rcta.interface_header_attribute1 = ooha.order_number
+                        ON araa.applied_customer_trx_id = rcta.customer_trx_id
+                    LEFT JOIN oe_order_headers_all ooha
+                        ON rcta.interface_header_attribute1 = ooha.order_number
                         LEFT JOIN oe_order_lines_all oola
                             ON oola.header_id = ooha.header_id
+                            AND rctla.interface_line_attribute6  = oola.line_id
                         LEFT JOIN oe_transaction_types_tl ottt
                         ON ooha.order_type_id = ottt.transaction_type_id
-                       LEFT JOIN ra_terms_tl rtl ON ooha.payment_term_id = rtl.term_id
-                       LEFT JOIN oe_transaction_types_tl ottl
-                          ON ooha.order_type_id = ottl.transaction_type_id
-                       LEFT JOIN oe_order_headers_all ooha
+                    LEFT JOIN ra_terms_tl rtl ON oola.payment_term_id = rtl.term_id
+                    LEFT JOIN oe_transaction_types_tl ottl
+                        ON ooha.order_type_id = ottl.transaction_type_id
+                    LEFT JOIN oe_order_headers_all ooha
                             ON to_char(ooha.order_number) = to_char(rcta.interface_header_attribute1)
-                       LEFT JOIN ipc_dms.fs_fwpc fwpc
+                    LEFT JOIN ipc_dms.fs_fwpc fwpc
                         on fwpc.sales_order_header_id = ooha.header_id
                         LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
                             ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
                         LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
                             ON rh.requirement_header_id = fpc_prj.requirement_header_id
-                         LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+                        LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
                             ON rl.requirement_header_id = rh.requirement_header_id
                             AND rl.inventory_item_id = msib.inventory_item_id
                         LEFT JOIN ipc_dms.fs_fpc_items fpc_item
@@ -205,9 +206,112 @@ class Reports extends Model
                 WHERE 1 = 1
                     AND rcta.cust_trx_type_id = 1002
                     AND cm.orig_trx_id IS NULL
-                  	{$where}
+                    {$where}
                     AND hcpc.name = 'Dealers-Fleet'
-                  	AND rcta.trx_date BETWEEN :start_date AND :end_date";
+                AND rcta.trx_date BETWEEN :start_date AND :end_date";
+		// $sql = "SELECT distinct
+        //                 rl.rear_body_type, 
+        //                 fwpc.fwpc_id,
+        //                    fpc_item.wholesale_price,
+        //                 fpc_item.suggested_retail_price,
+        //                 fpc_item.suggested_retail_price - fpc_item.discount - fpc_item.promo fleet_price,
+        //                 fpc_item.discount,
+        //                 round((fpc_item.suggested_retail_price - fpc_item.discount - fpc_item.promo)  * fpc_item.dealers_margin/100,2) dealers_margin,
+        //                 rcta.customer_trx_id,
+        //                 competitor.brand competitor_brand,
+        //                 competitor.model competitor_model,
+        //                 competitor.price competitors_price,
+        //                hcaa.account_number,
+        //                hp.party_name customer_name,
+        //                NVL(hcaa.account_name,  hp.party_name) account_name,
+        //                hcpc.name profile_class,
+        //                ooha.attribute3                     fleet_name,
+        //                ottl.description                    sales_type,
+        //                rcta.attribute3 cs_number,
+        //                msib.attribute9 || ' ' || oola.attribute1 sales_model,
+        //                msib.attribute8 body_color,
+        //                ottt.description order_type,
+        //                rcta.trx_number,
+        //                to_char(rcta.trx_date,'MM/DD/YYYY') trx_date,
+        //                to_char(rcta.creation_date,'MM/DD/YYYY HH:MI:SS AM') creation_date,
+        //                rcta.purchase_order,
+        //                rtl.name                            payment_terms,
+        //                ooha.order_number,
+        //                to_char(ooha.ordered_date,'MM/DD/YYYY') ordered_date,
+        //                rcta.attribute5                 pullout_date,
+        //               CASE  WHEN rcta.attribute5 IS NOT NULL THEN to_date(rcta.attribute5, 'YYYY/MM/DD HH24:MI:SS')  + (NVL(SUBSTR( rtl.name, 0, INSTR( rtl.name, ' ')-1),  rtl.name) ) ELSE NULL END due_date,
+        //                 rcta.attribute4                     wb_number,
+        //                rcta.attribute8                     csr_number,
+        //                rcta.attribute11                    csr_date,
+        //                apps.IPC_GET_VEHICLE_VARIANT(msib.segment1) model_variant,
+        //                CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN 'PAID' ELSE 'UNPAID' END PAYMENT_STATUS,
+        //                CASE WHEN (NVL(araa.amount_applied,0) + 1) > ( (rctla.net_amount + rctla.vat_amount) - (ROUND (rctla.net_amount * .01, 2))) THEN  araa.apply_date ELSE NULL END paid_date,
+        //                (rctla.net_amount + rctla.vat_amount) invoice_amount
+        //         FROM ra_customer_trx_all rcta
+        //                LEFT JOIN ipc_ar_invoices_with_cm cm
+        //                   ON rcta.customer_trx_id = cm.orig_trx_id
+        //                LEFT JOIN (SELECT customer_trx_id,
+        //                                  MAX(warehouse_id) warehouse_id,
+        //                                  MAX(inventory_item_id) inventory_item_id,
+        //                                  MAX(quantity_invoiced) quantity_invoiced,
+        //                                  SUM (LINE_RECOVERABLE) net_amount,
+        //                                  SUM (TAX_RECOVERABLE) vat_amount
+        //                             FROM ra_customer_trx_lines_all
+        //                            WHERE line_type = 'LINE'
+        //                         GROUP BY customer_trx_id) rctla
+        //                   ON rcta.customer_trx_id = rctla.customer_trx_id
+        //                LEFT JOIN hz_cust_accounts_all hcaa
+        //                   ON rcta.sold_to_customer_id = hcaa.cust_account_id
+        //                LEFT JOIN hz_customer_profiles hzp
+        //                   ON hcaa.cust_account_id = hzp.cust_account_id
+        //                    AND rcta.bill_to_site_use_id = hzp.site_use_id
+        //                LEFT JOIN hz_cust_profile_classes hcpc
+        //                    ON hzp.profile_class_id = hcpc.profile_class_id
+        //                LEFT JOIN hz_parties hp 
+        //                    ON hcaa.party_id = hp.party_id
+        //                LEFT JOIN  mtl_system_items_b msib
+        //                     ON rctla.warehouse_id = msib.organization_id
+        //                     AND rctla.inventory_item_id = msib.inventory_item_id
+        //                LEFT JOIN
+        //                  (SELECT applied_customer_trx_id,
+        //                          SUM (amount_applied) amount_applied,
+        //                          MAX (apply_date)   apply_date
+        //                     FROM ar_receivable_applications_all
+        //                    WHERE display = 'Y'
+        //                 GROUP BY applied_customer_trx_id) araa
+        //                   ON araa.applied_customer_trx_id = rcta.customer_trx_id
+        //                LEFT JOIN oe_order_headers_all ooha
+        //                   ON rcta.interface_header_attribute1 = ooha.order_number
+        //                 LEFT JOIN oe_order_lines_all oola
+        //                     ON oola.header_id = ooha.header_id
+        //                 LEFT JOIN oe_transaction_types_tl ottt
+        //                 ON ooha.order_type_id = ottt.transaction_type_id
+        //                LEFT JOIN ra_terms_tl rtl ON ooha.payment_term_id = rtl.term_id
+        //                LEFT JOIN oe_transaction_types_tl ottl
+        //                   ON ooha.order_type_id = ottl.transaction_type_id
+        //                LEFT JOIN oe_order_headers_all ooha
+        //                     ON to_char(ooha.order_number) = to_char(rcta.interface_header_attribute1)
+        //                LEFT JOIN ipc_dms.fs_fwpc fwpc
+        //                 on fwpc.sales_order_header_id = ooha.header_id
+        //                 LEFT JOIN ipc_dms.fs_fpc_projects fpc_prj
+        //                     ON fpc_prj.fpc_project_id = fwpc.fpc_project_id
+        //                 LEFT JOIN ipc_dms.fs_prj_requirement_headers rh
+        //                     ON rh.requirement_header_id = fpc_prj.requirement_header_id
+        //                  LEFT JOIN ipc_dms.fs_prj_requirement_lines rl
+        //                     ON rl.requirement_header_id = rh.requirement_header_id
+        //                     AND rl.inventory_item_id = msib.inventory_item_id
+        //                 LEFT JOIN ipc_dms.fs_fpc_items fpc_item
+        //                     ON fpc_item.fpc_project_id = fpc_prj.fpc_project_id
+        //                     AND fpc_item.requirement_line_id = rl.requirement_line_id 
+        //                 LEFT JOIN ipc_dms.fs_project_competitors competitor
+        //                     ON competitor.ipc_item_id = rl.inventory_item_id
+        //                     AND competitor.project_id = rh.project_id
+        //         WHERE 1 = 1
+        //             AND rcta.cust_trx_type_id = 1002
+        //             AND cm.orig_trx_id IS NULL
+        //           	{$where}
+        //             AND hcpc.name = 'Dealers-Fleet'
+        //           	AND rcta.trx_date BETWEEN :start_date AND :end_date";
 
        
         $query = DB::select($sql,$params);
