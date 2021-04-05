@@ -10,10 +10,10 @@ if(true){
         'username'       => env('DB_ORA_USERNAME', ''),
         'password'       => env('DB_ORA_PASSWORD', ''),
         'charset'        => env('DB_CHARSET', 'AL32UTF8'),
-        'prefix'         => env('DB_PREFIX', ''),
-        'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
-        'edition'        => env('DB_EDITION', 'ora$base'),
-        'server_version' => env('DB_SERVER_VERSION', '11g'),
+        // 'prefix'         => env('DB_PREFIX', ''),
+        // 'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+        // 'edition'        => env('DB_EDITION', 'ora$base'),
+        // 'server_version' => env('DB_SERVER_VERSION', '11g'),
     ];
 } else {
     $oracle =  [
@@ -25,10 +25,10 @@ if(true){
         'username'       => env('DB_ORA_USERNAME', ''),
         'password'       => env('DB_ORA_PASSWORD', ''),
         'charset'        => env('DB_CHARSET', 'AL32UTF8'),
-        'prefix'         => env('DB_PREFIX', ''),
-        'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
-        'edition'        => env('DB_EDITION', 'ora$base'),
-        'server_version' => env('DB_SERVER_VERSION', '11g'),
+        // 'prefix'         => env('DB_PREFIX', ''),
+        // 'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+        // 'edition'        => env('DB_EDITION', 'ora$base'),
+        // 'server_version' => env('DB_SERVER_VERSION', '11g'),
     ];
 }
 
@@ -77,10 +77,10 @@ return [
             'username'       => env('DB_PORTAL_USERNAME', ''),
             'password'       => env('DB_PORTAL_PASSWORD', ''),
             'charset'        => env('DB_PORTAL_CHARSET', 'AL32UTF8'),
-            'prefix'         => env('DB_PORTAL_PREFIX', ''),
-            'prefix_schema'  => env('DB_PORTAL_SCHEMA_PREFIX', ''),
-            'edition'        => env('DB_PORTAL_EDITION', 'ora$base'),
-            'server_version' => env('DB_PORTAL_SERVER_VERSION', '11g'),
+            // 'prefix'         => env('DB_PORTAL_PREFIX', ''),
+            // 'prefix_schema'  => env('DB_PORTAL_SCHEMA_PREFIX', ''),
+            // 'edition'        => env('DB_PORTAL_EDITION', 'ora$base'),
+            // 'server_version' => env('DB_PORTAL_SERVER_VERSION', '11g'),
         ],
         
         'sqlite' => [
